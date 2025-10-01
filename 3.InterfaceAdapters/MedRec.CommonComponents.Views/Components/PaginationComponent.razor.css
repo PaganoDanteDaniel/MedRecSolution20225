@@ -1,0 +1,100 @@
+﻿.pagination {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+    padding: .5rem;
+    background-color: var(--form-background);
+    border-radius: 8px; /* Bordes redondeados */
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+    .pagination .buttons {
+        display: flex;
+        text-align: center;
+        justify-content: center;
+        /*flex-wrap: wrap;*/
+    }
+
+        .pagination .buttons .prev-group,
+        .pagination .buttons .next-group,
+        .pagination .buttons .prev-page,
+        .pagination .buttons .next-page {
+            display: flex;
+            align-items: center;
+            justify-content: left;
+            margin: 0px;
+            border-radius: 0px;
+            height: 2.3rem;
+        }
+
+        .pagination .buttons .prev-group {
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+        }
+
+        .pagination .buttons .page-buttons {
+            width: 2.5rem;
+            text-align: center;
+            margin: 0px;
+            height: 2.3rem;
+        }
+
+        .pagination .buttons .next-group {
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
+        }
+
+        .pagination .buttons button {
+            background-color: var(--button-background);
+            border: 1px solid var(--button-border);
+            color: var(--button-text); /* Texto más oscuro para botones habilitados */
+            padding: 8px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease; /* Transición suave para efectos */
+        }
+
+            .pagination .buttons button:hover:not(.disabled) {
+                background-color: var(--button-hover-background);
+                border-color: var(--button-hover-border);
+                color: var(--button-active-text);
+            }
+
+            .pagination .buttons button.active {
+                background-color: var(--button-active-background);
+                border-color: var(--button-active-border);
+                color: var(--button-active-text); /* Texto blanco para botón activo */
+            }
+
+            .pagination .buttons button.disabled {
+                background-color: var(--input-background);
+                border-color: var(--input-border);
+                color: var(--input-text); /* Texto más claro para botones deshabilitados */
+                cursor: not-allowed; /* Mostrar el puntero del mouse como no permitido */
+                opacity: 0.6; /* Botón deshabilitado con opacidad */
+                pointer-events: none; /* Deshabilitar la acción de clic del mouse */
+            }
+
+.pagination-text {
+    margin-left: auto;
+    text-align: right; /* Alinear el texto a la derecha */
+    margin-right: 3rem;
+}
+
+@media (max-width: 800px) {
+    .pagination {
+        flex-direction: column; /* Cambiar a columna si el ancho de pantalla es menor a 600px */
+    }
+
+        .pagination .buttons {
+            width: 100%;
+            justify-content: center; /* Alinear los botones al centro */
+            flex-wrap: wrap;
+        }
+
+    .pagination-text {
+        width: 100%;
+        text-align: center;
+    }
+}

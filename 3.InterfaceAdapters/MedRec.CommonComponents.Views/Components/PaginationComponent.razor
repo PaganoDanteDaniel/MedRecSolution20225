@@ -1,0 +1,35 @@
+﻿@using MedRec.CommonComponents.Views.Resources
+<div class="pagination">
+    <div class="buttons">
+        <button type="button" class="prev-group @(CurrentPage <= maxPageButtons ? "disabled" : "")"
+                @onclick="GoToPreviousGroup">
+            <i class="bi bi-caret-left-fill"></i><i class="bi bi-caret-left-fill"></i>
+        </button>
+        <button type="button" class="prev-page @(CurrentPage == 1 ? "disabled" : "")"
+                @onclick="PreviousPage">
+            @PaginationMessages.PreviusPageButton
+        </button>
+        @for (int i = StartPage; i <= EndPage; i++)
+        {
+            var page = i;
+            <button type="button" class='page-buttons @(page == CurrentPage ? "active" : "")'
+                    @onclick="() => GoToPage(page)">
+                @i
+            </button>
+        }
+
+        <button type="button" class="next-page @(CurrentPage == TotalPages ? "disabled" : "")"
+                @onclick="NextPage">
+            @PaginationMessages.NextPageButton
+        </button>
+        <button type="button" class="next-group @(CurrentPage > TotalPages - maxPageButtons ? "disabled" : "")"
+                @onclick="GoToNextGroup">
+            <i class="bi bi-caret-right-fill"></i><i class="bi bi-caret-right-fill"></i>
+        </button>
+    </div>
+    <div class="pagination-text">
+        <span>@string.Format(PaginationMessages.InformationTextTemplate, CurrentPage, TotalPages)</span>
+    </div>
+</div>
+
+

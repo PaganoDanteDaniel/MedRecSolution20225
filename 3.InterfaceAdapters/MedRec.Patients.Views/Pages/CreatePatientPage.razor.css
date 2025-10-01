@@ -1,0 +1,10 @@
+.body-content {
+    flex: 1; /* Ocupa todo el espacio vertical disponible */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0px 20px;
+}
+.me-footer {
+    margin-top: auto; /* Empuja el FooterBar hacia abajo */
+}

@@ -1,0 +1,49 @@
+﻿@page "/health-insurance-catalog"
+@using MedRec.CommonComponents.Views.Components
+@using MedRec.HealthInsurance.ViewModels.VM
+@using MedRec.HealthInsurance.Views.Resources
+
+<div class="body-content">
+    <TitleComponent Title=@HealthInsuranceMessages.TitleText />
+    <ErrorBoundary @ref=ErrorBoundaryRef>
+        <ChildContent>
+            <HealthCompaniesComponent Model="Model"
+                                      MaxPageButton="MaxPageButton"
+                                      FooterMessageParameterChanged="OnMessageFooterChange"
+                                      OnHealthCompanySelected="SelectedHealthCompany" />
+        </ChildContent>
+        <ErrorContent>
+            <ExceptionDisplayComponent Exception="context" />
+            <button class="btn btn-danger"
+                    @onclick=Recover>
+                @HealthInsuranceMessages.RecoberButton
+            </button>
+        </ErrorContent>
+    </ErrorBoundary>
+    <div class="me-footer">
+        <FooterComponent Message="@footerMessage" />
+    </div>
+</div>
+
+@code {
+    [Inject] public HealthInsuranceCatalogVM Model { get; set; }
+    [Parameter] public EventCallback<(int Id, string Name)> OnHealthCompanySelected { get; set; }
+    [Parameter] public int MaxPageButton { get; set; } = 9;
+    private string footerMessage;
+    private void OnMessageFooterChange(string title)
+    {
+        footerMessage = title;
+    }
+
+    private async void SelectedHealthCompany((int id, string name) selectedCompany)
+    {
+        await OnHealthCompanySelected.InvokeAsync((selectedCompany.id, selectedCompany.name));
+    }
+
+    ErrorBoundary ErrorBoundaryRef;
+
+    void Recover()
+    {
+        ErrorBoundaryRef?.Recover();
+    }
+}

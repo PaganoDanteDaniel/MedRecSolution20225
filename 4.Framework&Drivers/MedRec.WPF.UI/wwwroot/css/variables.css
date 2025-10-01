@@ -1,0 +1,100 @@
+﻿:root {
+    /* Colores de formulario */
+    --form-background: #f8f8ff; /* Morado muy suave */
+    --form-border: #e1bee7; /* Rosa pastel suave */
+    --form-text: #9c27b0; /* Morado */
+    --form-secction-background: #ffffff;
+    /* Colores de menú */
+    --menu-background: #f8f8ff; /* Morado muy suave */
+    --menu-border: #e1bee7; /* Rosa pastel suave */
+    --menu-text: #9c27b0; /* Morado */
+    /* Colores de enlaces */
+    --link-background: #f8f8ff; /* Morado muy suave */
+    --link-border: #e1bee7; /* Rosa pastel suave */
+    --link-text: #9c27b0; /* Morado */
+    --link-hover-background: #f3e5f5; /* Morado más claro */
+    --link-hover-border: #ce93d8; /* Rosa más oscuro */
+    --link-hover-text: #673ab7; /* Morado oscuro */
+    --link-active-background: #ce93d8; /* Rosa más oscuro */
+    --link-active-border: #673ab7; /* Morado oscuro */
+    --link-active-text: #e1bee7; /* Rosa pastel suave */
+    /* Colores de botones */
+    --button-background: #e1bee7; /* Rosa pastel suave */
+    --button-border: #ce93d8; /* Rosa más oscuro */
+    --button-text: #673ab7; /* Morado oscuro */
+    --button-hover-background: #f3e5f5; /* Morado más claro */
+    --button-hover-border: #ce93d8; /* Rosa más oscuro */
+    --button-hover-text: #673ab7; /* Morado oscuro */
+    --button-active-background: #673ab7; /* Morado oscuro */
+    --button-active-border: #ce93d8; /* Rosa más oscuro */
+    --button-active-text: #ffffff; /* Blanco */
+    /* Colores de inputs */
+    --input-background: #ffffff; /* Blanco */
+    --input-border: #e1bee7; /* Rosa pastel suave */
+    --input-text: #9c27b0; /* Morado */
+    --input-focus-background: #f3e5f5; /* Morado más claro */
+    --input-focus-border: #ce93d8; /* Rosa más oscuro */
+    --input-focus-text: #9c27b0; /* Morado */
+    /* Colores de radiobuttons */
+    --radiobutton-background: #f3e5f5; /* Morado más claro */
+    --radiobutton-border: #ce93d8; /* Rosa más oscuro */
+    --radiobutton-text: #9c27b0; /* Morado */
+    --radiobutton-hover-background: #ce93d8; /* Rosa más oscuro */
+    --radiobutton-hover-border: #673ab7; /* Morado oscuro */
+    --radiobutton-hover-text: #e1bee7; /* Rosa pastel suave */
+    /* Colores de checkboxes */
+    --checkbox-background: #f3e5f5; /* Morado más claro */
+    --checkbox-border: #519C48; /* Verde más oscuro */
+    --checkbox-text: #9c27b0; /* Morado */
+    --checkbox-hover-background: #ce93d8; /* Rosa más oscuro */
+    --checkbox-hover-border: #673ab7; /* Morado oscuro */
+    --checkbox-hover-text: #e1bee7; /* Rosa pastel suave */
+    --checkbox-checked-background: #9c27b0;
+    --checkbox-checked-border: #673ab7;
+    /* Colores de tablas */
+    --table-background: #f8f8ff; /* Morado muy suave */
+    --table-border: #e1bee7; /* Rosa pastel suave */
+    --table-cell-text: #9c27b0; /* Morado */
+    --table-header-background: #ce93d8; /* Rosa más oscuro */
+    --table-header-text: #ffffff; /* Blanco */
+    --table-row-even-background: #f8f8ff; /* Morado muy suave */
+    --table-row-odd-background: #ffffff; /* Blanco */
+    --table-row-hover-background: #e1bee7; /* Rosa pastel suave */
+    --footer-background: #ce93d8; /* Rosa más oscuro *
+
+    /* Colores del calendario */
+    --calendar-container: #f8f8ff; /* Morado muy suave */
+    --calendar-header: #e1bee7; /* Rosa pastel suave */
+    --calendar-day-header: #ce93d8; /* Rosa más oscuro */
+    --calendar-day: #ffffff; /* Fondo blanco para mantener simplicidad */
+    --calendar-day-today: #9c27b0; /* Morado */
+    --calendar-day-outside: #e0e0e0; /* Gris claro para distinguir días fuera del mes */
+    --calendar-day-selected: #9c27b0; /* Morado */
+    --change-month-button: #9c27b0; /* Morado */
+    --change-month-button-hover: #9c27b0; /* Morado */
+    --calendar-day-border: #b0bec5; /* Gris pastel para bordes de días */
+    --calendar-container-border: #e1bee7; /* Rosa pastel suave */
+    --calendar-header-border: #ce93d8; /* Rosa más oscuro */
+    
+    /* General Modal */
+    --modal-background: #ffffff;
+    --modal-border: #e1bee7;
+    --modal-title-text: #673ab7;
+    --modal-body-text: #9c27b0;
+    --modal-footer-background: #f8f8ff;
+    --modal-footer-border: #e1bee7;
+    
+    /* Modal estados */
+    --modal-success-background: #e8f5e9;
+    --modal-success-border: #a5d6a7;
+    --modal-success-text: #388e3c;
+    --modal-error-background: #ffebee;
+    --modal-error-border: #ef9a9a;
+    --modal-error-text: #c62828;
+    --modal-warning-background: #fff8e1;
+    --modal-warning-border: #ffe082;
+    --modal-warning-text: #f9a825;
+    --modal-info-background: #e3f2fd;
+    --modal-info-border: #90caf9;
+    --modal-info-text: #1565c0;
+}

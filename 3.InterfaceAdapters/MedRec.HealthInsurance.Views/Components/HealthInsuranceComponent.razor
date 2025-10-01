@@ -1,0 +1,227 @@
+﻿@using MedRec.CommonComponents.Views.Components
+@using MedRec.Entity.DTOs
+@using MedRec.HealthInsurance.ViewModels.VM
+@using MedRec.HealthInsurance.Views.Resources
+@using Microsoft.AspNetCore.Components.Forms
+<div class="container">
+    <div class="me-configuration">
+        <!-- Filtro de búsqueda -->
+        <div class="me-filter">
+            <div>
+                <label class="me-filter-label" for="filter">@HealthInsuranceMessages.FilterLabelText</label>
+                <InputText type="text"
+                       id="filter"
+                       class="me-filter-text uppercase-input"
+                           @bind-Value="_paginationDto.Filter"
+                       @oninput="OnSearchTermChanged"
+                       autocomplete="off"
+                           placeholder=@HealthInsuranceMessages.PlaceholderFilterInput />
+            </div>
+
+        </div>
+        <div class="me-buttons-content">
+            <button type="button" class="me-button" @onclick="OnAddHealthCompany">Agregar</button>
+ @*            @if (showHealthCompanyAdd)
+            {
+                <ModalComponent Title=@AddHealthCompanyMessages.TitleText
+                                Show="@showHealthCompanyAdd"
+                                ShowChanged="(value) => OnCloseHealthCompanyAdd(value)">
+                    <AddHealthCompanyComponent CompanyName="" CompanyAcronym="" OnAddedCompany="@OnAddedCompany" OnCancelAdd="@OnCancelAdder" />
+                </ModalComponent>
+            } *@
+        </div>
+    </div>
+
+
+    <!-- Tabla de obras sociales -->
+    <div class="me-table-container">
+        <table class="me-table">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th style="width: 12%;" scope="col">Sigla</th>
+                    <th scope="col">Nombre</th>
+                    <th class="actions" style="width: 12%;" scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.HealthInsuranceCatalog.Any())
+                {
+                    int rowIndex = 0; // Contador para alternar las clases
+                    @foreach (var healthInsurance in Model.HealthInsuranceCatalog)
+                    {
+                        var rowClass = rowIndex % 2 == 0 ? "table-row-even" : "table-row-odd";
+                        <tr @onclick="() => SelectHealthInsurance(healthInsurance.Id, healthInsurance.Name)"
+                            class="@rowClass">
+                            <td>@healthInsurance.Id</td>
+                            <td style="width:12%;"><span class="truncate">@healthInsurance.Acronym</span></td>
+                            <td style="width: 100%;"><span class="truncate">@healthInsurance.Name</span></td>
+                            <td class="actions" style="width: 12%;">
+                                <a href="javascript:void(0);" @onclick:stopPropagation @onclick="() => OnUpdateHealthInsurance(healthInsurance.Id)">
+                                    <i class="bi bi-pencil-square"></i>                                                        
+                                </a>                                                                                           
+                                <a href="javascript:void(0);" @onclick:stopPropagation @onclick="() => OnDeleteHealthInsurance(healthInsurance.Id)">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        rowIndex++; // Incrementar el contador
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-message">No se encontraron obras sociales.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <!--Pagination-->
+    <PaginationComponent CurrentPage="@_paginationDto.PageNumber"
+                         TotalPages="@_totalPages"
+                         MaxPageButton="@MaxPageButton"
+                         PageChanged="HandlePageChanged" />
+</div>
+@if (showHealthCompanyDelete)
+{
+    <ModalComponent Title=@HealthInsuranceMessages.ModalTitleText
+                    Show="@showHealthCompanyDelete"
+                    ShowChanged="(value) => OnCloseHealthCompanyDelete(value)"
+                    ShowAcceptButton="true"
+                    OnAccept="OnAcceptDelete"
+                    IsSuccess="true">
+        <div>
+            @HealthInsuranceMessages.ModalMessageText
+        </div>
+    </ModalComponent>
+}
+@* @if (showHealthCompanyUpdate)
+{
+    <ModalComponent Title=@UpdateHealthCompanyMessages.TitleText
+                    Show="@showHealthCompanyUpdate"
+                    ShowChanged="(value) => OnCloseHealthCompanyUpdate(value)">
+        <UpdateHealthCompanyComponent InsuranceHealthCompanyId=@healthCompanyId
+                                      OnHealthCompanyUpdated="OnHealthCompanyUpdated" />
+    </ModalComponent>
+
+} *@
+
+@code {
+    [Inject] public NavigationManager NavigationManager { get; set; }
+    [Parameter] public HealthInsuranceCatalogVM Model { get; set; }
+    [Inject] public HealthInsuranceCatalogVM DefaultModel { get; set; }
+    [Parameter] public EventCallback<(Guid Id, string Name)> OnHealthCompanySelected { get; set; }
+    [Parameter] public EventCallback<string> FooterMessageParameterChanged { get; set; }
+    [Parameter] public int MaxPageButton { get; set; }
+
+    [Parameter]
+    public string FooterMessage
+    {
+        get => _footerMessage;
+        set
+        {
+            if (_footerMessage != value)
+            {
+                _footerMessage = value;
+                FooterMessageParameterChanged.InvokeAsync(value);
+            }
+        }
+    }
+
+    private PaginationDto _paginationDto = new(1, 10);
+    private int _totalPages = 1;
+
+    private string _footerMessage = "";
+    private bool showHealthCompanyAdd;
+    private bool showHealthCompanyDelete;
+    private bool showHealthCompanyUpdate;
+    private Guid healthCompanyId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Model == null)
+        {
+            Model = DefaultModel;
+        }
+        await LoadHealthCompanies();
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+    }
+    private async void OnSearchTermChanged(ChangeEventArgs e)
+    {
+        _paginationDto.Filter = e.Value.ToString();
+        _paginationDto.PageNumber = 1;
+        await LoadHealthCompanies();
+    }
+    private async Task SelectHealthInsurance(Guid healthCompanyId, string name)
+    {
+        await OnHealthCompanySelected.InvokeAsync((healthCompanyId, name));
+    }
+    private async Task LoadHealthCompanies()
+    {
+        await Model.LoadHealthCompaniesAsync(_paginationDto);
+        var total = Model.TotalRecords;
+        FooterMessage = string.Format(HealthInsuranceMessages.TotalRegistryTemplate, total);
+        _totalPages = (int)Math.Ceiling((double)total / _paginationDto.PageSize);
+        StateHasChanged();  // Forzar la actualización del componente
+    }
+    private async Task HandlePageChanged(int newPage)
+    {
+        _paginationDto.PageNumber = newPage;
+        await LoadHealthCompanies();
+    }
+    //{healthCompanyId}
+    private void OnUpdateHealthInsurance(Guid healthCompanyId)
+    {
+        showHealthCompanyUpdate = true;
+        this.healthCompanyId = healthCompanyId;
+    }
+    private void OnDeleteHealthInsurance(Guid healthCompanyId)
+    {
+        showHealthCompanyDelete = true;
+        this.healthCompanyId = healthCompanyId;
+    }
+    private async Task OnAcceptDelete()
+    {
+        // await Model.DeleteHealthCompanyAsync(healthCompanyId);
+        showHealthCompanyDelete = false;
+        await LoadHealthCompanies();
+    }
+    private void OnAddHealthCompany(MouseEventArgs e)
+    {
+        showHealthCompanyAdd = true;
+    }
+
+    private void OnCloseHealthCompanyUpdate(bool state)
+    {
+        showHealthCompanyUpdate = state;
+    }
+    private void OnCloseHealthCompanyAdd(bool state)
+    {
+        showHealthCompanyAdd = state;
+
+    }
+
+    private void OnCloseHealthCompanyDelete(bool state)
+    {
+        showHealthCompanyDelete = state;
+    }
+
+    private async Task OnAddedCompany()
+    {
+        await OnCancelAdder();
+    }
+    private async Task OnCancelAdder()
+    {
+        await LoadHealthCompanies();
+        showHealthCompanyAdd = false;
+    }
+    private async Task OnHealthCompanyUpdated()
+    {
+        await LoadHealthCompanies();
+        showHealthCompanyUpdate = false;
+    }
+}

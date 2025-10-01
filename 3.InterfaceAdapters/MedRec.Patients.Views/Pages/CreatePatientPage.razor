@@ -1,0 +1,24 @@
+﻿@page "/create-patient"
+@using MedRec.CommonComponents.Views.Exceptions
+@using MedRec.Patients.ViewModels.VM
+@using MedRec.Patients.Views.Components
+
+<div class="body-content">
+    <TitleComponent Title=@CreatePatientMessages.AddPatientPageTitle />
+    <ErrorBoundary @ref=ErrorBoundaryRef>
+        <ChildContent>
+            <CreatePatientComponent VM="VM"/>
+        </ChildContent>
+        <ErrorContent>
+            <ExceptionDisplayComponent Exception="context"/>
+                <button class="btn btn-danger" @onclick=Recover>
+                    Aceptar
+                </button>   
+        </ErrorContent>
+    </ErrorBoundary>
+    <div class="me-footer">
+        <FooterComponent Message="@footerMessage" />
+    </div>
+</div>
+
+

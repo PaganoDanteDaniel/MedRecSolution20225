@@ -1,0 +1,32 @@
+﻿<div class="my-modal @(Show ? "show" : "d-none") @GetModalClass()">
+    <div class="my-modal-dialog @(IsLargeModal ? "my-modal-lg" : "")">
+        <div class="my-modal-content">
+            <div class="my-modal-header">
+                <h5 class="my-modal-title">
+                    @GetIcon()
+                    @Title
+                </h5>
+                <button type="button" class="btn-close" aria-label="Close" @onclick="Close"></button>
+            </div>
+            <div class="my-modal-body @(CenterText ? "centered-text" : "")">
+                @ChildContent
+            </div>
+
+            <div class="my-modal-footer">
+                @if (ShowAcceptButton)
+                {
+                    <button type="button" @onclick="OnAccept">
+                        <i class="bi bi-check-lg"></i> Aceptar
+                    </button>
+                }
+                @if (ShowCancelButton)
+                {
+                    <button type="button" @onclick="Close">
+                        <i class="bi bi-x-lg"></i> Cerrar
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

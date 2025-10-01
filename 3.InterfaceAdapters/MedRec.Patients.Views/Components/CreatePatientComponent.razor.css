@@ -1,0 +1,107 @@
+﻿.new-patient-form {
+    background-color: var(--form-background);
+    border: 1px solid var(--form-border);
+    padding: 50px;
+    border-radius: 8px;
+    color: var(--form-text);
+    width: 85%; /*Ancho recalculado*/
+    margin: 0 auto; /* Centrar el formulario */
+}
+
+    .new-patient-form .new-patient-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 15px;
+    }
+
+    .new-patient-form .new-patient-col {
+        flex: 1;
+        width: calc(50% - 3%);
+        margin-right: 3%; /*Aumentar el espacio entre columnas */
+        text-align: left; /*Alinear el contenido a la izquierda */
+        justify-content: left;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .new-patient-form .new-patient-col:last-child {
+            margin-right: 0;
+        }
+
+    .new-patient-form label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .new-patient-form input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid var(--input-border);
+        border-radius: 4px;
+        background-color: var(--input-background);
+        color: var(--input-text);
+    }
+
+        .new-patient-form input:focus {
+            background-color: var(--input-focus-background);
+            border-color: var(--input-focus-border);
+            color: var(--input-focus-text);
+        }
+
+    .new-patient-form .validation-message {
+        color: red; /*Color destacado para mensajes de validación*/
+    }
+
+    .new-patient-form button {
+        background-color: var(--button-background);
+        border: 1px solid var(--button-border);
+        color: var(--button-text);
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 10px;
+    }
+
+        .new-patient-form button:hover {
+            background-color: var(--button-hover-background);
+            border-color: var(--button-hover-border);
+            color: var(--button-hover-text);
+        }
+
+        .new-patient-form button i {
+            font-size: 20px; /* Tamaño del ícono */
+            margin-right: 5px; /* Espacio entre el ícono y el texto */
+        }
+
+    .new-patient-form .inline-group {
+        display: flex;
+        align-items: center;
+    }
+
+        .new-patient-form .inline-group button {
+            height: 100%; /* Ajustar la altura del botón para que coincida con el input */
+            /
+        }
+
+    .new-patient-form .button-group {
+        display: flex;
+        justify-content: flex-end; /*Alinear los botones a la derecha*/
+    }
+
+@media (max-width: 600px) {
+    .new-patient-form .new-patient-row {
+        flex-direction: column;
+    }
+
+    .new-patient-form .new-patient-col {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+
+        .new-patient-form .new-patient-col:last-child {
+            margin-bottom: 0;
+        }
+}

@@ -1,0 +1,55 @@
+﻿
+
+<div class="sidebar @NavClass">
+    <div class="nav-header">
+        <button class="hamburger-btn" @onclick="ToggleNav">
+            @if (_isCollapsed)
+            {
+                <!-- Cuando está colapsado -->
+                @* <i class="bi bi-three-dots-vertical"></i> *@
+                <i class="oi oi-expand-left"></i>
+            }
+            else
+            {
+                <!-- Cuando está expandido -->
+                @* <i class="bi bi-list"></i> *@
+                <i class="oi oi-expand-right"></i>
+            }
+        </button>
+        @if (!_isCollapsed)
+        {
+            <span class="app-name">Mi Aplicación</span>
+        }
+    </div>
+
+    <ul class="nav-links">
+        <li>
+            <a href="/">
+                <i class="bi bi-house"></i>
+                @if (!_isCollapsed)
+                {
+                    <span>Inicio</span>
+                }
+            </a>
+        </li>
+        <li>
+            <a href="/create-patient">
+                <i class="bi bi-gear"></i>
+                @if (!_isCollapsed)
+                {
+                    <span>Servicios</span>
+                }
+            </a>
+        </li>
+        <li>
+            <a href="/contacto">
+                <i class="bi bi-envelope"></i>
+                @if (!_isCollapsed)
+                {
+                    <span>Contacto</span>
+                }
+            </a>
+        </li>
+    </ul>
+</div>
+

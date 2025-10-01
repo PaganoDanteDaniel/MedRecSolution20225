@@ -1,0 +1,157 @@
+/* --- Overlay --- */
+.my-modal {
+    display: none;
+    position: fixed;
+    z-index: 1050;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* solo el fondo general es semitransparente */
+}
+
+    .my-modal.show {
+        display: block;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+/* --- Tamaño por defecto (mensajes) --- */
+.my-modal-dialog {
+    margin: 1.75rem auto;
+    max-width: 600px;
+}
+
+    /* --- Tamaño grande (tablas, ABM, formularios) --- */
+    .my-modal-dialog.my-modal-lg {
+        max-width: 80%;
+        width: 80%;
+        height: 80%;
+        margin: 2rem auto;
+    }
+
+        .my-modal-dialog.my-modal-lg .my-modal-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .my-modal-dialog.my-modal-lg .my-modal-body {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+/* --- Contenido del modal --- */
+.my-modal-content {
+    background-color: var(--modal-background) !important; 
+    border: 1px solid var(--modal-border);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+/* --- Header --- */
+.my-modal-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--modal-border);
+    background-color: var(--modal-background);
+    color: var(--modal-title-text);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* --- Body --- */
+.my-modal-body {
+    padding: 1.5rem;
+    color: var(--modal-body-text);
+    font-size: 1rem;
+}
+
+    .my-modal-body.centered-text {
+        text-align: center;
+    }
+
+/* --- Footer --- */
+.my-modal-footer {
+    padding: 0.75rem 1.25rem;
+    background-color: var(--modal-footer-background);
+    border-top: 1px solid var(--modal-footer-border);
+    text-align: right;
+}
+
+/* --- Variantes según estado --- */
+.my-modal-success .my-modal-content {
+    background-color: var(--modal-success-background);
+    border-color: var(--modal-success-border);
+    
+}
+.my-modal-success .my-modal-body,
+.my-modal-success .my-modal-title {
+    color: var(--modal-success-text) !important;
+}
+
+.my-modal-error .my-modal-content {
+    background-color: var(--modal-error-background);
+    border-color: var(--modal-error-border);
+}
+.my-modal-error .my-modal-body,
+.my-modal-error .my-modal-title {
+    color: var(--modal-error-text) !important;
+}
+
+.my-modal-warning .my-modal-content {
+    background-color: var(--modal-warning-background) !important;
+    border-color: var(--modal-warning-border) !important;
+}
+.my-modal-warning .my-modal-body,
+.my-modal-warning .my-modal-title {
+    color: var(--modal-warning-text) !important;
+}
+
+.my-modal-info .my-modal-content {
+    background: var(--modal-info-background) !important;
+    border-color: var(--modal-info-border) !important;    
+}
+.my-modal-info .my-modal-body,
+.my-modal-info .my-modal-title {
+    color: var(--modal-info-text) !important;
+}
+
+/* --- Botones --- */
+.my-modal-footer button {
+    background-color: var(--button-background);
+    border: 1px solid var(--button-border);
+    color: var(--button-text);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    margin-left: 0.5rem;
+}
+
+    .my-modal-footer button:hover {
+        background-color: var(--button-hover-background);
+        border-color: var(--button-hover-border);
+        color: var(--button-hover-text);
+    }
+
+    .my-modal-footer button:active {
+        background-color: var(--button-active-background);
+        border-color: var(--button-active-border);
+        color: var(--button-active-text);
+    }
+
+/* --- Animación --- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

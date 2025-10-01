@@ -1,0 +1,37 @@
+﻿/* Estilos para el pie de página */
+.footerbar {
+    background-color: var(--footer-background);
+    border-top: 1px solid var(--form-border);
+    border-radius: 8px;
+    padding: 1.3rem;
+    margin-top: 1rem;
+    text-align: left;
+    color: var(--form-text);
+    box-shadow: 0 -3px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+}
+
+    .footerbar p {
+        margin: 0;
+        font-size: 14px;
+        font-family: Arial, sans-serif;
+    }
+
+.left-span {
+    width: 33.33%;
+    /* Estilos para el primer span (alineado a la izquierda) */
+}
+
+.center-span {
+    /* Estilos para el segundo span (centrado) */
+    width: 33.33%;
+    text-align: center; /* Alinea el contenido del span al centro */
+}
+
+.right-span {
+    /* Estilos para el tercer span (alineado a la derecha) */
+    width: 33.33%;
+    text-align: right; /* Alinea el contenido del span a la derecha */
+    font-size: 12px;
+}
