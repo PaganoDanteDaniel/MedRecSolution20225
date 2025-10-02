@@ -11,6 +11,7 @@ public partial class CreatePatientComponent : IDisposable
     private bool _showModal = false;
     private bool _showErrorModal = false;
     private bool _showWarning = false;
+    private CancellationTokenSource _cts;
     #endregion
 
     #region Events handler
@@ -30,6 +31,12 @@ public partial class CreatePatientComponent : IDisposable
         VM.OnPatientAdded += PatientAdded;
         VM.OnShowMessage += ShowError;
         VM.OnShowWarning += ShowWarning;
+    }
+    public async Task AddPatient()
+    {
+        _cts?.Dispose();
+        _cts = new CancellationTokenSource();
+        await VM.AddPatientAsync(_cts.Token);
     }
     private void PatientAdded()
     {
@@ -72,7 +79,7 @@ public partial class CreatePatientComponent : IDisposable
         var today = DateTime.Today;
         var birthDate = VM.Model.DateOfBirth;
         if (!birthDate.HasValue)
-            return string.Empty; // o algún mensaje por defecto, p.ej. "Fecha no definida"
+            return "Fecha no definida"; // o algún mensaje por defecto, p.ej. "Fecha no definida"
         // Calculating the age
         int year = today.Year - birthDate.Value.Year;
         int month = today.Month - birthDate.Value.Month;

@@ -1,0 +1,86 @@
+﻿@using MedRec.CommonComponents.Views.Components
+@using Microsoft.AspNetCore.Components.Forms
+
+<div class="container">
+    <div class="me-configuration">
+    <div class="me-filter">
+        <label class="me-filter-label" for="filter">@ListPatientsMessages.FilterLabel</label>
+        <InputText type="text"
+               id="filter"
+               class="me-filter-text uppercase-input"
+               @bind-Value="_paginationDto.Filter"
+               @oninput="OnSearchTermChanged"
+               autocomplete="off"
+               placeholder=@ListPatientsMessages.PalaceholderFilterInput />
+    </div>
+    </div>
+    <div class="me-table-container">
+        <table class="me-table">
+            <thead>
+                <tr>
+                    <th scope="col">@ListPatientsMessages.HeadIdText</th>
+                    <th scope="col">@ListPatientsMessages.HeadNameText</th>
+                    <th scope="col">@ListPatientsMessages.HeadLastNameText</th>
+                    <th scope="col" class="date-of-birth">@ListPatientsMessages.HeadDateOfBirthText</th>
+                    <th scope="col" class="actions">@ListPatientsMessages.HeadActionsText</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (PagedPatients.Any())
+                {
+                    int rowIndex = 0;
+                    @foreach (var patient in PagedPatients)
+                    {
+                        
+                        var rowClass = rowIndex % 2 == 0 ? "table-row-even" : "table-row-odd";
+                        Console.WriteLine(rowClass);
+                        <tr @onclick="() => SelectPatient(patient.PatientId)" class="@rowClass">
+                            <td>@patient.PatientId</td>
+                            <td>@patient.FirstName</td>
+                            <td>@patient.LastName</td>
+                            <td class="date-of-birth">@patient.DateOfBirth.ToString("dd/MM/yyyy")</td>
+                            <td class="actions" style="width: 12%;">
+                                <a href="javascript:void(0);" @onclick:stopPropagation @onclick="() => 
+                                    OnEditPatient(patient.PatientId)">
+                                    <i class="bi bi-pencil-square" data-bs-toggle="tooltip" data-bs-placement="top" title=@ListPatientsMessages.ToolTipEditButtonMessage></i>
+                                </a>
+                                <a href="javascript:void(0);" @onclick:stopPropagation @onclick="() => 
+                                    OnDeletePatient(patient.PatientId, patient.LastName)">
+                                    <i class="bi bi-trash-fill" data-bs-toggle="tooltip" data-bs-placement="top" title=@ListPatientsMessages.ToolTipDeletButtonMessage></i>
+                                </a>
+                                <a href="javascript:void(0);" @onclick:stopPropagation @onclick='() => 
+                                    OnAddHealthIssue(patient.PatientId, patient.LastName + ", " + patient.FirstName)'>
+                                    <i class="bi bi-clipboard-pulse" data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                                </a>
+                                <a href="javascript:void(0);" @onclick:stopPropagation @onclick='() =>
+                                    OnAddMedicalVisit(patient.PatientId, patient.LastName + ", " + patient.FirstName)'>
+                                    <i class="bi bi-clipboard-pulse" data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        rowIndex++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-message">@ListPatientsMessages.ThereAreNoPatientsMessage</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <PaginationComponent CurrentPage="@_paginationDto.CurrentPage" 
+        TotalPages="@_totalPages" 
+        PageChanged="HandlePageChanged"
+        MaxPageButton="MaxPageButton"/>
+</div>
+
+<script >
+    // Inicializa los tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+</script >

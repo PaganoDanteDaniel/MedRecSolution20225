@@ -33,7 +33,7 @@ internal class PatientQueriesDataContext(IOptions<DBOptions> options)
 
         return await query
             .OrderBy(p => p.LastName)
-            .Skip((paginationDTO.PageNumber - 1) * paginationDTO.PageSize)
+            .Skip((paginationDTO.CurrentPage - 1) * paginationDTO.PageSize)
             .Take(paginationDTO.PageSize)
             .ToListAsync();
     }

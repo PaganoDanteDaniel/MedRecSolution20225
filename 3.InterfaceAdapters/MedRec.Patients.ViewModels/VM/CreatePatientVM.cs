@@ -2,16 +2,12 @@
 using MedRec.Patients.BusinessObjects.DTOs;
 using MedRec.Patients.BusinessObjects.Interfaces.Ports;
 using MedRec.Patients.ViewModels.Models;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace MedRec.Patients.ViewModels.VM;
-public class CreatePatientVM : INotifyPropertyChanged, IDisposable
+public class CreatePatientVM : IDisposable
 {
     private readonly ICreatePatientInputPort _interactor;
     private readonly ICreatePatientOutputPort _presenter;
-
-    private CancellationTokenSource _ct;
     public CreatePatientVM(ICreatePatientInputPort interactor, ICreatePatientOutputPort presenter)
     {
         _interactor = interactor;
@@ -27,22 +23,14 @@ public class CreatePatientVM : INotifyPropertyChanged, IDisposable
     public CreatePatientModel Model { get; set; } = new();
     public bool IsProcessing { get; private set; }
 
-    public event PropertyChangedEventHandler PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-    => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-    public async Task AddPatientAsync()
+    public async Task AddPatientAsync(CancellationToken cts = default)
     {
-        _ct?.Dispose();
-        _ct = new CancellationTokenSource();
-
         IsProcessing = true;
-        OnPropertyChanged(nameof(IsProcessing));
 
         try
         {
             Model.InformationMessage = "";
-            await _interactor.HandleAsync((CreatePatientDto)Model, _ct.Token);
+            await _interactor.HandleAsync((CreatePatientDto)Model, cts);
 
             if (_presenter.ValidationErrors?.Any() == true)
             {
@@ -77,7 +65,6 @@ public class CreatePatientVM : INotifyPropertyChanged, IDisposable
                 Model.InformationMessage = "Paciente creado con éxito";
                 Model = new CreatePatientModel();
                 OnPatientAdded?.Invoke();
-                OnPropertyChanged(nameof(Model));
             }
 
         }
@@ -89,15 +76,12 @@ public class CreatePatientVM : INotifyPropertyChanged, IDisposable
         finally
         {
             IsProcessing = false;
-            OnPropertyChanged(nameof(IsProcessing));
         }
 
     }
 
     public void Dispose()
     {
-        _ct?.Cancel();
-        _ct?.Dispose();
-        _ct = null;
+
     }
 }

@@ -8,7 +8,8 @@ public static class DependencyContainer
     {
         services.AddScoped<ICreatePatientInputPort, CreatePatientInteractor>()
                 .AddScoped<ICreatePatientInputPort, CreatePatientInteractor>()
-                .AddScoped<IUpdatePatientInputPort, UpdatePatientInteractor>();
+                .AddScoped<IUpdatePatientInputPort, UpdatePatientInteractor>()
+                .AddScoped<IPatientsListInputPort, PatientsListInteractor>();
 
         return services;
     }

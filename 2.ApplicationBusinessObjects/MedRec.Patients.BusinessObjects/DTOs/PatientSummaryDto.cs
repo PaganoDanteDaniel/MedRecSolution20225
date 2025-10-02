@@ -1,7 +1,7 @@
 ﻿namespace MedRec.Patients.BusinessObjects.DTOs;
-public class PatientListDto
+public class PatientSummaryDto
 {
-    public PatientListDto(Guid patientId,
+    public PatientSummaryDto(Guid patientId,
         string firstName,
         string lastName,
         string documentNumber,

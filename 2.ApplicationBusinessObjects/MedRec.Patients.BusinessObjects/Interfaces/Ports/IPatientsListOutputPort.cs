@@ -6,6 +6,6 @@ namespace MedRec.Patients.BusinessObjects.Interfaces.Ports;
 public interface IPatientsListOutputPort : ICommonOutputPort
 {
     int TotalRecords { get; }
-    IEnumerable<PatientListDto> Patients { get; }
+    IEnumerable<PatientSummaryDto> Patients { get; }
     Task Handle(IEnumerable<Patient> patientList, int totalRecord, CancellationToken cancellationToken = default);
 }
