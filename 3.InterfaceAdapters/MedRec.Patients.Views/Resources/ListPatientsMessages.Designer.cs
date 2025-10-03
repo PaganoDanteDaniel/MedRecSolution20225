@@ -106,6 +106,15 @@ namespace MedRec.Patients.Views.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a N° DE D.N.I..
+        /// </summary>
+        internal static string HeadDocumentNumberText {
+            get {
+                return ResourceManager.GetString("HeadDocumentNumberText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a ID.
         /// </summary>
         internal static string HeadIdText {
@@ -124,11 +133,20 @@ namespace MedRec.Patients.Views.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a NAME.
+        ///   Busca una cadena traducida similar a NOMBRE.
         /// </summary>
         internal static string HeadNameText {
             get {
                 return ResourceManager.GetString("HeadNameText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a N° DE TELÉFONO.
+        /// </summary>
+        internal static string HeadPhoneText {
+            get {
+                return ResourceManager.GetString("HeadPhoneText", resourceCulture);
             }
         }
         

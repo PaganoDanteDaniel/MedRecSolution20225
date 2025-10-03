@@ -101,6 +101,18 @@ public partial class CreatePatientComponent : IDisposable
         return (string.Format(CreatePatientMessages.AgeOfPatientTemplate, year.ToString(), month.ToString()));
     }
 
+    private void OnDateOfBirthChanged(ChangeEventArgs e)
+    {
+        if (e.Value is string dateString && DateTime.TryParse(dateString, out var dateTime))
+        {
+            // Asignamos directamente un DateTime (sin hora, o con hora 00:00:00)
+            VM.Model.DateOfBirth = dateTime.Date; // .Date elimina la hora
+        }
+        else
+        {
+            VM.Model.DateOfBirth = null;
+        }
+    }
     public void Dispose()
     {
         VM.OnShowMessage -= ShowError;

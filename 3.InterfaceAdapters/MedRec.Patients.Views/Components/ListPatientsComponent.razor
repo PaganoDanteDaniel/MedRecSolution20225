@@ -1,28 +1,35 @@
 ﻿@using MedRec.CommonComponents.Views.Components
+@using MedRec.CommonComponents.Views.Helpers
 @using Microsoft.AspNetCore.Components.Forms
 
 <div class="container">
     <div class="me-configuration">
     <div class="me-filter">
         <label class="me-filter-label" for="filter">@ListPatientsMessages.FilterLabel</label>
-        <InputText type="text"
-               id="filter"
-               class="me-filter-text uppercase-input"
-               @bind-Value="_paginationDto.Filter"
-               @oninput="OnSearchTermChanged"
-               autocomplete="off"
-               placeholder=@ListPatientsMessages.PalaceholderFilterInput />
+            <input type="text"
+                   id="filter"
+                   class="me-filter-text uppercase-input"
+                   @bind="_paginationDto.Filter"
+                   @oninput="OnSearchTermChanged"
+                   autocomplete="off"
+                   placeholder="@ListPatientsMessages.PalaceholderFilterInput" />
     </div>
     </div>
     <div class="me-table-container">
         <table class="me-table">
+            <colgroup>
+                <col style="width: 40%"> <!-- APELLIDO Y NOMBRE -->
+                <col style="width: 10%"> <!-- DNI -->
+                <col style="width: 15%"> <!-- TELÉFONO -->
+                <col style="width: 25%"> <!-- ACCIONES -->
+            </colgroup>
             <thead>
                 <tr>
                     <th scope="col">@ListPatientsMessages.HeadIdText</th>
-                    <th scope="col">@ListPatientsMessages.HeadNameText</th>
-                    <th scope="col">@ListPatientsMessages.HeadLastNameText</th>
-                    <th scope="col" class="date-of-birth">@ListPatientsMessages.HeadDateOfBirthText</th>
-                    <th scope="col" class="actions">@ListPatientsMessages.HeadActionsText</th>
+                    <th scope="col">@ListPatientsMessages.HeadLastNameText y @ListPatientsMessages.HeadNameText</th>
+                    <th scope="col" class="header-center">@ListPatientsMessages.HeadDocumentNumberText</th>
+                    <th scope="col" class="header-center">@ListPatientsMessages.HeadPhoneText</th>
+                    <th scope="col" class="header-center">@ListPatientsMessages.HeadActionsText</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,9 +43,9 @@
                         Console.WriteLine(rowClass);
                         <tr @onclick="() => SelectPatient(patient.PatientId)" class="@rowClass">
                             <td>@patient.PatientId</td>
-                            <td>@patient.FirstName</td>
-                            <td>@patient.LastName</td>
-                            <td class="date-of-birth">@patient.DateOfBirth.ToString("dd/MM/yyyy")</td>
+                            <td>@patient.LastName, @patient.FirstName</td>
+                            <td class="number-type">@FormatStringAsNumber.WithDots(patient.DocumentNumber)</td>
+                            <td class="number-type">@patient.PhoneNumber</td>
                             <td class="actions" style="width: 12%;">
                                 <a href="javascript:void(0);" @onclick:stopPropagation @onclick="() => 
                                     OnEditPatient(patient.PatientId)">
@@ -48,10 +55,10 @@
                                     OnDeletePatient(patient.PatientId, patient.LastName)">
                                     <i class="bi bi-trash-fill" data-bs-toggle="tooltip" data-bs-placement="top" title=@ListPatientsMessages.ToolTipDeletButtonMessage></i>
                                 </a>
-                                <a href="javascript:void(0);" @onclick:stopPropagation @onclick='() => 
+                                @* <a href="javascript:void(0);" @onclick:stopPropagation @onclick='() => 
                                     OnAddHealthIssue(patient.PatientId, patient.LastName + ", " + patient.FirstName)'>
                                     <i class="bi bi-clipboard-pulse" data-bs-toggle="tooltip" data-bs-placement="top"></i>
-                                </a>
+                                </a> *@
                                 <a href="javascript:void(0);" @onclick:stopPropagation @onclick='() =>
                                     OnAddMedicalVisit(patient.PatientId, patient.LastName + ", " + patient.FirstName)'>
                                     <i class="bi bi-clipboard-pulse" data-bs-toggle="tooltip" data-bs-placement="top"></i>

@@ -12,8 +12,22 @@
 
     .titlebar h1 {
         margin: 0; /* Quitar margen del encabezado */
-        font-size: 24px; /* Tamaño de la fuente del título */
+        font-size: 2rem; /* Tamaño de la fuente del título */
         font-family: 'Arial', sans-serif; /* Fuente del título */
         font-weight: bold; /* Peso de la fuente */
         color: var(--form-text); /* Color del texto del título */
     }
+
+@media (max-width: 1300px) {
+
+    .titlebar h1 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 800px) {
+
+    .titlebar h1 {
+        font-size: 1rem;
+    }
+}

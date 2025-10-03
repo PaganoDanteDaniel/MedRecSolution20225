@@ -7,17 +7,14 @@
     <div class="me-configuration">
         <!-- Filtro de búsqueda -->
         <div class="me-filter">
-            <div>
-                <label class="me-filter-label" for="filter">@HealthInsuranceMessages.FilterLabelText</label>
-                <InputText type="text"
-                       id="filter"
-                       class="me-filter-text uppercase-input"
-                           @bind-Value="_paginationDto.Filter"
-                       @oninput="OnSearchTermChanged"
-                       autocomplete="off"
-                           placeholder=@HealthInsuranceMessages.PlaceholderFilterInput />
-            </div>
-
+            <label class="me-filter-label" for="filter">@HealthInsuranceMessages.FilterLabelText</label>
+            <input type="text"
+                id="filter"
+                class="me-filter-text uppercase-input"
+                @bind="_paginationDto.Filter"
+                @oninput="OnSearchTermChanged"
+                autocomplete="off"
+                placeholder=@HealthInsuranceMessages.PlaceholderFilterInput />
         </div>
         <div class="me-buttons-content">
             <button type="button" class="me-button" @onclick="OnAddHealthCompany">Agregar</button>

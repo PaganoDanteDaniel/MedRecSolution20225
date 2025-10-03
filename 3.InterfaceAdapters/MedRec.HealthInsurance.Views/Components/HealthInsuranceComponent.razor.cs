@@ -18,6 +18,7 @@ namespace MedRec.HealthInsurance.Views.Components;
 public partial class HealthInsuranceComponent
 {
     private CancellationTokenSource _cts;
+    private CancellationTokenSource _debounceCts;
     [Inject] public NavigationManager NavigationManager { get; set; }
     [Parameter] public HealthInsuranceCatalogVM Model { get; set; }
     [Inject] public HealthInsuranceCatalogVM DefaultModel { get; set; }
@@ -62,9 +63,27 @@ public partial class HealthInsuranceComponent
     }
     private async void OnSearchTermChanged(ChangeEventArgs e)
     {
-        _paginationDto.Filter = e.Value.ToString();
-        _paginationDto.CurrentPage = 1;
-        await LoadHealthCompanies();
+        _paginationDto.Filter = e.Value?.ToString() ?? string.Empty;
+
+        // Cancelar la búsqueda anterior si existe
+        _debounceCts?.Cancel();
+        _debounceCts = new CancellationTokenSource();
+
+        // Solo buscar si hay más de 2 caracteres o está vacío
+        if (_paginationDto.Filter.Length > 2 || _paginationDto.Filter.Length == 0)
+        {
+            try
+            {
+                // Esperar 400ms antes de buscar
+                await Task.Delay(600, _debounceCts.Token);
+                await LoadHealthCompanies();
+                _paginationDto.CurrentPage = 1;
+            }
+            catch (TaskCanceledException)
+            {
+                // Ignorar si se cancela por nueva entrada
+            }
+        }
     }
     private async Task SelectHealthInsurance(Guid healthCompanyId, string name)
     {

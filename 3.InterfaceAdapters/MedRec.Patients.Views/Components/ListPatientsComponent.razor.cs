@@ -12,6 +12,7 @@ public partial class ListPatientsComponent
     private string _footerMessage = "";
     private Guid _selectedPatientId;
     private PaginationDto _paginationDto = new(1, 10);
+    private CancellationTokenSource _debounceCts;
     #endregion
 
     #region Properties
@@ -54,8 +55,26 @@ public partial class ListPatientsComponent
     private async Task OnSearchTermChanged(ChangeEventArgs e)
     {
         _paginationDto.Filter = e.Value?.ToString() ?? string.Empty;
-        _paginationDto.CurrentPage = 1; // Reiniciar a la primera página cuando se busca
-        await LoadPatients();   // Llama al método que carga los pacientes filtrados
+
+        // Cancelar la búsqueda anterior si existe
+        _debounceCts?.Cancel();
+        _debounceCts = new CancellationTokenSource();
+
+        // Solo buscar si hay más de 2 caracteres o está vacío
+        if (_paginationDto.Filter.Length > 2 || _paginationDto.Filter.Length == 0)
+        {
+            try
+            {
+                // Esperar 400ms antes de buscar
+                await Task.Delay(600, _debounceCts.Token);
+                await LoadPatients();
+                _paginationDto.CurrentPage = 1;
+            }
+            catch (TaskCanceledException)
+            {
+                // Ignorar si se cancela por nueva entrada
+            }
+        }
     }
     private void SelectPatient(Guid patientId)
     {
