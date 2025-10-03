@@ -50,7 +50,7 @@
             border: 1px solid var(--button-border);
             color: var(--button-text); /* Texto más oscuro para botones habilitados */
             padding: 8px 12px;
-            font-size: 14px;
+            font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s ease; /* Transición suave para efectos */
         }
@@ -82,7 +82,16 @@
     margin-right: 3rem;
 }
 
-@media (max-width: 800px) {
+@media(max-width: 1300px){
+    .pagination .buttons button {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+    .pagination .pagination-text{
+        font-size: 0.8rem;
+    }
+}
+@media (max-width: 600px) {
     .pagination {
         flex-direction: column; /* Cambiar a columna si el ancho de pantalla es menor a 600px */
     }
@@ -92,9 +101,14 @@
             justify-content: center; /* Alinear los botones al centro */
             flex-wrap: wrap;
         }
+        .pagination .buttons button{
+            padding: 4px 8px;
+            font-size: 0.65rem;
+        }
 
     .pagination-text {
         width: 100%;
         text-align: center;
+        font-size:0.65rem;
     }
 }

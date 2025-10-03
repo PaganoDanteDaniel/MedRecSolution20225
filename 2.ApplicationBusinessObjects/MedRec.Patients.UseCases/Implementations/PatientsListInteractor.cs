@@ -9,18 +9,21 @@ namespace MedRec.Patients.UseCases.Implementations;
 /// </summary>
 /// <param name="presenter">Puerto de salida para proveer la lista de pacientes.</param>
 /// <param name="queriesRepository">Unidad de trabajo para manejar las operaciones de pacientes.</param>
-internal class PatientListInteractor
+internal class PatientsListInteractor
     (IPatientsListOutputPort presenter,
     IPatientQueriesRepository queriesRepository) : IPatientsListInputPort
 {
-    public async Task Handle(PaginationDto paginationDto, CancellationToken cancellationToken = default)
+    public async Task Handle(PaginationDto paginationDto, CancellationToken cts = default)
     {
-        if (paginationDto.PageNumber < 1 || paginationDto.PageSize < 1)
+        if (paginationDto.CurrentPage < 1 || paginationDto.PageSize < 1)
         {
             await presenter.ErrorAsync(new ErrorInfo("La página y el tamaño deben ser mayores a cero.", ErrorCode.Unknown));
             return;
         }
-        var countResult = await queriesRepository.CountPatients(paginationDto.Filter, cancellationToken);
+
+        cts.ThrowIfCancellationRequested();
+
+        var countResult = await queriesRepository.CountPatients(paginationDto.Filter, cts);
 
         if (!countResult.IsSuccess)
         {
@@ -29,7 +32,9 @@ internal class PatientListInteractor
             return;
         }
 
-        var listResult = await queriesRepository.GetPatientsList(paginationDto, cancellationToken);
+        cts.ThrowIfCancellationRequested();
+
+        var listResult = await queriesRepository.GetPatientsList(paginationDto, cts);
 
         if (!listResult.IsSuccess)
         {

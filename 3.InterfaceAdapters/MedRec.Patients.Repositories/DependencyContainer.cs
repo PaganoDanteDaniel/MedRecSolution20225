@@ -6,7 +6,8 @@ public static class DependencyContainer
 {
     public static IServiceCollection AddPatientRepositoriesServices(this IServiceCollection services)
     {
-        services.AddScoped<IPatientCommandsRepository, PatientCommandsRepository>();
+        services.AddScoped<IPatientCommandsRepository, PatientCommandsRepository>()
+                .AddScoped<IPatientQueriesRepository, PatientQueriesRepository>();
 
         return services;
     }

@@ -1,0 +1,15 @@
+.body-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--page-background, #f8f9fa);
+}
+
+.me-footer {
+    margin-top: auto;
+}
+
+.error-boundary {
+    margin-bottom: 1rem;
+}
+
