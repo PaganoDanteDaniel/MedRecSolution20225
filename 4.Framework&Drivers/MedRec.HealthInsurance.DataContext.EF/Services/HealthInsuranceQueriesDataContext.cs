@@ -24,7 +24,7 @@ internal class HealthInsuranceQueriesDataContext(IOptions<DBOptions> options) :
                 h.Acronym.ToLower().Contains(filter));
         }
 
-        var skip = (paginationDto.PageNumber - 1) * paginationDto.PageSize;
+        var skip = (paginationDto.CurrentPage - 1) * paginationDto.PageSize;
         var result = await query
             .OrderBy(h => h.Name)
             .Skip(skip)

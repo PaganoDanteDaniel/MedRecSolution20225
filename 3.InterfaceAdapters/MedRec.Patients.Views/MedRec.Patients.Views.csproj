@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
@@ -27,12 +26,21 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>CreatePatientMessages.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\ListPatientsMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ListPatientsMessages.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="Resources\CreatePatientMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>CreatePatientMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ListPatientsMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ListPatientsMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

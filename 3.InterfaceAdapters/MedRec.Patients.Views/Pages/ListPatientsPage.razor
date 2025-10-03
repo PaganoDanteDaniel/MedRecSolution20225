@@ -1,0 +1,40 @@
+﻿@page "/"
+@using MedRec.CommonComponents.Views.Components
+@using MedRec.CommonComponents.Views.Exceptions
+@using MedRec.Patients.Views.Components
+
+<div class="body-content">
+    <TitleComponent Title=@ListPatientsMessages.Title />
+    <ErrorBoundary @ref=ErrorBoundaryRef>
+        <ChildContent>
+            <ListPatientsComponent VM="Model"
+                MaxPageButton="MaxPageButton"
+                FooterMessageParameterChanged="OnMessageFooterChange"
+                OnPatientDeleted="PatientDelete"
+                OnPatientUpdate="PatientUpdate"/>
+        </ChildContent>
+        <ErrorContent>
+            <ExceptionDisplayComponent Exception="context"/>
+            <button class="btn btn-danger" @onclick=Recover>
+                @ListPatientsMessages.RecoberButton
+            </button>
+        </ErrorContent>
+    </ErrorBoundary>
+    <div class="me-footer">
+        <FooterComponent Message="@footerMessage" />
+    </div>
+</div>
+
+@if (showPatientDelete)
+{
+    <ModalComponent Title=@ListPatientsMessages.ModalTitleText
+                    Show="@showPatientDelete"
+                    ShowChanged="(value) => OnClosePatientDelete(value)"
+                    ShowAcceptButton="true"
+                    OnAccept="OnAcceptDelete"
+                    IsSuccess="true">
+        <div style="color: red;">
+            @string.Format(ListPatientsMessages.ModalMessageTextTemplate, name)
+        </div>
+    </ModalComponent>
+}

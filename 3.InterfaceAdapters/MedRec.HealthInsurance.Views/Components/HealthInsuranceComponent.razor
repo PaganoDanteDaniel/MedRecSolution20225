@@ -7,17 +7,14 @@
     <div class="me-configuration">
         <!-- Filtro de búsqueda -->
         <div class="me-filter">
-            <div>
-                <label class="me-filter-label" for="filter">@HealthInsuranceMessages.FilterLabelText</label>
-                <InputText type="text"
-                       id="filter"
-                       class="me-filter-text uppercase-input"
-                           @bind-Value="_paginationDto.Filter"
-                       @oninput="OnSearchTermChanged"
-                       autocomplete="off"
-                           placeholder=@HealthInsuranceMessages.PlaceholderFilterInput />
-            </div>
-
+            <label class="me-filter-label" for="filter">@HealthInsuranceMessages.FilterLabelText</label>
+            <input type="text"
+                id="filter"
+                class="me-filter-text uppercase-input"
+                @bind="_paginationDto.Filter"
+                @oninput="OnSearchTermChanged"
+                autocomplete="off"
+                placeholder=@HealthInsuranceMessages.PlaceholderFilterInput />
         </div>
         <div class="me-buttons-content">
             <button type="button" class="me-button" @onclick="OnAddHealthCompany">Agregar</button>
@@ -78,7 +75,7 @@
         </table>
     </div>
     <!--Pagination-->
-    <PaginationComponent CurrentPage="@_paginationDto.PageNumber"
+    <PaginationComponent CurrentPage="@_paginationDto.CurrentPage"
                          TotalPages="@_totalPages"
                          MaxPageButton="@MaxPageButton"
                          PageChanged="HandlePageChanged" />
@@ -107,121 +104,4 @@
 
 } *@
 
-@code {
-    [Inject] public NavigationManager NavigationManager { get; set; }
-    [Parameter] public HealthInsuranceCatalogVM Model { get; set; }
-    [Inject] public HealthInsuranceCatalogVM DefaultModel { get; set; }
-    [Parameter] public EventCallback<(Guid Id, string Name)> OnHealthCompanySelected { get; set; }
-    [Parameter] public EventCallback<string> FooterMessageParameterChanged { get; set; }
-    [Parameter] public int MaxPageButton { get; set; }
 
-    [Parameter]
-    public string FooterMessage
-    {
-        get => _footerMessage;
-        set
-        {
-            if (_footerMessage != value)
-            {
-                _footerMessage = value;
-                FooterMessageParameterChanged.InvokeAsync(value);
-            }
-        }
-    }
-
-    private PaginationDto _paginationDto = new(1, 10);
-    private int _totalPages = 1;
-
-    private string _footerMessage = "";
-    private bool showHealthCompanyAdd;
-    private bool showHealthCompanyDelete;
-    private bool showHealthCompanyUpdate;
-    private Guid healthCompanyId;
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (Model == null)
-        {
-            Model = DefaultModel;
-        }
-        await LoadHealthCompanies();
-    }
-    protected override void OnAfterRender(bool firstRender)
-    {
-        base.OnAfterRender(firstRender);
-    }
-    private async void OnSearchTermChanged(ChangeEventArgs e)
-    {
-        _paginationDto.Filter = e.Value.ToString();
-        _paginationDto.PageNumber = 1;
-        await LoadHealthCompanies();
-    }
-    private async Task SelectHealthInsurance(Guid healthCompanyId, string name)
-    {
-        await OnHealthCompanySelected.InvokeAsync((healthCompanyId, name));
-    }
-    private async Task LoadHealthCompanies()
-    {
-        await Model.LoadHealthCompaniesAsync(_paginationDto);
-        var total = Model.TotalRecords;
-        FooterMessage = string.Format(HealthInsuranceMessages.TotalRegistryTemplate, total);
-        _totalPages = (int)Math.Ceiling((double)total / _paginationDto.PageSize);
-        StateHasChanged();  // Forzar la actualización del componente
-    }
-    private async Task HandlePageChanged(int newPage)
-    {
-        _paginationDto.PageNumber = newPage;
-        await LoadHealthCompanies();
-    }
-    //{healthCompanyId}
-    private void OnUpdateHealthInsurance(Guid healthCompanyId)
-    {
-        showHealthCompanyUpdate = true;
-        this.healthCompanyId = healthCompanyId;
-    }
-    private void OnDeleteHealthInsurance(Guid healthCompanyId)
-    {
-        showHealthCompanyDelete = true;
-        this.healthCompanyId = healthCompanyId;
-    }
-    private async Task OnAcceptDelete()
-    {
-        // await Model.DeleteHealthCompanyAsync(healthCompanyId);
-        showHealthCompanyDelete = false;
-        await LoadHealthCompanies();
-    }
-    private void OnAddHealthCompany(MouseEventArgs e)
-    {
-        showHealthCompanyAdd = true;
-    }
-
-    private void OnCloseHealthCompanyUpdate(bool state)
-    {
-        showHealthCompanyUpdate = state;
-    }
-    private void OnCloseHealthCompanyAdd(bool state)
-    {
-        showHealthCompanyAdd = state;
-
-    }
-
-    private void OnCloseHealthCompanyDelete(bool state)
-    {
-        showHealthCompanyDelete = state;
-    }
-
-    private async Task OnAddedCompany()
-    {
-        await OnCancelAdder();
-    }
-    private async Task OnCancelAdder()
-    {
-        await LoadHealthCompanies();
-        showHealthCompanyAdd = false;
-    }
-    private async Task OnHealthCompanyUpdated()
-    {
-        await LoadHealthCompanies();
-        showHealthCompanyUpdate = false;
-    }
-}

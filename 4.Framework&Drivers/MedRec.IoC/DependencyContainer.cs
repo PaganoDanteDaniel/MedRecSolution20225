@@ -13,6 +13,9 @@ public static class DependencyContainer
 
         services.AddTransient<CreatePatientVM>();        // Al final, ViewModels
 
+
+        services.AddTransient<PatientsListVM>();
+
         services.AddHealthInsuranceDataContextServices();
         services.AddHealthInsuranceRepositoriesServices();
         services.AddHealthInsuranceUseCasesServices();
