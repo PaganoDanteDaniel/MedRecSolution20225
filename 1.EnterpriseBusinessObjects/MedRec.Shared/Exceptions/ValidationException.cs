@@ -1,4 +1,4 @@
-﻿using MedRec.Entity.ValueObjects;
+﻿using MedRec.Validator.ValueObjects;
 
 namespace MedRec.Shared.Exceptions;
 public class ValidationException : Exception
@@ -22,6 +22,6 @@ public class ValidationException : Exception
         Errors = errors;
 
     private static string CreateMessage(IEnumerable<ValidationError> errors) =>
-        string.Join("; ", errors.Select(e => $"{e.PropertyName}: {e.Message}"));
+        string.Join("; ", errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
 }
 

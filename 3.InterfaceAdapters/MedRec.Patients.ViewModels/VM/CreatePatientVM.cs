@@ -4,7 +4,7 @@ using MedRec.Patients.BusinessObjects.Interfaces.Ports;
 using MedRec.Patients.ViewModels.Models;
 
 namespace MedRec.Patients.ViewModels.VM;
-public class CreatePatientVM : IDisposable
+public class CreatePatientVM
 {
     private readonly ICreatePatientInputPort _interactor;
     private readonly ICreatePatientOutputPort _presenter;
@@ -22,6 +22,7 @@ public class CreatePatientVM : IDisposable
 
     public CreatePatientModel Model { get; set; } = new();
     public bool IsProcessing { get; private set; }
+    public string InformationMessage { get; set; }
 
     public async Task AddPatientAsync(CancellationToken cts = default)
     {
@@ -29,19 +30,19 @@ public class CreatePatientVM : IDisposable
 
         try
         {
-            Model.InformationMessage = "";
+            InformationMessage = "";
             await _interactor.HandleAsync((CreatePatientDto)Model, cts);
 
             if (_presenter.ValidationErrors?.Any() == true)
             {
 
-                Model.InformationMessage = string.Join("<br />", _presenter.ValidationErrors.Select(e => e.Message));
+                InformationMessage = string.Join("<br />", _presenter.ValidationErrors.Select(e => e.ErrorMessage));
                 OnShowMessage?.Invoke();
             }
             else if (_presenter.ErrorMessage is not null)
             {
                 var error = _presenter.ErrorMessage;
-                Model.InformationMessage = error.Message;
+                InformationMessage = error.Message;
 
                 switch (error.Code)
                 {
@@ -62,7 +63,7 @@ public class CreatePatientVM : IDisposable
             }
             else
             {
-                Model.InformationMessage = "Paciente creado con éxito";
+                InformationMessage = "Paciente creado con éxito";
                 Model = new CreatePatientModel();
                 OnPatientAdded?.Invoke();
             }
@@ -77,11 +78,6 @@ public class CreatePatientVM : IDisposable
         {
             IsProcessing = false;
         }
-
-    }
-
-    public void Dispose()
-    {
 
     }
 }

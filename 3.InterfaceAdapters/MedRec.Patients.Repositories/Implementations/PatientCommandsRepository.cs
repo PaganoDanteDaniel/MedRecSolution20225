@@ -39,7 +39,7 @@ internal class PatientCommandsRepository(
     // ----------------------------
     // Actualizar paciente
     // ----------------------------
-    public async Task<Result<Patient>> Update(Patient patient, CancellationToken cts = default)
+    public async Task<Result<bool>> Update(Patient patient, CancellationToken cts = default)
     {
         cts.ThrowIfCancellationRequested();
 
@@ -51,15 +51,14 @@ internal class PatientCommandsRepository(
                     ErrorCode.NotFound);
 
             await _commandsDb.UpdatePatientAsync(patient, cts);
-            return patient;
+            return true;
         }, cts);
-
     }
 
     // ----------------------------
     // Hard Delete
     // ----------------------------
-    public async Task<Result<Unit>> HardDelete(Guid patientId, CancellationToken cts = default)
+    public async Task<Result<bool>> HardDelete(Guid patientId, CancellationToken cts = default)
     {
         cts.ThrowIfCancellationRequested();
 
@@ -69,6 +68,7 @@ internal class PatientCommandsRepository(
                         throw new Exception(MessagesPatientsRepositories.ErrorDeletingPatient);
 
                     await _commandsDb.HardDeletePatientAsync(patientId, cts);
+                    return true;
                 }, cts);
 
 
@@ -99,6 +99,7 @@ internal class PatientCommandsRepository(
         try
         {
             T value = default!;
+            int rowaffected = 0;
 
             await _commandsDb.ExecuteWithRetryAsync(async () =>
             {
@@ -106,11 +107,11 @@ internal class PatientCommandsRepository(
 
                 value = await operation();
 
-                await _commandsDb.SaveChangesAsync(cancellationToken);
+                rowaffected = await _commandsDb.SaveChangesAsync(cancellationToken);
                 await _commandsDb.CommitTransactionAsync(cancellationToken);
             }, cancellationToken);
 
-            return Result<T>.Ok(value);
+            return Result<T>.Ok(value, rowaffected);
         }
         catch (DuplicateKeyException dkex)
         {
@@ -238,11 +239,11 @@ internal class PatientCommandsRepository(
 //        }
 //        catch (InvalidOperationException ie)
 //        {
-//            return Result<Patient>.Fail(ie.Message);
+//            return Result<Patient>.Fail(ie.ErrorMessage);
 //        }
 //        catch (Exception ex)
 //        {
-//            return Result<Patient>.Fail(ex.Message);
+//            return Result<Patient>.Fail(ex.ErrorMessage);
 
 //        }
 
@@ -302,7 +303,7 @@ internal class PatientCommandsRepository(
 //            catch (Exception ex)
 //            {
 //                // Manejar error de conexión explícitamente
-//                throw new Exception("No se pudo iniciar la transacción: " + ex.Message, ex);
+//                throw new Exception("No se pudo iniciar la transacción: " + ex.ErrorMessage, ex);
 //            }
 //            try
 //            {

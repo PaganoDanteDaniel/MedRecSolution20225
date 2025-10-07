@@ -287,7 +287,7 @@ namespace MedRec.DataContext.EF.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<Guid>("PatientId")
+                    b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<byte[]>("RowVersion")
@@ -297,7 +297,7 @@ namespace MedRec.DataContext.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PatientId")
+                    b.HasIndex("Id")
                         .IsUnique();
 
                     b.ToTable("PatientMedicalHistories", (string)null);
@@ -428,7 +428,7 @@ namespace MedRec.DataContext.EF.Migrations
                 {
                     b.HasOne("MedRec.Entity.POCOEntities.Patient", null)
                         .WithOne()
-                        .HasForeignKey("MedRec.Entity.POCOEntities.PatientMedicalHistory", "PatientId")
+                        .HasForeignKey("MedRec.Entity.POCOEntities.PatientMedicalHistory", "Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

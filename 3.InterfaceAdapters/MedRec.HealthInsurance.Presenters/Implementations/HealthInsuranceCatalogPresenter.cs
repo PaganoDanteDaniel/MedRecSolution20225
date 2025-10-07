@@ -1,8 +1,8 @@
 ﻿using MedRec.Entity.DTOs;
 using MedRec.Entity.POCOEntities;
-using MedRec.Entity.ValueObjects;
 using MedRec.HealthInsurance.BusinessObjects.DTOs;
 using MedRec.HealthInsurance.BusinessObjects.Interfaces.Ports;
+using MedRec.Validator.ValueObjects;
 
 namespace MedRec.HealthInsurance.Presenters.Implementations;
 internal class HealthInsuranceCatalogPresenter : IHealthInsuranceCatalogOutputPort

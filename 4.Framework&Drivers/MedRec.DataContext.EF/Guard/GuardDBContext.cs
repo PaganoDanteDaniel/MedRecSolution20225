@@ -7,11 +7,13 @@ namespace MedRec.DataContext.EF.Guard;
 
 public class GuardDBContext
 {
-    public static async Task AgainstSaveChangesErrorAsync(DbContext context, CancellationToken cancellationToken = default)
+    public static async Task<int> AgainstSaveChangesErrorAsync(DbContext context, CancellationToken cancellationToken = default)
     {
         try
         {
-            await context.SaveChangesAsync(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return await context.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateConcurrencyException ex)
         {

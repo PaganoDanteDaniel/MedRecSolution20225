@@ -1,5 +1,5 @@
 ﻿using MedRec.Entity.DTOs;
-using MedRec.Entity.ValueObjects;
+using MedRec.Validator.ValueObjects;
 
 namespace MedRec.BusinessObjects.Interfaces;
 public interface ICommonOutputPort

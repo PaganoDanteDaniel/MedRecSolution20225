@@ -3,18 +3,14 @@
 namespace MedRec.Entity.Enums;
 public enum BiologicalSex
 {
-    [Description("No especificado")]
+    [Description("NO ESPECIFICADO")]
     NotSpecified = 1,
-
-    [Description("Masculino")]
+    [Description("MASCULINO")]
     Male = 2,
-
-    [Description("Femenino")]
+    [Description("FEMENINO")]
     Female = 3,
-
-    [Description("Intersexual")]
+    [Description("INTERSEXUAL")]
     Intersex = 4,
-
-    [Description("Desconocido")]
+    [Description("DESCONOCIDO")]
     Unknown = 5
 }
