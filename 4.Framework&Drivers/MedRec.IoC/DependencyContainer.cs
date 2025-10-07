@@ -12,9 +12,8 @@ public static class DependencyContainer
         services.AddPatientPresentersServices();      // Luego presentadores
 
         services.AddTransient<CreatePatientVM>();        // Al final, ViewModels
-
-
         services.AddTransient<PatientsListVM>();
+        services.AddScoped<UpdatePatientVM>();
 
         services.AddHealthInsuranceDataContextServices();
         services.AddHealthInsuranceRepositoriesServices();
@@ -23,7 +22,7 @@ public static class DependencyContainer
 
         services.AddTransient<HealthInsuranceCatalogVM>();
 
-
+        services.AddValidatorServices();
         return services;
     }
 }

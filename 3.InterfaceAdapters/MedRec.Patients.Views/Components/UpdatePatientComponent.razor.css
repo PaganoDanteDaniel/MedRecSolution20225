@@ -1,0 +1,265 @@
+.update-patient-form {
+    background-color: var(--form-background);
+    border: 1px solid var(--form-border);
+    padding: 40px;
+    border-radius: 8px;
+    color: var(--form-text);
+    width: 80%;
+    margin: 0 auto;
+}
+
+    /* Distribución de columnas similar */
+    .update-patient-form .update-patient-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+        gap: 20px;
+    }
+
+    .update-patient-form .update-patient-col {
+        flex: 1;
+        min-width: 280px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Etiquetas */
+    .update-patient-form label {
+        margin-bottom: 6px;
+        font-weight: 500;
+    }
+
+    /* Inputs, selects, textareas */
+    .update-patient-form input,
+    .update-patient-form select,
+    .update-patient-form textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--input-border);
+        border-radius: 4px;
+        background-color: var(--input-background);
+        color: var(--input-text);
+        font-size: 1rem;
+    }
+
+        .update-patient-form input:focus,
+        .update-patient-form select:focus,
+        .update-patient-form textarea:focus {
+            outline: none;
+            border-color: var(--input-focus-border);
+            background-color: var(--input-focus-background);
+            color: var(--input-focus-text);
+        }
+
+    /* Inline group (buscador, íconos, etc.) */
+    .update-patient-form .inline-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .update-patient-form .inline-group input {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .update-patient-form .inline-group button {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+    /* Mensajes de validación */
+    .update-patient-form .validation-message {
+        color: var(--error-color, red);
+        font-size: 0.875rem;
+        margin-top: 4px;
+    }
+
+    /* Botonera */
+    .update-patient-form .button-group {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .update-patient-form button {
+        background-color: var(--button-background);
+        border: 1px solid var(--button-border);
+        color: var(--button-text);
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+    }
+
+        .update-patient-form button:hover {
+            background-color: var(--button-hover-background);
+            border-color: var(--button-hover-border);
+            color: var(--button-hover-text);
+        }
+
+        .update-patient-form button i {
+            font-size: 1rem;
+            margin-right: 8px;
+        }
+
+/* Responsivo */
+@media (max-width: 1300px) {
+    .update-patient-form {
+        padding: 30px;
+        width: 90%;
+    }
+
+        .update-patient-form label {
+            font-size: 0.85rem;
+        }
+
+        .update-patient-form input,
+        .update-patient-form select,
+        .update-patient-form textarea {
+            padding: 8px;
+            font-size: 0.85rem;
+        }
+
+        .update-patient-form button {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+}
+
+@media (max-width: 900px) {
+    .update-patient-form {
+        padding: 20px;
+        width: 95%;
+    }
+
+        .update-patient-form .update-patient-row {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .update-patient-form .update-patient-col {
+            min-width: auto;
+            width: 100%;
+        }
+
+        .update-patient-form .button-group {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+        }
+
+        .update-patient-form button {
+            width: 100%;
+            justify-content: center;
+            padding: 12px;
+        }
+}
+
+
+/*.update-patient-form {
+    background-color: var(--form-background);
+    border: 1px solid var(--form-border);
+    padding: 20px;
+    border-radius: 8px;
+    color: var(--form-text);
+    width: 60%;*/ /* Ancho recalculado */
+    /*margin: 0 auto;*/ /* Centrar el formulario */
+/*}
+
+    .update-patient-form label {
+        color: var(--form-text);
+    }
+
+    .update-patient-form input,
+    .update-patient-form select {
+        background-color: var(--input-background);
+        border: 1px solid var(--input-border);
+        color: var(--input-text);
+        padding: 8px;
+        border-radius: 4px;
+        width: 100%;
+    }
+
+        .update-patient-form input:focus,
+        .update-patient-form select:focus {
+            background-color: var(--input-focus-background);
+            border-color: var(--input-focus-border);
+            color: var(--input-focus-text);
+        }
+
+    .update-patient-form .validation-message {
+        color: red;*/ /* Color destacado para mensajes de validación */
+    /*}
+
+    .update-patient-form button {
+        background-color: var(--button-background);
+        border: 1px solid var(--button-border);
+        color: var(--button-text);
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 10px;
+    }
+
+        .update-patient-form button:hover {
+            background-color: var(--button-hover-background);
+            border-color: var(--button-hover-border);
+            color: var(--button-hover-text);
+        }
+
+        .update-patient-form button:active {
+            background-color: var(--button-active-background);
+            border-color: var(--button-active-border);
+            color: var(--button-active-text);
+        }
+
+        .update-patient-form button i {
+            font-size: 20px;*/ /* Tamaño del ícono */
+            /*margin-right: 5px;*/ /* Espacio entre el ícono y el texto */
+        /*}
+
+    .update-patient-form .inline-group {
+        display: flex;
+        align-items: center;
+    }
+
+        .update-patient-form .inline-group button {
+            height: 38px;*/ /* Ajustar la altura del botón para que coincida con el input */
+        /*}
+
+    .update-patient-form .button-group {
+        display: flex;
+        justify-content: flex-end;*/ /* Alinear los botones a la derecha */
+    /*}
+
+    .update-patient-form .update-patient-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 15px;
+    }
+
+    .update-patient-form .update-patient-col {
+        flex: 1;
+        min-width: 200px;
+        margin-right: 20px;*/ /* Aumentar el espacio entre columnas */
+        /*text-align: left;*/ /* Alinear el contenido a la izquierda */
+        /*display: flex;
+        flex-direction: column;
+    }
+
+        .update-patient-form .update-patient-col:last-child {
+            margin-right: 0;
+        }*/

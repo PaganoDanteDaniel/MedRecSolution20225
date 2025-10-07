@@ -20,7 +20,7 @@ public class ConcurrencyException : UpdateException
 //    }
 
 //    public UpdateException(Exception exception, IEnumerable<string> entities)
-//        : base(exception.Message, exception) =>
+//        : base(exception.ErrorMessage, exception) =>
 //        Entities = entities;
 
 //    public IEnumerable<string> Entities { get; }

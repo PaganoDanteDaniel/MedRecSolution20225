@@ -59,7 +59,7 @@ public partial class ListPatientsPage
     private void PatientUpdate(Guid patientId)
     {
 
-        Navigation.NavigateTo($"/update-patient/{patientId}", true);
+        Navigation.NavigateTo($"/patient/update/{patientId}", true);
     }
 
     private void OnAcceptDelete()

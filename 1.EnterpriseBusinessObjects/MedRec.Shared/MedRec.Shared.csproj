@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MedRec.Entity\MedRec.Entity.csproj" />
+    <ProjectReference Include="..\MedRec.Validator\MedRec.Validator.csproj" />
   </ItemGroup>
 
 </Project>

@@ -56,7 +56,7 @@ public class PatientsListVM(
         if (_deleteOutputPort.ValidationErrors?.Any() == true)
         {
 
-            InformationMessage = string.Join("<br />", [.. _deleteOutputPort.ValidationErrors.Select(e => e.Message)]);
+            InformationMessage = string.Join("<br />", [.. _deleteOutputPort.ValidationErrors.Select(e => e.ErrorMessage)]);
             OnShowMessage?.Invoke();
         }
         else if (_deleteOutputPort.ErrorMessage is not null)

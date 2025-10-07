@@ -5,16 +5,14 @@ namespace MedRec.Patients.BusinessObjects.DTOs;
 public class UpdatePatientDto
 {
     public UpdatePatientDto(
-        Guid patientId,
+        Guid Id,
         string firstName,
         string lastName,
         string documentNumber,
+        DateTime dateOfBirth,
         string address = "",
-        Guid? provinceId = null,
-        Guid? cityId = null,
         string phoneNumber = "",
         string email = "",
-        DateTime dateOfBirth = default,
         BiologicalSex biologicalSex = BiologicalSex.Unknown,
         Guid? healthInsuranceId = null,
         string healthInsuranceMemberNumber = "",
@@ -22,13 +20,11 @@ public class UpdatePatientDto
         string healthInsurancePlan = "",
         byte[] rowVersion = null)
     {
-        Id = patientId;
+        this.Id = Id;
         FirstName = firstName;
         LastName = lastName;
         DocumentNumber = documentNumber;
         Address = address ?? string.Empty;
-        ProvinceId = provinceId;
-        CityId = cityId;
         PhoneNumber = phoneNumber ?? string.Empty;
         Email = email ?? string.Empty;
         DateOfBirth = dateOfBirth;
@@ -44,8 +40,6 @@ public class UpdatePatientDto
     public string LastName { get; }
     public string DocumentNumber { get; }
     public string Address { get; }
-    public Guid? ProvinceId { get; }
-    public Guid? CityId { get; }
     public string PhoneNumber { get; }
     public string Email { get; }
     public DateTime DateOfBirth { get; }
@@ -65,8 +59,6 @@ public class UpdatePatientDto
             LastName = updatePatientDto.LastName,
             DocumentNumber = updatePatientDto.DocumentNumber,
             Address = updatePatientDto.Address,
-            ProvinceId = updatePatientDto.ProvinceId,
-            CityId = updatePatientDto.CityId,
             PhoneNumber = updatePatientDto.PhoneNumber,
             Email = updatePatientDto.Email,
             DateOfBirth = updatePatientDto.DateOfBirth,

@@ -5,7 +5,7 @@ using MedRec.HealthInsurance.ViewModels.Models;
 namespace MedRec.HealthInsurance.ViewModels.VM;
 public class HealthInsuranceCatalogVM(
     IHealthInsuranceCatalogInputPort inputPort,
-    IHealthInsuranceCatalogOutputPort outputPort) : IDisposable
+    IHealthInsuranceCatalogOutputPort outputPort)
 {
     private readonly IHealthInsuranceCatalogInputPort _inputPort = inputPort;
     private readonly IHealthInsuranceCatalogOutputPort _outputPort = outputPort;
@@ -30,7 +30,7 @@ public class HealthInsuranceCatalogVM(
         if (_outputPort.ValidationErrors?.Any() == true)
         {
 
-            InformationMessage = string.Join("<br />", _outputPort.ValidationErrors.Select(e => e.Message));
+            InformationMessage = string.Join("<br />", _outputPort.ValidationErrors.Select(e => e.ErrorMessage));
             OnShowMessage?.Invoke();
         }
         else if (_outputPort.ErrorMessage is not null)
@@ -52,10 +52,5 @@ public class HealthInsuranceCatalogVM(
             OnCatalogLoaded?.Invoke();
         }
 
-    }
-
-    public void Dispose()
-    {
-        throw new NotImplementedException();
     }
 }

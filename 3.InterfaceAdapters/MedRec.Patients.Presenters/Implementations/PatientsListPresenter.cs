@@ -1,8 +1,8 @@
 ﻿using MedRec.Entity.DTOs;
 using MedRec.Entity.POCOEntities;
-using MedRec.Entity.ValueObjects;
 using MedRec.Patients.BusinessObjects.DTOs;
 using MedRec.Patients.BusinessObjects.Interfaces.Ports;
+using MedRec.Validator.ValueObjects;
 
 namespace MedRec.Patients.Presenters.Implementations;
 internal class PatientsListPresenter : IPatientsListOutputPort

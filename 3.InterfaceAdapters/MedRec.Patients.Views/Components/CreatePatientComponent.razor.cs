@@ -1,12 +1,14 @@
 ﻿using MedRec.Patients.ViewModels.VM;
 using MedRec.Patients.Views.Resources;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace MedRec.Patients.Views.Components;
 public partial class CreatePatientComponent : IDisposable
 {
     #region Fields
+    private EditContext _editContext;
     private bool _showHealthCompanyList;
     private bool _showModal = false;
     private bool _showErrorModal = false;
@@ -28,15 +30,19 @@ public partial class CreatePatientComponent : IDisposable
 
     protected override void OnInitialized()
     {
+        _editContext = new EditContext(VM.Model);
         VM.OnPatientAdded += PatientAdded;
         VM.OnShowMessage += ShowError;
         VM.OnShowWarning += ShowWarning;
     }
     public async Task AddPatient()
     {
-        _cts?.Dispose();
-        _cts = new CancellationTokenSource();
-        await VM.AddPatientAsync(_cts.Token);
+        if (_editContext.Validate() == true)
+        {
+            _cts?.Dispose();
+            _cts = new CancellationTokenSource();
+            await VM.AddPatientAsync(_cts.Token);
+        }
     }
     private void PatientAdded()
     {
@@ -101,18 +107,14 @@ public partial class CreatePatientComponent : IDisposable
         return (string.Format(CreatePatientMessages.AgeOfPatientTemplate, year.ToString(), month.ToString()));
     }
 
-    private void OnDateOfBirthChanged(ChangeEventArgs e)
+    private void OnFieldChanged()
     {
-        if (e.Value is string dateString && DateTime.TryParse(dateString, out var dateTime))
-        {
-            // Asignamos directamente un DateTime (sin hora, o con hora 00:00:00)
-            VM.Model.DateOfBirth = dateTime.Date; // .Date elimina la hora
-        }
-        else
-        {
-            VM.Model.DateOfBirth = null;
-        }
+
+        var fieldIdentifier = FieldIdentifier.Create(() => VM.Model.FirstName);
+        _editContext?.NotifyFieldChanged(fieldIdentifier);
+
     }
+
     public void Dispose()
     {
         VM.OnShowMessage -= ShowError;

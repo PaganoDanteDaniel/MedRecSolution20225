@@ -3,27 +3,28 @@ using MedRec.Patients.BusinessObjects.DTOs;
 using MedRec.Patients.BusinessObjects.Interfaces.Ports;
 using MedRec.Patients.BusinessObjects.Interfaces.Repositories;
 using MedRec.Patients.BusinessObjects.Validators;
+using MedRec.Validator.Interfaces;
 
 namespace MedRec.Patients.UseCases.Implementations;
 
 internal class CreatePatientInteractor(
     ICreatePatientOutputPort _outputPort,
-    IPatientCommandsRepository _repository) : ICreatePatientInputPort
+    IPatientCommandsRepository _repository,
+    IModelValidatorHub<CreatePatientDto> _validatorHub) : ICreatePatientInputPort
 {
     public async Task HandleAsync(CreatePatientDto dto, CancellationToken cts)
     {
         cts.ThrowIfCancellationRequested();
 
-        var patient = (Patient)dto;
-
         // Validación del paciente
-        var errorsValidator = CreatePatientValidator.Validate(patient);
-        if (errorsValidator.Any())
+        bool esValido = await _validatorHub.Validate(dto, p => CreatePatientValidator.Validate(p));
+        if (!esValido)
         {
-            await _outputPort.ValidationErrorsAsync(errorsValidator);
+            await _outputPort.ValidationErrorsAsync(_validatorHub.Errors);
             return;
         }
 
+        var patient = (Patient)dto;
         // Crear paciente
         var result = await _repository.Create(patient, cts);
 
@@ -37,37 +38,3 @@ internal class CreatePatientInteractor(
         await _outputPort.Handle(result.Value!);
     }
 }
-
-
-
-//internal class CreatePatientInteractor(
-//    ICreatePatientOutputPort _outputPort,
-//    IPatientCommandsRepository _repository) : ICreatePatientInputPort
-//{
-//    public async Task HandleAsync(CreatePatientDto dto, CancellationToken cts)
-//    {
-//        var patient = (Patient)dto;
-
-//        var errorsValidator = CreatePatientValidator.Validate(patient);
-//        if (errorsValidator.Any())
-//        {
-//            await _outputPort.ValidationErrorsAsync(errorsValidator);
-//            return;
-//        }
-
-//        var result = await _repository.Create(patient);
-
-//        if (!result.IsDeleted)
-//        {
-//            await _outputPort.ErrorAsync(result.Error);
-//            return;
-//        }
-//        else
-//        {
-//            await _outputPort.ErrorAsync(string.Empty);
-//        }
-
-//        await _outputPort.Handle(patient);
-//    }
-
-//}

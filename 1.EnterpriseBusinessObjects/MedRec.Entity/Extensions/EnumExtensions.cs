@@ -18,3 +18,22 @@ public static class EnumExtensions
         return attribute?.Description ?? value.ToString();
     }
 }
+
+/*
+<select @bind="selectedStatus">
+    @foreach (var status in Enum.GetValues<PatientStatus>())
+    {
+        <option value="@((int)status)">@status.GetDescription()</option>
+    }
+</select>
+
+@code {
+    private PatientStatus selectedStatus = PatientStatus.Active;
+
+    private void OnSubmit()
+    {
+        int id = (int)selectedStatus; // ¡Este es el "ID"!
+        Console.WriteLine($"ID seleccionado: {id}"); // Ej: 1
+    }
+}
+*/
