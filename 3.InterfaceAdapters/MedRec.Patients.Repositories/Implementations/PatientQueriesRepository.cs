@@ -25,9 +25,6 @@ internal class PatientQueriesRepository(IPatientQueriesDataContext queriesDb) : 
         }
 
         return result;
-
-
-
     }
     public async Task<Result<bool>> Exists(Guid patientId, CancellationToken cancellationToken = default)
     {

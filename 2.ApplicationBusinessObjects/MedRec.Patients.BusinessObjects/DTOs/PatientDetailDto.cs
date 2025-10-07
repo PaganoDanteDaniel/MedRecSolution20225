@@ -1,7 +1,10 @@
-﻿namespace MedRec.Patients.BusinessObjects.DTOs;
+﻿using MedRec.Entity.Enums;
+
+namespace MedRec.Patients.BusinessObjects.DTOs;
 public class PatientDetailDto
 {
-    public PatientDetailDto(Guid patientId,
+    public PatientDetailDto(
+        Guid Id,
         string firstName,
         string lastName,
         string documentNumber,
@@ -11,15 +14,14 @@ public class PatientDetailDto
         string phoneNumber,
         string email,
         DateTime dateOfBirth,
-        Guid? biologicalSexId,
-        Guid? insuranceHealthCompanyId,
-        string insuranceHealthMemberNumber,
-        string insuranceHealthCard,
-        string insuranceHealthPlan,
-        bool isDeleted,
+        BiologicalSex biologicalSexId,
+        Guid? healthInsuranceCompanyId,
+        string healthInsuranceMemberNumber,
+        string healthInsuranceCard,
+        string healthInsurancePlan,
         byte[] rowVersion)
     {
-        PatientId = patientId;
+        this.Id = Id;
         FirstName = firstName;
         LastName = lastName;
         DocumentNumber = documentNumber;
@@ -30,15 +32,14 @@ public class PatientDetailDto
         Email = email;
         DateOfBirth = dateOfBirth;
         BiologicalSexId = biologicalSexId;
-        InsuranceHealthCompanyId = insuranceHealthCompanyId;
-        InsuranceHealthMemberNumber = insuranceHealthMemberNumber;
-        InsuranceHealthCard = insuranceHealthCard;
-        InsuranceHealthPlan = insuranceHealthPlan;
-        IsDeleted = isDeleted;
+        HealthInsuranceCompanyId = healthInsuranceCompanyId;
+        HealthInsuranceMemberNumber = healthInsuranceMemberNumber;
+        HealthInsuranceCard = healthInsuranceCard;
+        HealthInsurancePlan = healthInsurancePlan;
         RowVersion = rowVersion;
     }
 
-    public Guid PatientId { get; }
+    public Guid Id { get; }
     public string FirstName { get; }
     public string LastName { get; }
     public string DocumentNumber { get; }
@@ -48,11 +49,11 @@ public class PatientDetailDto
     public string PhoneNumber { get; }
     public string Email { get; }
     public DateTime DateOfBirth { get; }
-    public Guid? BiologicalSexId { get; }
-    public Guid? InsuranceHealthCompanyId { get; }
-    public string InsuranceHealthMemberNumber { get; }
-    public string InsuranceHealthCard { get; }
-    public string InsuranceHealthPlan { get; }
+    public BiologicalSex BiologicalSexId { get; }
+    public Guid? HealthInsuranceCompanyId { get; }
+    public string HealthInsuranceMemberNumber { get; }
+    public string HealthInsuranceCard { get; }
+    public string HealthInsurancePlan { get; }
     public bool IsDeleted { get; } = false;
     public byte[] RowVersion { get; }
 }

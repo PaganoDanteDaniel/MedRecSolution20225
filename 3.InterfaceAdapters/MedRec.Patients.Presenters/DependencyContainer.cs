@@ -6,8 +6,11 @@ public static class DependencyContainer
 {
     public static IServiceCollection AddPatientPresentersServices(this IServiceCollection services)
     {
-        services.AddScoped<ICreatePatientOutputPort, CreatePatientPresenter>();
-        services.AddScoped<IPatientsListOutputPort, PatientsListPresenter>();
+        services.AddScoped<ICreatePatientOutputPort, CreatePatientPresenter>()
+                .AddScoped<IUpdatePatientOutputPort, UpdatePatientPresenter>()
+                .AddScoped<IPatientDetailsOutputPort, PatientDetailPresenter>()
+                .AddScoped<IDeletePatientOutputPort, DeletePatientPresenter>()
+                .AddScoped<IPatientsListOutputPort, PatientsListPresenter>();
 
         return services;
     }

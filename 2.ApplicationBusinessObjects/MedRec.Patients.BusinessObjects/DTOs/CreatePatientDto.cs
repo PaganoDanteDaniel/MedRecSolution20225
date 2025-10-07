@@ -9,10 +9,10 @@ public class CreatePatientDto
         string phoneNumber,
         DateTime dateOfBirth,
         string email,
-        Guid? insuranceHealthCompanyId = null,
-        string insuranceHealthMemberNumber = "",
-        string insuranceHealthCard = "",
-        string insuranceHealthPlan = "")
+        Guid? healthInsuranceId = null,
+        string healthInsuranceMemberNumber = "",
+        string healthInsuranceCard = "",
+        string healthInsurancePlan = "")
     {
         FirstName = firstName;
         LastName = lastName;
@@ -20,10 +20,10 @@ public class CreatePatientDto
         PhoneNumber = phoneNumber;
         DateOfBirth = dateOfBirth;
         Email = email;
-        InsuranceHealthCompanyId = insuranceHealthCompanyId;
-        InsuranceHealthMemberNumber = insuranceHealthMemberNumber ?? string.Empty;
-        InsuranceHealthCard = insuranceHealthCard ?? string.Empty;
-        InsuranceHealthPlan = insuranceHealthPlan ?? string.Empty;
+        HealthInsuranceId = healthInsuranceId;
+        HealthInsuranceMemberNumber = healthInsuranceMemberNumber ?? string.Empty;
+        HealthInsuranceCard = healthInsuranceCard ?? string.Empty;
+        HealthInsurancePlan = healthInsurancePlan ?? string.Empty;
     }
 
     // Campos obligatorios
@@ -35,10 +35,10 @@ public class CreatePatientDto
 
     // Campos opcionales relacionados con seguro médico
     public string Email { get; }
-    public Guid? InsuranceHealthCompanyId { get; }   // Compañía de seguro
-    public string InsuranceHealthMemberNumber { get; } // Número de afiliado
-    public string InsuranceHealthCard { get; }       // Carnet / tarjeta
-    public string InsuranceHealthPlan { get; }       // Plan de cobertura
+    public Guid? HealthInsuranceId { get; }   // Compañía de seguro
+    public string HealthInsuranceMemberNumber { get; } // Número de afiliado
+    public string HealthInsuranceCard { get; }       // Carnet / tarjeta
+    public string HealthInsurancePlan { get; }       // Plan de cobertura
 
     public static explicit operator Patient(CreatePatientDto dto)
     {
@@ -50,10 +50,10 @@ public class CreatePatientDto
             PhoneNumber = dto.PhoneNumber,
             DateOfBirth = dto.DateOfBirth,
             Email = dto.Email,
-            HealthInsuranceId = dto.InsuranceHealthCompanyId,
-            HealthInsuranceCard = dto.InsuranceHealthCard,
-            HealthInsuranceMemberNumber = dto.InsuranceHealthMemberNumber,
-            HealthInsurancePlan = dto.InsuranceHealthPlan
+            HealthInsuranceId = dto.HealthInsuranceId,
+            HealthInsuranceCard = dto.HealthInsuranceCard,
+            HealthInsuranceMemberNumber = dto.HealthInsuranceMemberNumber,
+            HealthInsurancePlan = dto.HealthInsurancePlan
         };
     }
 }

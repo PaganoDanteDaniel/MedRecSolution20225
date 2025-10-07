@@ -1,13 +1,13 @@
-﻿using MedRec.Entity.POCOEntities;
-using MedRec.Entity.ValueObjects;
-using MedRec.Patients.BusinessObjects.Constraints;
+﻿using MedRec.Patients.BusinessObjects.Constraints;
+using MedRec.Patients.BusinessObjects.DTOs;
 using MedRec.Patients.BusinessObjects.Resources;
 using MedRec.Shared.Gruards;
+using MedRec.Validator.ValueObjects;
 
 namespace MedRec.Patients.BusinessObjects.Validators;
 public static class UpdatePatientValidator
 {
-    public static IReadOnlyList<ValidationError> Validate(Patient patient, bool validateId = false)
+    public static IReadOnlyList<ValidationError> Validate(UpdatePatientDto patient, bool validateId = false)
     {
         if (patient == null)
             throw new ArgumentNullException(nameof(patient));
@@ -22,7 +22,6 @@ public static class UpdatePatientValidator
             errors.AddRange(idGuard.Errors);
         }
 
-        // Nombre
         // Nombre
         var firstNameValidation = Guard.Against(patient.FirstName, nameof(patient.FirstName))
             .NotNullOrEmpty(PatientValidatorMessages.FirstName_Required)
@@ -72,15 +71,21 @@ public static class UpdatePatientValidator
                 .MaxLength(16, PatientValidatorMessages.HealthInsuraceCard_MaxLength);
             errors.AddRange(healthCardValidator.Errors);
 
-            var healthMemberValidator = Guard.Against(patient.HealthInsuranceMemberNumber, nameof(patient.HealthInsuranceMemberNumber))
-                .MaxLength(20, PatientValidatorMessages.HealthInsuraceMember_MaxLength);
-            errors.AddRange(healthMemberValidator.Errors);
+            if (patient.HealthInsuranceMemberNumber != string.Empty || patient.HealthInsuranceMemberNumber != null)
+            {
+                var healthMemberValidator = Guard.Against(patient.HealthInsuranceMemberNumber, nameof(patient.HealthInsuranceMemberNumber))
+                    .MaxLength(20, PatientValidatorMessages.HealthInsuraceMember_MaxLength);
+                errors.AddRange(healthMemberValidator.Errors);
+            }
 
-            var healthPlanValidator = Guard.Against(patient.HealthInsurancePlan, nameof(patient.HealthInsurancePlan))
-                .MaxLength(20, PatientValidatorMessages.HealthInsuranePlan_MaxLength);
-            errors.AddRange(healthPlanValidator.Errors);
+            if (patient.HealthInsurancePlan != string.Empty || patient.HealthInsurancePlan != null)
+            {
+                var healthPlanValidator = Guard.Against(patient.HealthInsurancePlan, nameof(patient.HealthInsurancePlan))
+                    .MaxLength(20, PatientValidatorMessages.HealthInsuranePlan_MaxLength);
+                errors.AddRange(healthPlanValidator.Errors);
+            }
+
         }
-
 
         return errors;
     }
