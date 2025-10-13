@@ -11,166 +11,166 @@
     <ModelValidator T="UpdatePatientModel"
                     Validator="patientValidator"
                     ValidationRules="p => UpdatePatientValidator.Validate((UpdatePatientDto)p, validateId: true)" />
-
-    <div class="update-patient-row">
-        <div class="update-patient-col">
-            <label for="firstName">@UpdatePatientMessages.FirstNameLabel</label>
-            <input id="firstName" 
-                   @bind="VM.Model.FirstName"
-                   @bind:after="OnFieldChanged"
-                   class="uppercase-input" 
-                   style="width: 90%;" 
-                   autocomplete="off" />
-            <ValidationMessage For="() => VM.Model.FirstName" class="validation-message" />
-        </div>
-        <div class="update-patient-col">
-            <label for="lastName">@UpdatePatientMessages.LastNameLabel</label>
-            <input id="lastName" 
-                   @bind="VM.Model.LastName"
-                   @bind:after="OnFieldChanged"
-                   class="uppercase-input" 
-                   style="width: 90%;" 
-                   autocomplete="off" />
-            <ValidationMessage For="() => VM.Model.LastName" class="validation-message" />
-        </div>
-    </div>
+    <div class="update-patient-form">
         <div class="update-patient-row">
-        <div class="update-patient-col">
-            <label for="documentNumber">@UpdatePatientMessages.DocumentNumberLabel</label>
-            <input id="documentNumber" 
-                       @bind="VM.Model.DocumentNumber"
-                       @bind:after="OnFieldChanged" 
+            <div class="update-patient-col">
+                <label for="firstName">@UpdatePatientMessages.FirstNameLabel</label>
+                <InputText id="firstName"
+                           @bind-value="VM.Model.FirstName"
+                           class="my-input uppercase-input"
+                           style="width: 90%;"
+                           autocomplete="off" />
+                <ValidationMessage For="() => VM.Model.FirstName" class="validation-message" />
+            </div>
+            <div class="update-patient-col">
+                <label for="lastName">@UpdatePatientMessages.LastNameLabel</label>
+                <input id="lastName" 
+                       @bind="VM.Model.LastName"
+                       @bind:after="() => OnFieldChanged(() => VM.Model.LastName)"
                        class="uppercase-input" 
-                       style="width: 40%;" 
+                       style="width: 90%;" 
                        autocomplete="off" />
-            <ValidationMessage For="() => VM.Model.DocumentNumber" class="validation-message" />
-        </div>
-        <div class="update-patient-col">
-            <label for="dateOfBirth">@UpdatePatientMessages.DateOfBirthLabel</label>
-            <div>
-                <input id="dateOfBirth" 
-                       @bind="VM.Model.DateOfBirth"
-                       @bind:after="OnFieldChanged"
-                       type="date" 
-                       style="width: 40%;" 
-                       autocomplete="off" />
-                <span>@CalculateAge()</span>
-                <ValidationMessage For="() => VM.Model.DateOfBirth" class="validation-message" />
+                <ValidationMessage For="() => VM.Model.LastName" class="validation-message" />
             </div>
         </div>
-    </div>
-    <div class="update-patient-row">
-        <div class="update-patient-col">
-            <label for="phoneNumber">@UpdatePatientMessages.PhoneNumberLabel</label>
-            <input id="phoneNumber" 
+        
+        <div class="update-patient-row">
+            <div class="update-patient-col">
+                <label for="documentNumber">@UpdatePatientMessages.DocumentNumberLabel</label>
+                <input id="documentNumber" 
+                           @bind="VM.Model.DocumentNumber"
+                       @bind:after="() => OnFieldChanged(() => VM.Model.DocumentNumber)"
+                       class="uppercase-input" 
+                           style="width: 40%;" 
+                           autocomplete="off" />
+                <ValidationMessage For="() => VM.Model.DocumentNumber" class="validation-message" />
+            </div>
+            
+            <div class="update-patient-col">
+                <label for="dateOfBirth">@UpdatePatientMessages.DateOfBirthLabel</label>
+                <div>
+                    <input id="dateOfBirth" 
+                           @bind="VM.Model.DateOfBirth"
+                           @bind:after="() => OnFieldChanged(() => VM.Model.DateOfBirth)"
+                           type="date" 
+                           style="width: 40%;" 
+                           autocomplete="off" />
+                    <span>@CalculateAge()</span>
+                    <ValidationMessage For="() => VM.Model.DateOfBirth" class="validation-message" />
+                </div>
+            </div>
+        </div>
+        <div class="update-patient-row">
+            <div class="update-patient-col">
+                <label for="phoneNumber">@UpdatePatientMessages.PhoneNumberLabel</label>
+                <input id="phoneNumber" 
                    @bind="VM.Model.PhoneNumber"
-                   @bind:after="OnFieldChanged"
+                       @bind:after="() => OnFieldChanged(() => VM.Model.PhoneNumber)"
                    class="uppercase-input" 
                    style="width: 50%;" 
                    autocomplete="off" />
-            <ValidationMessage For="() => VM.Model.PhoneNumber" class="validation-message" />
-        </div>
-        <div class="update-patient-col">
-            <label for="address">@UpdatePatientMessages.AddresLabel</label>
-            <input id="address" 
+                <ValidationMessage For="() => VM.Model.PhoneNumber" class="validation-message" />
+            </div>
+            <div class="update-patient-col">
+                <label for="address">@UpdatePatientMessages.AddresLabel</label>
+                <input id="address" 
                    @bind="VM.Model.Address"
-                   @bind:after="OnFieldChanged" 
+                       @bind:after="() => OnFieldChanged(() => VM.Model.Address)"
                    class="uppercase-input" 
                    style="width: 90%;" 
                    autocomplete="off" />
-            <ValidationMessage For="() => VM.Model.Address" class="validation-message" />
-        </div>
-    </div>
-    <div class="update-patient-row">
-        <div class="update-patient-col">
-            <label for="email">@UpdatePatientMessages.EmailLabel</label>
-            <input id="email" 
-                   @bind="VM.Model.Email"
-                   @bind:after="OnFieldChanged" 
-                   style="width: 75%;" 
-                   autocomplete="off" />
-            <ValidationMessage For="() => VM.Model.Email" class="validation-message" />
-        </div>
-        <div class="update-patient-col">
-            <label for="biologicalSex">@UpdatePatientMessages.BiologicalSexLabel</label>
-            <select id="biologicalSex"
-                    @bind="VM.Model.BiologicalSexId"
-                    @bind:after="OnFieldChanged"
-                    class="form-control">
-                @foreach (var sex in Enum.GetValues<BiologicalSex>())
-                {
-                    <option value="@sex">@sex.GetDescription()</option>
-                }
-            </select>  
-        </div>
-    </div>
-    <div class="update-patient-row">
-        <div class="update-patient-col">
-            <label for="HealthInsuranceCompanyId">@UpdatePatientMessages.HealthInsuranceCompanyLabel</label>
-            <div class="inline-group">
-                <input id="healthCompany" 
-                       @bind="VM.Model.SelectedHealthCompanyName"
-                       @bind:after="OnFieldChanged" 
-                       style="width: 85%;" 
-                       readonly autocomplete="off" />
-                <button type="button" style="width: 30px; height: 30px;" @onclick="OpenHealthCompanyList">
-                    <i class="bi bi-search"></i>
-                </button>
+                <ValidationMessage For="() => VM.Model.Address" class="validation-message" />
             </div>
-            @if(_showHealthCompanyList)
-            {
-                <ModalComponent Type="ModalType.LargeContent" 
-                Show="@_showHealthCompanyList" 
-                ShowChanged="@((value) => _showHealthCompanyList = value)">
-                    <HealthInsuranceComponent 
-                        MaxPageButton="3" 
-                        OnHealthCompanySelected="OnHealthCompanySelected"/>
-                </ModalComponent>
-            }
         </div>
-        <div class="update-patient-col">
-            <label for="HealthInsuranceMemberNumber">@UpdatePatientMessages.HealthInsuranceMemberNumberLabel</label>
-            <input id="HealthInsuranceMemberNumber"
-                   @bind="VM.Model.HealthInsuranceMemberNumber"
-                   @bind:after="OnFieldChanged"
-                   class="uppercase-input" 
-                   style="width: 53%;" 
-                   autocomplete="off" />
-            <ValidationMessage For="() => VM.Model.HealthInsuranceMemberNumber" class="validation-message" />
+        <div class="update-patient-row">
+            <div class="update-patient-col">
+                <label for="email">@UpdatePatientMessages.EmailLabel</label>
+                <input id="email" 
+                       @bind="VM.Model.Email"
+                       @bind:after="() => OnFieldChanged(() => VM.Model.Email)"
+                       style="width: 75%;" 
+                       autocomplete="off" />
+                <ValidationMessage For="() => VM.Model.Email" class="validation-message" />
+            </div>
+            <div class="update-patient-col">
+                <label for="biologicalSex">@UpdatePatientMessages.BiologicalSexLabel</label>
+                <select id="biologicalSex"
+                        @bind="VM.Model.BiologicalSexId"
+                        class="form-control">
+                    @foreach (var sex in Enum.GetValues<BiologicalSex>())
+                    {
+                        <option value="@sex">@sex.GetDescription()</option>
+                    }
+                </select>  
+            </div>
         </div>
-    </div>
-    <div class="update-patient-row">
-        <div class="update-patient-col">
-            <label for="HealthInsuranceCard">@UpdatePatientMessages.HealthInsuranceCardLabel</label>
-            <input id="HealthInsuranceCard" 
-                   @bind="VM.Model.HealthInsuranceCard"
-                   @bind:after="OnFieldChanged" 
-                   class="uppercase-input" 
-                   style="width: 65%;"
-                   autocomplete="off" />
-            <ValidationMessage For="() => VM.Model.HealthInsuranceCard" class="validation-message" />
+        <div class="update-patient-row">
+            <div class="update-patient-col">
+                <label for="HealthInsuranceCompanyId">@UpdatePatientMessages.HealthInsuranceCompanyLabel</label>
+                <div class="inline-group">
+                    <input id="healthCompany" 
+                           @bind="VM.Model.SelectedHealthCompanyName"
+                           style="width: 85%;" 
+                           readonly autocomplete="off" />
+                    <button type="button" @onclick="OpenHealthCompanyList">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+                @if(_showHealthCompanyList)
+                {
+                    <ModalComponent Type="ModalType.LargeContent" 
+                    Show="@_showHealthCompanyList" 
+                    ShowChanged="@((value) => _showHealthCompanyList = value)">
+                        <HealthInsuranceComponent 
+                            MaxPageButton="3" 
+                            OnHealthCompanySelected="OnHealthCompanySelected"/>
+                    </ModalComponent>
+                }
+            </div>
+            <div class="update-patient-col">
+                <label for="HealthInsuranceMemberNumber">@UpdatePatientMessages.HealthInsuranceMemberNumberLabel</label>
+                <input id="HealthInsuranceMemberNumber"
+                       @bind="VM.Model.HealthInsuranceMemberNumber"
+                       @bind:after="() => OnFieldChanged(() => VM.Model.HealthInsuranceMemberNumber)"
+                       class="uppercase-input" 
+                       style="width: 53%;" 
+                       autocomplete="off" />
+                <ValidationMessage For="() => VM.Model.HealthInsuranceMemberNumber" class="validation-message" />
+            </div>
         </div>
-        <div class="update-patient-col">
-            <label for="HealthInsurancePlan">@UpdatePatientMessages.HealthInsurancePlanLabel</label>
-            <input id="HealthInsurancePlan" 
-                   @bind="VM.Model.HealthInsurancePlan"
-                   @bind:after="OnFieldChanged" 
-                   class="uppercase-input" 
-                   style="width: 35%;" 
-                   autocomplete="off" />
-            <ValidationMessage For="() => VM.Model.HealthInsurancePlan" class="validation-message" />
+        <div class="update-patient-row">
+            <div class="update-patient-col">
+                <label for="HealthInsuranceCard">@UpdatePatientMessages.HealthInsuranceCardLabel</label>
+                <input id="HealthInsuranceCard" 
+                       @bind="VM.Model.HealthInsuranceCard"
+                       @bind:after="() => OnFieldChanged(() => VM.Model.HealthInsuranceCard)"
+                       class="uppercase-input" 
+                       style="width: 65%;"
+                       autocomplete="off" />
+                <ValidationMessage For="() => VM.Model.HealthInsuranceCard" class="validation-message" />
+            </div>
+            <div class="update-patient-col">
+                <label for="HealthInsurancePlan">@UpdatePatientMessages.HealthInsurancePlanLabel</label>
+                <input id="HealthInsurancePlan" 
+                       @bind="VM.Model.HealthInsurancePlan"
+                       @bind:after="() => OnFieldChanged(() => VM.Model.HealthInsurancePlan)"
+                       class="uppercase-input" 
+                       style="width: 35%;" 
+                       autocomplete="off" />
+                <ValidationMessage For="() => VM.Model.HealthInsurancePlan" class="validation-message" />
+            </div>
         </div>
-    </div>
-    <div class="update-patient-row button-group">
-        <button type="submit">
-            <i class="fas fa-check"></i> @UpdatePatientMessages.SubmitButton
-        </button>
-        <button type="button" @onclick="ClearForm">
-            <i class="fas fa-eraser"></i> @UpdatePatientMessages.ClearButton
-        </button>
-        <button type="button" @onclick="ExitForm">
-            <i class="fas fa-times"></i> @UpdatePatientMessages.ExitButton
-        </button>
+        <div class="update-patient-row button-group">
+            <button type="submit">
+                <i class="fas fa-check"></i> @UpdatePatientMessages.SubmitButton
+            </button>
+            <button type="button" @onclick="ClearForm">
+                <i class="fas fa-eraser"></i> @UpdatePatientMessages.ClearButton
+            </button>
+            <button type="button" @onclick="ExitForm">
+                <i class="fas fa-times"></i> @UpdatePatientMessages.ExitButton
+            </button>
+        </div>
     </div>
 
 </EditForm>
@@ -178,5 +178,23 @@
                 Closing="Dispose" OnAccept="OnAccept" Type="ModalType.MessageSuccess" ShowAcceptButton="true">
     <div style="color: green;">
         La actualización se realizó con éxito.
+    </div>
+</ModalComponent>
+
+<ModalComponent Title="Error" Show="@_showErrorModal" ShowChanged="@((value) => _showErrorModal = value)"
+                OnAccept="OnAccept" CenterText="true" Type="ModalType.MessageError" ShowCancelButton="true">
+    <div>
+        @((MarkupString)VM.InformationMessage)
+    </div>
+</ModalComponent>
+<ModalComponent Title="Advertencia"
+                Show="@_showWarning"
+                ShowChanged="@((value) => _showWarning = value)"
+                OnAccept="OnAccept"
+                CenterText="true"
+                Type="ModalType.MessageWarning"
+                ShowCancelButton="true">
+    <div>
+        @((MarkupString)VM.InformationMessage)
     </div>
 </ModalComponent>

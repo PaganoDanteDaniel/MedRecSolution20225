@@ -1,7 +1,9 @@
 ﻿@using MedRec.CommonComponents.Views.Components
 @using MedRec.Patients.Views.Pages
+@using MedRec_PatientMedicalVisit.Views.Pages
 <Router AppAssembly="@typeof(MainLayout).Assembly"
-    AdditionalAssemblies="new[] {typeof(CreatePatientPage).Assembly}">
+		AdditionalAssemblies="new[] {typeof(CreatePatientPage).Assembly, 
+									   typeof(CreateMedicalVisitPage).Assembly}">
 
 	<Found Context="routeData">
 		<RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>

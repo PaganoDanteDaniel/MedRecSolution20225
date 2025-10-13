@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.HealthInsurance.UeseCases\MedRec.HealthInsurance.UeseCases.csproj" />
+    <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.HealthInsurance.UeseCases\MedRec.HealthInsurance.UseCases.csproj" />
     <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.Patients.UseCases\MedRec.Patients.UseCases.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.HealthInsurance.Presenters\MedRec.HealthInsurance.Presenters.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.HealthInsurance.ViewModels\MedRec.HealthInsurance.ViewModels.csproj" />
@@ -18,6 +18,7 @@
     <ProjectReference Include="..\..\3.InterfaceAdapters\MrdRec.HealthInsurance.Repositories\MrdRec.HealthInsurance.Repositories.csproj" />
     <ProjectReference Include="..\MedRec.HealthInsurance.DataContext.EF\MedRec.HealthInsurance.DataContext.EF.csproj" />
     <ProjectReference Include="..\MedRec.Patients.DataContext.EF\MedRec.Patients.DataContext.EF.csproj" />
+    <ProjectReference Include="..\MedRec.Patients.DataContext.MySql\MedRec.Patients.DataContext.MySql.csproj" />
   </ItemGroup>
 
 </Project>

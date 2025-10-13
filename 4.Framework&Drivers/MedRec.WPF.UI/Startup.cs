@@ -1,9 +1,11 @@
 using MedRec.DataContext.EF.Options;
+using MedRec.DataContext.MySql.Options;
 using MedRec.Shared.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using System.Globalization;
 using System.IO;
 
 namespace MedRec.WPF.UI;
@@ -13,6 +15,10 @@ public static class Startup
 
     public static void Init()
     {
+        var culture = new CultureInfo("es-ES");
+        CultureInfo.DefaultThreadCurrentCulture = culture;
+        CultureInfo.DefaultThreadCurrentUICulture = culture;
+
         var host = Host.CreateDefaultBuilder()
             .ConfigureAppConfiguration((context, config) =>
             {
@@ -31,10 +37,13 @@ public static class Startup
 
     private static void WireupServices(IServiceCollection services, IConfiguration configuration)
     {
-        // 1. Crear instancia de DBOptions y bindear desde configuración
+        // 1. Crear instancia de DBOptionsMySql y bindear desde configuración
         var dbOptions = new DBOptions();
+        var dbOptionsMySql = new DBOptionsMySql();
         var jwtKey = new Jwt();
+
         configuration.GetSection(DBOptions.SectionKey).Bind(dbOptions);
+        configuration.GetSection(DBOptionsMySql.SectionKey).Bind(dbOptionsMySql);
         configuration.GetSection(Jwt.SectionKey).Bind(jwtKey);
 
         if (!string.IsNullOrEmpty(dbOptions.ConnectionString))
@@ -55,20 +64,44 @@ public static class Startup
             // Ya estaba encriptada, desencriptar para usar
             dbOptions.ConnectionString = EncryptionHelper.Decrypt(dbOptions.ConnectionString);
 
-            if (!EncryptionHelper.IsEncrypted(jwtKey.Key))
+        }
+
+        if (!string.IsNullOrEmpty(dbOptionsMySql.ConnectionString))
+        {
+            if (!EncryptionHelper.IsEncrypted(dbOptionsMySql.ConnectionString))
             {
-                jwtKey.Key = EncryptionHelper.Encrypt(jwtKey.Key);
+                // Primera ejecución: encriptar y guardar en appsettings.json
+                dbOptionsMySql.ConnectionString = EncryptionHelper.Encrypt(dbOptionsMySql.ConnectionString);
+
+                // Reescribir el appsettings.json con la cadena encriptada
                 var json = File.ReadAllText("appsettings.json");
                 dynamic config = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-                config.Jwt.Key = jwtKey.Key;
+                config.DBOptionsMySql.ConnectionString = dbOptionsMySql.ConnectionString;
                 File.WriteAllText("appsettings.json",
                     Newtonsoft.Json.JsonConvert.SerializeObject(config, Newtonsoft.Json.Formatting.Indented));
             }
+
+            // Ya estaba encriptada, desencriptar para usar
+            dbOptionsMySql.ConnectionString = EncryptionHelper.Decrypt(dbOptionsMySql.ConnectionString);
+        }
+
+        if (!EncryptionHelper.IsEncrypted(jwtKey.Key))
+        {
+            jwtKey.Key = EncryptionHelper.Encrypt(jwtKey.Key);
+            var json = File.ReadAllText("appsettings.json");
+            dynamic config = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+            config.Jwt.Key = jwtKey.Key;
+            File.WriteAllText("appsettings.json",
+                Newtonsoft.Json.JsonConvert.SerializeObject(config, Newtonsoft.Json.Formatting.Indented));
         }
 
         // 2. Registrar la instancia ya procesada como singleton
         services.AddSingleton(Options.Create(dbOptions));
         services.Configure<DBOptions>(configuration.GetSection(DBOptions.SectionKey));
+
+        services.AddSingleton(Options.Create(dbOptionsMySql));
+        services.Configure<DBOptionsMySql>(configuration.GetSection(DBOptionsMySql.SectionKey));
+
         // 3. Registrar otros servicios
         services.AddWpfBlazorWebView();
         services.AddAppServices();

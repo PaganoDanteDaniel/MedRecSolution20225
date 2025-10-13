@@ -1,0 +1,130 @@
+﻿
+@using MedRec.CommonComponents.Views.Components
+@using MedRec.CommonComponents.Views.Validators
+@using MedRec_PatientMedicalVisit.Views.Resources
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+
+@* <EditForm Model="@ViewModel" OnValidSubmit="@HandleValidSubmit">
+    <ModelValidator Validator="ViewModel.Validator" @ref="ViewModel.ValidatorValidatorComponentReference" />
+
+    <div class="medical-visit-form-container">
+        <h2>@MedicalVisitMessages.HeaderVisitInfo</h2>
+        <input type="hidden" @value="ViewModel.PatientId" />
+
+        <!-- Primera línea: Fecha y Motivo de la Visita -->
+        <div class="form-row">
+            <div class="form-group narrow-width">
+                <!-- Cambiado a narrow-width -->
+                <label for="visitDate">@MedicalVisitMessages.LabelVisitDate</label>
+                <InputDate id="visitDate" @bind-Value="ViewModel.VisitDate" class="form-control" />
+                <ValidationMessage For="@(() => ViewModel.VisitDate)" class="validation-message" />
+            </div>
+
+            <div class="form-group wide-width">
+                <!-- Cambiado a wide-width -->
+                <label for="visitReason">@MedicalVisitMessages.LabelVisitReason</label>
+                <InputText id="visitReason" @bind-Value="ViewModel.VisitReason" class="form-control uppercase-input" />
+                <ValidationMessage For="@(() => ViewModel.VisitReason)" class="validation-message" />
+            </div>
+        </div>
+
+
+        <!-- Segunda línea: Diagnóstico y Tratamiento -->
+        <div class="form-row">
+            <div class="form-group half-width">
+                <label for="visitDiagnosis">@MedicalVisitMessages.LabelVisitDiagnosis</label>
+                <InputText id="visitDiagnosis" @bind-Value="ViewModel.VisitDiagnosis" class="form-control uppercase-input" />
+                <ValidationMessage For="@(() => ViewModel.VisitDiagnosis)" class="validation-message" />
+            </div>
+
+            <div class="form-group half-width">
+                <label for="visitTreatment">@MedicalVisitMessages.LabelVisitTreatment</label>
+                <InputText id="visitTreatment" @bind-Value="ViewModel.VisitTreatment" class="form-control uppercase-input" />
+                <ValidationMessage For="@(() => ViewModel.VisitTreatment)" class="validation-message" />
+            </div>
+        </div>
+
+        <!-- Tercera línea: Notas -->
+        <div class="form-row">
+            <div class="form-group full-width">
+                <label for="visitNotes">@MedicalVisitMessages.LabelVisitNotes</label>
+                <InputTextArea id="visitNotes" @bind-Value="ViewModel.VisitNotes" class="form-control uppercase-input" />
+                <ValidationMessage For="@(() => ViewModel.VisitNotes)" class="validation-message" />
+            </div>
+        </div>
+
+        <h3 @onclick="() => ToggleSection()" class="laboratory-result-header">
+            @MedicalVisitMessages.HeaderLabResults
+            <i id="toggle-icon" class="bi-dash-square-fill"></i>
+        </h3>
+
+        <div class="laboratory-results-container">
+            <div class="columns-titles-row">
+                <div class="column"></div>
+                <div class="column">
+                    <label for="label-resultId">@MedicalVisitMessages.LabelAnalysis</label>
+                </div>
+                <div class="column">
+                    <label for="resultValue">@MedicalVisitMessages.LabelResultValue</label>
+                </div>
+                <div class="column">
+                    <label for="resultNotes">@MedicalVisitMessages.LabelResultNotes</label>
+                </div>
+            </div>
+
+            <div id="section-result" class="expanded">
+                @foreach (var result in ViewModel.LaboratoryResultTypes)
+                {
+                    <div class="laboratory-result-row">
+                        <div class="column">
+                            <InputCheckbox @bind-Value="result.IsSelected"
+                                           @bind-Value:after="() => SetResultSelection(result)"
+                                           class="form-check-input" />
+                        </div>
+
+                        <div class="column">
+                            <label id="label-resultId" for="resultId">@result.ResultName</label>
+                        </div>
+
+                        <div class="column">
+                            <InputText id="resultValue" 
+                                @bind-Value="result.ResultValue"
+                                @bind-Value:after="() => SetResultSelection(result)"
+                                       class="form-control uppercase-input" />
+                        </div>
+
+                        <div class="column">
+                            <InputText id="resultNotes" 
+                                @bind-Value="result.ResultNotes"
+                                @bind-Value:after="() => SetResultSelection(result)"
+                                       class="form-control uppercase-input" />
+                        </div>
+
+                        <!-- Mensaje de validación debajo de los dos campos -->
+                        <div class="validation-message-container">
+                            <ValidationMessage For="@(() => result.ResultValue)" />
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">@MedicalVisitMessages.ButtonSaveMedicalVisit</button>
+            <button type="button" @onclick='() => Navigation.NavigateTo("/")' class="btn btn-primary">@MedicalVisitMessages.ButtonCancel</button>
+            <button type="button" @onclick='() => ViewModel.Clear()' class="btn btn-primary">@MedicalVisitMessages.ButtonClear</button>
+        </div>
+    </div>
+</EditForm>
+
+<ModalComponent Title="Éxito" Show="@showModal" ShowChanged="@((value) => showModal = value)"
+                OnAccept="OnAccept" IsSuccess="true"
+                ShowAcceptButton="true">
+    <div style="color: green;">
+        @ViewModel.InformationMessage;
+    </div>
+</ModalComponent>
+
+ *@

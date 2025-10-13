@@ -17,7 +17,9 @@ internal class CreatePatientInteractor(
         cts.ThrowIfCancellationRequested();
 
         // Validación del paciente
-        bool esValido = await _validatorHub.Validate(dto, p => CreatePatientValidator.Validate(p));
+        bool esValido = await _validatorHub.Validate(dto,
+            p => CreatePatientValidator.Validate(p));
+
         if (!esValido)
         {
             await _outputPort.ValidationErrorsAsync(_validatorHub.Errors);
@@ -35,6 +37,6 @@ internal class CreatePatientInteractor(
         }
 
         await _outputPort.ErrorAsync(null);
-        await _outputPort.Handle(result.Value!);
+        await _outputPort.Handle();
     }
 }

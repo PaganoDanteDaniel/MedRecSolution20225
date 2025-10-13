@@ -6,5 +6,5 @@ namespace MedRec.Patients.BusinessObjects.Interfaces.Ports;
 public interface IPatientDetailsOutputPort : ICommonOutputPort
 {
     PatientDetailDto PatientDetails { get; }
-    Task Handle(Patient patientEntity, CancellationToken cancellationToken = default);
+    Task Handle(Patient patientEntity, HealthInsuranceCompany healthInsurance = null, CancellationToken cancellationToken = default);
 }

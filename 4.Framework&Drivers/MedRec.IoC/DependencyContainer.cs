@@ -6,7 +6,7 @@ public static class DependencyContainer
 {
     public static IServiceCollection AddAppServices(this IServiceCollection services)
     {
-        services.AddPatientDataContextServices();     // Primero el DbContext
+        services.AddPatientDataContextMySqlServices();     // Primero el DbContext
         services.AddPatientRepositoriesServices();    // Luego repositorios específicos
         services.AddPatientUseCasesServices();        // Luego casos de uso
         services.AddPatientPresentersServices();      // Luego presentadores

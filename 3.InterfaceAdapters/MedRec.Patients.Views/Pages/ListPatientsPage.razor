@@ -32,7 +32,7 @@
                     ShowChanged="(value) => OnClosePatientDelete(value)"
                     ShowAcceptButton="true"
                     OnAccept="OnAcceptDelete"
-                    IsSuccess="true">
+                    Type="ModalType.MessageWarning">
         <div style="color: red;">
             @string.Format(ListPatientsMessages.ModalMessageTextTemplate, name)
         </div>

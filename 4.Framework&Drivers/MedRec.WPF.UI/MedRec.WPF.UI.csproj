@@ -15,6 +15,10 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Wpf" Version="9.*" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.*" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     </ItemGroup>
@@ -34,6 +38,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec,PatientMedicalVisit.Views\MedRec,PatientMedicalVisit.Views.csproj" />
       <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.CommonComponents.Views\MedRec.CommonComponents.Views.csproj" />
       <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.Patients.Views\MedRec.Patients.Views.csproj" />
       <ProjectReference Include="..\MedRec.IoC\MedRec.IoC.csproj" />

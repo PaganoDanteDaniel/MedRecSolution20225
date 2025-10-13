@@ -9,7 +9,7 @@ namespace MedRec.Patients.ViewModels.Models
         public string LastName { get; set; }
         public string DocumentNumber { get; set; }
         public string PhoneNumber { get; set; }
-        public DateTime? DateOfBirth { get; set; } = DateTime.Now;
+        public DateTime DateOfBirth { get; set; } = DateTime.Now;
         public string Email { get; set; }
         public Guid? HealthInsuranceCompanyId { get; set; }
         public string HealthInsuranceMemberNumber { get; set; }
@@ -28,7 +28,7 @@ namespace MedRec.Patients.ViewModels.Models
                 lastName: model.LastName?.ToUpper(),
                 documentNumber: model.DocumentNumber,
                 phoneNumber: model.PhoneNumber,
-                dateOfBirth: model.DateOfBirth.Value,
+                dateOfBirth: model.DateOfBirth,
                 email: model.Email,
                 healthInsuranceId: model.HealthInsuranceCompanyId,
                 healthInsuranceMemberNumber: model.HealthInsuranceMemberNumber?.ToUpper(),

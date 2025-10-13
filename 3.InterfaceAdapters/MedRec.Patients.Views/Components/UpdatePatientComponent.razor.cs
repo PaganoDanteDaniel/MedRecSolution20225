@@ -3,15 +3,17 @@ using MedRec.Patients.Views.Resources;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
+using System.Linq.Expressions;
 
 namespace MedRec.Patients.Views.Components;
 public partial class UpdatePatientComponent
 {
     #region Fields
 
-    private bool _showModal;
     private bool _showHealthCompanyList;
-    private string _footerMessage = "";
+    private bool _showModal = false;
+    private bool _showErrorModal = false;
+    private bool _showWarning = false;
     private EditContext _editContext;
 
     private CancellationTokenSource _cts;
@@ -29,13 +31,12 @@ public partial class UpdatePatientComponent
     #endregion
 
     #region Methods
-    private void OnFieldChanged()
+    private void OnFieldChanged<T>(Expression<Func<T>> propertyExpression)
     {
-
-        var fieldIdentifier = FieldIdentifier.Create(() => VM.Model.FirstName);
+        var fieldIdentifier = FieldIdentifier.Create(propertyExpression);
         _editContext?.NotifyFieldChanged(fieldIdentifier);
-
     }
+
     protected override async Task OnInitializedAsync()
     {
 
@@ -50,6 +51,9 @@ public partial class UpdatePatientComponent
 
 
         VM.OnPatientUpdated += HandleUpdateSuccess;
+        VM.OnShowMessage += ShowError;
+        VM.OnShowWarning += ShowWarning;
+
         StateHasChanged();
 
     }
@@ -66,6 +70,16 @@ public partial class UpdatePatientComponent
     {
         //await FooterMessageParameterChanged.InvokeAsync(FooterMessage);
         _showModal = true;
+    }
+    private void ShowWarning()
+    {
+        _showWarning = true;
+        StateHasChanged();
+    }
+    private void ShowError()
+    {
+        _showErrorModal = true;
+        StateHasChanged(); // fuerza actualización de UI
     }
     private void OnAccept()
     {

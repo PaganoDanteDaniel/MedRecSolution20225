@@ -16,6 +16,7 @@ public class PatientDetailDto
         DateTime dateOfBirth,
         BiologicalSex biologicalSexId,
         Guid? healthInsuranceCompanyId,
+        string healthInsuranceCompanyName,
         string healthInsuranceMemberNumber,
         string healthInsuranceCard,
         string healthInsurancePlan,
@@ -33,6 +34,7 @@ public class PatientDetailDto
         DateOfBirth = dateOfBirth;
         BiologicalSexId = biologicalSexId;
         HealthInsuranceCompanyId = healthInsuranceCompanyId;
+        HealthInsuranceCompanyName = healthInsuranceCompanyName;
         HealthInsuranceMemberNumber = healthInsuranceMemberNumber;
         HealthInsuranceCard = healthInsuranceCard;
         HealthInsurancePlan = healthInsurancePlan;
@@ -51,6 +53,7 @@ public class PatientDetailDto
     public DateTime DateOfBirth { get; }
     public BiologicalSex BiologicalSexId { get; }
     public Guid? HealthInsuranceCompanyId { get; }
+    public string HealthInsuranceCompanyName { get; }
     public string HealthInsuranceMemberNumber { get; }
     public string HealthInsuranceCard { get; }
     public string HealthInsurancePlan { get; }

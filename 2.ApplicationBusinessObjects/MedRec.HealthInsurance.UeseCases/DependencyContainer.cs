@@ -1,5 +1,5 @@
 ﻿using MedRec.HealthInsurance.BusinessObjects.Interfaces.Ports;
-using MedRec.HealthInsurance.UeseCases.Implementation;
+using MedRec.HealthInsurance.UseCases.Implementation;
 
 namespace Microsoft.Extensions.DependencyInjection;
 public static class DependencyContainer
