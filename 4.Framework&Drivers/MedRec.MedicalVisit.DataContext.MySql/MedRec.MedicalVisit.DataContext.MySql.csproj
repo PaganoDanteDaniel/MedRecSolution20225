@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.MedicalVisit.Repositories\MedRec.MedicalVisit.Repositories.csproj" />
+    <ProjectReference Include="..\MedRec.DataContext.EF\MedRec.DataContext.EF.csproj" />
+    <ProjectReference Include="..\MedRec.DataContext.MySql\MedRec.DataContext.MySql.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -19,7 +19,7 @@ internal class PatientDetailPresenter : IPatientDetailsOutputPort
         return Task.CompletedTask;
     }
 
-    public Task Handle(Patient p, CancellationToken cancellationToken = default)
+    public Task Handle(Patient p, HealthInsuranceCompany healthInsurance = null, CancellationToken cancellationToken = default)
     {
         PatientDetails = new PatientDetailDto(
             p.Id,
@@ -27,13 +27,13 @@ internal class PatientDetailPresenter : IPatientDetailsOutputPort
             p.LastName,
             p.DocumentNumber,
             p.Address,
-            p.ProvinceId,
             p.CityId,
             p.PhoneNumber,
             p.Email,
             p.DateOfBirth,
             p.BiologicalSexId,
             p.HealthInsuranceId,
+            healthInsurance?.Name ?? string.Empty,
             p.HealthInsuranceMemberNumber,
             p.HealthInsuranceCard,
             p.HealthInsurancePlan,

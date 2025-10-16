@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.MedicalVisit.BusinessObjects\MedRec.MedicalVisit.BusinessObjects.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -3,6 +3,7 @@ using MedRec.Patients.Views.Resources;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
+using System.Linq.Expressions;
 
 namespace MedRec.Patients.Views.Components;
 public partial class CreatePatientComponent : IDisposable
@@ -84,12 +85,11 @@ public partial class CreatePatientComponent : IDisposable
     {
         var today = DateTime.Today;
         var birthDate = VM.Model.DateOfBirth;
-        if (!birthDate.HasValue)
-            return "Fecha no definida"; // o algún mensaje por defecto, p.ej. "Fecha no definida"
+
         // Calculating the age
-        int year = today.Year - birthDate.Value.Year;
-        int month = today.Month - birthDate.Value.Month;
-        int day = today.Day - birthDate.Value.Day;
+        int year = today.Year - birthDate.Year;
+        int month = today.Month - birthDate.Month;
+        int day = today.Day - birthDate.Day;
 
         // Ajuste si el día actual es menor que el d�a de nacimiento
         if (day < 0)
@@ -107,12 +107,11 @@ public partial class CreatePatientComponent : IDisposable
         return (string.Format(CreatePatientMessages.AgeOfPatientTemplate, year.ToString(), month.ToString()));
     }
 
-    private void OnFieldChanged()
+    private void OnFieldChanged<T>(Expression<Func<T>> propertyExpression)
     {
+        var fieldIdentifier = FieldIdentifier.Create(propertyExpression);
 
-        var fieldIdentifier = FieldIdentifier.Create(() => VM.Model.FirstName);
         _editContext?.NotifyFieldChanged(fieldIdentifier);
-
     }
 
     public void Dispose()

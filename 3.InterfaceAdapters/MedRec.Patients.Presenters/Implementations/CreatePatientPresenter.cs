@@ -1,5 +1,4 @@
 ﻿using MedRec.Entity.DTOs;
-using MedRec.Entity.POCOEntities;
 using MedRec.Patients.BusinessObjects.Interfaces.Ports;
 using MedRec.Validator.ValueObjects;
 
@@ -18,7 +17,7 @@ internal class CreatePatientPresenter : ICreatePatientOutputPort
         return Task.CompletedTask;
     }
 
-    public Task Handle(Patient patient)
+    public Task Handle()
     {
         Created = true;
         return Task.CompletedTask;

@@ -4,21 +4,23 @@
 @using MedRec.Patients.Views.Components
 
 <div class="body-content">
-    <TitleComponent Title=@CreatePatientMessages.AddPatientPageTitle />
-    <ErrorBoundary @ref=ErrorBoundaryRef>
-        <ChildContent>
-            <CreatePatientComponent VM="VM"/>
-        </ChildContent>
-        <ErrorContent>
-            <ExceptionDisplayComponent Exception="context"/>
-                <button class="btn btn-danger" @onclick=Recover>
-                    Aceptar
-                </button>   
-        </ErrorContent>
-    </ErrorBoundary>
+    <TitleComponent Title="@CreatePatientMessages.AddPatientPageTitle" />
+
+    <!-- Zona desplazable -->
+    <div class="scrollable-section">
+        <ErrorBoundary @ref=ErrorBoundaryRef>
+            <ChildContent>
+                <CreatePatientComponent VM="VM" />
+            </ChildContent>
+            <ErrorContent>
+                <ExceptionDisplayComponent Exception="context" />
+                <button class="btn btn-danger" @onclick=Recover>OK</button>
+            </ErrorContent>
+        </ErrorBoundary>
+    </div>
+
+    <!-- Footer fijo -->
     <div class="me-footer">
         <FooterComponent Message="@footerMessage" />
     </div>
 </div>
-
-

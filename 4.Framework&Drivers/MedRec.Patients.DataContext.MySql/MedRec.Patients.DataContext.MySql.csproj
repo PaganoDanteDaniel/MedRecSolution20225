@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.Patients.Repositories\MedRec.Patients.Repositories.csproj" />
+    <ProjectReference Include="..\MedRec.DataContext.MySql\MedRec.DataContext.MySql.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -86,7 +86,7 @@ public class ModelValidator<T> : ComponentBase
 
     async void ValidationRequested(object sender, ValidationRequestedEventArgs args)
     {
-        // ✅ Ahora pasas las reglas al validar
+        // Ahora pasas las reglas al validar
         bool IsValid = await Validator.Validate((T)EditContext.Model, ValidationRules);
         if (IsValid)
         {
@@ -114,7 +114,7 @@ public class ModelValidator<T> : ComponentBase
             {
                 var fieldIdentifier = GetFieldIdentifier(EditContext.Model, error.PropertyName);
 
-                // ✅ Solo agregar errores del campo que cambió
+                // Solo agregar errores del campo que cambió
                 if (fieldIdentifier.Equals(args.FieldIdentifier))
                 {
                     ValidationMessageStore.Add(fieldIdentifier, error.ErrorMessage);

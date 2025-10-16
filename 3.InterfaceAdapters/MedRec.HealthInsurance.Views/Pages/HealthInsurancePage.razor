@@ -1,49 +1,64 @@
 ﻿@page "/health-insurance-catalog"
 @using MedRec.CommonComponents.Views.Components
+@using MedRec.CommonComponents.Views.Exceptions
 @using MedRec.HealthInsurance.ViewModels.VM
+@using MedRec.HealthInsurance.Views.Components
 @using MedRec.HealthInsurance.Views.Resources
-
 <div class="body-content">
-    <TitleComponent Title=@HealthInsuranceMessages.TitleText />
-    <ErrorBoundary @ref=ErrorBoundaryRef>
-        <ChildContent>
-            <HealthCompaniesComponent Model="Model"
-                                      MaxPageButton="MaxPageButton"
-                                      FooterMessageParameterChanged="OnMessageFooterChange"
-                                      OnHealthCompanySelected="SelectedHealthCompany" />
-        </ChildContent>
-        <ErrorContent>
-            <ExceptionDisplayComponent Exception="context" />
-            <button class="btn btn-danger"
-                    @onclick=Recover>
-                @HealthInsuranceMessages.RecoberButton
-            </button>
-        </ErrorContent>
-    </ErrorBoundary>
+    <TitleComponent Title="@HealthInsuranceMessages.TitleText" />
+
+    <!-- Zona desplazable -->
+    <div class="scrollable-section">
+        <ErrorBoundary @ref=ErrorBoundaryRef>
+            <ChildContent>
+                <HealthInsuranceComponent Model="Model" 
+                    MaxPageButton="MaxPageButton"
+                    FooterMessageParameterChanged="OnMessageFooterChange"
+                    OnHealthCompanySelected="SelectedHealthCompany"/>
+            </ChildContent>
+            <ErrorContent>
+                <ExceptionDisplayComponent Exception="context" />
+                <button class="btn btn-danger" @onclick=Recover>OK</button>
+            </ErrorContent>
+        </ErrorBoundary>
+    </div>
+
+    <!-- Footer fijo -->
     <div class="me-footer">
         <FooterComponent Message="@footerMessage" />
     </div>
 </div>
 
-@code {
-    [Inject] public HealthInsuranceCatalogVM Model { get; set; }
-    [Parameter] public EventCallback<(int Id, string Name)> OnHealthCompanySelected { get; set; }
-    [Parameter] public int MaxPageButton { get; set; } = 9;
-    private string footerMessage;
-    private void OnMessageFooterChange(string title)
-    {
-        footerMessage = title;
+<style>
+    :host {
+        display: flex;
+        flex-direction: column;
+        height: 100vh; /* ocupa toda la altura visible de la ventana */
+        overflow: hidden; /* evita scroll global */
     }
 
-    private async void SelectedHealthCompany((int id, string name) selectedCompany)
-    {
-        await OnHealthCompanySelected.InvokeAsync((selectedCompany.id, selectedCompany.name));
+    /* contenedor principal */
+    .body-content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        overflow: hidden; /* para que el scroll solo sea interno */
     }
 
-    ErrorBoundary ErrorBoundaryRef;
-
-    void Recover()
-    {
-        ErrorBoundaryRef?.Recover();
+    /* sección que scrollea */
+    .scrollable-section {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        box-sizing: border-box;
     }
-}
+
+    /* footer fijo al fondo */
+    .me-footer {
+        flex-shrink: 0;
+        border-top: 1px solid #ddd;
+        padding: 0.75rem 1rem;
+        background-color: #f9f9f9;
+        text-align: center;
+    }
+</style>

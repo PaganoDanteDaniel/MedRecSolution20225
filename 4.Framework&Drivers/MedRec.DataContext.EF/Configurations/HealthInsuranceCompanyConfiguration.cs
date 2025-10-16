@@ -9,9 +9,6 @@ public class HealthInsuranceCompanyConfiguration : IEntityTypeConfiguration<Heal
     {
         builder.HasKey(i => i.Id);
 
-        builder.Property(i => i.Id)
-            .HasDefaultValueSql("NEWSEQUENTIALID()");
-
         builder.Property(i => i.Name)
             .IsRequired()
             .HasMaxLength(200);

@@ -9,9 +9,6 @@ internal class CityConfiguration : IEntityTypeConfiguration<City>
     {
         builder.HasKey(c => c.Id);
 
-        builder.Property(c => c.Id)
-            .HasDefaultValueSql("NEWSEQUENTIALID()");
-
         builder.Property(c => c.CityName)
             .HasMaxLength(60)
             .IsRequired();

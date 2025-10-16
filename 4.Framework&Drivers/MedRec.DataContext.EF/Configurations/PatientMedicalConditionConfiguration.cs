@@ -9,9 +9,6 @@ public class PatientMedicalConditionConfiguration : IEntityTypeConfiguration<Pat
     {
         builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.Id)
-               .HasDefaultValueSql("NEWSEQUENTIALID()");
-
         builder.Property(e => e.PatientMedicalHistoryId)
                .IsRequired();
 

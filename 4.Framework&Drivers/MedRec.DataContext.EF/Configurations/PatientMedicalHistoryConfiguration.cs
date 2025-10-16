@@ -11,23 +11,11 @@ public class PatientMedicalHistoryConfiguration : IEntityTypeConfiguration<Patie
 
         builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.Id)
-               .HasDefaultValueSql("NEWSEQUENTIALID()");
-
-        builder.Property(e => e.PatientId)
-               .IsRequired();
-
-        builder.Property(e => e.Notes)
-               .HasMaxLength(2000);
-
-        builder.Property(e => e.IsDeleted)
-               .HasDefaultValue(false);
-
-        builder.Property(e => e.RowVersion)
-               .IsRowVersion();
-
+        builder.Property(e => e.PatientId).IsRequired();
+        builder.Property(e => e.Notes).HasMaxLength(2000);
+        builder.Property(e => e.IsDeleted).HasDefaultValue(false);
+        builder.Property(e => e.RowVersion).IsRowVersion();
         builder.HasIndex(e => e.PatientId);
-
 
         // PatientMedicalHistory -> (1...1) <- PatientMedicalCondition
         builder.HasOne<PatientMedicalCondition>()
