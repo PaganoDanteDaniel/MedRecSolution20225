@@ -26,8 +26,7 @@ namespace MedRec.DataContext.EF.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CityCode")
                         .HasMaxLength(10)
@@ -62,8 +61,7 @@ namespace MedRec.DataContext.EF.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Acronym")
                         .HasMaxLength(19)
@@ -89,12 +87,37 @@ namespace MedRec.DataContext.EF.Migrations
                     b.ToTable("HealthInsuranceCompanies");
                 });
 
+            modelBuilder.Entity("MedRec.Entity.POCOEntities.LaboratoryResultType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("ResultName")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LaboratoryResultTypes");
+                });
+
             modelBuilder.Entity("MedRec.Entity.POCOEntities.MedicalCondition", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ConditionTypeId")
                         .HasColumnType("uniqueidentifier");
@@ -125,8 +148,7 @@ namespace MedRec.DataContext.EF.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -152,8 +174,7 @@ namespace MedRec.DataContext.EF.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
                         .HasMaxLength(100)
@@ -234,12 +255,54 @@ namespace MedRec.DataContext.EF.Migrations
                     b.ToTable("Patients");
                 });
 
+            modelBuilder.Entity("MedRec.Entity.POCOEntities.PatientLaboratoryResult", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<Guid>("LaboratoryResultId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MedicalVisitId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ResultDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ResultNotes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ResultValue")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LaboratoryResultId");
+
+                    b.HasIndex("MedicalVisitId");
+
+                    b.ToTable("PatientLaboratoryResults");
+                });
+
             modelBuilder.Entity("MedRec.Entity.POCOEntities.PatientMedicalCondition", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
@@ -275,8 +338,7 @@ namespace MedRec.DataContext.EF.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -287,7 +349,7 @@ namespace MedRec.DataContext.EF.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("PatientId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<byte[]>("RowVersion")
@@ -297,7 +359,7 @@ namespace MedRec.DataContext.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
+                    b.HasIndex("PatientId")
                         .IsUnique();
 
                     b.ToTable("PatientMedicalHistories", (string)null);
@@ -307,12 +369,14 @@ namespace MedRec.DataContext.EF.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Diagnosis")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int?>("DiastolicPressure")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -326,6 +390,9 @@ namespace MedRec.DataContext.EF.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
+                    b.Property<int?>("PulsePerMinute")
+                        .HasColumnType("int");
+
                     b.Property<string>("Reason")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -334,6 +401,12 @@ namespace MedRec.DataContext.EF.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
+
+                    b.Property<int?>("SystolicPressure")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("Temperature")
+                        .HasColumnType("float");
 
                     b.Property<string>("Treatment")
                         .HasMaxLength(1000)
@@ -355,8 +428,7 @@ namespace MedRec.DataContext.EF.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -409,6 +481,21 @@ namespace MedRec.DataContext.EF.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
+            modelBuilder.Entity("MedRec.Entity.POCOEntities.PatientLaboratoryResult", b =>
+                {
+                    b.HasOne("MedRec.Entity.POCOEntities.LaboratoryResultType", null)
+                        .WithMany()
+                        .HasForeignKey("LaboratoryResultId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MedRec.Entity.POCOEntities.PatientMedicalVisit", null)
+                        .WithMany()
+                        .HasForeignKey("MedicalVisitId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("MedRec.Entity.POCOEntities.PatientMedicalCondition", b =>
                 {
                     b.HasOne("MedRec.Entity.POCOEntities.MedicalCondition", null)
@@ -428,7 +515,7 @@ namespace MedRec.DataContext.EF.Migrations
                 {
                     b.HasOne("MedRec.Entity.POCOEntities.Patient", null)
                         .WithOne()
-                        .HasForeignKey("MedRec.Entity.POCOEntities.PatientMedicalHistory", "Id")
+                        .HasForeignKey("MedRec.Entity.POCOEntities.PatientMedicalHistory", "PatientId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

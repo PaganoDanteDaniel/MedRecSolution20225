@@ -2,19 +2,22 @@
 
 <div class="body-content">
     <TitleComponent Title=@UpdatePatientMessages.UpdatePatientPageTitle />
-    <ErrorBoundary @ref=ErrorBoundaryRef>
-       <ChildContent>
-           <UpdatePatientComponent 
-               VM="VM" 
-               PatientId="PatientId" />
-       </ChildContent>
-       <ErrorContent>
-           <ExceptionDisplayComponent Exception="context"/>
-               <button class="btn btn-danger" @onclick=Recover>
-                   Aceptar
-               </button>
-       </ErrorContent>
-   </ErrorBoundary>
+    <!-- Zona desplazable -->
+    <div class="scrollable-section">
+        <ErrorBoundary @ref=ErrorBoundaryRef>
+           <ChildContent>
+               <UpdatePatientComponent 
+                   VM="VM" 
+                   PatientId="PatientId" />
+           </ChildContent>
+           <ErrorContent>
+               <ExceptionDisplayComponent Exception="context"/>
+                   <button class="btn btn-danger" @onclick=Recover>
+                       Aceptar
+                   </button>
+           </ErrorContent>
+       </ErrorBoundary>
+   </div>
     <div class="me-footer">
         <FooterComponent Message="@VM.InformationMessage" />
     </div>

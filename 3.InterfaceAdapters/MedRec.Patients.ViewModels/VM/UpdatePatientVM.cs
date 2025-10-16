@@ -64,6 +64,7 @@ public class UpdatePatientVM(
                 Model.DateOfBirth = p.DateOfBirth;
                 Model.BiologicalSexId = p.BiologicalSexId;
                 Model.HealthInsuranceCompanyId = p.HealthInsuranceCompanyId;
+                Model.SelectedHealthCompanyName = p.HealthInsuranceCompanyName;
                 Model.HealthInsuranceMemberNumber = p.HealthInsuranceMemberNumber;
                 Model.HealthInsuranceCard = p.HealthInsuranceCard;
                 Model.HealthInsurancePlan = p.HealthInsurancePlan;

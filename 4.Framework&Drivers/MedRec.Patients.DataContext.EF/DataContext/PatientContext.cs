@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 namespace MedRec.Patients.DataContext.EF.DataContext;
 
 public class PatientDataContext : DataBaseContext
+
 {
     public PatientDataContext(IOptions<DBOptions> dbOptions) : base(dbOptions)
     {

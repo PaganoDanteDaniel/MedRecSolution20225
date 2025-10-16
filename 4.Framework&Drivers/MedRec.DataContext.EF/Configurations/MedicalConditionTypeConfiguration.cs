@@ -9,9 +9,6 @@ public class MedicalConditionTypeConfiguration : IEntityTypeConfiguration<Medica
     {
         builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.Id)
-            .HasDefaultValueSql("NEWSEQUENTIALID()");
-
         builder.Property(e => e.Name)
                .IsRequired()
                .HasMaxLength(100);

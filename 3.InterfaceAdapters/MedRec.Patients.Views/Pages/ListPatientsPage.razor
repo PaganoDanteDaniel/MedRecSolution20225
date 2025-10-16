@@ -5,21 +5,25 @@
 
 <div class="body-content">
     <TitleComponent Title=@ListPatientsMessages.Title />
-    <ErrorBoundary @ref=ErrorBoundaryRef>
-        <ChildContent>
-            <ListPatientsComponent VM="Model"
-                MaxPageButton="MaxPageButton"
-                FooterMessageParameterChanged="OnMessageFooterChange"
-                OnPatientDeleted="PatientDelete"
-                OnPatientUpdate="PatientUpdate"/>
-        </ChildContent>
-        <ErrorContent>
-            <ExceptionDisplayComponent Exception="context"/>
-            <button class="btn btn-danger" @onclick=Recover>
-                @ListPatientsMessages.RecoberButton
-            </button>
-        </ErrorContent>
-    </ErrorBoundary>
+
+    <!-- Zona desplazable -->
+    <div class="scrollable-section">
+        <ErrorBoundary @ref=ErrorBoundaryRef>
+            <ChildContent>
+                <ListPatientsComponent VM="Model"
+                                       MaxPageButton="MaxPageButton"
+                                       FooterMessageParameterChanged="OnMessageFooterChange"
+                                       OnPatientDeleted="PatientDelete"
+                                       OnPatientUpdate="PatientUpdate" />
+            </ChildContent>
+            <ErrorContent>
+                <ExceptionDisplayComponent Exception="context" />
+                <button class="btn btn-danger" @onclick=Recover>OK</button>
+            </ErrorContent>
+        </ErrorBoundary>
+    </div>
+
+    <!-- Footer fijo -->
     <div class="me-footer">
         <FooterComponent Message="@footerMessage" />
     </div>
@@ -32,7 +36,7 @@
                     ShowChanged="(value) => OnClosePatientDelete(value)"
                     ShowAcceptButton="true"
                     OnAccept="OnAcceptDelete"
-                    IsSuccess="true">
+                    Type="ModalType.MessageWarning">
         <div style="color: red;">
             @string.Format(ListPatientsMessages.ModalMessageTextTemplate, name)
         </div>

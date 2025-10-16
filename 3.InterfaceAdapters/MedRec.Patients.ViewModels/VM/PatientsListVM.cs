@@ -5,14 +5,14 @@ using MedRec.Patients.BusinessObjects.Interfaces.Ports;
 namespace MedRec.Patients.ViewModels.VM;
 public class PatientsListVM(
     IPatientsListInputPort listInputPort,
-    IPatientsListOutputPort listOutputPort)//,
-                                           //IDeletePatientInputPort deleteInputPort,
-                                           //IDeletePatientOutputPort deleteOutputPort)
+    IPatientsListOutputPort listOutputPort,
+    IDeletePatientInputPort deleteInputPort,
+    IDeletePatientOutputPort deleteOutputPort)
 {
     private IPatientsListInputPort _listInputPort = listInputPort;
     private IPatientsListOutputPort _listOutputPort = listOutputPort;
-    private IDeletePatientInputPort _deleteInputPort;// = deleteInputPort;
-    private IDeletePatientOutputPort _deleteOutputPort;// = deleteOutputPort;
+    private IDeletePatientInputPort _deleteInputPort = deleteInputPort;
+    private IDeletePatientOutputPort _deleteOutputPort = deleteOutputPort;
 
     private string _informationMessage;
     private int _totalRecords;

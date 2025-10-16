@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MedRec.DataContext.EF.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialCatalog : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +15,7 @@ namespace MedRec.DataContext.EF.Migrations
                 name: "HealthInsuranceCompanies",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Acronym = table.Column<string>(type: "nvarchar(19)", maxLength: 19, nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
@@ -27,10 +27,24 @@ namespace MedRec.DataContext.EF.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "LaboratoryResultTypes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ResultName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LaboratoryResultTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MedicalConditionTypes",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
@@ -44,7 +58,7 @@ namespace MedRec.DataContext.EF.Migrations
                 name: "Provinces",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(53)", maxLength: 53, nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
@@ -58,7 +72,7 @@ namespace MedRec.DataContext.EF.Migrations
                 name: "MedicalConditions",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ConditionTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
@@ -79,7 +93,7 @@ namespace MedRec.DataContext.EF.Migrations
                 name: "Cities",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProvinceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CityName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
                     CityCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
@@ -100,7 +114,7 @@ namespace MedRec.DataContext.EF.Migrations
                 name: "Patients",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     DocumentNumber = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
@@ -139,7 +153,7 @@ namespace MedRec.DataContext.EF.Migrations
                 name: "PatientMedicalHistories",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PatientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
@@ -160,7 +174,7 @@ namespace MedRec.DataContext.EF.Migrations
                 name: "PatientMedicalConditions",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PatientMedicalHistoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     MedicalConditionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
@@ -188,7 +202,7 @@ namespace MedRec.DataContext.EF.Migrations
                 name: "PatientMedicalVisits",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     MedicalHistoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     VisitDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Reason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
@@ -209,6 +223,36 @@ namespace MedRec.DataContext.EF.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "PatientLaboratoryResults",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LaboratoryResultId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MedicalVisitId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ResultDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ResultValue = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ResultNotes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PatientLaboratoryResults", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PatientLaboratoryResults_LaboratoryResultTypes_LaboratoryResultId",
+                        column: x => x.LaboratoryResultId,
+                        principalTable: "LaboratoryResultTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PatientLaboratoryResults_PatientMedicalVisits_MedicalVisitId",
+                        column: x => x.MedicalVisitId,
+                        principalTable: "PatientMedicalVisits",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Cities_ProvinceId",
                 table: "Cities",
@@ -218,6 +262,16 @@ namespace MedRec.DataContext.EF.Migrations
                 name: "IX_MedicalConditions_ConditionTypeId",
                 table: "MedicalConditions",
                 column: "ConditionTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PatientLaboratoryResults_LaboratoryResultId",
+                table: "PatientLaboratoryResults",
+                column: "LaboratoryResultId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PatientLaboratoryResults_MedicalVisitId",
+                table: "PatientLaboratoryResults",
+                column: "MedicalVisitId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PatientMedicalConditions_MedicalConditionId",
@@ -233,7 +287,7 @@ namespace MedRec.DataContext.EF.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_PatientMedicalHistories_PatientId",
                 table: "PatientMedicalHistories",
-                column: "Id",
+                column: "PatientId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -267,7 +321,13 @@ namespace MedRec.DataContext.EF.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "PatientLaboratoryResults");
+
+            migrationBuilder.DropTable(
                 name: "PatientMedicalConditions");
+
+            migrationBuilder.DropTable(
+                name: "LaboratoryResultTypes");
 
             migrationBuilder.DropTable(
                 name: "PatientMedicalVisits");

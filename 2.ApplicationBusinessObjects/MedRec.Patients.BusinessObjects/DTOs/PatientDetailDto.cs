@@ -9,13 +9,13 @@ public class PatientDetailDto
         string lastName,
         string documentNumber,
         string address,
-        Guid? provinceId,
         Guid? cityId,
         string phoneNumber,
         string email,
         DateTime dateOfBirth,
         BiologicalSex biologicalSexId,
         Guid? healthInsuranceCompanyId,
+        string healthInsuranceCompanyName,
         string healthInsuranceMemberNumber,
         string healthInsuranceCard,
         string healthInsurancePlan,
@@ -26,13 +26,13 @@ public class PatientDetailDto
         LastName = lastName;
         DocumentNumber = documentNumber;
         Address = address;
-        ProvinceId = provinceId;
         CityId = cityId;
         PhoneNumber = phoneNumber;
         Email = email;
         DateOfBirth = dateOfBirth;
         BiologicalSexId = biologicalSexId;
         HealthInsuranceCompanyId = healthInsuranceCompanyId;
+        HealthInsuranceCompanyName = healthInsuranceCompanyName;
         HealthInsuranceMemberNumber = healthInsuranceMemberNumber;
         HealthInsuranceCard = healthInsuranceCard;
         HealthInsurancePlan = healthInsurancePlan;
@@ -44,13 +44,13 @@ public class PatientDetailDto
     public string LastName { get; }
     public string DocumentNumber { get; }
     public string Address { get; }
-    public Guid? ProvinceId { get; }
     public Guid? CityId { get; }
     public string PhoneNumber { get; }
     public string Email { get; }
     public DateTime DateOfBirth { get; }
     public BiologicalSex BiologicalSexId { get; }
     public Guid? HealthInsuranceCompanyId { get; }
+    public string HealthInsuranceCompanyName { get; }
     public string HealthInsuranceMemberNumber { get; }
     public string HealthInsuranceCard { get; }
     public string HealthInsurancePlan { get; }

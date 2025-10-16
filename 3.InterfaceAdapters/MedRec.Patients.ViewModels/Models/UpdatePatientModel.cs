@@ -10,7 +10,7 @@ public class UpdatePatientModel
     public string DocumentNumber { get; set; }
     public string Address { get; set; }
     public string PhoneNumber { get; set; }
-    public DateTime? DateOfBirth { get; set; }
+    public DateTime DateOfBirth { get; set; }
     public string Email { get; set; }
     public BiologicalSex BiologicalSexId { get; set; }
     public Guid? HealthInsuranceCompanyId { get; set; }
@@ -27,19 +27,20 @@ public class UpdatePatientModel
         if (model == null) return null;
 
         return new UpdatePatientDto(
-            model.Id,
-            model.FirstName,
-            model.LastName,
-            model.DocumentNumber,
-            model.DateOfBirth.Value,
-            model.Address,
-            model.PhoneNumber,
-            model.Email,
-            model.BiologicalSexId,
-            model.HealthInsuranceCompanyId,
-            model.HealthInsuranceMemberNumber,
-            model.HealthInsuranceCard,
-            model.HealthInsurancePlan,
-            model.RowVersion);
+                    model.Id,
+                    model.FirstName,
+                    model.LastName,
+                    model.DocumentNumber,
+                    model.DateOfBirth,
+                    model.Address,
+                    model.PhoneNumber,
+                    model.Email,
+                    model.BiologicalSexId,
+                    model.HealthInsuranceCompanyId,
+                    model.HealthInsuranceMemberNumber,
+                    model.HealthInsuranceCard,
+                    model.HealthInsurancePlan,
+                    model.RowVersion);
+
     }
 }

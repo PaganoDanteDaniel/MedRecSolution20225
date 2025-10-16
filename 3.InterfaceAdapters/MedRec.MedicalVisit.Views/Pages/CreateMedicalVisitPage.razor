@@ -1,0 +1,70 @@
+﻿@page "/medical-visit/create/{patientId:guid}/{patientName}"
+@page "/medical-visit/detail/{visitId:guid}/{patientName}"
+@using MedRec.CommonComponents.Views.Components
+@using MedRec.CommonComponents.Views.Exceptions
+@using MedRec.MedicalVisit.Views.Components
+@using MedRec.MedicalVisit.Views.Resources
+
+<div class="body-content">
+    <TitleComponent Title="@Title" />
+
+    <!-- Zona desplazable -->
+    <div class="scrollable-section">
+        <ErrorBoundary @ref=ErrorBoundaryRef>
+            <ChildContent>
+                <CreateMedicalVisitComponent 
+                    PatientId="@PatientId" 
+                    VM="@VM" 
+                    IsReadOnly="@IsReadOnly" />
+            </ChildContent>
+            <ErrorContent>
+                <ExceptionDisplayComponent Exception="context" />
+                <button class="btn btn-danger" @onclick=Recover>OK</button>
+            </ErrorContent>
+        </ErrorBoundary>
+    </div>
+
+    <!-- Footer fijo -->
+    <div class="me-footer">
+        <FooterComponent Message="@footerMessage" />
+    </div>
+</div>
+
+
+
+
+<style>
+    :host {
+        display: flex;
+        flex-direction: column;
+        height: 100vh; /* ocupa toda la altura visible de la ventana */
+        overflow: hidden; /* evita scroll global */
+    }
+
+    /* contenedor principal */
+    .body-content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 100vh;
+        overflow: hidden; /* para que el scroll solo sea interno */
+        background-color: var(--page-background, #f8f9fa);
+    }
+
+    /* sección que scrollea */
+    .scrollable-section {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        box-sizing: border-box;
+    }
+
+    /* footer fijo al fondo */
+    .me-footer {
+        flex-shrink: 0;
+        border-top: 1px solid #ddd;
+        padding: 0.75rem 1rem;
+        background-color: #f9f9f9;
+        text-align: center;
+    }
+</style>

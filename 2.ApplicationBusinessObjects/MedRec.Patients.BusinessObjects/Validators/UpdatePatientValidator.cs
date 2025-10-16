@@ -64,7 +64,7 @@ public static class UpdatePatientValidator
             .NotInFuture(PatientValidatorMessages.BirthDate_NotInFuture);
         errors.AddRange(dobValidation.Errors);
 
-        if (patient.HealthInsuranceId != Guid.Empty || patient.HealthInsuranceId.HasValue)
+        if (patient.HealthInsuranceId.HasValue)
         {
             var healthCardValidator = Guard.Against(patient.HealthInsuranceCard, nameof(patient.HealthInsuranceCard))
                 .NotNullOrEmpty(PatientValidatorMessages.HealtInsuranceCard_Required)

@@ -22,8 +22,8 @@ internal class PatientCommandDataContext(IOptions<DBOptions> options)
         return Task.CompletedTask;
     }
 
-    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) =>
-        await GuardDBContext.AgainstSaveChangesErrorAsync(this, cancellationToken);
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) =>
+        await GuardDBContext.AgainstSaveChangesErrorAsync(base.SaveChangesAsync, cancellationToken);
 
     public async Task ExecuteWithRetryAsync(Func<Task> operation, CancellationToken cancellationToken = default)
     {

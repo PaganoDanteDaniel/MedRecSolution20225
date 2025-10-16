@@ -1,12 +1,12 @@
 ﻿using MedRec.HealthInsurance.BusinessObjects.Interfaces.Ports;
 using MedRec.HealthInsurance.BusinessObjects.Interfaces.Repositories;
 
-namespace MedRec.HealthInsurance.UeseCases.Implementation;
+namespace MedRec.HealthInsurance.UseCases.Implementation;
 internal class TotalHealthInsuranceCountInteractor(
     ITotalHealthInsuranceCountOutputPort outputPort,
-    IHealtInsuranceQueriesRepository queriesRepository) : ITotalHealthInsuranceCountInputPort
+    IHealthInsuranceQueriesRepository queriesRepository) : ITotalHealthInsuranceCountInputPort
 {
-    private readonly IHealtInsuranceQueriesRepository _queriesRepository = queriesRepository;
+    private readonly IHealthInsuranceQueriesRepository _queriesRepository = queriesRepository;
     private readonly ITotalHealthInsuranceCountOutputPort _outputPort = outputPort;
     public async Task Handle(string filter = null, CancellationToken cancellationToken = default)
     {

@@ -20,7 +20,8 @@ internal class MedRecContextEF : DbContext
     public DbSet<Province> Provinces { get; set; }
     public DbSet<City> Cities { get; set; }
     public DbSet<HealthInsuranceCompany> HealthInsuranceCompanies { get; set; }
-
+    public DbSet<LaboratoryResultType> LaboratoryResultTypes { get; set; }
+    public DbSet<PatientLaboratoryResult> PatientLaboratoryResults { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

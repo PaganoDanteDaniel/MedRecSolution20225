@@ -2,12 +2,12 @@
 using MedRec.HealthInsurance.BusinessObjects.Interfaces.Ports;
 using MedRec.HealthInsurance.BusinessObjects.Interfaces.Repositories;
 
-namespace MedRec.HealthInsurance.UeseCases.Implementation;
+namespace MedRec.HealthInsurance.UseCases.Implementation;
 internal class HealthInsuranceCatalogInteractor(IHealthInsuranceCatalogOutputPort outputPort,
-    IHealtInsuranceQueriesRepository queriesRepository) : IHealthInsuranceCatalogInputPort
+    IHealthInsuranceQueriesRepository queriesRepository) : IHealthInsuranceCatalogInputPort
 {
     private readonly IHealthInsuranceCatalogOutputPort _outputPort = outputPort;
-    private readonly IHealtInsuranceQueriesRepository _queriesRepository = queriesRepository;
+    private readonly IHealthInsuranceQueriesRepository _queriesRepository = queriesRepository;
     public async Task Handle(PaginationDto pagination, CancellationToken cts)
     {
         cts.ThrowIfCancellationRequested();

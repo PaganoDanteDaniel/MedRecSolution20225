@@ -9,9 +9,6 @@ internal class ProvinceConfiguration : IEntityTypeConfiguration<Province>
     {
         builder.HasKey(p => p.Id);
 
-        builder.Property(p => p.Id)
-            .HasDefaultValueSql("NEWSEQUENTIALID()");
-
         builder.Property(p => p.Name).HasMaxLength(53).IsRequired();
 
         builder.Property(p => p.IsDeleted).HasDefaultValue(false);

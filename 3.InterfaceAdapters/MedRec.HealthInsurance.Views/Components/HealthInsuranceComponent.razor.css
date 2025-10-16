@@ -90,6 +90,7 @@
     table-layout: fixed;
     border-collapse: collapse;
     background-color: var(--table-background);
+    color: var(--table-cell-text);
 }
 
 

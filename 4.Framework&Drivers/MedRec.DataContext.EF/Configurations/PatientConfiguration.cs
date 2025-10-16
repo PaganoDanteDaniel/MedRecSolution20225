@@ -11,13 +11,10 @@ public class PatientConfiguration : IEntityTypeConfiguration<Patient>
     {
         builder.HasKey(p => p.Id);
 
-        builder.Property(p => p.Id)
-            .HasDefaultValueSql("NEWSEQUENTIALID()");
-
         #region Properties
         builder.Property(p => p.FirstName)
-    .IsRequired()
-    .HasMaxLength(PatientConstraints.FirstNameMaxLength);
+            .IsRequired()
+            .HasMaxLength(PatientConstraints.FirstNameMaxLength);
 
         builder.Property(p => p.LastName)
             .IsRequired()

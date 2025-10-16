@@ -1,14 +1,14 @@
-﻿using MedRec.DataContext.EF.Options;
+﻿using MedRec.DataContext.MySql.DataContext;
+using MedRec.DataContext.MySql.Options;
 using MedRec.Entity.DTOs;
 using MedRec.Entity.POCOEntities;
-using MedRec.HealthInsurance.DataContext.EF.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MrdRec.HealthInsurance.Repositories.Interfaces;
 
 namespace MedRec.HealthInsurance.DataContext.EF.Services;
-internal class HealthInsuranceQueriesDataContext(IOptions<DBOptions> options) :
-    HealthInsuranceContext(options), IHealthInsuranceQueriesDataContext
+internal class HealthInsuranceQueriesDataContext(IOptions<DBOptionsMySql> options) :
+    DataBaseContextMySql(options), IHealthInsuranceQueriesDataContext
 {
     public async Task<IEnumerable<HealthInsuranceCompany>> GetAllAsync(PaginationDto paginationDto, CancellationToken cancellationToken)
     {

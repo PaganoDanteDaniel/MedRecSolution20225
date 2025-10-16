@@ -1,14 +1,15 @@
-﻿using MedRec.DataContext.EF.Guard;
-using MedRec.DataContext.EF.Options;
+﻿
+using MedRec.DataContext.MySql.DataContext;
+using MedRec.DataContext.MySql.Guard;
+using MedRec.DataContext.MySql.Options;
 using MedRec.Entity.POCOEntities;
-using MedRec.HealthInsurance.DataContext.EF.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MrdRec.HealthInsurance.Repositories.Interfaces;
 
 namespace MedRec.HealthInsurance.DataContext.EF.Services;
-internal class HealthInsuranceCommandsDataContext(IOptions<DBOptions> options) :
-    HealthInsuranceContext(options), IHealthInsuranceCommandsDataContext
+internal class HealthInsuranceCommandsDataContext(IOptions<DBOptionsMySql> options) :
+    DataBaseContextMySql(options), IHealthInsuranceCommandsDataContext
 {
     public async Task CreateAsync(HealthInsuranceCompany healthCompany, CancellationToken cancellationToken = default)
     {
@@ -60,6 +61,6 @@ internal class HealthInsuranceCommandsDataContext(IOptions<DBOptions> options) :
     }
 
     // Usa el Guard para traducir errores de EF Core
-    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) =>
-            await GuardDBContext.AgainstSaveChangesErrorAsync(this, cancellationToken);
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) =>
+            await GuardDBContext.AgainstSaveChangesErrorAsync(base.SaveChangesAsync, cancellationToken);
 }
