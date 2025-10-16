@@ -1,10 +1,24 @@
 ﻿using MedRec.DataContext.MySql.Options;
+using MedRec.Entity.POCOEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Reflection;
 
 namespace MedRec.DataContext.MySql.DataContext;
 public class DataBaseContextMySql(IOptions<DBOptionsMySql> dbOptions) : DbContext
 {
+    public DbSet<Patient> Patients { get; set; }
+    public DbSet<PatientMedicalVisit> PatientMedicalVisits { get; set; }
+    public DbSet<PatientMedicalCondition> PatientMedicalConditions { get; set; }
+    public DbSet<PatientMedicalHistory> PatientMedicalHistories { get; set; }
+    public DbSet<MedicalCondition> MedicalConditions { get; set; }
+    public DbSet<MedicalConditionType> MedicalConditionTypes { get; set; }
+    public DbSet<Province> Provinces { get; set; }
+    public DbSet<City> Cities { get; set; }
+    public DbSet<HealthInsuranceCompany> HealthInsuranceCompanies { get; set; }
+    public DbSet<LaboratoryResultType> LaboratoryResultTypes { get; set; }
+    public DbSet<PatientLaboratoryResult> PatientLaboratoryResults { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseMySql(
@@ -17,5 +31,9 @@ public class DataBaseContextMySql(IOptions<DBOptionsMySql> dbOptions) : DbContex
                     maxRetryDelay: TimeSpan.FromSeconds(30),
                     errorNumbersToAdd: null);
             });
+    }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }

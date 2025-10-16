@@ -1,14 +1,14 @@
-﻿using MedRec.DataContext.MySql.Options;
+﻿using MedRec.DataContext.MySql.DataContext;
+using MedRec.DataContext.MySql.Options;
 using MedRec.Entity.DTOs;
 using MedRec.Entity.POCOEntities;
-using MedRec.Patients.DataContext.MySql.DataContext;
 using MedRec.Patients.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace MedRec.Patients.DataContext.MySql.Services;
 internal class PatientQueriesDataContextMySql(IOptions<DBOptionsMySql> options)
-    : PatientDataContext(options), IPatientQueriesDataContext
+    : DataBaseContextMySql(options), IPatientQueriesDataContext
 {
 
 

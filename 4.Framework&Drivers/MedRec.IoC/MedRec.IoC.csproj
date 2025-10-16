@@ -8,15 +8,20 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.HealthInsurance.UeseCases\MedRec.HealthInsurance.UseCases.csproj" />
+    <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.MedicalVisit.UseCases\MedRec.MedicalVisit.UseCases.csproj" />
     <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.Patients.UseCases\MedRec.Patients.UseCases.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.HealthInsurance.Presenters\MedRec.HealthInsurance.Presenters.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.HealthInsurance.ViewModels\MedRec.HealthInsurance.ViewModels.csproj" />
+    <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.MedicalVisit.Presenters\MedRec.MedicalVisit.Presenters.csproj" />
+    <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.MedicalVisit.Repositories\MedRec.MedicalVisit.Repositories.csproj" />
+    <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.MedicalVisit.ViewModels\MedRec.MedicalVisit.ViewModels.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.Patients.Presenters\MedRec.Patients.Presenters.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.Patients.Repositories\MedRec.Patients.Repositories.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.Patients.ViewModels\MedRec.Patients.ViewModels.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.Repositories\MedRec.Repositories.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\MrdRec.HealthInsurance.Repositories\MrdRec.HealthInsurance.Repositories.csproj" />
     <ProjectReference Include="..\MedRec.HealthInsurance.DataContext.EF\MedRec.HealthInsurance.DataContext.EF.csproj" />
+    <ProjectReference Include="..\MedRec.MedicalVisit.DataContext.MySql\MedRec.MedicalVisit.DataContext.MySql.csproj" />
     <ProjectReference Include="..\MedRec.Patients.DataContext.EF\MedRec.Patients.DataContext.EF.csproj" />
     <ProjectReference Include="..\MedRec.Patients.DataContext.MySql\MedRec.Patients.DataContext.MySql.csproj" />
   </ItemGroup>

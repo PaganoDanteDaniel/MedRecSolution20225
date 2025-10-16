@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.BusinessObjects\MedRec.BusinessObjects.csproj" />
     <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.Patients.BusinessObjects\MedRec.Patients.BusinessObjects.csproj" />
+    <ProjectReference Include="..\MedRec.Common.Repositories\MedRec.Common.Repositories.csproj" />
     <ProjectReference Include="..\MedRec.Repositories\MedRec.Repositories.csproj" />
   </ItemGroup>
 

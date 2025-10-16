@@ -1,0 +1,95 @@
+﻿@page "/medical-visit/list/{patientId:guid}/{patientName}"
+@using MedRec.CommonComponents.Views.Components
+@using MedRec.CommonComponents.Views.Exceptions
+@using MedRec.MedicalVisit.ViewModels.Models
+@using MedRec.MedicalVisit.ViewModels.VM
+@using MedRec.MedicalVisit.Views.Components
+@using MedRec.MedicalVisit.Views.Resources
+
+@inject NavigationManager NavigationManager
+
+<div class="body-content">
+    <TitleComponent Title="@string.Format(MedicalVisitMessages.CreateMedicalVisitTitleTemplate, PatientName)" />
+
+    <!-- Zona desplazable -->
+    <div class="scrollable-section">
+        <ErrorBoundary @ref=ErrorBoundaryRef>
+            <ChildContent>
+                <MedicalVisitHistoryComponent 
+                    PatientId="@PatientId" 
+                    VM="@VM" 
+                    OnVisitSelected="HandleVisitSelected" />
+            </ChildContent>
+            <ErrorContent>
+                <ExceptionDisplayComponent Exception="context" />
+                <button class="btn btn-danger" @onclick=Recover>OK</button>
+            </ErrorContent>
+        </ErrorBoundary>
+    </div>
+
+    <!-- Footer fijo -->
+    <div class="me-footer">
+        <FooterComponent Message="@footerMessage" />
+    </div>
+</div>
+
+@code{
+    [Inject] public MedicalVisitVM VM { get; set; }
+    [Parameter] public Guid PatientId { get; set; }
+    [Parameter] public string PatientName { get; set; }
+    private string footerMessage;
+
+    private void OnMessageFooterChange(string title)
+    {
+        footerMessage = title;
+    }
+    ErrorBoundary ErrorBoundaryRef;
+
+    void Recover()
+    {
+        ErrorBoundaryRef?.Recover();
+    }
+    private void HandleVisitSelected(MedicalVisitModel selectedVisit)
+    {
+        // Aquí puedes definir qué hacer cuando se selecciona una visita.
+        // Por ejemplo, navegar a una página de detalle de la visita.
+        NavigationManager.NavigateTo($"/medical-visit/detail/{selectedVisit.Id}/{PatientName}");
+    }
+}
+
+
+<style>
+    :host {
+        display: flex;
+        flex-direction: column;
+        height: 100vh; /* ocupa toda la altura visible de la ventana */
+        overflow: hidden; /* evita scroll global */
+    }
+
+    /* contenedor principal */
+    .body-content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 100vh;
+        overflow: hidden; /* para que el scroll solo sea interno */
+        background-color: var(--page-background, #f8f9fa);
+    }
+
+    /* sección que scrollea */
+    .scrollable-section {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        box-sizing: border-box;
+    }
+
+    /* footer fijo al fondo */
+    .me-footer {
+        flex-shrink: 0;
+        border-top: 1px solid #ddd;
+        padding: 0.75rem 1rem;
+        background-color: #f9f9f9;
+        text-align: center;
+    }
+</style>

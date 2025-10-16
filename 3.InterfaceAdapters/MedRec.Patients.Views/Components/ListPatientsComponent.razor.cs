@@ -101,7 +101,7 @@ public partial class ListPatientsComponent
     }
     private void OnAddMedicalVisit(Guid patientId, string name)
     {
-        Navigation.NavigateTo($"/medical-visit/create/{patientId}/{name}", true);
+        Navigation.NavigateTo($"/medical-visit/list/{patientId}/{name}", true);
     }
     private async Task LoadPatients()
     {

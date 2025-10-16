@@ -7,13 +7,13 @@ namespace MedRec.DataContext.MySql.Guard;
 public class GuardDBContext
 {
     public static async Task<int> AgainstSaveChangesErrorAsync(
-        DbContext context,
+        Func<CancellationToken, Task<int>> saveFunc,
         CancellationToken cancellationToken = default)
     {
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            return await context.SaveChangesAsync(cancellationToken);
+            return await saveFunc(cancellationToken);
         }
         catch (DbUpdateConcurrencyException ex)
         {

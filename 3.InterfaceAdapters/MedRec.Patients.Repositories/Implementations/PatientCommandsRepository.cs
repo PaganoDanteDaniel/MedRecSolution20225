@@ -1,4 +1,5 @@
-﻿using MedRec.Entity.DTOs;
+﻿using MedRec.Common.Repositories;
+using MedRec.Entity.DTOs;
 using MedRec.Entity.Enums;
 using MedRec.Entity.POCOEntities;
 using MedRec.Entity.Results;
@@ -11,9 +12,10 @@ using MedRec.Shared.Exceptions.SQLExceptions;
 namespace MedRec.Patients.Repositories.Implementations;
 internal class PatientCommandsRepository(
         IPatientCommandsDataContext commandsDb,
-        IPatientQueriesDataContext queriesDb) : IPatientCommandsRepository
+        IPatientQueriesDataContext queriesDb) : AbstractCommandUnitOfWork<IPatientCommandsDataContext>(commandsDb),
+    IPatientCommandsRepository
 {
-    private readonly IPatientCommandsDataContext _commandsDb = commandsDb;
+
     private readonly IPatientQueriesDataContext _queriesDb = queriesDb;
 
 
@@ -88,106 +90,27 @@ internal class PatientCommandsRepository(
         }, cancellationToken);
 
     }
-
-    // ----------------------------
-    // Ejecutar transacción genérica con valor
-    // ----------------------------
-    public async Task<Result<T>> ExecuteTransactionAsync<T>(
-        Func<Task<T>> operation,
-        CancellationToken cancellationToken = default)
+    protected override Result<T> HandleException<T>(Exception ex)
     {
-        try
+        if (ex is DuplicateKeyException dkey)
         {
-            T value = default!;
-            int rowaffected = 0;
-
-            await _commandsDb.ExecuteWithRetryAsync(async () =>
-            {
-                await _commandsDb.BeginTransactionAsync(cancellationToken);
-
-                value = await operation();
-
-                rowaffected = await _commandsDb.SaveChangesAsync(cancellationToken);
-                await _commandsDb.CommitTransactionAsync(cancellationToken);
-            }, cancellationToken);
-
-            return Result<T>.Ok(value, rowaffected);
-        }
-        catch (DuplicateKeyException dkey)
-        {
-            await SafeRollbackAsync(cancellationToken);
-            // Extraer valor duplicado del mensaje
             var message = dkey.ToString();
             if (message.Contains("IX_Patients_DocumentNumber"))
             {
                 return Result<T>.Fail(new ErrorInfo(
-                                $"Ya existe un paciente con el mismo DNI.",
-                                ErrorCode.DuplicateKey,
-                                dkey.Entities // opcional, log interno
-                            ));
+                    $"Ya existe un paciente con el mismo DNI.",
+                    ErrorCode.DuplicateKey,
+                    dkey.Entities
+                ));
             }
             return Result<T>.Fail(new ErrorInfo(
                 "El registro ya existe. Verifica los datos e intenta nuevamente.",
                 ErrorCode.DuplicateKey,
-                $"Detalle técnico: {dkey.Message}" // solo para log interno, no para UI
+                $"Detalle técnico: {dkey.Message}"
             ));
+        }
 
-        }
-        catch (ConcurrencyException cex)
-        {
-            await SafeRollbackAsync(cancellationToken);
-            return Result<T>.Fail(new ErrorInfo(
-                "Conflicto de concurrencia al actualizar el registro.",
-                ErrorCode.ConcurrencyError,
-                cex.Details // puedo loggear valores Original/Current
-            ));
-        }
-        catch (UpdateException uex)
-        {
-            await SafeRollbackAsync(cancellationToken);
-            return Result<T>.Fail(new ErrorInfo(
-                "Error al actualizar la base de datos.",
-                ErrorCode.UpdateError,
-                uex.Entities
-            ));
-        }
-        catch (BusinessException ex)
-        {
-            await SafeRollbackAsync(cancellationToken);
-            return Result<T>.Fail(ex.Error);
-        }
-        catch (Exception ex)
-        {
-            await SafeRollbackAsync(cancellationToken);
-            return Result<T>.Fail(new ErrorInfo(
-                "Error inesperado al ejecutar la operación: " + ex.Message,
-                ErrorCode.Unknown
-            ));
-        }
+        return base.HandleException<T>(ex);
     }
 
-    // ----------------------------
-    // Ejecutar transacción genérica sin valor
-    // ----------------------------
-    public async Task<Result<Unit>> ExecuteTransactionAsync(
-        Func<Task> operation,
-        CancellationToken cancellationToken = default)
-    {
-        return await ExecuteTransactionAsync(async () =>
-        {
-            await operation();
-            return new Unit();
-        }, cancellationToken);
-    }
-    private async Task SafeRollbackAsync(CancellationToken cancellationToken)
-    {
-        try
-        {
-            await _commandsDb.RollbackTransactionAsync(cancellationToken);
-        }
-        catch
-        {
-            // swallow rollback errors, ya que no deberían romper el flujo
-        }
-    }
 }

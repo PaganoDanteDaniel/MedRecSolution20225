@@ -2,7 +2,7 @@
     /* Colores de formulario */
     --form-background: #f8f8ff; /* Morado muy suave */
     --form-border: #e1bee7; /* Rosa pastel suave */
-    --form-text: #9c27b0; /* Morado */
+    --form-text: #000000; /* Morado */
     --form-secction-background: #ffffff;
     /* Colores de menú */
     --menu-background: #f8f8ff; /* Morado muy suave */
@@ -31,10 +31,10 @@
     /* Colores de inputs */
     --input-background: #ffffff; /* Blanco */
     --input-border: #e1bee7; /* Rosa pastel suave */
-    --input-text: #9c27b0; /* Morado */
+    --input-text: #000000; /* Morado */
     --input-focus-background: #f3e5f5; /* Morado más claro */
     --input-focus-border: #ce93d8; /* Rosa más oscuro */
-    --input-focus-text: #9c27b0; /* Morado */
+    --input-focus-text: #000000; /* Morado */
     /* Colores de radiobuttons */
     --radiobutton-background: #f3e5f5; /* Morado más claro */
     --radiobutton-border: #ce93d8; /* Rosa más oscuro */
@@ -54,7 +54,7 @@
     /* Colores de tablas */
     --table-background: #f8f8ff; /* Morado muy suave */
     --table-border: #e1bee7; /* Rosa pastel suave */
-    --table-cell-text: #9c27b0; /* Morado */
+    --table-cell-text: #000000; /* Morado */
     --table-header-background: #ce93d8; /* Rosa más oscuro */
     --table-header-text: #ffffff; /* Blanco */
     --table-row-even-background: #f8f8ff; /* Morado muy suave */
@@ -75,7 +75,6 @@
     --calendar-day-border: #b0bec5; /* Gris pastel para bordes de días */
     --calendar-container-border: #e1bee7; /* Rosa pastel suave */
     --calendar-header-border: #ce93d8; /* Rosa más oscuro */
-    
     /* General Modal */
     --modal-background: #ffffff;
     --modal-border: #e1bee7;
@@ -83,7 +82,6 @@
     --modal-body-text: #9c27b0;
     --modal-footer-background: #f8f8ff;
     --modal-footer-border: #e1bee7;
-    
     /* Modal estados */
     --modal-success-background: #e8f5e9;
     --modal-success-border: #a5d6a7;

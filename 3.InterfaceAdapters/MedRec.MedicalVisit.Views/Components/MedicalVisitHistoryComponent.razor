@@ -1,0 +1,92 @@
+﻿@using MedRec.Entity.Extensions
+@using MedRec.MedicalVisit.ViewModels.Models
+@using MedRec.MedicalVisit.ViewModels.VM
+
+@functions {
+    string Truncate(string text, int maxLength) =>
+        string.IsNullOrEmpty(text) ? "" :
+        text.Length > maxLength ? text.Substring(0, maxLength) + "..." : text;
+
+    string DecodeBase64(string encoded) =>
+        string.IsNullOrEmpty(encoded) ? "" : System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
+}
+
+<div class="visit-history">
+    @if (VM.IsLoading)
+    {
+        <p>Cargando visitas...</p>
+    }
+    else if (VM.LastError != null)
+    {
+        <p class="text-danger">@VM.LastError.Message</p>
+    }
+    else if (!VM.Visits.Any())
+    {
+        <p>No hay visitas registradas para este paciente.</p>
+    }
+    else
+    {
+        <div class="visit-cards">
+            @foreach (var visit in VM.Visits)
+            {
+                <div class="visit-card" @onclick="() => OnVisitSelected.InvokeAsync(visit)">
+                    <div class="card-header">
+                        <strong>@visit.VisitDate.ToString("dd/MM/yyyy")</strong>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Razón:</strong> @visit.Reason.GetDescription()</p>
+                        <p><strong>Diagnóstico:</strong> @Truncate(visit.Diagnosis, 120)</p>
+                        <p><strong>Tratamiento:</strong> @Truncate(visit.Treatment, 120)</p>
+                        @if (!string.IsNullOrEmpty(visit.Notes))
+                        {
+                            <p><strong>Notas:</strong> @Truncate(visit.Notes, 120)</p>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+
+@code {
+    [Parameter] public MedicalVisitVM VM { get; set; }
+    [Parameter] public EventCallback<MedicalVisitModel> OnVisitSelected { get; set; }
+
+    [Parameter] public Guid PatientId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await VM.LoadVisitsAsync(PatientId);
+    }
+}
+
+<style>
+    .visit-cards {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .visit-card {
+        width: 100%;
+        max-width: 400px;
+        padding: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        cursor: pointer;
+        transition: box-shadow 0.2s ease;
+    }
+
+        .visit-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+    .card-body p {
+        margin-bottom: 0.5rem;
+        word-break: break-word;
+    }
+
+
+</style>

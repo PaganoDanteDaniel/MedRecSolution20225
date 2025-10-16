@@ -1,4 +1,5 @@
-﻿using MedRec.Patients.ViewModels.VM;
+﻿using MedRec.CommonComponents.Views;
+using MedRec.Patients.ViewModels.VM;
 using MedRec.Patients.Views.Resources;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -11,9 +12,10 @@ public partial class UpdatePatientComponent
     #region Fields
 
     private bool _showHealthCompanyList;
-    private bool _showModal = false;
-    private bool _showErrorModal = false;
-    private bool _showWarning = false;
+    private bool ShowModal;
+    private string ModalTitle = "Mensaje del sistema";
+    private ModalType ModalType = ModalType.MessageInfo;
+
     private EditContext _editContext;
 
     private CancellationTokenSource _cts;
@@ -28,6 +30,7 @@ public partial class UpdatePatientComponent
     #region Parameters
     [Parameter] public UpdatePatientVM VM { get; set; }
     [Parameter] public Guid PatientId { get; set; }
+
     #endregion
 
     #region Methods
@@ -49,15 +52,27 @@ public partial class UpdatePatientComponent
 
         // 2. Luego crea el EditContext con el modelo YA CARGADO
 
+        VM.OnShowMessage += () => ShowModalMessage("Información", ModalType.MessageInfo);
+        VM.OnShowWarning += () => ShowModalMessage("Advertencia", ModalType.MessageWarning);
+        VM.OnShowError += () => ShowModalMessage("Error", ModalType.MessageError);
+        VM.OnShowConcurrencyError += () => ShowModalMessage("Conflicto de concurrencia", ModalType.MessageError);
 
-        VM.OnPatientUpdated += HandleUpdateSuccess;
-        VM.OnShowMessage += ShowError;
-        VM.OnShowWarning += ShowWarning;
-
+        VM.OnPatientUpdated += () => ShowModalMessage("Actualización exisota...", ModalType.MessageSuccess);
         StateHasChanged();
 
     }
 
+    private void ShowModalMessage(string title, ModalType type)
+    {
+        ModalTitle = title;
+        ModalType = type;
+        ShowModal = true;
+        InvokeAsync(StateHasChanged);
+    }
+    private void CloseModal()
+    {
+        ShowModal = false;
+    }
     private async Task UpdatePatient()
     {
         _cts?.Dispose();
@@ -66,42 +81,15 @@ public partial class UpdatePatientComponent
         await VM.UpdatePatient(_cts.Token);
     }
 
-    private async void HandleUpdateSuccess()
-    {
-        //await FooterMessageParameterChanged.InvokeAsync(FooterMessage);
-        _showModal = true;
-    }
-    private void ShowWarning()
-    {
-        _showWarning = true;
-        StateHasChanged();
-    }
-    private void ShowError()
-    {
-        _showErrorModal = true;
-        StateHasChanged(); // fuerza actualización de UI
-    }
-    private void OnAccept()
-    {
-        _showModal = false;
-        Navigation.NavigateTo("/", true);
-    }
-    private void Dispose()
-    {
-        _showModal = false;
-        VM.OnPatientUpdated -= HandleUpdateSuccess;
-    }
     private string CalculateAge()
     {
         var today = DateTime.Today;
         var birthDate = VM.Model.DateOfBirth;
-        if (!birthDate.HasValue)
-            return "Fecha no definida";
 
         // Calculating the age
-        int year = today.Year - birthDate.Value.Year;
-        int month = today.Month - birthDate.Value.Month;
-        int day = today.Day - birthDate.Value.Day;
+        int year = today.Year - birthDate.Year;
+        int month = today.Month - birthDate.Month;
+        int day = today.Day - birthDate.Day;
 
         // Ajuste si el día actual es menor que el d�a de nacimiento
         if (day < 0)
@@ -116,7 +104,7 @@ public partial class UpdatePatientComponent
             year--;
             month += 12;
         }
-        return (string.Format(UpdatePatientMessages.AgeOfPatientTemplate, year.ToString(), month.ToString()));
+        return (string.Format(CreatePatientMessages.AgeOfPatientTemplate, year.ToString(), month.ToString()));
     }
 
     private void OpenHealthCompanyList()
@@ -132,10 +120,6 @@ public partial class UpdatePatientComponent
     private void ClearForm()
     {
         VM.Model = new();
-    }
-    void Recover()
-    {
-        ErrorBoundaryRef?.Recover();
     }
     private void ExitForm()
     {

@@ -3,7 +3,7 @@
     background-color: var(--form-background); /* Fondo de la barra de título */
     border-bottom: 2px solid var(--form-border); /* Borde inferior */
     border-radius: 8px; /* Bordes redondeados */
-    color: var(--form-text); /* Color del texto */
+    color: #9c27b0; /* Color del texto */
     padding: 15px 20px; /* Espaciado interno */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil para profundidad */
     margin-bottom: 1rem; /* Margen inferior para separar del contenido */
@@ -15,7 +15,7 @@
         font-size: 2rem; /* Tamaño de la fuente del título */
         font-family: 'Arial', sans-serif; /* Fuente del título */
         font-weight: bold; /* Peso de la fuente */
-        color: var(--form-text); /* Color del texto del título */
+        color: #9c27b0; /* Color del texto del título */
     }
 
 @media (max-width: 1300px) {

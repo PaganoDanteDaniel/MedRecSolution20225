@@ -11,13 +11,19 @@
                     Validator = "patientValidator"
                     ValidationRules = "vm => CreatePatientValidator.Validate((CreatePatientDto)vm)" />
 
+    @* ---------- Campos trampa para capturar autofill de Chromium ---------- *@
+    <input autocomplete="username" style="position: absolute; left: -9999px; top: -9999px;" />
+    <input autocomplete="current-password" type="password" style="position: absolute; left: -9999px; top: -9999px;" />
+
   <div class="new-patient-form">
         <div class="new-patient-row">
             <div class="new-patient-col">
                 <label for="firstName">@CreatePatientMessages.FirstNameLabel</label>
                 <InputText id="firstName"
-                           name="firstName"
                            @bind-value="VM.Model.FirstName"
+                           autocomplete="new-firstname"
+                           readonly
+                           onfocus="this.removeAttribute('readonly');"
                            class="uppercase-input"
                            style="width: 90%;" />
                 <ValidationMessage For="() => VM.Model.FirstName" class="validation-message" />
@@ -25,8 +31,10 @@
             <div class="new-patient-col">
                 <label for="lastName">@CreatePatientMessages.LastNameLabel</label>
                 <InputText id="lastName"
-                           name="lastName" 
                            @bind-value="VM.Model.LastName"
+                           autocomplete="new-lastname"
+                           readonly
+                           onfocus="this.removeAttribute('readonly');"
                            class="uppercase-input" 
                            style="width: 90%;" />
                 <ValidationMessage For="() => VM.Model.LastName" class="validation-message" />
@@ -57,9 +65,12 @@
         </div>
         <div class="new-patient-row">
             <div class="new-patient-col">
-                <label for="email">@CreatePatientMessages.EmailLabel</label>
+                <label for="_email">@CreatePatientMessages.EmailLabel</label>
                 <InputText id="email"
                            @bind-value="VM.Model.Email"
+                           autocomplete="new-email"
+                           readonly
+                           onfocus="this.removeAttribute('readonly');"
                            style="width: 75%;" 
                         />
                 <ValidationMessage For="() => VM.Model.Email" class="validation-message" />
@@ -68,6 +79,9 @@
                 <label for="phoneNumber">@CreatePatientMessages.PhoneNumberLabel</label>
                 <InputText id="phoneNumber"
                            @bind-value="VM.Model.PhoneNumber"
+                           autocomplete="new-phoneNumber"
+                           readonly
+                           onfocus="this.removeAttribute('readonly');"
                            class="uppercase-input" 
                            style="width: 50%;" 
                         />

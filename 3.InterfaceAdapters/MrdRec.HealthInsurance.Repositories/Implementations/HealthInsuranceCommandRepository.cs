@@ -1,4 +1,5 @@
-﻿using MedRec.Entity.DTOs;
+﻿using MedRec.Common.Repositories;
+using MedRec.Entity.DTOs;
 using MedRec.Entity.Enums;
 using MedRec.Entity.POCOEntities;
 using MedRec.Entity.Results;
@@ -9,9 +10,8 @@ using MrdRec.HealthInsurance.Repositories.Interfaces;
 namespace MrdRec.HealthInsurance.Repositories.Implementations;
 internal class HealthInsuranceCommandRepository(IHealthInsuranceCommandsDataContext commandsDb,
         IHealthInsuranceQueriesDataContext queriesDb) :
-    IHealthInsuranceCommandRepository
+    AbstractCommandUnitOfWork<IHealthInsuranceCommandsDataContext>(commandsDb), IHealthInsuranceCommandRepository
 {
-    private readonly IHealthInsuranceCommandsDataContext _commandsDb = commandsDb;
     private readonly IHealthInsuranceQueriesDataContext _queriesDb = queriesDb;
 
     public async Task<Result<HealthInsuranceCompany>> Create(HealthInsuranceCompany entity, CancellationToken cts)
@@ -123,49 +123,5 @@ internal class HealthInsuranceCommandRepository(IHealthInsuranceCommandsDataCont
         {
             return Result<Unit>.Fail(new ErrorInfo("Error al eliminar la entidad: " + ex.Message, ErrorCode.Unknown));
         }
-    }
-
-    // ----------------------------
-    // Ejecutar transacción genérica con valor
-    // ----------------------------
-    public async Task<Result<T>> ExecuteTransactionAsync<T>(
-        Func<Task<T>> operation,
-        CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            T value = default!;
-
-            await _commandsDb.ExecuteWithRetryAsync(async () =>
-            {
-                await _commandsDb.BeginTransactionAsync(cancellationToken);
-
-                value = await operation();
-
-                await _commandsDb.SaveChangesAsync(cancellationToken);
-                await _commandsDb.CommitTransactionAsync(cancellationToken);
-            }, cancellationToken);
-
-            return Result<T>.Ok(value);
-        }
-        catch (Exception ex)
-        {
-            try { await _commandsDb.RollbackTransactionAsync(cancellationToken); } catch { }
-            return Result<T>.Fail(new ErrorInfo("Error al ejecutar la operación: " + ex.Message, ErrorCode.Unknown));
-        }
-    }
-
-    // ----------------------------
-    // Ejecutar transacción genérica sin valor
-    // ----------------------------
-    public async Task<Result<Unit>> ExecuteTransactionAsync(
-        Func<Task> operation,
-        CancellationToken cancellationToken = default)
-    {
-        return await ExecuteTransactionAsync(async () =>
-        {
-            await operation();
-            return new Unit();
-        }, cancellationToken);
     }
 }

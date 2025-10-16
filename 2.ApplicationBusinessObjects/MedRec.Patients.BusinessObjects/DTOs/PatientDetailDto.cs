@@ -9,7 +9,6 @@ public class PatientDetailDto
         string lastName,
         string documentNumber,
         string address,
-        Guid? provinceId,
         Guid? cityId,
         string phoneNumber,
         string email,
@@ -27,7 +26,6 @@ public class PatientDetailDto
         LastName = lastName;
         DocumentNumber = documentNumber;
         Address = address;
-        ProvinceId = provinceId;
         CityId = cityId;
         PhoneNumber = phoneNumber;
         Email = email;
@@ -46,7 +44,6 @@ public class PatientDetailDto
     public string LastName { get; }
     public string DocumentNumber { get; }
     public string Address { get; }
-    public Guid? ProvinceId { get; }
     public Guid? CityId { get; }
     public string PhoneNumber { get; }
     public string Email { get; }

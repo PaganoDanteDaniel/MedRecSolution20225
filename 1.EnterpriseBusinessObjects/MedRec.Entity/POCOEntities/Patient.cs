@@ -8,7 +8,6 @@ public class Patient
     public string LastName { get; set; }
     public string DocumentNumber { get; set; }
     public string Address { get; set; }
-    public Guid? ProvinceId { get; set; }
     public Guid? CityId { get; set; }
     public string PhoneNumber { get; set; }
     public string Email { get; set; }

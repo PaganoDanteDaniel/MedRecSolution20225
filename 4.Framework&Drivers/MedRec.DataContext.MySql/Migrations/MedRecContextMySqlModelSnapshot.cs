@@ -229,9 +229,6 @@ namespace MedRec.DataContext.MySql.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
-                    b.Property<Guid?>("ProvinceId")
-                        .HasColumnType("char(36)");
-
                     b.Property<DateTime?>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
@@ -384,9 +381,9 @@ namespace MedRec.DataContext.MySql.Migrations
                     b.Property<int?>("PulsePerMinute")
                         .HasColumnType("int");
 
-                    b.Property<string>("Reason")
+                    b.Property<int>("Reason")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("RowVersion")
                         .IsConcurrencyToken()

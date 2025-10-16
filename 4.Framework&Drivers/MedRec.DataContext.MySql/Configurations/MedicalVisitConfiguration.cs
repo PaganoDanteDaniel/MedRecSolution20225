@@ -27,6 +27,11 @@ public class MedicalVisitConfiguration : IEntityTypeConfiguration<PatientMedical
             .IsConcurrencyToken()
             .ValueGeneratedOnAddOrUpdate();
 
+        builder.HasOne<PatientMedicalHistory>()
+            .WithMany()
+            .HasForeignKey(e => e.MedicalHistoryId);
+
+
         builder.HasIndex(e => e.MedicalHistoryId);
     }
 }

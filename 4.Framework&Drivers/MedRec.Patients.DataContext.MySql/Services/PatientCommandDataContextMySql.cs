@@ -1,14 +1,14 @@
-﻿using MedRec.DataContext.MySql.Guard;
+﻿using MedRec.DataContext.MySql.DataContext;
+using MedRec.DataContext.MySql.Guard;
 using MedRec.DataContext.MySql.Options;
 using MedRec.Entity.POCOEntities;
-using MedRec.Patients.DataContext.MySql.DataContext;
 using MedRec.Patients.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace MedRec.Patients.DataContext.MySql.Services;
 internal class PatientCommandDataContextMySql(IOptions<DBOptionsMySql> options)
-    : PatientDataContext(options), IPatientCommandsDataContext
+    : DataBaseContextMySql(options), IPatientCommandsDataContext
 {
     public async Task BeginTransactionAsync(CancellationToken cancellationToken = default) =>
               await Database.BeginTransactionAsync(cancellationToken);
@@ -22,8 +22,8 @@ internal class PatientCommandDataContextMySql(IOptions<DBOptionsMySql> options)
         return Task.CompletedTask;
     }
 
-    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) =>
-        await GuardDBContext.AgainstSaveChangesErrorAsync(this, cancellationToken);
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) =>
+        await GuardDBContext.AgainstSaveChangesErrorAsync(base.SaveChangesAsync, cancellationToken);
 
     public async Task ExecuteWithRetryAsync(Func<Task> operation, CancellationToken cancellationToken = default)
     {
@@ -34,11 +34,8 @@ internal class PatientCommandDataContextMySql(IOptions<DBOptionsMySql> options)
         });
     }
 
-    public async Task CreatePatientAsync(Patient patient, CancellationToken cancellationToken = default)
-    {
-        patient.RowVersion = Guid.NewGuid().ToByteArray();
-        await Patients.AddAsync(patient);
-    }
+    public async Task CreatePatientAsync(Patient patient, CancellationToken cancellationToken = default) =>
+        await Patients.AddAsync(patient, cancellationToken);
 
 
     public async Task UpdatePatientAsync(Patient editPatient, CancellationToken cancellationToken = default)

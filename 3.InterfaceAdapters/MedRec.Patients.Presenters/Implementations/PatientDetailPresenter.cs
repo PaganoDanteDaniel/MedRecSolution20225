@@ -27,7 +27,6 @@ internal class PatientDetailPresenter : IPatientDetailsOutputPort
             p.LastName,
             p.DocumentNumber,
             p.Address,
-            p.ProvinceId,
             p.CityId,
             p.PhoneNumber,
             p.Email,

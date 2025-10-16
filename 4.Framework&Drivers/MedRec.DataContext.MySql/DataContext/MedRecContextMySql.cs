@@ -49,3 +49,4 @@ public class MedRecContextMySql : DbContext
 }
 //Add-Migration InitialCreate -p MedRec.DataContext.MySql -s MedRec.DataContext.MySql -c MedRecContextMySql
 //Update-Database -p MedRec.DataContext.MySql -s MedRec.DataContext.MySql -context MedRecContextMySql
+//Remove-Migration -p MedRec.DataContext.MySql -s MedRec.DataContext.MySql -c MedRecContextMySql

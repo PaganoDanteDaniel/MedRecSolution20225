@@ -38,6 +38,4 @@ namespace MedRec.Patients.ViewModels.Models
         }
         #endregion
     }
-
-
 }
