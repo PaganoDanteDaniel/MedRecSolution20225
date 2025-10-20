@@ -22,7 +22,6 @@
     <ProjectReference Include="..\..\3.InterfaceAdapters\MrdRec.HealthInsurance.Repositories\MrdRec.HealthInsurance.Repositories.csproj" />
     <ProjectReference Include="..\MedRec.HealthInsurance.DataContext.EF\MedRec.HealthInsurance.DataContext.EF.csproj" />
     <ProjectReference Include="..\MedRec.MedicalVisit.DataContext.MySql\MedRec.MedicalVisit.DataContext.MySql.csproj" />
-    <ProjectReference Include="..\MedRec.Patients.DataContext.EF\MedRec.Patients.DataContext.EF.csproj" />
     <ProjectReference Include="..\MedRec.Patients.DataContext.MySql\MedRec.Patients.DataContext.MySql.csproj" />
   </ItemGroup>
 

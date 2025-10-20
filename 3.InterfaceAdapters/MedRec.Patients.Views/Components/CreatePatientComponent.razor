@@ -5,17 +5,17 @@
 
 @inject IModelValidatorHub<CreatePatientModel> patientValidator
 
-<EditForm EditContext="_editContext" OnValidSubmit="AddPatient" autocomplete="off">
+<EditForm EditContext="_editContext" OnValidSubmit="AddPatient" autocomplete="off" >
     <DataAnnotationsValidator />
     <ModelValidator T = "CreatePatientModel"
                     Validator = "patientValidator"
                     ValidationRules = "vm => CreatePatientValidator.Validate((CreatePatientDto)vm)" />
-
+    <div class="new-patient-form">
     @* ---------- Campos trampa para capturar autofill de Chromium ---------- *@
     <input autocomplete="username" style="position: absolute; left: -9999px; top: -9999px;" />
     <input autocomplete="current-password" type="password" style="position: absolute; left: -9999px; top: -9999px;" />
 
-  <div class="new-patient-form">
+  
         <div class="new-patient-row">
             <div class="new-patient-col">
                 <label for="firstName">@CreatePatientMessages.FirstNameLabel</label>
@@ -57,7 +57,7 @@
                                @bind-Value="VM.Model.DateOfBirth"
                                style="width: 40%"
                                autocomplete="off" />
-                    <span>@CalculateAge()</span>
+                    <span><label>@CalculateAge()</label></span>
                     <ValidationMessage For="() => VM.Model.DateOfBirth" class="validation-message" />
                 </div>
 

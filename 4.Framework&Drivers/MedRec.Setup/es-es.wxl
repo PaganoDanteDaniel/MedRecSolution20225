@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="es-es" xmlns="http://wixtoolset.org/schemas/v4/wxl">
+	<String Id="LicenseAccepted" Value="He leído y acepto los términos del contrato de licencia" />
+	<String Id="InstallButtonText" Value="Instalar" />
+	<String Id="CancelButtonText" Value="Cancelar" />
+	<String Id="OptionsButtonText" Value="Opciones" />
+	<String Id="IntroText" Value="Este asistente instalará MedRec en su equipo." />
+	<String Id="InstallMessage" Value="Instalación en curso" />
+	<String Id="ProgressText" Value="Instalando MedRec" />
+	<String Id="SuccessMessage" Value="Instalación completada" />
+	<String Id="FailureMessage" Value="La instalación de MedRec no se completó correctamente" />
+</WixLocalization>
+
+

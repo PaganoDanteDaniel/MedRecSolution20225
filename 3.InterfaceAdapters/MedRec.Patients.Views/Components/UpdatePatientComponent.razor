@@ -6,18 +6,18 @@
 
 @inject IModelValidatorHub<UpdatePatientModel> patientValidator
 
-<EditForm EditContext="_editContext" OnValidSubmit="UpdatePatient" class="update-patient-form">
+<EditForm EditContext="_editContext" OnValidSubmit="UpdatePatient">
     <DataAnnotationsValidator />
     <ModelValidator T="UpdatePatientModel"
                     Validator="patientValidator"
                     ValidationRules="p => UpdatePatientValidator.Validate((UpdatePatientDto)p, validateId: true)" />
 
-    @* ---------- Campos trampa para capturar autofill de Chromium ---------- *@
-    <input autocomplete="username" style="position: absolute; left: -9999px; top: -9999px;" />
-    <input autocomplete="current-password" type="password" style="position: absolute; left: -9999px; top: -9999px;" />
-
     <div class="update-patient-form">
+        @* ---------- Campos trampa para capturar autofill de Chromium ---------- *@
+        <input autocomplete="username" style="position: absolute; left: -9999px; top: -9999px;" />
+        <input autocomplete="current-password" type="password" style="position: absolute; left: -9999px; top: -9999px;" />
         <div class="update-patient-row">
+
             <div class="update-patient-col">
                 <label for="firstName">@UpdatePatientMessages.FirstNameLabel</label>
                 <InputText id="firstName"
@@ -55,8 +55,7 @@
                            class="uppercase-input" 
                            style="width: 40%;"/>
                 <ValidationMessage For="() => VM.Model.DocumentNumber" class="validation-message" />
-            </div>
-            
+            </div>            
             <div class="update-patient-col">
                 <label for="dateOfBirth">@UpdatePatientMessages.DateOfBirthLabel</label>
                 <div>
@@ -69,6 +68,7 @@
                 </div>
             </div>
         </div>
+
         <div class="update-patient-row">
             <div class="update-patient-col">
                 <label for="phoneNumber">@UpdatePatientMessages.PhoneNumberLabel</label>
@@ -95,6 +95,7 @@
                 <ValidationMessage For="() => VM.Model.Address" class="validation-message" />
             </div>
         </div>
+
         <div class="update-patient-row">
             <div class="update-patient-col">
                 <label for="email">@UpdatePatientMessages.EmailLabel</label>
@@ -119,6 +120,7 @@
                 </select>  
             </div>
         </div>
+
         <div class="update-patient-row">
             <div class="update-patient-col">
                 <label for="HealthInsuranceCompanyId">@UpdatePatientMessages.HealthInsuranceCompanyLabel</label>
@@ -143,27 +145,28 @@
                 }
             </div>
             <div class="update-patient-col">
-                <label for="HealthInsuranceMemberNumber">@UpdatePatientMessages.HealthInsuranceMemberNumberLabel</label>
-                <input id="HealthInsuranceMemberNumber"
-                       @bind="VM.Model.HealthInsuranceMemberNumber"
-                       @bind:after="() => OnFieldChanged(() => VM.Model.HealthInsuranceMemberNumber)"
-                       class="uppercase-input" 
-                       style="width: 53%;" 
-                       autocomplete="off" />
-                <ValidationMessage For="() => VM.Model.HealthInsuranceMemberNumber" class="validation-message" />
-            </div>
-        </div>
-        <div class="update-patient-row">
-            <div class="update-patient-col">
                 <label for="HealthInsuranceCard">@UpdatePatientMessages.HealthInsuranceCardLabel</label>
-                <input id="HealthInsuranceCard" 
+                <input id="HealthInsuranceCard"
                        @bind="VM.Model.HealthInsuranceCard"
                        @bind:after="() => OnFieldChanged(() => VM.Model.HealthInsuranceCard)"
-                       class="uppercase-input" 
+                       class="uppercase-input"
                        style="width: 65%;"
                        autocomplete="off" />
                 <ValidationMessage For="() => VM.Model.HealthInsuranceCard" class="validation-message" />
             </div>
+        </div>
+
+        <div class="update-patient-row">
+            <div class="update-patient-col">
+                <label for="HealthInsuranceMemberNumber">@UpdatePatientMessages.HealthInsuranceMemberNumberLabel</label>
+                <input id="HealthInsuranceMemberNumber"
+                       @bind="VM.Model.HealthInsuranceMemberNumber"
+                       @bind:after="() => OnFieldChanged(() => VM.Model.HealthInsuranceMemberNumber)"
+                       class="uppercase-input"
+                       style="width: 53%;"
+                       autocomplete="off" />
+                <ValidationMessage For="() => VM.Model.HealthInsuranceMemberNumber" class="validation-message" />
+            </div>           
             <div class="update-patient-col">
                 <label for="HealthInsurancePlan">@UpdatePatientMessages.HealthInsurancePlanLabel</label>
                 <input id="HealthInsurancePlan" 

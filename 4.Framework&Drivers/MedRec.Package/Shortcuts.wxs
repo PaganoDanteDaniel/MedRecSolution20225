@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+
+	<!-- Fragment que crea el acceso directo en el escritorio -->
+	<Fragment>
+		<DirectoryRef Id="DesktopFolder">
+			<Component Id="DesktopShortcut" Guid="B1A1C1D1-E1F1-1234-5678-ABCDEF123456">
+				<Shortcut Id="MedRecShortcut"
+						  Name="MedRec"
+						  Description="Sistema Clínico MedRec"
+						  Target="[INSTALLFOLDER]MedRec.WPF.UI.exe"
+						  WorkingDirectory="INSTALLFOLDER"
+						  Icon="MedRecProductIcon"
+						  Advertise="no" />
+				<RemoveFolder Id="DesktopFolder" On="uninstall" />
+				<RegistryValue Root="HKCU"
+							   Key="Software\MedRec"
+							   Name="installed"
+							   Type="integer"
+							   Value="1"
+							   KeyPath="yes"/>
+			</Component>
+		</DirectoryRef>
+	</Fragment>
+
+	
+	<!-- Menú Inicio: carpeta 'MedRec' con App y Desinstalar -->
+	<Fragment>
+		<DirectoryRef Id="ProgramMenuFolder">
+			<Directory Id="ProgramMenuMedRec" Name="MedRec">
+				<Component Id="StartMenuShortcut" Guid="A2B2C2D2-E2F2-2345-6789-ABCDEFABCDEF">
+					<Shortcut Id="StartMenuMedRec"
+							  Name="MedRec"
+							  Description="Sistema Clínico MedRec"
+							  Target="[INSTALLFOLDER]MedRec.WPF.UI.exe"
+							  WorkingDirectory="INSTALLFOLDER"
+							  Icon="MedRecProductIcon"
+							  Advertise="no" />
+					<Shortcut Id="UninstallMedRec"
+							  Name="Desinstalar MedRec"
+							  Description="Desinstala MedRec"
+							  Target="[SystemFolder]msiexec.exe"
+							  Arguments="/x [ProductCode]"
+							  Icon="MedRecProductIcon" />
+					<RemoveFolder Id="RemoveProgramMenuMedRec" On="uninstall" />
+					<RegistryValue Root="HKCU"
+								   Key="Software\MedRec"
+								   Name="startmenu_installed"
+								   Type="integer"
+								   Value="1"
+								   KeyPath="yes"/>
+				</Component>
+			</Directory>
+		</DirectoryRef>
+	</Fragment>
+
+	<!-- Grupos para referenciar desde Package.wxs -->
+	<Fragment>
+		<ComponentGroup Id="DesktopShortcut">
+			<ComponentRef Id="DesktopShortcut" />
+		</ComponentGroup>
+		<ComponentGroup Id="StartMenuShortcuts">
+			<ComponentRef Id="StartMenuShortcut" />
+		</ComponentGroup>
+	</Fragment>
+</Wix>
+
+

@@ -1,0 +1,94 @@
+.me-configuration {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px; /* Espacio entre label+input y botón */
+    padding-left: 0;
+    padding-right: 0;
+    margin-bottom: 8px;
+}
+
+/* El contenedor del label + input crece para llenar el espacio */
+.me-filter {
+    display: flex;
+    align-items: center;
+    flex: 1; /* Ocupa todo el espacio disponible */
+    min-width: 0; /* Permite que el input se contraiga si es necesario */
+}
+
+.me-filter-label {
+    color: var(--form-text);
+    font-size:var(--font-size-label);
+    white-space: nowrap; /* Evita que el label se rompa en varias líneas */
+    margin-right: 10px; /* Espacio entre label e input */
+    /* Elimina margin-bottom si no hay otros elementos debajo */
+}
+
+.me-filter-text {
+    font-size: var(--font-size-base);
+    flex: 1; /* El input crece para llenar el espacio restante */
+    min-width: 0; /* Permite que el input se contraiga */
+    padding: 10px;
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    background-color: var(--input-background);
+    color: var(--input-text);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* El botón no debe tener width fijo */
+.me-buttons-content {
+    display: flex;
+    align-items: center;
+    /* Elimina width, height, margin-bottom */
+}
+
+.me-button {
+    font-size: var(--font-size-button);
+    background-color: var(--button-background);
+    border: 1px solid var(--button-border);
+    color: var(--button-text);
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Elimina width: 90% y margin-left (el gap ya maneja el espaciado) */
+}
+
+    .me-button:hover {
+        background-color: var(--button-hover-background);
+        border-color: var(--button-hover-border);
+        color: var(--button-hover-text);
+    }
+
+    .me-button ::deep i {
+        font-size: 1rem;
+        margin-right: 8px;
+    }
+
+/* ===== Laptop pequeña (1280×800) ===== */
+@media (max-width: 1199px) {
+    :root {
+        --font-size-base: 0.90rem; /* 15px */
+        --font-size-label: 0.875rem; /* 14px */
+        --font-size-button: 0.875rem;
+    }
+}
+/* ===== Tablet / 800×600 ===== */
+@media (max-width: 850px) {
+    :root {
+        --font-size-base: 0.875rem; /* 14px */
+        --font-size-label: 0.8125rem; /* 13px */
+        --font-size-button: 0.875rem;
+    }
+}
+/* ===== Móviles ===== */
+@media (max-width: 576px) {
+    :root {
+        --font-size-base: 0.8125rem; /* 13px */
+        --font-size-label: 0.75rem; /* 12px */
+        --font-size-button: 0.8125rem;
+    }
+}

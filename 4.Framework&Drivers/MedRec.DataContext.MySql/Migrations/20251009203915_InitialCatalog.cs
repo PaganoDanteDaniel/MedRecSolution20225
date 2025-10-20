@@ -326,7 +326,7 @@ namespace MedRec.DataContext.MySql.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_PatientMedicalHistories_PatientId",
                 table: "PatientMedicalHistories",
-                column: "PatientId",
+                column: "Id",
                 unique: true);
 
             migrationBuilder.CreateIndex(

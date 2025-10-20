@@ -1,0 +1,32 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util"
+     xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
+
+	<Bundle Name="MedRecSetup"
+			Manufacturer="Dante Software Solutions"
+			Version="1.0.0.0"
+			UpgradeCode="3B9C5F7C-6C0A-4D6E-9F6B-3A3B7A8E6B01">
+		
+		<BootstrapperApplication>
+			<bal:WixStandardBootstrapperApplication
+			  Theme="rtfLicense"
+			  LicenseFile="License.rtf"
+			  LocalizationFile="es-es.wxl"
+			  ShowVersion="yes"
+			  SuppressOptionsUI="no" />
+		</BootstrapperApplication>
+		
+		<Chain>
+			<ExePackage
+			  SourceFile="Prereqs\windowsdesktop-runtime-9.0.10-win-x64.exe"
+			  PerMachine="yes"
+			  Permanent="yes"
+			  Vital="yes"
+			  InstallArguments="/install /quiet /norestart"
+			  DetectCondition="NET_RUNTIME_VERSION >= v9.0.0.0" />
+
+			<MsiPackage SourceFile="..\MedRec.Package\bin\x64\Debug\MedRec.Package.msi" />
+		</Chain>
+
+	</Bundle>
+</Wix>

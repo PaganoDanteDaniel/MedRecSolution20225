@@ -1,20 +1,18 @@
 ﻿using MedRec.DataContext.MySql.DataContext;
-using MedRec.DataContext.MySql.Options;
 using MedRec.Entity.DTOs;
 using MedRec.Entity.POCOEntities;
 using MedRec.Patients.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace MedRec.Patients.DataContext.MySql.Services;
-internal class PatientQueriesDataContextMySql(IOptions<DBOptionsMySql> options)
-    : DataBaseContextMySql(options), IPatientQueriesDataContext
+internal class PatientQueriesDataContextMySql(DataBaseContextMySql context)
+    : IPatientQueriesDataContext
 {
 
 
     public async Task<IEnumerable<Patient>> GetAllPatientsAsync(PaginationDto paginationDTO, CancellationToken ct = default, bool includeDeleted = false)
     {
-        var query = Patients.AsNoTracking().AsQueryable();
+        var query = context.Patients.AsNoTracking().AsQueryable();
 
         if (!string.IsNullOrEmpty(paginationDTO.Filter))
         {
@@ -40,7 +38,7 @@ internal class PatientQueriesDataContextMySql(IOptions<DBOptionsMySql> options)
 
     public async Task<Patient> GetPatientByIdAsync(Guid patientId, CancellationToken ct = default, bool includeDeleted = false)
     {
-        var query = Patients.AsNoTracking().AsQueryable();
+        var query = context.Patients.AsNoTracking().AsQueryable();
 
         query = query.Where(p => p.IsDeleted == includeDeleted);
 
@@ -49,7 +47,7 @@ internal class PatientQueriesDataContextMySql(IOptions<DBOptionsMySql> options)
 
     public async Task<Patient> GetPatientByDocNumAsync(string documentNumber, CancellationToken ct = default, bool includeDeleted = false)
     {
-        var query = Patients.AsNoTracking().AsQueryable();
+        var query = context.Patients.AsNoTracking().AsQueryable();
 
         query = query.Where(p => p.IsDeleted == includeDeleted);
 
@@ -58,7 +56,7 @@ internal class PatientQueriesDataContextMySql(IOptions<DBOptionsMySql> options)
 
     public async Task<int> CountPatientsAsync(string filter = null, CancellationToken ct = default, bool includeDeleted = false)
     {
-        var query = Patients.AsNoTracking().AsQueryable();
+        var query = context.Patients.AsNoTracking().AsQueryable();
 
         if (!string.IsNullOrEmpty(filter))
         {
@@ -81,7 +79,7 @@ internal class PatientQueriesDataContextMySql(IOptions<DBOptionsMySql> options)
 
     public async Task<bool> ExistsAsync(Guid patientId, CancellationToken ct = default, bool includeDeleted = false)
     {
-        var query = Patients.AsNoTracking().AsQueryable();
+        var query = context.Patients.AsNoTracking().AsQueryable();
 
         query = query.Where(p => p.IsDeleted == includeDeleted);
 
@@ -90,7 +88,7 @@ internal class PatientQueriesDataContextMySql(IOptions<DBOptionsMySql> options)
 
     public async Task<bool> ExistsAsync(string documentNumber, CancellationToken ct = default, bool includeDeleted = false)
     {
-        var query = Patients.AsNoTracking().AsQueryable();
+        var query = context.Patients.AsNoTracking().AsQueryable();
 
         query = query.Where(p => p.IsDeleted == includeDeleted);
         var response = await query.AnyAsync(p => p.DocumentNumber.Trim() == documentNumber.Trim());

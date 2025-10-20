@@ -341,7 +341,7 @@ namespace MedRec.DataContext.MySql.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("varchar(2000)");
 
-                    b.Property<Guid>("PatientId")
+                    b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
 
                     b.Property<DateTime?>("RowVersion")
@@ -351,7 +351,7 @@ namespace MedRec.DataContext.MySql.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PatientId")
+                    b.HasIndex("Id")
                         .IsUnique();
 
                     b.ToTable("PatientMedicalHistories", (string)null);
@@ -503,7 +503,7 @@ namespace MedRec.DataContext.MySql.Migrations
                 {
                     b.HasOne("MedRec.Entity.POCOEntities.Patient", null)
                         .WithOne()
-                        .HasForeignKey("MedRec.Entity.POCOEntities.PatientMedicalHistory", "PatientId")
+                        .HasForeignKey("MedRec.Entity.POCOEntities.PatientMedicalHistory", "Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

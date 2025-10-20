@@ -17,7 +17,21 @@ public partial class ListPatientsComponent
 
     #region Properties
     private IEnumerable<PatientSummaryDto> PagedPatients = [];
+    private string Filter
+    {
+        get => _paginationDto.Filter;
+        set
+        {
+            if (_paginationDto.Filter != value)
+            {
+                _paginationDto.Filter = value;
+                // Llamar al método de debounce cada vez que el valor cambia
+                _ = OnSearchTermChanged(value);
+            }
+        }
+    }
     #endregion
+
 
     #region Injected Services
     [Inject] private NavigationManager Navigation { get; set; }
@@ -52,23 +66,21 @@ public partial class ListPatientsComponent
     {
         await LoadPatients();
     }
-    private async Task OnSearchTermChanged(ChangeEventArgs e)
+    private async Task OnSearchTermChanged(string searchTerm)
     {
-        _paginationDto.Filter = e.Value?.ToString() ?? string.Empty;
-
         // Cancelar la búsqueda anterior si existe
         _debounceCts?.Cancel();
         _debounceCts = new CancellationTokenSource();
 
         // Solo buscar si hay más de 2 caracteres o está vacío
-        if (_paginationDto.Filter.Length > 2 || _paginationDto.Filter.Length == 0)
+        if (searchTerm.Length > 2 || searchTerm.Length == 0)
         {
             try
             {
-                // Esperar 400ms antes de buscar
+                // Esperar 600ms antes de buscar
                 await Task.Delay(600, _debounceCts.Token);
-                await LoadPatients();
                 _paginationDto.CurrentPage = 1;
+                await LoadPatients();
             }
             catch (TaskCanceledException)
             {
@@ -76,9 +88,13 @@ public partial class ListPatientsComponent
             }
         }
     }
-    private void SelectPatient(Guid patientId)
+    private void OnAddNewPatient()
     {
-        _selectedPatientId = patientId;
+        Navigation.NavigateTo("/create-patient");
+    }
+    private void SelectPatient(PatientSummaryDto patient)
+    {
+        _selectedPatientId = patient.Id;
         _paginationDto.CurrentPage = 1; // Reset visit page when selecting a new patient
     }
     private async Task HandlePageChanged(int newPage)
@@ -86,22 +102,22 @@ public partial class ListPatientsComponent
         _paginationDto.CurrentPage = newPage;
         await LoadPatients();
     }
-    private async Task OnEditPatient(Guid patientId)
+    private void OnEditPatient(PatientSummaryDto patient)
     {
-        await OnPatientUpdate.InvokeAsync(patientId);
+        _ = OnPatientUpdate.InvokeAsync(patient.Id);
     }
-    private async Task OnDeletePatient(Guid patientId, string name)
+    private void OnDeletePatient(PatientSummaryDto patient)
     {
-        await OnPatientDeleted.InvokeAsync((patientId, name));
-        await LoadPatients();
+        _ = OnPatientDeleted.InvokeAsync((patient.Id, $"{patient.LastName}, {patient.FirstName}"));
+        _ = LoadPatients();
     }
-    private void OnAddHealthIssue(Guid patientId, string name)
+    private void OnAddHealthIssue(PatientSummaryDto patient)
     {
-        Navigation.NavigateTo($"/medical-information/create/{patientId}/{name}", true);
+        Navigation.NavigateTo($"/medical-information/create/{patient.Id}/{patient.LastName}, {patient.FirstName}", true);
     }
-    private void OnAddMedicalVisit(Guid patientId, string name)
+    private void OnAddMedicalVisit(PatientSummaryDto patient)
     {
-        Navigation.NavigateTo($"/medical-visit/list/{patientId}/{name}", true);
+        Navigation.NavigateTo($"/medical-visit/list/{patient.Id}/{patient.LastName}, {patient.FirstName}", true);
     }
     private async Task LoadPatients()
     {

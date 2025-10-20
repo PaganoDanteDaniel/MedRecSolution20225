@@ -106,7 +106,7 @@ namespace MedRec.Patients.Views.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a N° DE D.N.I..
+        ///   Busca una cadena traducida similar a D.N.I..
         /// </summary>
         internal static string HeadDocumentNumberText {
             get {
@@ -142,7 +142,7 @@ namespace MedRec.Patients.Views.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a N° DE TELÉFONO.
+        ///   Busca una cadena traducida similar a TELÉFONO.
         /// </summary>
         internal static string HeadPhoneText {
             get {
@@ -171,9 +171,9 @@ namespace MedRec.Patients.Views.Resources {
         /// <summary>
         ///   Busca una cadena traducida similar a INGRESE EL NOMBRE DEL PACIENTE PARA FILTRAR.
         /// </summary>
-        internal static string PalaceholderFilterInput {
+        internal static string PlaceholderFilterInput {
             get {
-                return ResourceManager.GetString("PalaceholderFilterInput", resourceCulture);
+                return ResourceManager.GetString("PlaceholderFilterInput", resourceCulture);
             }
         }
         

@@ -1,0 +1,81 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+<div class="me-configuration">
+    <!-- Filtro de búsqueda -->
+    <div class="me-filter">
+        
+            @if (!string.IsNullOrWhiteSpace(LabelText))
+            {
+                <label class="me-filter-label" for="filter">@LabelText</label>
+            }
+            <input type="text"
+                   id="filter"
+                   class="me-filter-text uppercase-input"
+                   value="@Value"
+                   @oninput="OnInputValueChanged"
+                   autocomplete="off"
+                   placeholder="@Placeholder" />
+        
+    </div>
+
+    @if (ShowButton)
+    {
+        <div class="me-buttons-content">
+            <button type="button" class="me-button" @onclick="OnButtonClick">
+                <i class="fas fa-plus"></i> @ButtonText
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// El valor actual del término de búsqueda.
+    /// </summary>
+    [Parameter]
+    public string? Value { get; set; }
+
+    /// <summary>
+    /// Callback para notificar cambios en el valor.
+    /// </summary>
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    /// <summary>
+    /// El texto a mostrar en la etiqueta sobre el campo de búsqueda.
+    /// </summary>
+    [Parameter]
+    public string LabelText { get; set; } = string.Empty;
+
+    /// <summary>
+    /// El texto del marcador de posición para el campo de búsqueda.
+    /// </summary>
+    [Parameter]
+    public string Placeholder { get; set; } = "Buscar...";
+
+    /// <summary>
+    /// El texto a mostrar en el botón.
+    /// </summary>
+    [Parameter]
+    public string ButtonText { get; set; } = "Agregar";
+
+    /// <summary>
+    /// Callback para el evento de clic del botón.
+    /// </summary>
+    [Parameter]
+    public EventCallback OnButtonClick { get; set; }
+
+    /// <summary>
+    /// Controla la visibilidad del botón.
+    /// </summary>
+    [Parameter]
+    public bool ShowButton { get; set; } = true;
+
+    private async Task OnInputValueChanged(ChangeEventArgs e)
+    {
+        Value = e.Value?.ToString();
+        await ValueChanged.InvokeAsync(Value);
+    }
+}
+<style>
+   
+</style>

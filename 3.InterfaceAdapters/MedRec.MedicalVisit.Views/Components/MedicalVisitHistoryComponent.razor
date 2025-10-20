@@ -1,4 +1,5 @@
-﻿@using MedRec.Entity.Extensions
+﻿@using MedRec.CommonComponents.Views.Components
+@using MedRec.Entity.Extensions
 @using MedRec.MedicalVisit.ViewModels.Models
 @using MedRec.MedicalVisit.ViewModels.VM
 
@@ -10,8 +11,16 @@
     string DecodeBase64(string encoded) =>
         string.IsNullOrEmpty(encoded) ? "" : System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
 }
-
+<div class="search-container">
+    <SearchAndAddComponent LabelText="BUSCAR VISITA:"
+                           Placeholder="INGRESE EL CRITERIO DE BUSQUEDA..."
+                           ButtonText="REGISTRAR VISITA"
+                           @bind-Value="Filter"
+                           OnButtonClick="OnButtonClick"
+                           ShowButton />
+</div>
 <div class="visit-history">
+
     @if (VM.IsLoading)
     {
         <p>Cargando visitas...</p>
@@ -35,8 +44,8 @@
                     </div>
                     <div class="card-body">
                         <p><strong>Razón:</strong> @visit.Reason.GetDescription()</p>
-                        <p><strong>Diagnóstico:</strong> @Truncate(visit.Diagnosis, 120)</p>
-                        <p><strong>Tratamiento:</strong> @Truncate(visit.Treatment, 120)</p>
+                       @*  <p><strong>Diagnóstico:</strong> @Truncate(visit.Diagnosis, 120)</p>
+                        <p><strong>Tratamiento:</strong> @Truncate(visit.Treatment, 120)</p> *@
                         @if (!string.IsNullOrEmpty(visit.Notes))
                         {
                             <p><strong>Notas:</strong> @Truncate(visit.Notes, 120)</p>
@@ -46,25 +55,48 @@
             }
         </div>
     }
+
 </div>
 
 
 @code {
+    [Inject] private NavigationManager Navigation { get; set; }
     [Parameter] public MedicalVisitVM VM { get; set; }
     [Parameter] public EventCallback<MedicalVisitModel> OnVisitSelected { get; set; }
 
     [Parameter] public Guid PatientId { get; set; }
+    [Parameter] public string PatientName { get; set; }
 
+    private string Filter{ get; set; }
     protected override async Task OnInitializedAsync()
     {
         await VM.LoadVisitsAsync(PatientId);
     }
+    private void OnButtonClick()
+    {
+        Navigation.NavigateTo($"/medical-visit/create/{PatientId}/{PatientName}");
+    }
 }
 
 <style>
+    .search-container {
+        background-color: #ffffff;
+        padding: 0.75rem 0.5rem;
+        border-bottom: 1px solid #ccc;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        z-index: 10;
+        border-radius: 6px;
+    }
+
+    /* Solo el área de las visitas hace scroll */
+    .visit-history {
+        overflow-y: auto;
+        max-height: calc(100vh - 220px); /* ajustá este valor según tu layout */
+        padding: 1rem;
+    }
     .visit-cards {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
         gap: 1rem;
     }
 
@@ -87,6 +119,5 @@
         margin-bottom: 0.5rem;
         word-break: break-word;
     }
-
 
 </style>

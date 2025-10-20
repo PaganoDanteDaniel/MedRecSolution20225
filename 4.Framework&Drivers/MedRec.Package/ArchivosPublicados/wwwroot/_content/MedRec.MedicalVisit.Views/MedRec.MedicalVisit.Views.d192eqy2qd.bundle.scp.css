@@ -1,0 +1,556 @@
+/* _content/MedRec.MedicalVisit.Views/Components/CreateMedicalVisitComponent.razor.rz.scp.css */
+.medical-visit-form[b-q8mj8jkapf] {
+    background-color: var(--form-background);
+    border: 1px solid var(--form-border);
+    padding: 40px;
+    border-radius: 8px;
+    color: var(--form-text);
+    width: 80%;
+    margin: 0 auto;
+}
+
+/* Secciones con fieldset */
+.form-section[b-q8mj8jkapf] {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid var(--form-border);
+    border-radius: 6px;
+}
+
+    .form-section legend[b-q8mj8jkapf] {
+        font-weight: 600;
+        padding: 0 8px;
+        color: var(--form-text);
+    }
+
+/* Filas y columnas generales */
+.medical-visit-form .visit-row[b-q8mj8jkapf] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.medical-visit-form .visit-col[b-q8mj8jkapf] {
+    flex: 1;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Etiquetas arriba para campos cortos */
+.medical-visit-form .short-field label[b-q8mj8jkapf] {
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: var(--label-text, var(--form-text));
+}
+
+/* Etiquetas a la izquierda para campos largos (como Notas) */
+.medical-visit-form .notes-column[b-q8mj8jkapf] {
+    display: flex;
+    flex-direction: column;
+}
+
+    .medical-visit-form .notes-column label[b-q8mj8jkapf] {
+        margin-bottom: 6px;
+        font-weight: 500;
+        color: var(--label-text, var(--form-text));
+    }
+
+/* Contenedor especial para signos vitales + notas */
+.vitals-notes-section[b-q8mj8jkapf] {
+    padding: 20px;
+}
+
+.vitals-notes-container[b-q8mj8jkapf] {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.vitals-column[b-q8mj8jkapf] {
+    flex: 1;
+    min-width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.notes-column[b-q8mj8jkapf]  input{
+    flex: 2;
+    min-width: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+    .notes-column label[b-q8mj8jkapf] {
+        align-self: flex-start;
+    }
+
+/* Inputs, selects, textareas */
+.medical-visit-form[b-q8mj8jkapf]  input,
+.medical-visit-form[b-q8mj8jkapf]  select,
+.medical-visit-form[b-q8mj8jkapf]  textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    background-color: var(--input-background);
+    color: var(--input-text) !important;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+}
+
+    .medical-visit-form[b-q8mj8jkapf]  input:focus,
+    .medical-visit-form[b-q8mj8jkapf]  select:focus,
+    .medical-visit-form[b-q8mj8jkapf]  textarea:focus {
+        outline: none;
+        border-color: var(--input-focus-border);
+        background-color: var(--input-focus-background);
+        color: var(--input-focus-text);
+    }
+
+/* Validación */
+.medical-visit-form .validation-message[b-q8mj8jkapf] {
+    color: var(--error-color, red);
+    font-size: 0.875rem;
+    margin-top: 4px;
+}
+
+/* Grupo de botones */
+.medical-visit-form .button-group[b-q8mj8jkapf] {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.medical-visit-form button[b-q8mj8jkapf] {
+    background-color: var(--button-background);
+    border: 1px solid var(--button-border);
+    color: var(--button-text);
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+    .medical-visit-form button:hover[b-q8mj8jkapf] {
+        background-color: var(--button-hover-background);
+        border-color: var(--button-hover-border);
+        color: var(--button-hover-text);
+    }
+
+    .medical-visit-form button i[b-q8mj8jkapf] {
+        font-size: 1rem;
+        margin-right: 8px;
+    }
+/* --- SECCIÓN: SIGNOS VITALES Y NOTAS --- */
+
+.vitals-notes-section[b-q8mj8jkapf] {
+    padding: 20px;
+}
+
+.vitals-notes-container[b-q8mj8jkapf] {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.vitals-column[b-q8mj8jkapf] {
+    flex: 1;
+    min-width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.notes-column[b-q8mj8jkapf] {
+    flex: 2;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+    .notes-column label[b-q8mj8jkapf] {
+        margin-bottom: 6px;
+        font-weight: 500;
+        color: var(--label-text, var(--form-text));
+    }
+
+/* Etiquetas a la izquierda + inputs pequeños para signos vitales */
+.vital-row[b-q8mj8jkapf] {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+    .vital-row label[b-q8mj8jkapf] {
+        white-space: nowrap;
+        font-weight: 500;
+        color: var(--label-text, var(--form-text));
+        flex-shrink: 0;
+        width: auto;
+        min-width: 180px;
+    }
+
+    .vital-row .vital-input[b-q8mj8jkapf] {
+        width: 60px;
+        max-width: 120px;
+        padding: 8px;
+        font-size: 0.95rem;
+    }
+
+/* --- ALINEACIÓN DE FECHA Y MOTIVO --- */
+.visit-row[b-q8mj8jkapf] {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.visit-col[b-q8mj8jkapf] {
+    display: flex;
+    flex-direction: column;
+}
+
+.short-field[b-q8mj8jkapf] {
+    flex: 0 0 280px;
+}
+
+.long-field[b-q8mj8jkapf] {
+    flex: 1;
+}
+
+
+.visit-row[b-q8mj8jkapf]  input,
+.visit-row[b-q8mj8jkapf]  input[type="date"],
+.visit-row[b-q8mj8jkapf]  .date-input,
+.visit-row[b-q8mj8jkapf]  input[type="text"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 0.75rem;
+    font-size: 15px;
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    background-color: var(--input-background);
+    color: var(--input-text);
+    box-sizing: border-box;
+}
+
+.visit-row .short-field[b-q8mj8jkapf]{
+flex: 0 0 40px;
+}
+.visit-row[b-q8mj8jkapf]  input[type="date"]::-webkit-calendar-picker-indicator {
+  
+    cursor: pointer;
+    filter: invert(35%) sepia(70%) saturate(400%) hue-rotate(250deg);
+    margin-right: 4px;
+}
+
+
+.date-input-wrapper[b-q8mj8jkapf] {
+    display: flex;
+    align-items: center;
+    height: 40px;
+}
+
+
+.visit-col label[b-q8mj8jkapf] {
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: var(--label-text, var(--form-text));
+}
+
+
+/* En móvil, apilar verticalmente */
+/*@media (max-width: 1300px) {
+    .visit-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .visit-col {
+        width: 100%;
+    }
+
+    .date-input-wrapper {
+        height: auto;
+    }
+}*/
+
+/* Responsive: en móvil, los vitales se apilan verticalmente */
+/*@media (max-width: 900px) {
+    .vitals-notes-container {
+        flex-direction: column;
+    }
+
+    .vitals-column,
+    .notes-column {
+        width: 100%;
+    }
+
+    .vital-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+    }
+
+        .vital-row label {
+            min-width: auto;
+            width: 100%;
+        }
+
+        .vital-row .vital-input {
+            width: 100%;
+            max-width: none;
+        }
+}*/
+/* Responsividad */
+@media (max-width: 1300px) {
+    .medical-visit-form[b-q8mj8jkapf] {
+        padding: 30px;
+        width: 90%;
+    }
+
+        .medical-visit-form label[b-q8mj8jkapf] {
+            font-size: 0.85rem;
+        }
+
+        .medical-visit-form[b-q8mj8jkapf]  input,
+        .medical-visit-form[b-q8mj8jkapf]  select,
+        .medical-visit-form[b-q8mj8jkapf]  textarea {
+            padding: 8px;
+            font-size: 0.85rem;
+        }
+
+        .medical-visit-form button[b-q8mj8jkapf] {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+
+            .medical-visit-form button i[b-q8mj8jkapf] {
+                font-size: 18px;
+                margin-right: 6px;
+            }
+}
+
+@media (max-width: 900px) {
+    .medical-visit-form[b-q8mj8jkapf] {
+        padding: 20px;
+        width: 95%;
+    }
+
+        .medical-visit-form label[b-q8mj8jkapf] {
+            font-size: 0.75rem;
+        }
+
+        .medical-visit-form .visit-row[b-q8mj8jkapf],
+        .vitals-notes-container[b-q8mj8jkapf] {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .vitals-column[b-q8mj8jkapf],
+        .notes-column[b-q8mj8jkapf],
+        .medical-visit-form .visit-col[b-q8mj8jkapf] {
+            min-width: auto;
+            width: 100%;
+        }
+
+        .medical-visit-form[b-q8mj8jkapf]  input,
+        .medical-visit-form[b-q8mj8jkapf]  select,
+        .medical-visit-form[b-q8mj8jkapf]  textarea {
+            padding: 10px;
+            font-size: 0.75rem;
+        }
+
+        .medical-visit-form .button-group[b-q8mj8jkapf] {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+        }
+
+        .medical-visit-form button[b-q8mj8jkapf] {
+            width: 100%;
+            justify-content: center;
+            padding: 12px;
+        }
+
+            .medical-visit-form button i[b-q8mj8jkapf] {
+                margin-right: 10px;
+            }
+}
+
+/*.medical-visit-form {
+    background-color: var(--form-background);
+    border: 1px solid var(--form-border);
+    padding: 40px;
+    border-radius: 8px;
+    color: var(--form-text);
+    width: 80%;
+    margin: 0 auto;
+}*/
+
+    /* Filas y columnas */
+    /*.medical-visit-form .visit-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+        gap: 20px;
+    }
+
+    .medical-visit-form .visit-col {
+        flex: 1;
+        min-width: 280px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .medical-visit-form label {
+        margin-bottom: 6px;
+        font-weight: 500;
+        color: var(--label-text, var(--form-text));
+    }*/
+
+    /* Inputs, selects, textareas */
+    /*.medical-visit-form ::deep input,
+    .medical-visit-form ::deep select,
+    .medical-visit-form ::deep textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--input-border);
+        border-radius: 4px;
+        background-color: var(--input-background);
+        color: var(--input-text) !important;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+    }
+
+        .medical-visit-form ::deep input:focus,
+        .medical-visit-form ::deep select:focus,
+        .medical-visit-form ::deep textarea:focus {
+            outline: none;
+            border-color: var(--input-focus-border);
+            background-color: var(--input-focus-background);
+            color: var(--input-focus-text);
+        }*/
+
+    /* Validación */
+    /*.medical-visit-form .validation-message {
+        color: var(--error-color, red);
+        font-size: 0.875rem;
+        margin-top: 4px;
+    }*/
+
+    /* Grupo de botones */
+    /*.medical-visit-form .button-group {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .medical-visit-form button {
+        background-color: var(--button-background);
+        border: 1px solid var(--button-border);
+        color: var(--button-text);
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+    }
+
+        .medical-visit-form button:hover {
+            background-color: var(--button-hover-background);
+            border-color: var(--button-hover-border);
+            color: var(--button-hover-text);
+        }
+
+        .medical-visit-form button i {
+            font-size: 1rem;
+            margin-right: 8px;
+        }*/
+
+/* Responsividad */
+/*@media (max-width: 1300px) {
+    .medical-visit-form {
+        padding: 30px;
+        width: 90%;
+    }
+
+        .medical-visit-form label {
+            font-size: 0.85rem;
+        }
+
+        .medical-visit-form ::deep input,
+        .medical-visit-form ::deep select,
+        .medical-visit-form ::deep textarea {
+            padding: 8px;
+            font-size: 0.85rem;
+        }
+
+        .medical-visit-form button {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+
+            .medical-visit-form button i {
+                font-size: 18px;
+                margin-right: 6px;
+            }
+}
+
+@media (max-width: 900px) {
+    .medical-visit-form {
+        padding: 20px;
+        width: 95%;
+    }
+
+        .medical-visit-form label {
+            font-size: 0.75rem;
+        }
+
+        .medical-visit-form .visit-row {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .medical-visit-form .visit-col {
+            min-width: auto;
+            width: 100%;
+        }
+
+        .medical-visit-form ::deep input,
+        .medical-visit-form ::deep select,
+        .medical-visit-form ::deep textarea {
+            padding: 10px;
+            font-size: 0.75rem;
+        }
+
+        .medical-visit-form .button-group {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+        }
+
+        .medical-visit-form button {
+            width: 100%;
+            justify-content: center;
+            padding: 12px;
+        }
+
+            .medical-visit-form button i {
+                margin-right: 10px;
+            }
+}*/

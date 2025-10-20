@@ -110,7 +110,7 @@
         </fieldset>
 
         <!-- Sección: Diagnóstico y tratamiento -->
-        <fieldset class="form-section">
+@*         <fieldset class="form-section">
             <legend>Diagnóstico y tratamiento</legend>
             <div class="visit-row">
                 <div class="visit-col long-field">
@@ -132,10 +132,14 @@
                     <ValidationMessage For="() => VM.Model.Treatment" class="validation-message" />
                 </div>
             </div>
-        </fieldset>
+        </fieldset> *@
 
         <!-- Botón de envío -->
         <div class="button-group">
+            <button type="button" @onclick="() => HandleButtonClick()">
+                <i class="bi bi-save2"></i> @MedicalVisitMessages.ButtonExit
+            </button>
+            
             <button type="submit" disabled="@IsReadOnly">
                 <i class="bi bi-save2"></i> @MedicalVisitMessages.ButtonSaveMedicalVisit
             </button>

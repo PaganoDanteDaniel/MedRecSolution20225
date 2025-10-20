@@ -10,8 +10,8 @@
 
 /* Secciones con fieldset */
 .form-section {
-    margin-bottom: 30px;
-    padding: 20px;
+    margin-bottom: 10px;
+    padding: 10px;
     border: 1px solid var(--form-border);
     border-radius: 6px;
 }
@@ -269,7 +269,7 @@ flex: 0 0 40px;
 
 
 /* En móvil, apilar verticalmente */
-@media (max-width: 900px) {
+/*@media (max-width: 1300px) {
     .visit-row {
         flex-direction: column;
         gap: 15px;
@@ -282,10 +282,10 @@ flex: 0 0 40px;
     .date-input-wrapper {
         height: auto;
     }
-}
+}*/
 
 /* Responsive: en móvil, los vitales se apilan verticalmente */
-@media (max-width: 900px) {
+/*@media (max-width: 900px) {
     .vitals-notes-container {
         flex-direction: column;
     }
@@ -310,7 +310,7 @@ flex: 0 0 40px;
             width: 100%;
             max-width: none;
         }
-}
+}*/
 /* Responsividad */
 @media (max-width: 1300px) {
     .medical-visit-form {

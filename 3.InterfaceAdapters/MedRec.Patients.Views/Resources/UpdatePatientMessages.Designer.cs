@@ -106,7 +106,7 @@ namespace MedRec.Patients.Views.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a NUMERO DE DOCUMENTO.
+        ///   Busca una cadena traducida similar a NÚMERO DE DOCUMENTO.
         /// </summary>
         internal static string DocumentNumberLabel {
             get {
@@ -142,7 +142,7 @@ namespace MedRec.Patients.Views.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a NUMERO DE TARJETA.
+        ///   Busca una cadena traducida similar a NÚMERO DE TARJETA.
         /// </summary>
         internal static string HealthInsuranceCardLabel {
             get {
@@ -160,7 +160,7 @@ namespace MedRec.Patients.Views.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a NUMERO DE SOCIO.
+        ///   Busca una cadena traducida similar a NÚMERODE SOCIO.
         /// </summary>
         internal static string HealthInsuranceMemberNumberLabel {
             get {
@@ -187,7 +187,7 @@ namespace MedRec.Patients.Views.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a NUMERO DE TELEFONO.
+        ///   Busca una cadena traducida similar a NÚMERO DE TELEFONO.
         /// </summary>
         internal static string PhoneNumberLabel {
             get {

@@ -1,0 +1,566 @@
+/* _content/MedRec.Patients.Views/Components/CreatePatientComponent.razor.rz.scp.css */
+
+.new-patient-form[b-8jgva2i34u] {
+    width: 70vw;
+    padding: 20px; 
+    color: var(--form-text);
+    box-sizing: border-box;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-height: 100vh; 
+}
+    .new-patient-form  .inline-group[b-8jgva2i34u] {
+        display: flex;
+        align-items: center;
+        gap: 8px; /* Espacio entre input y bot�n */
+    }
+
+    .new-patient-form  .inline-group input[b-8jgva2i34u] {
+        flex: 1; /* Ocupa el espacio disponible */
+        min-width: 0; /* Permite que se encoja si es necesario */
+    }
+
+    .new-patient-form  .inline-group button[b-8jgva2i34u] {
+        width: 36px; /* Ancho fijo */
+        height: 36px; /* Alto fijo (ajusta seg�n dise�o) */
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .new-patient-form  .new-patient-row[b-8jgva2i34u] {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+        gap: 20px; /* Mejor que margin-right manual */
+    }
+
+    .new-patient-form  .new-patient-col[b-8jgva2i34u] {
+        flex: 1;
+        min-width: 280px; /* Evita columnas demasiado estrechas */
+        display: flex;
+        flex-direction: column;
+    }
+
+/* Ya no necesitas :last-child con gap */
+    .new-patient-form  label[b-8jgva2i34u] {
+        margin-bottom: 6px;
+        font-weight: 500;
+    }
+
+    .new-patient-form[b-8jgva2i34u]  input,
+    .new-patient-form[b-8jgva2i34u]  select,
+    .new-patient-form[b-8jgva2i34u]  textarea {
+        width: 100%;
+        padding: 8px; /* Reducir el padding interno de los inputs */
+        border: 1px solid var(--input-border);
+        border-radius: 4px;
+        background-color: var(--input-background);
+        color: var(--input-text) !important;
+        font-size: 0.875rem;
+    }
+
+    .new-patient-form[b-8jgva2i34u]  input:focus,
+    .new-patient-form[b-8jgva2i34u]  select:focus,
+    .new-patient-form[b-8jgva2i34u]  textarea:focus {
+        outline: none;
+        border-color: var(--input-focus-border);
+        background-color: var(--input-focus-background);
+        color: var(--input-focus-text);
+    }
+
+    .new-patient-form  .validation-message[b-8jgva2i34u] {
+        color: var(--error-color, red);
+        font-size: 0.875rem;
+        margin-top: 4px;
+    }
+
+    .new-patient-form  .button-group[b-8jgva2i34u] {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+
+    .new-patient-form  button[b-8jgva2i34u] {
+        background-color: var(--button-background);
+        border: 1px solid var(--button-border);
+        color: var(--button-text);
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+    }
+
+    .new-patient-form button:hover[b-8jgva2i34u] {
+        background-color: var(--button-hover-background);
+        border-color: var(--button-hover-border);
+        color: var(--button-hover-text);
+    }
+
+    .new-patient-form  button i[b-8jgva2i34u] {
+        font-size: 1rem;
+        margin-right: 8px;
+    }
+
+@media (max-width: 1300px) {
+    .new-patient-form[b-8jgva2i34u] {
+        padding: 10px;
+        width: 75vw;
+    }
+
+        .new-patient-form  label[b-8jgva2i34u] {
+            font-size: 0.85rem;
+        }
+
+        .new-patient-form[b-8jgva2i34u]  input,
+        .new-patient-form[b-8jgva2i34u]  select,
+        .new-patient-form[b-8jgva2i34u]  textarea {
+            padding: 8px;
+            font-size: 0.85rem;
+        }
+
+        .new-patient-form  button[b-8jgva2i34u] {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+
+            .new-patient-form  button i[b-8jgva2i34u] {
+                font-size: 0.7rem;
+                margin-right: 6px;
+            }
+}
+
+@media (max-width: 900px) {
+    .new-patient-form[b-8jgva2i34u] {
+        padding: 20px;
+        width: 65vw;
+        height:auto;
+        max-width: none;
+        max-height:none;
+    }
+
+        .new-patient-form label[b-8jgva2i34u] {
+            font-size: 0.75rem;
+        }
+
+        .new-patient-form .new-patient-row[b-8jgva2i34u] {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .new-patient-form .new-patient-col[b-8jgva2i34u] {
+            min-width: auto;
+            width: 100%;
+        }
+
+        .new-patient-form[b-8jgva2i34u]  input,
+        .new-patient-form[b-8jgva2i34u]  select,
+        .new-patient-form[b-8jgva2i34u]  textarea {
+            padding: 10px;
+            font-size: 0.75rem;
+        }
+
+        .new-patient-form .button-group[b-8jgva2i34u] {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+        }
+
+        .new-patient-form button[b-8jgva2i34u] {
+            width: 100%;
+            margin-left: 0;
+            justify-content: center;
+            padding: 12px;
+            font-size: 0.75rem;
+        }
+
+            .new-patient-form button i[b-8jgva2i34u] {
+                margin-right: 10px;
+            }
+}
+
+/* _content/MedRec.Patients.Views/Components/ListPatientsComponent.razor.rz.scp.css */
+
+.container[b-m5wuonzucd] {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    /* Elimina esto si lo tienes */
+    /* flex: 1; */
+    /* min-height: 0; */
+    /* Opcional: limita la altura m�xima */
+    max-height: 90vh;
+    overflow: auto;
+}
+/* _content/MedRec.Patients.Views/Components/UpdatePatientComponent.razor.rz.scp.css */
+.update-patient-form[b-xfjtlnpqpu] {
+    max-width: 1200px;
+    width: 90vw;
+    padding: 40px;
+    color: var(--form-text);
+    box-sizing: border-box; /* clave */
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+    /* Distribuci�n de columnas similar */
+    .update-patient-form .update-patient-row[b-xfjtlnpqpu] {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+        gap: 20px;
+    }
+
+    .update-patient-form .update-patient-col[b-xfjtlnpqpu] {
+        flex: 1;
+        min-width: 280px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Etiquetas */
+    .update-patient-form label[b-xfjtlnpqpu] {
+        margin-bottom: 6px;
+        font-weight: 500;
+    }
+
+    /* Inputs, selects, textareas */
+    .update-patient-form[b-xfjtlnpqpu]  input,
+    .update-patient-form[b-xfjtlnpqpu]  select,
+    .update-patient-form[b-xfjtlnpqpu]  textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--input-border);
+        border-radius: 4px;
+        background-color: var(--input-background);
+        color: var(--input-text);
+        font-size: 1rem;
+    }
+
+    .update-patient-form[b-xfjtlnpqpu]  input:focus,
+    .update-patient-form[b-xfjtlnpqpu]  select:focus,
+    .update-patient-form[b-xfjtlnpqpu]  textarea:focus {
+        outline: none;
+        border-color: var(--input-focus-border);
+        background-color: var(--input-focus-background);
+        color: var(--input-focus-text);
+    }
+
+    /* Inline group (buscador, �conos, etc.) */
+    .update-patient-form .inline-group[b-xfjtlnpqpu] {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .update-patient-form .inline-group[b-xfjtlnpqpu]  input {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .update-patient-form .inline-group button[b-xfjtlnpqpu] {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+    /* Mensajes de validaci�n */
+    .update-patient-form .validation-message[b-xfjtlnpqpu] {
+        color: var(--error-color, red);
+        font-size: 0.875rem;
+        margin-top: 4px;
+    }
+
+    /* Botonera */
+    .update-patient-form .button-group[b-xfjtlnpqpu] {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .update-patient-form button[b-xfjtlnpqpu] {
+        background-color: var(--button-background);
+        border: 1px solid var(--button-border);
+        color: var(--button-text);
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+    }
+
+        .update-patient-form button:hover[b-xfjtlnpqpu] {
+            background-color: var(--button-hover-background);
+            border-color: var(--button-hover-border);
+            color: var(--button-hover-text);
+        }
+
+        .update-patient-form button i[b-xfjtlnpqpu] {
+            font-size: 1rem;
+            margin-right: 8px;
+        }
+
+/* Responsivo */
+@media (max-width: 1300px) {
+    .update-patient-form[b-xfjtlnpqpu] {
+        padding: 30px;
+        width: 75vw;
+        height:75vh;
+        max-width: none;
+        max-height: none;
+    }
+
+        .update-patient-form label[b-xfjtlnpqpu] {
+            font-size: 0.85rem;
+        }
+
+        .update-patient-form[b-xfjtlnpqpu]  input,
+        .update-patient-form[b-xfjtlnpqpu]  select,
+        .update-patient-form[b-xfjtlnpqpu]  textarea {
+            padding: 8px;
+            font-size: 0.85rem;
+        }
+
+        .update-patient-form button[b-xfjtlnpqpu] {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+}
+
+@media (max-width: 900px) {
+    .update-patient-form[b-xfjtlnpqpu] {
+        padding: 20px;
+        width: 80vw;
+        height:auto;
+        max-height: none;
+        max-width: none;
+    }
+
+        .update-patient-form .update-patient-row[b-xfjtlnpqpu] {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .update-patient-form .update-patient-col[b-xfjtlnpqpu] {
+            min-width: auto;
+            width: 100%;
+        }
+
+        .update-patient-form .button-group[b-xfjtlnpqpu] {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+        }
+
+        .update-patient-form button[b-xfjtlnpqpu] {
+            width: 100%;
+            justify-content: center;
+            padding: 12px;
+        }
+}
+/* Ajuste para pantallas de poca altura */
+@media (max-height: 800px) {
+    .update-patient-form .update-patient-row[b-xfjtlnpqpu] {
+        margin-bottom: 10px; /* antes 20px */
+        gap: 10px; /* antes 20px */
+    }
+
+    .update-patient-form[b-xfjtlnpqpu] {
+        padding: 20px; /* reduce el padding general para ganar espacio */
+    }
+
+        .update-patient-form button[b-xfjtlnpqpu] {
+            padding: 6px 14px; /* botones m�s compactos */
+            font-size: 0.85rem;
+        }
+
+        .update-patient-form label[b-xfjtlnpqpu] {
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+        }
+
+        .update-patient-form[b-xfjtlnpqpu]  input,
+        .update-patient-form[b-xfjtlnpqpu]  select,
+        .update-patient-form[b-xfjtlnpqpu]  textarea {
+            padding: 6px 8px;
+        }
+}
+/* _content/MedRec.Patients.Views/Pages/CreatePatientPage.razor.rz.scp.css */
+:host[b-um6cf6y2yo] {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* ocupa toda la altura visible de la ventana */
+    overflow: hidden; /* evita scroll global */
+}
+
+/* contenedor principal */
+.body-content[b-um6cf6y2yo] {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 100vh;
+    overflow: hidden; /* para que el scroll solo sea interno */
+    background-color: var(--page-background, #f8f9fa);
+}
+
+/* secci�n que scrollea */
+.scrollable-section[b-um6cf6y2yo] {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center; /* Centrado horizontal */
+    align-items: flex-start; /* Centrado vertical */
+    min-height: 0; /* Importante para flexbox */
+    padding: 0; /* Sin padding para aprovechar el alto */
+    box-sizing: border-box;
+}
+
+/* footer fijo al fondo */
+.me-footer[b-um6cf6y2yo] {
+    flex-shrink: 0;
+    border-top: 1px solid #ddd;
+    padding: 0.75rem 1rem;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.error-boundary[b-um6cf6y2yo] {
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 801px) {
+    .scrollable-section[b-um6cf6y2yo] {
+        align-items: center;
+    }
+}
+
+/* En m�viles/tablets, alineado arriba */
+@media (max-width: 800px) {
+    .scrollable-section[b-um6cf6y2yo] {
+        align-items: flex-start;
+        padding: 10px 0; /* opcional: a�ade un poco de espacio arriba/abajo */
+    }
+}
+/* _content/MedRec.Patients.Views/Pages/ListPatientsPage.razor.rz.scp.css */
+:host[b-4swlc4kmwu] {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* ocupa toda la altura visible de la ventana */
+    overflow: hidden; /* evita scroll global */
+}
+
+/* contenedor principal */
+.body-content[b-4swlc4kmwu] {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 100vh;
+    overflow: hidden; /* para que el scroll solo sea interno */
+    background-color: var(--page-background, #f8f9fa);
+}
+
+[b-4swlc4kmwu] .scrollable-section {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    box-sizing: border-box;
+    
+    display: flex;
+    justify-content: center; /* centrado horizontal */
+    align-items: center; /* centrado vertical */
+}
+
+/* footer fijo al fondo */
+.me-footer[b-4swlc4kmwu] {
+    flex-shrink: 0;
+    border-top: 1px solid #ddd;
+    padding: 0.75rem 1rem;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+.error-boundary[b-4swlc4kmwu] {
+    margin-bottom: 1rem;
+}
+
+/* _content/MedRec.Patients.Views/Pages/UpdatePatientPage.razor.rz.scp.css */
+:host[b-er29wdqwpn] {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* ocupa toda la altura visible de la ventana */
+    overflow: hidden; /* evita scroll global */
+}
+
+/* contenedor principal */
+.body-content[b-er29wdqwpn] {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 100vh;
+    overflow: hidden; /* para que el scroll solo sea interno */
+    background-color: var(--page-background, #f8f9fa);
+}
+
+/* secci�n que scrollea */
+.scrollable-section[b-er29wdqwpn] {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center; /* Centrado horizontal */
+    align-items: flex-start; /* Centrado vertical */
+    min-height: 0; /* Importante para flexbox */
+    padding: 0; /* Sin padding para aprovechar el alto */
+    box-sizing: border-box;
+}
+
+/* footer fijo al fondo */
+.me-footer[b-er29wdqwpn] {
+    flex-shrink: 0;
+    border-top: 1px solid #ddd;
+    padding: 0.75rem 1rem;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.error-boundary[b-er29wdqwpn] {
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 801px) {
+    .scrollable-section[b-er29wdqwpn] {
+        align-items: center;
+    }
+}
+
+/* En m�viles/tablets, alineado arriba */
+@media (max-width: 800px) {
+    .scrollable-section[b-er29wdqwpn] {
+        align-items: flex-start;
+        padding: 10px 0; /* opcional: a�ade un poco de espacio arriba/abajo */
+    }
+}

@@ -34,6 +34,10 @@ internal class GetMedicalHistoryIdInteractor(
                 return;
             }
         }
+        else
+        {
+            await _outputPort.Handle(result.Value, cts);
+        }
 
     }
 }

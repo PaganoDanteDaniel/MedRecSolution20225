@@ -1,0 +1,17 @@
+﻿<Project Sdk="WixToolset.Sdk/6.0.2"> 
+	<PropertyGroup> 
+		<OutputType>Bundle</OutputType>
+		<DisableAutomaticEntrySectionGeneration>true</DisableAutomaticEntrySectionGeneration>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Include="Bundle.wxs" />
+		<Compile Include="RegistrySearch.wxs" />
+		<None Include="License.rtf" />
+		<None Include="es-es.wxl" />
+		<None Include="Prereqs\windowsdesktop-runtime-9.0.10-win-x64.exe" />
+	</ItemGroup>
+	<ItemGroup> 
+		<PackageReference Include="WixToolset.Util.wixext" Version="6.0.2" /> 
+		<PackageReference Include="WixToolset.BootstrapperApplications.wixext" Version="6.0.2" /> 
+	</ItemGroup> 
+</Project>

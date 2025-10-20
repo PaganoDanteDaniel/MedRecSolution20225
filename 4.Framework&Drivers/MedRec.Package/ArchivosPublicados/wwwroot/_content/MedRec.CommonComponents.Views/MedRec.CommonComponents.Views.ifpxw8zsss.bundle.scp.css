@@ -1,0 +1,629 @@
+/* _content/MedRec.CommonComponents.Views/Components/FooterComponent.razor.rz.scp.css */
+/* Estilos para el pie de página */
+.footerbar[b-4h6fnjjvoy] {
+    background-color: var(--footer-background);
+    border-top: 1px solid var(--form-border);
+    border-radius: 8px;
+    padding: 1.3rem;
+    margin-top: 1rem;
+    text-align: left;
+    color: var(--form-text);
+    box-shadow: 0 -3px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap; /* Permite que los elementos se ajusten en pantallas pequeñas */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.footerbar p[b-4h6fnjjvoy] {
+    margin: 0;
+    font-size: 0.8rem;
+    font-family: Arial, sans-serif;
+}
+
+.left-span[b-4h6fnjjvoy],
+.center-span[b-4h6fnjjvoy],
+.right-span[b-4h6fnjjvoy] {
+    width: 33.33%;
+    min-width: 120px;
+    box-sizing: border-box;
+}
+
+.center-span[b-4h6fnjjvoy] {
+    text-align: center;
+}
+
+.right-span[b-4h6fnjjvoy] {
+    text-align: right;
+    font-size: .70rem;
+}
+
+/* Responsive: pantallas medianas */
+@media (max-width: 1300px) {
+    .footerbar[b-4h6fnjjvoy] {
+        padding: 0.8rem;
+        font-size: .70rem;
+    }
+    .left-span[b-4h6fnjjvoy],
+    .center-span[b-4h6fnjjvoy] {
+        min-width: 30px;
+        font-size: 0.80rem;
+    }
+    .right-span[b-4h6fnjjvoy] {
+        min-width: 30px;
+        font-size: 0.60rem;
+    }
+}
+
+/* Responsive: pantallas pequeñas */
+@media (max-width: 800px) {
+    .footerbar[b-4h6fnjjvoy] {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.2rem;
+    }
+    .left-span[b-4h6fnjjvoy],
+    .center-span[b-4h6fnjjvoy]{
+        width: 30%;
+        text-align: left;
+        margin-bottom: 2px;
+        font-size: 0.70rem;
+    }
+    .right-span[b-4h6fnjjvoy] {
+        width: 30%;
+        text-align: left;
+        margin-bottom: 2px;
+        font-size: 0.55rem;
+    }
+    .right-span[b-4h6fnjjvoy] {
+        margin-bottom: 0;
+    }
+}
+/* _content/MedRec.CommonComponents.Views/Components/ModalComponent.razor.rz.scp.css */
+/* --- Overlay --- */
+.my-modal[b-v9ov8t8ppt] {
+    display: none;
+    position: fixed;
+    z-index: 1050;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* solo el fondo general es semitransparente */
+}
+
+    .my-modal.show[b-v9ov8t8ppt] {
+        display: block;
+        animation: fadeIn-b-v9ov8t8ppt 0.3s ease-in-out;
+    }
+
+/* --- Tama�o por defecto (mensajes) --- */
+.my-modal-dialog[b-v9ov8t8ppt] {
+    margin: 1.75rem auto;
+    max-width: 600px;
+}
+
+    /* --- Tama�o grande (tablas, ABM, formularios) --- */
+    .my-modal-dialog.my-modal-lg[b-v9ov8t8ppt] {
+        max-width: 80%;
+        width: 80%;
+        height: 80%;
+        margin: 2rem auto;
+    }
+
+        .my-modal-dialog.my-modal-lg .my-modal-content[b-v9ov8t8ppt] {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .my-modal-dialog.my-modal-lg .my-modal-body[b-v9ov8t8ppt] {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+/* --- Contenido del modal --- */
+.my-modal-content[b-v9ov8t8ppt] {
+    background-color: var(--modal-background) !important; 
+    border: 1px solid var(--modal-border);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+/* --- Header --- */
+.my-modal-header[b-v9ov8t8ppt] {
+    padding: 1rem;
+    border-bottom: 1px solid var(--modal-border);
+    background-color: var(--modal-background);
+    color: var(--modal-title-text);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* --- Body --- */
+.my-modal-body[b-v9ov8t8ppt] {
+    padding: 1.5rem;
+    color: var(--modal-body-text);
+    font-size: 1rem;
+}
+
+    .my-modal-body.centered-text[b-v9ov8t8ppt] {
+        text-align: center;
+    }
+
+/* --- Footer --- */
+.my-modal-footer[b-v9ov8t8ppt] {
+    padding: 0.75rem 1.25rem;
+    background-color: var(--modal-footer-background);
+    border-top: 1px solid var(--modal-footer-border);
+    text-align: right;
+}
+
+/* --- Variantes seg�n estado --- */
+.my-modal-success .my-modal-content[b-v9ov8t8ppt] {
+    background-color: var(--modal-success-background);
+    border-color: var(--modal-success-border);
+    
+}
+.my-modal-success .my-modal-body[b-v9ov8t8ppt],
+.my-modal-success .my-modal-title[b-v9ov8t8ppt] {
+    color: var(--modal-success-text) !important;
+}
+
+.my-modal-error .my-modal-content[b-v9ov8t8ppt] {
+    background-color: var(--modal-error-background);
+    border-color: var(--modal-error-border);
+}
+.my-modal-error .my-modal-body[b-v9ov8t8ppt],
+.my-modal-error .my-modal-title[b-v9ov8t8ppt] {
+    color: var(--modal-error-text) !important;
+}
+
+.my-modal-warning .my-modal-content[b-v9ov8t8ppt] {
+    background-color: var(--modal-warning-background) !important;
+    border-color: var(--modal-warning-border) !important;
+}
+.my-modal-warning .my-modal-body[b-v9ov8t8ppt],
+.my-modal-warning .my-modal-title[b-v9ov8t8ppt] {
+    color: var(--modal-warning-text) !important;
+}
+
+.my-modal-info .my-modal-content[b-v9ov8t8ppt] {
+    background: var(--modal-info-background) !important;
+    border-color: var(--modal-info-border) !important;    
+}
+.my-modal-info .my-modal-body[b-v9ov8t8ppt],
+.my-modal-info .my-modal-title[b-v9ov8t8ppt] {
+    color: var(--modal-info-text) !important;
+}
+
+/* --- Botones --- */
+.my-modal-footer button[b-v9ov8t8ppt] {
+    background-color: var(--button-background);
+    border: 1px solid var(--button-border);
+    color: var(--button-text);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    margin-left: 0.5rem;
+}
+
+    .my-modal-footer button:hover[b-v9ov8t8ppt] {
+        background-color: var(--button-hover-background);
+        border-color: var(--button-hover-border);
+        color: var(--button-hover-text);
+    }
+
+    .my-modal-footer button:active[b-v9ov8t8ppt] {
+        background-color: var(--button-active-background);
+        border-color: var(--button-active-border);
+        color: var(--button-active-text);
+    }
+
+/* --- Animaci�n --- */
+@keyframes fadeIn-b-v9ov8t8ppt {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* _content/MedRec.CommonComponents.Views/Components/PaginationComponent.razor.rz.scp.css */
+.pagination[b-jitjhb37ve] {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+    padding: .5rem;
+    background-color: var(--form-background);
+    border-radius: 8px; /* Bordes redondeados */
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+    .pagination .buttons[b-jitjhb37ve] {
+        display: flex;
+        text-align: center;
+        justify-content: center;
+        /*flex-wrap: wrap;*/
+    }
+
+        .pagination .buttons .prev-group[b-jitjhb37ve],
+        .pagination .buttons .next-group[b-jitjhb37ve],
+        .pagination .buttons .prev-page[b-jitjhb37ve],
+        .pagination .buttons .next-page[b-jitjhb37ve] {
+            display: flex;
+            align-items: center;
+            justify-content: left;
+            margin: 0px;
+            border-radius: 0px;
+            height: 2.3rem;
+        }
+
+        .pagination .buttons .prev-group[b-jitjhb37ve] {
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+        }
+
+        .pagination .buttons .page-buttons[b-jitjhb37ve] {
+            width: 2.5rem;
+            text-align: center;
+            margin: 0px;
+            height: 2.3rem;
+        }
+
+        .pagination .buttons .next-group[b-jitjhb37ve] {
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
+        }
+
+        .pagination .buttons button[b-jitjhb37ve] {
+            background-color: var(--button-background);
+            border: 1px solid var(--button-border);
+            color: var(--button-text); /* Texto más oscuro para botones habilitados */
+            padding: 8px 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease; /* Transición suave para efectos */
+        }
+
+            .pagination .buttons button:hover:not(.disabled)[b-jitjhb37ve] {
+                background-color: var(--button-hover-background);
+                border-color: var(--button-hover-border);
+                color: var(--button-active-text);
+            }
+
+            .pagination .buttons button.active[b-jitjhb37ve] {
+                background-color: var(--button-active-background);
+                border-color: var(--button-active-border);
+                color: var(--button-active-text); /* Texto blanco para botón activo */
+            }
+
+            .pagination .buttons button.disabled[b-jitjhb37ve] {
+                background-color: var(--input-background);
+                border-color: var(--input-border);
+                color: var(--input-text); /* Texto más claro para botones deshabilitados */
+                cursor: not-allowed; /* Mostrar el puntero del mouse como no permitido */
+                opacity: 0.6; /* Botón deshabilitado con opacidad */
+                pointer-events: none; /* Deshabilitar la acción de clic del mouse */
+            }
+
+.pagination-text[b-jitjhb37ve] {
+    margin-left: auto;
+    text-align: right; /* Alinear el texto a la derecha */
+    margin-right: 3rem;
+}
+
+@media(max-width: 1300px){
+    .pagination .buttons button[b-jitjhb37ve] {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+    .pagination .pagination-text[b-jitjhb37ve]{
+        font-size: 0.8rem;
+    }
+}
+@media (max-width: 600px) {
+    .pagination[b-jitjhb37ve] {
+        flex-direction: column; /* Cambiar a columna si el ancho de pantalla es menor a 600px */
+    }
+
+        .pagination .buttons[b-jitjhb37ve] {
+            width: 100%;
+            justify-content: center; /* Alinear los botones al centro */
+            flex-wrap: wrap;
+        }
+        .pagination .buttons button[b-jitjhb37ve]{
+            padding: 4px 8px;
+            font-size: 0.65rem;
+        }
+
+    .pagination-text[b-jitjhb37ve] {
+        width: 100%;
+        text-align: center;
+        font-size:0.65rem;
+    }
+}
+/* _content/MedRec.CommonComponents.Views/Components/SearchAndAddComponent.razor.rz.scp.css */
+.me-configuration[b-kr1dmy31f6] {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px; /* Espacio entre label+input y bot�n */
+    padding-left: 0;
+    padding-right: 0;
+    margin-bottom: 8px;
+}
+
+/* El contenedor del label + input crece para llenar el espacio */
+.me-filter[b-kr1dmy31f6] {
+    display: flex;
+    align-items: center;
+    flex: 1; /* Ocupa todo el espacio disponible */
+    min-width: 0; /* Permite que el input se contraiga si es necesario */
+}
+
+.me-filter-label[b-kr1dmy31f6] {
+    color: var(--form-text);
+    font-size:var(--font-size-label);
+    white-space: nowrap; /* Evita que el label se rompa en varias l�neas */
+    margin-right: 10px; /* Espacio entre label e input */
+    /* Elimina margin-bottom si no hay otros elementos debajo */
+}
+
+.me-filter-text[b-kr1dmy31f6] {
+    font-size: var(--font-size-base);
+    flex: 1; /* El input crece para llenar el espacio restante */
+    min-width: 0; /* Permite que el input se contraiga */
+    padding: 10px;
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    background-color: var(--input-background);
+    color: var(--input-text);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* El bot�n no debe tener width fijo */
+.me-buttons-content[b-kr1dmy31f6] {
+    display: flex;
+    align-items: center;
+    /* Elimina width, height, margin-bottom */
+}
+
+.me-button[b-kr1dmy31f6] {
+    font-size: var(--font-size-button);
+    background-color: var(--button-background);
+    border: 1px solid var(--button-border);
+    color: var(--button-text);
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Elimina width: 90% y margin-left (el gap ya maneja el espaciado) */
+}
+
+    .me-button:hover[b-kr1dmy31f6] {
+        background-color: var(--button-hover-background);
+        border-color: var(--button-hover-border);
+        color: var(--button-hover-text);
+    }
+
+    .me-button[b-kr1dmy31f6]  i {
+        font-size: 1rem;
+        margin-right: 8px;
+    }
+
+/* ===== Laptop peque�a (1280�800) ===== */
+@media (max-width: 1199px) {
+    :root[b-kr1dmy31f6] {
+        --font-size-base: 0.90rem; /* 15px */
+        --font-size-label: 0.875rem; /* 14px */
+        --font-size-button: 0.875rem;
+    }
+}
+/* ===== Tablet / 800�600 ===== */
+@media (max-width: 850px) {
+    :root[b-kr1dmy31f6] {
+        --font-size-base: 0.875rem; /* 14px */
+        --font-size-label: 0.8125rem; /* 13px */
+        --font-size-button: 0.875rem;
+    }
+}
+/* ===== M�viles ===== */
+@media (max-width: 576px) {
+    :root[b-kr1dmy31f6] {
+        --font-size-base: 0.8125rem; /* 13px */
+        --font-size-label: 0.75rem; /* 12px */
+        --font-size-button: 0.8125rem;
+    }
+}
+/* _content/MedRec.CommonComponents.Views/Components/TableComponent.razor.rz.scp.css */
+.my-table-container[b-joqvnp5q6n] {
+    border-radius: 6px;
+    overflow-x: auto; /* Scroll horizontal si es necesario */
+    overflow-y: hidden;
+    border: 1px solid var(--table-border);
+    background-color: var(--table-background);
+    -webkit-overflow-scrolling: touch; /* Mejor UX en iOS */
+}
+
+.ptbl-table[b-joqvnp5q6n] {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    background-color: var(--table-background);
+    color: var(--table-cell-text);
+}
+
+    .ptbl-table[b-joqvnp5q6n]  .actions {
+        text-align: center; /* Centrar horizontalmente el contenido dentro de la celda */
+        vertical-align: middle; /* Centrar verticalmente el contenido dentro de la celda */
+    }
+
+        .ptbl-table[b-joqvnp5q6n]  .actions a {
+            display: inline-block; /* Asegura que los enlaces se comporten como elementos en l�nea */
+            margin: 0 auto; /* Centrar los enlaces horizontalmente */
+        }
+
+            .ptbl-table[b-joqvnp5q6n]  .actions a i {
+                background-color: var(--link-background)!important;
+                border: 1px solid var(--link-border)!important;
+                color: var(--link-text) !important;
+                padding-left: 5px;
+                padding-right: 5px;
+                border-radius: 4px;
+                text-decoration: none;
+                transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+            }
+     .ptbl-table[b-joqvnp5q6n]  tbody tr.table-row-even {
+         background-color: var(--table-row-even-background);
+     }
+
+    .ptbl-table[b-joqvnp5q6n]  tr.table-row-odd {
+        background-color: var(--table-row-odd-background);
+    }
+
+    .ptbl-table[b-joqvnp5q6n]  tbody tr:hover {
+        background-color: var(--table-row-hover-background);
+        cursor: pointer;
+    }
+
+    .ptbl-table[b-joqvnp5q6n]  thead th {
+        background-color: var(--table-header-background);
+        color: var(--table-header-text);
+        text-transform: uppercase;
+        height: 5rem;
+    }
+
+    .ptbl-table[b-joqvnp5q6n]  th,
+    .ptbl-table[b-joqvnp5q6n]  td {
+        padding: 6px;
+        text-align: left;
+        border-bottom: 1px solid var(--table-border);
+        vertical-align: middle; /* Asegura que el contenido est� centrado verticalmente */
+    }
+
+    .ptbl-table .number-type[b-joqvnp5q6n] {
+        text-align: right;
+    }
+
+/* ===== Responsive: Modo apilado en m�viles (<768px) ===== */
+@media screen and (max-width: 767px) {
+    .ptbl-table[b-joqvnp5q6n],
+    .ptbl-table thead[b-joqvnp5q6n],
+    .ptbl-table tbody[b-joqvnp5q6n],
+    .ptbl-table th[b-joqvnp5q6n],
+    .ptbl-table td[b-joqvnp5q6n],
+    .ptbl-table tr[b-joqvnp5q6n] {
+        display: block;
+    }
+
+        /* Ocultar el thead en m�viles */
+        .ptbl-table thead[b-joqvnp5q6n] {
+            display: none;
+        }
+
+        /* Cada fila se convierte en un bloque */
+        .ptbl-table tr[b-joqvnp5q6n] {
+            border: 1px solid var(--table-border);
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: var(--table-row-odd-background);
+        }
+
+        /* Cada celda ocupa el 100% y muestra su etiqueta */
+        .ptbl-table td[b-joqvnp5q6n] {
+            text-align: right;
+            position: relative;
+            padding-left: 50%;
+            padding-right: 10px;
+            border: none;
+            border-bottom: 1px solid var(--table-border-light);
+        }
+
+            /* Mostrar el "data-label" como pseudo-elemento */
+            .ptbl-table td[b-joqvnp5q6n]::before {
+                content: attr(data-label) ": ";
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                font-weight: bold;
+                text-align: left;
+                color: var(--table-header-text);
+            }
+
+            /* Estilo especial para la celda de acciones */
+            .ptbl-table td.ptbl-actions[b-joqvnp5q6n] {
+                text-align: center;
+                padding-left: 10px;
+            }
+
+                .ptbl-table td.ptbl-actions[b-joqvnp5q6n]::before {
+                    content: "Acciones: ";
+                    left: auto;
+                    width: auto;
+                    font-weight: bold;
+                }
+}
+/* ===== Pantallas medianas (tablets, laptops peque�as) ===== */
+@media screen and (max-width: 1300px) {
+    .ptbl-table[b-joqvnp5q6n]  th, .ptbl-table[b-joqvnp5q6n]  td {
+        padding: 4px 6px;
+        font-size: 0.875rem;
+    }
+
+    .ptbl-table[b-joqvnp5q6n]  thead th {
+        height: 4rem;
+        font-size: 0.875rem;
+    }
+
+    .ptbl-table .actions[b-joqvnp5q6n]  a {
+        margin: 0 4px;
+    }
+}
+/* _content/MedRec.CommonComponents.Views/Components/TitleComponent.razor.rz.scp.css */
+/* Estilos para la barra de t�tulo */
+.titlebar[b-2ryjd47es1] {
+    background-color: var(--form-background); /* Fondo de la barra de t�tulo */
+    border-bottom: 2px solid var(--form-border); /* Borde inferior */
+    border-radius: 8px; /* Bordes redondeados */
+    color: #9c27b0; /* Color del texto */
+    padding: 15px 20px; /* Espaciado interno */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil para profundidad */
+    margin-bottom: auto; /* Margen inferior para separar del contenido */
+    text-align: center; /* Alinear el texto al centro */
+}
+
+    .titlebar h1[b-2ryjd47es1] {
+        margin: 0; /* Quitar margen del encabezado */
+        font-size: 2rem; /* Tama�o de la fuente del t�tulo */
+        font-family: 'Arial', sans-serif; /* Fuente del t�tulo */
+        font-weight: bold; /* Peso de la fuente */
+        color: #9c27b0; /* Color del texto del t�tulo */
+    }
+
+@media (max-width: 1300px) {
+
+    .titlebar h1[b-2ryjd47es1] {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 800px) {
+
+    .titlebar h1[b-2ryjd47es1] {
+        font-size: 1rem;
+    }
+}

@@ -1,0 +1,175 @@
+@import '_content/MedRec.CommonComponents.Views/MedRec.CommonComponents.Views.ifpxw8zsss.bundle.scp.css';
+@import '_content/MedRec.HealthInsurance.Views/MedRec.HealthInsurance.Views.csv13ob2ub.bundle.scp.css';
+@import '_content/MedRec.MedicalVisit.Views/MedRec.MedicalVisit.Views.d192eqy2qd.bundle.scp.css';
+@import '_content/MedRec.Patients.Views/MedRec.Patients.Views.x8dv63t038.bundle.scp.css';
+
+/* /Shared/MainLayout.razor.rz.scp.css */
+.main-layout[b-osfabwnc7w] {
+    display: flex;
+}
+
+/* El contenedor de contenido principal */
+.content[b-osfabwnc7w] {
+    flex: 1;
+    padding: 0 10px 0 10px ;
+    transition: margin-left 0.3s ease;
+}
+
+/* /Shared/NavMenu.razor.rz.scp.css */
+.sidebar[b-evdmxbr686] {
+    background-color: #2c3e50;
+    color: white;
+    height: 100vh;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    border-end-end-radius: 10px;
+    border-start-end-radius:10px;
+}
+
+.nav-expanded[b-evdmxbr686] {
+    width: 220px;
+}
+
+.nav-collapsed[b-evdmxbr686] {
+    width: 60px;
+}
+
+    /* Cuando el nav está colapsado */
+    .nav-collapsed .nav-links a[b-evdmxbr686] {
+        justify-content: center; /* centra horizontalmente */
+        padding: 10px 0; /* menos padding horizontal */
+    }
+
+    .nav-collapsed .nav-links i[b-evdmxbr686] {
+        margin-right: 0; /* elimina el espacio que dejaba el texto */
+    }
+
+
+.nav-header[b-evdmxbr686] {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.hamburger-btn[b-evdmxbr686] {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.app-name[b-evdmxbr686] {
+    font-weight: bold;
+    font-size: 18px;
+    white-space: nowrap; /* evita salto de línea */
+    overflow: hidden; /* oculta si no entra */
+    text-overflow: ellipsis; /* opcional: agrega "…" si no entra */
+}
+
+.nav-links[b-evdmxbr686] {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+    .nav-links li[b-evdmxbr686] {
+        margin: 10px 0;
+    }
+
+    .nav-links a[b-evdmxbr686] {
+        display: flex;
+        align-items: center;
+        color: white;
+        text-decoration: none;
+        padding: 10px;
+        transition: background 0.2s;
+    }
+
+        .nav-links a:hover[b-evdmxbr686] {
+            background: #34495e;
+        }
+
+    .nav-links i[b-evdmxbr686] {
+        font-size: 18px;
+        margin-right: 10px;
+    }
+/* /Shared/WelcomeComponent.razor.rz.scp.css */
+
+.welcome-wrapper[b-y8mmetozsk] {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%; /* ahora ocupa todo el alto del contenedor */
+    width: 100%; /* ocupa todo el ancho disponible */
+    background: linear-gradient(135deg, #f0f8ff, #ce93d8);
+    margin-left: 0 !important;
+}
+
+.welcome-message[b-y8mmetozsk] {
+    margin-top: 40px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+}
+
+/* Cubo igual que antes */
+.cube[b-y8mmetozsk] {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    transform-style: preserve-3d;
+    animation: spin-b-y8mmetozsk 6s infinite linear;
+}
+
+.face[b-y8mmetozsk] {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    opacity: 0.9;
+    border: 2px solid #fff;
+}
+
+.front[b-y8mmetozsk] {
+    background: #ff6b6b;
+    transform: rotateY(0deg) translateZ(50px);
+}
+
+.back[b-y8mmetozsk] {
+    background: #4ecdc4;
+    transform: rotateY(180deg) translateZ(50px);
+}
+
+.right[b-y8mmetozsk] {
+    background: #ffe66d;
+    transform: rotateY(90deg) translateZ(50px);
+}
+
+.left[b-y8mmetozsk] {
+    background: #1a535c;
+    transform: rotateY(-90deg) translateZ(50px);
+}
+
+.top[b-y8mmetozsk] {
+    background: #5f27cd;
+    transform: rotateX(90deg) translateZ(50px);
+}
+
+.bottom[b-y8mmetozsk] {
+    background: #10ac84;
+    transform: rotateX(-90deg) translateZ(50px);
+}
+
+@keyframes spin-b-y8mmetozsk {
+    from {
+        transform: rotateX(0deg) rotateY(0deg);
+    }
+
+    to {
+        transform: rotateX(360deg) rotateY(360deg);
+    }
+}

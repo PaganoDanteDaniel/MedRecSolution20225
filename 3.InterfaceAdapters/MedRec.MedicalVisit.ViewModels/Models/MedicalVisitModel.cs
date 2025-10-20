@@ -17,9 +17,9 @@ public class MedicalVisitModel
         Id = dto.Id;
         VisitDate = dto.VisitDate;
         Reason = dto.Reason;
-        Diagnosis = dto.Diagnosis;
-        Treatment = dto.Treatment;
-        Notes = dto.Notes;
+        Diagnosis = (dto.Diagnosis ?? string.Empty).ToUpperInvariant();
+        Treatment = (dto.Treatment ?? string.Empty).ToUpperInvariant();
+        Notes = (dto.Notes ?? string.Empty).ToUpperInvariant();
     }
 }
 
