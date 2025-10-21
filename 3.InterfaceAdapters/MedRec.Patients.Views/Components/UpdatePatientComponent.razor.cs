@@ -12,9 +12,11 @@ public partial class UpdatePatientComponent
     #region Fields
 
     private bool _showHealthCompanyList;
-    private bool ShowModal;
-    private string ModalTitle = "Mensaje del sistema";
-    private ModalType ModalType = ModalType.MessageInfo;
+    private bool _navigateAfterClose = false;
+    private string _navigationUrl = "/";
+    private bool _showModal;
+    private string _modalTitle = "Mensaje del sistema";
+    private ModalType _modalType = ModalType.MessageInfo;
 
     private EditContext _editContext;
 
@@ -57,21 +59,37 @@ public partial class UpdatePatientComponent
         VM.OnShowError += () => ShowModalMessage("Error", ModalType.MessageError);
         VM.OnShowConcurrencyError += () => ShowModalMessage("Conflicto de concurrencia", ModalType.MessageError);
 
-        VM.OnPatientUpdated += () => ShowModalMessage("Actualización exisota...", ModalType.MessageSuccess);
+        VM.OnPatientUpdated += () => ShowModalMessageAndNavigate("Actualización exitosa...", ModalType.MessageSuccess, "/");
         StateHasChanged();
 
     }
 
+    private void ShowModalMessageAndNavigate(string title, ModalType type, string navigationUrl)
+    {
+        _modalTitle = title;
+        _modalType = type;
+        _showModal = true;
+        _navigateAfterClose = true;
+        _navigationUrl = navigationUrl;
+        InvokeAsync(StateHasChanged);
+    }
     private void ShowModalMessage(string title, ModalType type)
     {
-        ModalTitle = title;
-        ModalType = type;
-        ShowModal = true;
+        _modalTitle = title;
+        _modalType = type;
+        _showModal = true;
+        _navigateAfterClose = false;
         InvokeAsync(StateHasChanged);
     }
     private void CloseModal()
     {
-        ShowModal = false;
+        _showModal = false;
+
+        if (_navigateAfterClose)
+        {
+            _navigateAfterClose = false;
+            Navigation.NavigateTo(_navigationUrl, true);
+        }
     }
     private async Task UpdatePatient()
     {

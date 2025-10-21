@@ -1,32 +1,50 @@
-﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
      xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util"
      xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
 
-	<Bundle Name="MedRecSetup"
-			Manufacturer="Dante Software Solutions"
-			Version="1.0.0.0"
-			UpgradeCode="3B9C5F7C-6C0A-4D6E-9F6B-3A3B7A8E6B01">
-		
+	<Bundle
+		Name="MedRec Setup"
+		Version="!(bind.packageVersion.MedRecMsi)"
+		Manufacturer="Dante Pagano Software Solutions"
+		UpgradeCode="3B9C5F7C-6C0A-4D6E-9F6B-3A3B7A8E6B01">
+
+		<!-- Detecta .NET Desktop Runtime 9.x -->
+		<util:RegistrySearch
+			Id="NET9_INSTALLED_EXISTS"
+			Root="HKLM"
+			Key="SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft Windows Desktop Runtime - 9.0.10 (x64)"
+			Value="Version"
+			Variable="NET9_INSTALLED_EXISTS" />
+
+		<!-- UI estándar con tema HyperlinkLicense -->
 		<BootstrapperApplication>
 			<bal:WixStandardBootstrapperApplication
-			  Theme="rtfLicense"
-			  LicenseFile="License.rtf"
-			  LocalizationFile="es-es.wxl"
-			  ShowVersion="yes"
-			  SuppressOptionsUI="no" />
+				LicenseUrl=""
+				Theme="hyperlinkLicense"
+				LocalizationFile="es-es.wxl"
+				SuppressOptionsUI="no" />
 		</BootstrapperApplication>
-		
+
 		<Chain>
+			<!-- Instala .NET 9 si no está presente -->
 			<ExePackage
-			  SourceFile="Prereqs\windowsdesktop-runtime-9.0.10-win-x64.exe"
-			  PerMachine="yes"
-			  Permanent="yes"
-			  Vital="yes"
-			  InstallArguments="/install /quiet /norestart"
-			  DetectCondition="NET_RUNTIME_VERSION >= v9.0.0.0" />
+				Id="DotNet9Desktop"
+				SourceFile="Prereqs\windowsdesktop-runtime-9.0.10-win-x64.exe"
+				PerMachine="yes"
+				Permanent="yes"
+				Vital="yes"
+				InstallArguments="/install /quiet /norestart"
+				DetectCondition="NET9_INSTALLED_EXISTS"
+				DisplayName=".NET Desktop Runtime 9.0.10" />
 
-			<MsiPackage SourceFile="..\MedRec.Package\bin\x64\Debug\MedRec.Package.msi" />
+			<!-- Tu MSI -->
+			<MsiPackage
+				Id="MedRecMsi"
+				SourceFile="..\MedRec.Package\bin\x64\Release\MedRec.Package.msi"
+				DisplayName="MedRec Application"
+				Compressed="yes"
+				Vital="yes" />
 		</Chain>
-
 	</Bundle>
 </Wix>

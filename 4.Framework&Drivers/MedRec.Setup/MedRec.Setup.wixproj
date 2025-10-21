@@ -1,17 +1,24 @@
-﻿<Project Sdk="WixToolset.Sdk/6.0.2"> 
-	<PropertyGroup> 
+﻿<Project Sdk="WixToolset.Sdk/6.0.2">
+	<PropertyGroup>
 		<OutputType>Bundle</OutputType>
-		<DisableAutomaticEntrySectionGeneration>true</DisableAutomaticEntrySectionGeneration>
+		<OutputName>MedRecSetup</OutputName>
+		<!--<WixStdBalLanguageId>3082</WixStdBalLanguageId>-->
 	</PropertyGroup>
+
 	<ItemGroup>
-		<Compile Include="Bundle.wxs" />
-		<Compile Include="RegistrySearch.wxs" />
-		<None Include="License.rtf" />
-		<None Include="es-es.wxl" />
+		 <Content Include="theme.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Include="Prereqs\windowsdesktop-runtime-9.0.10-win-x64.exe" />
 	</ItemGroup>
-	<ItemGroup> 
-		<PackageReference Include="WixToolset.Util.wixext" Version="6.0.2" /> 
-		<PackageReference Include="WixToolset.BootstrapperApplications.wixext" Version="6.0.2" /> 
-	</ItemGroup> 
+
+	<ItemGroup>
+		<PackageReference Include="WixToolset.Util.wixext" Version="6.0.2" />
+		<PackageReference Include="WixToolset.Bal.wixext" Version="6.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<WixLocalization Include="es-es.wxl" />
+	</ItemGroup>
 </Project>

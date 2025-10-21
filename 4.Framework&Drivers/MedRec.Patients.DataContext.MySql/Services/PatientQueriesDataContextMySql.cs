@@ -14,13 +14,13 @@ internal class PatientQueriesDataContextMySql(DataBaseContextMySql context)
     {
         var query = context.Patients.AsNoTracking().AsQueryable();
 
-        if (!string.IsNullOrEmpty(paginationDTO.Filter))
+        if (!string.IsNullOrEmpty(paginationDTO.FilterOne))
         {
             query = query.Where(p =>
-                (p.FirstName.Contains(paginationDTO.Filter) ||
-                p.LastName.Contains(paginationDTO.Filter) ||
-                p.DocumentNumber.Contains(paginationDTO.Filter) ||
-                p.PhoneNumber.Contains(paginationDTO.Filter)) &&
+                (p.FirstName.Contains(paginationDTO.FilterOne) ||
+                p.LastName.Contains(paginationDTO.FilterOne) ||
+                p.DocumentNumber.Contains(paginationDTO.FilterOne) ||
+                p.PhoneNumber.Contains(paginationDTO.FilterOne)) &&
                 p.IsDeleted == includeDeleted
             );
         }

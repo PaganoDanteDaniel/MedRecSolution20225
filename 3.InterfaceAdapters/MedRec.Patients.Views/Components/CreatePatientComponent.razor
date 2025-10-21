@@ -102,25 +102,23 @@
                 </div>
             </div>
             <div class="new-patient-col">
-                <label for="insuranceHealthMemberNumber">@CreatePatientMessages.InsuranceHealthMemberNumberLabel</label>
-                <InputText id="insuranceHealthMemberNumber"
-                           @bind-value = "VM.Model.HealthInsuranceMemberNumber"
-                           class="uppercase-input" 
-                           style="width: 53%;" 
-                        />
-                <ValidationMessage For="() => VM.Model.HealthInsuranceMemberNumber" class="validation-message" />
+                <label for="insuranceHealthCard">@CreatePatientMessages.InsuranceHealthCardLabel</label>
+                <InputText id="insuranceHealthCard"
+                           @bind-value="VM.Model.HealthInsuranceCard"
+                           class="uppercase-input"
+                           style="width: 65%;" />
+                <ValidationMessage For="() => VM.Model.HealthInsuranceCard" class="validation-message" />
             </div>
         </div>
         <div class="new-patient-row">
             <div class="new-patient-col">
-                <label for="insuranceHealthCard">@CreatePatientMessages.InsuranceHealthCardLabel</label>
-                <InputText id="insuranceHealthCard"
-                           @bind-value = "VM.Model.HealthInsuranceCard"
-                           class = "uppercase-input" 
-                           style = "width: 65%;" 
-                        />
-                <ValidationMessage For="() => VM.Model.HealthInsuranceCard" class="validation-message" />
-            </div>
+                <label for="insuranceHealthMemberNumber">@CreatePatientMessages.InsuranceHealthMemberNumberLabel</label>
+                <InputText id="insuranceHealthMemberNumber"
+                           @bind-value="VM.Model.HealthInsuranceMemberNumber"
+                           class="uppercase-input"
+                           style="width: 53%;" />
+                <ValidationMessage For="() => VM.Model.HealthInsuranceMemberNumber" class="validation-message" />
+            </div>            
             <div class="new-patient-col">
                 <label for="insuranceHealthPlan">@CreatePatientMessages.InsuranceHealthPlanLabel</label>
                 <InputText id="insuranceHealthPlan"

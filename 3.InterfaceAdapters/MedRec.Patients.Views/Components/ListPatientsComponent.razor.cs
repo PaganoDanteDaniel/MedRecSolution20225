@@ -19,12 +19,12 @@ public partial class ListPatientsComponent
     private IEnumerable<PatientSummaryDto> PagedPatients = [];
     private string Filter
     {
-        get => _paginationDto.Filter;
+        get => _paginationDto.FilterOne;
         set
         {
-            if (_paginationDto.Filter != value)
+            if (_paginationDto.FilterOne != value)
             {
-                _paginationDto.Filter = value;
+                _paginationDto.FilterOne = value;
                 // Llamar al método de debounce cada vez que el valor cambia
                 _ = OnSearchTermChanged(value);
             }

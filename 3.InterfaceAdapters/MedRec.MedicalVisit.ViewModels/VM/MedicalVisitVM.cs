@@ -14,6 +14,7 @@ public class MedicalVisitVM
     public bool IsLoading { get; private set; }
     public ErrorInfo? LastError { get; private set; }
 
+
     public MedicalVisitVM(
         IMedicalVisitSummaryListInputPort inputPort,
         IMedicalVisitSummaryListOutputPort outputPort)
@@ -25,7 +26,7 @@ public class MedicalVisitVM
     /// <summary>
     /// Carga las visitas de un paciente y actualiza la lista de UI.
     /// </summary>
-    public async Task LoadVisitsAsync(Guid patientId, CancellationToken cts = default)
+    public async Task LoadVisitsAsync(Guid patientId, PaginationDto pagination, CancellationToken cts = default)
     {
         try
         {
@@ -33,7 +34,7 @@ public class MedicalVisitVM
             LastError = null;
 
             // Llamamos al input port para poblar el output port
-            await _inputPort.Handle(patientId, null, cts);
+            await _inputPort.Handle(patientId, pagination, cts);
 
             Visits.Clear();
 
@@ -43,7 +44,7 @@ public class MedicalVisitVM
                     .Select(dto => new MedicalVisitModel(dto))
                     .OrderByDescending(v => v.VisitDate);
 
-                foreach (var visit in list)
+                foreach (var visit in list.ToList())
                     Visits.Add(visit);
             }
         }

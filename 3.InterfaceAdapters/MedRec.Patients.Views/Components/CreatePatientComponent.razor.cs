@@ -49,6 +49,7 @@ public partial class CreatePatientComponent : IDisposable
     {
         OnPatientAdded.InvokeAsync();
         _showModal = true;
+        Navigation.NavigateTo("/", true);
     }
 
     private void ShowWarning()

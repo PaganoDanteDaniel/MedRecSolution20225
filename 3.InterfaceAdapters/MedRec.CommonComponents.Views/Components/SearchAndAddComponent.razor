@@ -1,4 +1,94 @@
-﻿@using Microsoft.AspNetCore.Components.Forms
+﻿@using MedRec.Entity.DTOs
+@using Microsoft.AspNetCore.Components.Forms
+
+<div class="me-configuration">
+    <div class="me-filter">
+        @if (!string.IsNullOrWhiteSpace(LabelText))
+        {
+            <label class="me-filter-label">@LabelText</label>
+        }
+
+        @* Campo de texto (opcional) *@
+        @if (ShowTextInput)
+        {
+            <input type="text"
+                   class="me-filter-text uppercase-input"
+                   value="@Value"
+                   @oninput="OnTextInputChanged"
+                   autocomplete="off"
+                   placeholder="@Placeholder" />
+        }
+
+        @* Selector dinámico (opcional) *@
+        @if (EnumOptions?.Any() == true)
+        {
+            <InputSelect class="me-filter-select"
+                         TValue="string"
+                         Value="@SelectedEnumValue"
+                         ValueChanged="@(async (value) => await OnEnumValueChanged(value))"
+                         ValueExpression="() => SelectedEnumValue">
+                <option value="">@EnumPlaceholder</option>
+                @foreach (var option in EnumOptions)
+                {
+                    <option value="@option.Value">@option.Text</option>
+                }
+            </InputSelect>
+        }
+    </div>
+
+    @if (ShowButton)
+    {
+        <div class="me-buttons-content">
+            <button type="button" class="me-button" @onclick="OnButtonClick">
+                <i class="fas fa-plus"></i> @ButtonText
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+    // === Text input ===
+    [Parameter] public string Value { get; set; }
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public string Placeholder { get; set; } = "BUSCAR...";
+
+    // === Enum/dynamic select ===
+    [Parameter] public List<SelectOptionDto> EnumOptions { get; set; }
+    [Parameter] public string SelectedEnumValue { get; set; }
+    [Parameter] public EventCallback<string> SelectedEnumValueChanged { get; set; }
+    [Parameter] public string EnumPlaceholder { get; set; } = "SELECCIONE...";
+
+    // === Comunes ===
+    [Parameter] public string LabelText { get; set; } = string.Empty;
+    [Parameter] public string ButtonText { get; set; } = "AGREGAR";
+    [Parameter] public EventCallback OnButtonClick { get; set; }
+    [Parameter] public bool ShowButton { get; set; } = true;
+
+    private bool ShowTextInput => ValueChanged.HasDelegate;
+
+    private async Task OnTextInputChanged(ChangeEventArgs e)
+    {
+        var newValue = e.Value?.ToString();
+        if (Value != newValue)
+        {
+            Value = newValue;
+            await ValueChanged.InvokeAsync(Value);
+        }
+    }
+    private async Task OnEnumValueChanged(string value)
+    {
+        SelectedEnumValue = value;
+        await SelectedEnumValueChanged.InvokeAsync(value);
+    }
+}
+
+
+
+
+@* @using MedRec.Entity.Enums
+@using MedRec.Entity.Extensions
+@using Microsoft.AspNetCore.Components.Forms
+
 <div class="me-configuration">
     <!-- Filtro de búsqueda -->
     <div class="me-filter">
@@ -13,8 +103,7 @@
                    value="@Value"
                    @oninput="OnInputValueChanged"
                    autocomplete="off"
-                   placeholder="@Placeholder" />
-        
+                   placeholder="@Placeholder" />         
     </div>
 
     @if (ShowButton)
@@ -32,7 +121,7 @@
     /// El valor actual del término de búsqueda.
     /// </summary>
     [Parameter]
-    public string? Value { get; set; }
+    public string Value { get; set; }
 
     /// <summary>
     /// Callback para notificar cambios en el valor.
@@ -75,7 +164,4 @@
         Value = e.Value?.ToString();
         await ValueChanged.InvokeAsync(Value);
     }
-}
-<style>
-   
-</style>
+} *@

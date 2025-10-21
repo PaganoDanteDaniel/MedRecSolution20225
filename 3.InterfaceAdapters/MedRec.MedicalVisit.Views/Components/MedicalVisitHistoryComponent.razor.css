@@ -1,0 +1,41 @@
+.search-container {
+    background-color: #ffffff;
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    z-index: 10;
+    border-radius: 6px;
+}
+
+/* Solo el área de las visitas hace scroll */
+.visit-history {
+    overflow-y: auto;
+    max-height: calc(100vh - 220px); /* ajustá este valor según tu layout */
+    padding: 1rem;
+}
+
+.visit-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1rem;
+}
+
+.visit-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+}
+
+    .visit-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+.card-body p {
+    margin-bottom: 0.5rem;
+    word-break: break-word;
+}

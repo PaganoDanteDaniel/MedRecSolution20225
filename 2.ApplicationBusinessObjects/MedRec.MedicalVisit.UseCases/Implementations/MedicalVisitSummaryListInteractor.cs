@@ -15,7 +15,7 @@ internal class MedicalVisitSummaryListInteractor
 
         cts.ThrowIfCancellationRequested();
 
-        var result = await _queriesRepository.GetMedicalVisits(patientId, cts);
+        var result = await _queriesRepository.GetMedicalVisits(patientId, paginationDto, cts);
 
         if (!result.IsSuccess)
         {

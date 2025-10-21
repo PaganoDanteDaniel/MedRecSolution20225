@@ -24,7 +24,8 @@
     /* Elimina margin-bottom si no hay otros elementos debajo */
 }
 
-.me-filter-text {
+.me-filter-text,
+::deep select{
     font-size: var(--font-size-base);
     flex: 1; /* El input crece para llenar el espacio restante */
     min-width: 0; /* Permite que el input se contraiga */
@@ -34,6 +35,7 @@
     background-color: var(--input-background);
     color: var(--input-text);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    margin-left: 5px;
 }
 
 /* El botón no debe tener width fijo */

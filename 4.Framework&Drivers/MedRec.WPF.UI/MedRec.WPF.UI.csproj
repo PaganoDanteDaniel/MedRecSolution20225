@@ -12,6 +12,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>MedRec.WPF.UI</RootNamespace>
         <ApplicationIcon>MedRec.ico</ApplicationIcon>
+        <Version>1.0.1</Version>
     </PropertyGroup>
 
     <ItemGroup>

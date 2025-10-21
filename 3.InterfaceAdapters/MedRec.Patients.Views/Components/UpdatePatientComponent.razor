@@ -192,10 +192,10 @@
     </div>
 </EditForm>
 
-<ModalComponent Show="@ShowModal"
-                ShowChanged="@((bool val) => ShowModal = val)"
-                Title="@ModalTitle"
-                Type="@ModalType"
+<ModalComponent Show="@_showModal"
+                ShowChanged="@((bool val) => _showModal = val)"
+                Title="@_modalTitle"
+                Type="@_modalType"
                 CenterText="true"
                 ShowAcceptButton="true"
                 OnAccept="@CloseModal"
