@@ -133,7 +133,7 @@
     <value>FECHA DE NACIMIENTO</value>
   </data>
   <data name="DocumentNumberLabel" xml:space="preserve">
-    <value>NUMERO DE DOCUMENTO</value>
+    <value>NÚMERO DE DOCUMENTO</value>
   </data>
   <data name="EmailLabel" xml:space="preserve">
     <value>DIRECCIÓN DE CORREO ELECTRONICO</value>
@@ -145,13 +145,13 @@
     <value>NOMBRE DEL PACIENTE</value>
   </data>
   <data name="HealthInsuranceCardLabel" xml:space="preserve">
-    <value>NUMERO DE TARJETA</value>
+    <value>NÚMERO DE TARJETA</value>
   </data>
   <data name="HealthInsuranceCompanyLabel" xml:space="preserve">
     <value>OBRA SOCIAL / PREPAGA</value>
   </data>
   <data name="HealthInsuranceMemberNumberLabel" xml:space="preserve">
-    <value>NUMERO DE SOCIO</value>
+    <value>NÚMERODE SOCIO</value>
   </data>
   <data name="HealthInsurancePlanLabel" xml:space="preserve">
     <value>PLAN DE COBERTURA</value>
@@ -160,7 +160,7 @@
     <value>APELLIDO DEL PACIENTE</value>
   </data>
   <data name="PhoneNumberLabel" xml:space="preserve">
-    <value>NUMERO DE TELEFONO</value>
+    <value>NÚMERO DE TELEFONO</value>
   </data>
   <data name="SubmitButton" xml:space="preserve">
     <value>GUARDAR</value>
@@ -172,6 +172,6 @@
     <value>ACTUALIZACIÓN DE LOS DATOS DEL PACIENTE</value>
   </data>
   <data name="UpdatePatientTemplate" xml:space="preserve">
-    <value>PACIENTE {0} ACTUALIZADO</value>
+    <value>PACIENTE ACTUALIZADO EXITOSAMENTE</value>
   </data>
 </root>

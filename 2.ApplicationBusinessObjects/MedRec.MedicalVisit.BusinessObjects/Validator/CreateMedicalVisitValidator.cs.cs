@@ -26,11 +26,9 @@ public static class CreateMedicalVisitValidator
         errors.AddRange(dateValidation.Errors);
 
         // Reason
-        //var reasonValidation = Guard.Against(visit.Reason, nameof(visit.Reason))
-        //    .NotNullOrEmpty(MedicalVisitValidatorMessages.Reason_Required)
-        //    .MaxLength(MedicalVisitConstraints.MaxLengthReason,
-        //               string.Format(MedicalVisitValidatorMessages.Reason_MaxLength, MedicalVisitConstraints.MaxLengthReason));
-        //errors.AddRange(reasonValidation.Errors);
+        var reasonValidation = Guard.Against(visit.Reason, nameof(visit.Reason))
+            .IsDefined(MedicalVisitValidatorMessages.Reason_Required);
+        errors.AddRange(reasonValidation.Errors);
 
         // Diagnosis (opcional, pero con longitud)
         if (!string.IsNullOrWhiteSpace(visit.Diagnosis))

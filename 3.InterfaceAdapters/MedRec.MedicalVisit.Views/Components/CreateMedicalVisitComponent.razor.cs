@@ -9,22 +9,32 @@
 //------------------------------------------------------------------------------
 
 using MedRec.CommonComponents.Views;
+using MedRec.Entity.POCOEntities;
 using MedRec.MedicalVisit.ViewModels.VM;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace MedRec.MedicalVisit.Views.Components;
 public partial class CreateMedicalVisitComponent
 {
+    [Inject] private NavigationManager Navigation { get; set; }
     [Parameter] public CreateMedicalVisitVM VM { get; set; }
     [Parameter] public Guid PatientId { get; set; }
+    [Parameter] public string PatientName { get; set; }
     [Parameter] public bool IsReadOnly { get; set; }
 
     private EditContext _editContext;
-    private bool ShowModal;
-    private string ModalTitle = "Mensaje del sistema";
-    private ModalType ModalType = ModalType.MessageInfo;
+    private string _modalTitle = "Mensaje del sistema";
+    private ModalType _modalType = ModalType.MessageInfo;
+    private bool _showModal;
+
+    private bool _navigateAfterClose = false;
+    private string _navigationUrl = "/";
+    
+
+    private TaskCompletionSource<bool> _saveConfirmationTcs;
 
     private CancellationTokenSource _cts;
 
@@ -42,27 +52,69 @@ public partial class CreateMedicalVisitComponent
         VM.OnShowConcurrencyError += () => ShowModalMessage("Conflicto de concurrencia", ModalType.MessageError);
         VM.OnMedicalVisitAdded += StateHasChanged;
     }
-  
-
-    public async Task AddVisit()
+    private void ShowModalMessageAndNavigate(string title, ModalType type, string navigationUrl)
     {
-        if (_editContext.Validate() == true)
-        {
-            _cts?.Dispose();
-            _cts = new CancellationTokenSource();
-            await VM.AddMedicalVisitAsync(_cts.Token);
-        }
+        VM.InformationMessage = "UpdatePatientMessages.UpdatePatientTemplate";
+        _modalTitle = title;
+        _modalType = type;
+        _showModal = true;
+        _navigateAfterClose = true;
+        _navigationUrl = navigationUrl;
+        InvokeAsync(StateHasChanged);
     }
     private void ShowModalMessage(string title, ModalType type)
     {
-        ModalTitle = title;
-        ModalType = type;
-        ShowModal = true;
+        _modalTitle = title;
+        _modalType = type;
+        _showModal = true;
+        _navigateAfterClose = false;
         InvokeAsync(StateHasChanged);
+    }
+
+    private void HandleButtonClick()
+    {
+        // Lógica para ejecutar al hacer clic en el botón
+        Navigation.NavigateTo($"/medical-visit/list/{PatientId}/{PatientName}");
+    }
+    public async Task AddVisit()
+    {
+        VM.InformationMessage = "ASEGURATE DE QUE LOS DATOS ESTÉN COMPLETOS Y CORRECTOS. UNA VEZ GUARDADOS, NO SE PODRÁN CAMBIAR.";
+        _modalTitle = "CONFIRMACIÓN DE GUARDADO";
+        _modalType = ModalType.MessageInfo;
+        _showModal = true;  
+        
+        _saveConfirmationTcs = new TaskCompletionSource<bool>();
+        //StateHasChanged();
+
+        bool confirmed = await _saveConfirmationTcs.Task;
+       
+        if (confirmed)
+        {
+            if (_editContext.Validate() == true)
+            {
+                _cts?.Dispose();
+                _cts = new CancellationTokenSource();
+                await VM.AddMedicalVisitAsync(_cts.Token);
+                Navigation.NavigateTo($"/medical-visit/list/{PatientId}/{PatientName}", true);
+            }
+            
+        }
+     }
+    private void OnAcceptSave()
+    { 
+        _showModal = false;
+        _saveConfirmationTcs?.SetResult(true);
     }
 
     private void CloseModal()
     {
-        ShowModal = false;
+        _showModal = false;
+
+        if (_navigateAfterClose)
+        {
+            _navigateAfterClose = false;
+            Navigation.NavigateTo(_navigationUrl, true);
+        }
     }
+
 }

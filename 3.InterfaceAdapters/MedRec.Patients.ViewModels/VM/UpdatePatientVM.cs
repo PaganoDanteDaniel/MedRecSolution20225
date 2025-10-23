@@ -113,7 +113,6 @@ public class UpdatePatientVM(
             }
             else if (_presenter.UpdatedSuccessfully)
             {
-                InformationMessage = "Paciente creado con éxito";
                 Model = new UpdatePatientModel();
                 OnPatientUpdated?.Invoke();
             }

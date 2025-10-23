@@ -49,6 +49,7 @@
                             <option value="@reason">@reason.GetDescription()</option>
                         }
                     </InputSelect>
+                    <ValidationMessage For="() => VM.Model.Reason" class="validation-message" />
                 </div>
             </div>
         </fieldset>
@@ -109,33 +110,12 @@
             </div>
         </fieldset>
 
-        <!-- Sección: Diagnóstico y tratamiento -->
-        <fieldset class="form-section">
-            <legend>Diagnóstico y tratamiento</legend>
-            <div class="visit-row">
-                <div class="visit-col long-field">
-                    <label for="diagnosis">@MedicalVisitMessages.LabelVisitDiagnosis</label>
-                    <InputText id="diagnosis"
-                               @bind-Value="VM.Model.Diagnosis"
-                               autocomplete="new-diagnosis"
-                               readonly
-                               onfocus="@(IsReadOnly ? null : "this.removeAttribute('readonly');")" />
-                    <ValidationMessage For="() => VM.Model.Diagnosis" class="validation-message" />
-                </div>
-                <div class="visit-col long-field">
-                    <label for="treatment">@MedicalVisitMessages.LabelVisitTreatment</label>
-                    <InputText id="treatment"
-                               @bind-Value="VM.Model.Treatment"
-                               autocomplete="new-treatment"
-                               readonly
-                               onfocus="@(IsReadOnly ? null : "this.removeAttribute('readonly');")" />
-                    <ValidationMessage For="() => VM.Model.Treatment" class="validation-message" />
-                </div>
-            </div>
-        </fieldset>
-
         <!-- Botón de envío -->
         <div class="button-group">
+            <button type="button" @onclick="() => HandleButtonClick()">
+                <i class="bi bi-save2"></i> @MedicalVisitMessages.ButtonExit
+            </button>
+            
             <button type="submit" disabled="@IsReadOnly">
                 <i class="bi bi-save2"></i> @MedicalVisitMessages.ButtonSaveMedicalVisit
             </button>
@@ -145,13 +125,13 @@
 </EditForm>
 
 <!-- Modal de mensajes -->
-<ModalComponent Show="@ShowModal"
-                ShowChanged="@((bool val) => ShowModal = val)"
-                Title="@ModalTitle"
-                Type="@ModalType"
+<ModalComponent Show="@_showModal"
+                ShowChanged="@((bool val) => _showModal = val)"
+                Title="@_modalTitle"
+                Type="@_modalType"
                 CenterText="true"
-                ShowAcceptButton="true"
-                OnAccept="@CloseModal"
-                ShowCancelButton="false">
+                ShowAcceptButton="true" 
+                ShowCancelButton="true"
+                OnAccept="@OnAcceptSave">
     @((MarkupString)VM.InformationMessage)
 </ModalComponent>

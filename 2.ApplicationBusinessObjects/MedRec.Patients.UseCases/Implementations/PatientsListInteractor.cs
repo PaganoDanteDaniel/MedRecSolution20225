@@ -23,7 +23,7 @@ internal class PatientsListInteractor
 
         cts.ThrowIfCancellationRequested();
 
-        var countResult = await queriesRepository.CountPatients(paginationDto.Filter, cts);
+        var countResult = await queriesRepository.CountPatients(paginationDto.FilterOne, cts);
 
         if (!countResult.IsSuccess)
         {

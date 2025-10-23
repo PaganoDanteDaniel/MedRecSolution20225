@@ -1,5 +1,5 @@
 ﻿@page "/medical-visit/create/{patientId:guid}/{patientName}"
-@page "/medical-visit/detail/{visitId:guid}/{patientName}"
+@page "/medical-visit/detail/{patientId:guid}/{visitId:guid}/{patientName}"
 @using MedRec.CommonComponents.Views.Components
 @using MedRec.CommonComponents.Views.Exceptions
 @using MedRec.MedicalVisit.Views.Components
@@ -14,6 +14,7 @@
             <ChildContent>
                 <CreateMedicalVisitComponent 
                     PatientId="@PatientId" 
+                    PatientName="@PatientName"
                     VM="@VM" 
                     IsReadOnly="@IsReadOnly" />
             </ChildContent>

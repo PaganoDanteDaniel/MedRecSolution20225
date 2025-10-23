@@ -79,6 +79,15 @@ namespace MedRec.MedicalVisit.Views.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a SALIR.
+        /// </summary>
+        internal static string ButtonExit {
+            get {
+                return ResourceManager.GetString("ButtonExit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a GUARDAR VISITA MÉDICA.
         /// </summary>
         internal static string ButtonSaveMedicalVisit {

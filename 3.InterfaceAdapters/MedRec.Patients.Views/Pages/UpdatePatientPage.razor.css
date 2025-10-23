@@ -19,7 +19,11 @@
 .scrollable-section {
     flex: 1;
     overflow-y: auto;
-    padding: 1rem;
+    display: flex;
+    justify-content: center; /* Centrado horizontal */
+    align-items: flex-start; /* Centrado vertical */
+    min-height: 0; /* Importante para flexbox */
+    padding: 0; /* Sin padding para aprovechar el alto */
     box-sizing: border-box;
 }
 
@@ -34,4 +38,18 @@
 
 .error-boundary {
     margin-bottom: 1rem;
+}
+
+@media (min-width: 801px) {
+    .scrollable-section {
+        align-items: center;
+    }
+}
+
+/* En móviles/tablets, alineado arriba */
+@media (max-width: 800px) {
+    .scrollable-section {
+        align-items: flex-start;
+        padding: 10px 0; /* opcional: añade un poco de espacio arriba/abajo */
+    }
 }

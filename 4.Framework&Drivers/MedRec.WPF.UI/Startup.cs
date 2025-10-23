@@ -1,4 +1,3 @@
-using MedRec.DataContext.EF.Options;
 using MedRec.DataContext.MySql.Options;
 using MedRec.Shared.Security;
 using Microsoft.Extensions.Configuration;
@@ -38,33 +37,11 @@ public static class Startup
     private static void WireupServices(IServiceCollection services, IConfiguration configuration)
     {
         // 1. Crear instancia de DBOptionsMySql y bindear desde configuración
-        var dbOptions = new DBOptions();
         var dbOptionsMySql = new DBOptionsMySql();
         var jwtKey = new Jwt();
 
-        configuration.GetSection(DBOptions.SectionKey).Bind(dbOptions);
         configuration.GetSection(DBOptionsMySql.SectionKey).Bind(dbOptionsMySql);
         configuration.GetSection(Jwt.SectionKey).Bind(jwtKey);
-
-        if (!string.IsNullOrEmpty(dbOptions.ConnectionString))
-        {
-            if (!EncryptionHelper.IsEncrypted(dbOptions.ConnectionString))
-            {
-                // Primera ejecución: encriptar y guardar en appsettings.json
-                dbOptions.ConnectionString = EncryptionHelper.Encrypt(dbOptions.ConnectionString);
-
-                // Reescribir el appsettings.json con la cadena encriptada
-                var json = File.ReadAllText("appsettings.json");
-                dynamic config = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-                config.DBOptions.ConnectionString = dbOptions.ConnectionString;
-                File.WriteAllText("appsettings.json",
-                    Newtonsoft.Json.JsonConvert.SerializeObject(config, Newtonsoft.Json.Formatting.Indented));
-            }
-
-            // Ya estaba encriptada, desencriptar para usar
-            dbOptions.ConnectionString = EncryptionHelper.Decrypt(dbOptions.ConnectionString);
-
-        }
 
         if (!string.IsNullOrEmpty(dbOptionsMySql.ConnectionString))
         {
@@ -96,8 +73,6 @@ public static class Startup
         }
 
         // 2. Registrar la instancia ya procesada como singleton
-        services.AddSingleton(Options.Create(dbOptions));
-        services.Configure<DBOptions>(configuration.GetSection(DBOptions.SectionKey));
 
         services.AddSingleton(Options.Create(dbOptionsMySql));
         services.Configure<DBOptionsMySql>(configuration.GetSection(DBOptionsMySql.SectionKey));

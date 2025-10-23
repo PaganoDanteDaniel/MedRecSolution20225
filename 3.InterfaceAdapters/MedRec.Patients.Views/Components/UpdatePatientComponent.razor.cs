@@ -1,4 +1,5 @@
 ﻿using MedRec.CommonComponents.Views;
+using MedRec.Patients.ViewModels.Models;
 using MedRec.Patients.ViewModels.VM;
 using MedRec.Patients.Views.Resources;
 using Microsoft.AspNetCore.Components;
@@ -12,9 +13,12 @@ public partial class UpdatePatientComponent
     #region Fields
 
     private bool _showHealthCompanyList;
-    private bool ShowModal;
-    private string ModalTitle = "Mensaje del sistema";
-    private ModalType ModalType = ModalType.MessageInfo;
+    private bool _navigateAfterClose = false;
+    private string _navigationUrl = "/";
+    private bool _showModal;
+    private string _modalTitle = "Mensaje del sistema";
+    private ModalType _modalType = ModalType.MessageInfo;
+    private UpdatePatientModel _originalModel;
 
     private EditContext _editContext;
 
@@ -22,6 +26,8 @@ public partial class UpdatePatientComponent
 
     private ErrorBoundary ErrorBoundaryRef;
     #endregion
+
+    private bool HasChanges => !DeepEquals(_originalModel, VM.Model);
 
     #region Injected Services
     [Inject] public NavigationManager Navigation { get; set; }
@@ -34,6 +40,13 @@ public partial class UpdatePatientComponent
     #endregion
 
     #region Methods
+    /// <summary>
+    /// Notifica al EditContext que un campo específico del formulario ha cambiado,
+    /// activando así su validación sin requerir interacción directa del usuario.
+    /// Útil cuando se modifican propiedades del modelo programáticamente.
+    /// </summary>
+    /// <typeparam name="T">El tipo de la propiedad que ha cambiado.</typeparam>
+    /// <param name="propertyExpression">Expresión lambda que identifica la propiedad modificada (ej: () => VM.Model.FirstName).</param>
     private void OnFieldChanged<T>(Expression<Func<T>> propertyExpression)
     {
         var fieldIdentifier = FieldIdentifier.Create(propertyExpression);
@@ -49,7 +62,7 @@ public partial class UpdatePatientComponent
         _editContext = new EditContext(VM.Model);
         // 1. Primero carga los datos
         await VM.GetPatient(PatientId, _cts.Token);
-
+        _originalModel = VM.Model.Clone();
         // 2. Luego crea el EditContext con el modelo YA CARGADO
 
         VM.OnShowMessage += () => ShowModalMessage("Información", ModalType.MessageInfo);
@@ -57,21 +70,38 @@ public partial class UpdatePatientComponent
         VM.OnShowError += () => ShowModalMessage("Error", ModalType.MessageError);
         VM.OnShowConcurrencyError += () => ShowModalMessage("Conflicto de concurrencia", ModalType.MessageError);
 
-        VM.OnPatientUpdated += () => ShowModalMessage("Actualización exisota...", ModalType.MessageSuccess);
+        VM.OnPatientUpdated += () => ShowModalMessageAndNavigate("Actualización exitosa...", ModalType.MessageSuccess, "/");
         StateHasChanged();
 
     }
 
+    private void ShowModalMessageAndNavigate(string title, ModalType type, string navigationUrl)
+    {
+        VM.InformationMessage = UpdatePatientMessages.UpdatePatientTemplate;
+        _modalTitle = title;
+        _modalType = type;
+        _showModal = true;
+        _navigateAfterClose = true;
+        _navigationUrl = navigationUrl;
+        InvokeAsync(StateHasChanged);
+    }
     private void ShowModalMessage(string title, ModalType type)
     {
-        ModalTitle = title;
-        ModalType = type;
-        ShowModal = true;
+        _modalTitle = title;
+        _modalType = type;
+        _showModal = true;
+        _navigateAfterClose = false;
         InvokeAsync(StateHasChanged);
     }
     private void CloseModal()
     {
-        ShowModal = false;
+        _showModal = false;
+
+        if (_navigateAfterClose)
+        {
+            _navigateAfterClose = false;
+            Navigation.NavigateTo(_navigationUrl, true);
+        }
     }
     private async Task UpdatePatient()
     {
@@ -107,6 +137,23 @@ public partial class UpdatePatientComponent
         return (string.Format(CreatePatientMessages.AgeOfPatientTemplate, year.ToString(), month.ToString()));
     }
 
+    private bool DeepEquals(UpdatePatientModel a, UpdatePatientModel b)
+    {
+        if (a == null || b == null) return a == b;
+
+        return a.FirstName == b.FirstName &&
+               a.LastName == b.LastName &&
+               a.DocumentNumber == b.DocumentNumber &&
+               a.DateOfBirth == b.DateOfBirth &&
+               a.PhoneNumber == b.PhoneNumber &&
+               a.Address == b.Address &&
+               a.Email == b.Email &&
+               a.BiologicalSexId == b.BiologicalSexId &&
+               a.HealthInsuranceCompanyId == b.HealthInsuranceCompanyId &&
+               a.HealthInsuranceCard == b.HealthInsuranceCard &&
+               a.HealthInsuranceMemberNumber == b.HealthInsuranceMemberNumber &&
+               a.HealthInsurancePlan == b.HealthInsurancePlan;
+    }
     private void OpenHealthCompanyList()
     {
         _showHealthCompanyList = true;

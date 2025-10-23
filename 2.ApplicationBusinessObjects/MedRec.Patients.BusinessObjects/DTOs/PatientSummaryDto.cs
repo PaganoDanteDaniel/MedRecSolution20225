@@ -1,7 +1,7 @@
 ﻿namespace MedRec.Patients.BusinessObjects.DTOs;
 public class PatientSummaryDto
 {
-    public PatientSummaryDto(Guid patientId,
+    public PatientSummaryDto(Guid id,
         string firstName,
         string lastName,
         string documentNumber,
@@ -9,7 +9,7 @@ public class PatientSummaryDto
         string email,
         DateTime dateOfBirth)
     {
-        PatientId = patientId;
+        Id = id;
         FirstName = firstName;
         LastName = lastName;
         DocumentNumber = documentNumber;
@@ -18,7 +18,7 @@ public class PatientSummaryDto
         DateOfBirth = dateOfBirth;
     }
 
-    public Guid PatientId { get; }
+    public Guid Id { get; }
     public string FirstName { get; }
     public string LastName { get; }
     public string DocumentNumber { get; }
