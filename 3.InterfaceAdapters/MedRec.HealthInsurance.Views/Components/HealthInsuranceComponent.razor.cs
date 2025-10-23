@@ -63,14 +63,14 @@ public partial class HealthInsuranceComponent
     }
     private async void OnSearchTermChanged(ChangeEventArgs e)
     {
-        _paginationDto.Filter = e.Value?.ToString() ?? string.Empty;
+        _paginationDto.FilterOne = e.Value?.ToString() ?? string.Empty;
 
         // Cancelar la búsqueda anterior si existe
         _debounceCts?.Cancel();
         _debounceCts = new CancellationTokenSource();
 
         // Solo buscar si hay más de 2 caracteres o está vacío
-        if (_paginationDto.Filter.Length > 2 || _paginationDto.Filter.Length == 0)
+        if (_paginationDto.FilterOne.Length > 2 || _paginationDto.FilterOne.Length == 0)
         {
             try
             {

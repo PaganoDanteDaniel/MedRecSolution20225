@@ -1,5 +1,15 @@
 ﻿html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* opcional, si no quieres scroll global */
+}
+
+#app {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 h1:focus {

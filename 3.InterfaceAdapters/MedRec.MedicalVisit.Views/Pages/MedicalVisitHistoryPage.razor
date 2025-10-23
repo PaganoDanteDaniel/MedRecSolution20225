@@ -17,6 +17,7 @@
             <ChildContent>
                 <MedicalVisitHistoryComponent 
                     PatientId="@PatientId" 
+                    PatientName="@PatientName"
                     VM="@VM" 
                     OnVisitSelected="HandleVisitSelected" />
             </ChildContent>
@@ -37,7 +38,9 @@
     [Inject] public MedicalVisitVM VM { get; set; }
     [Parameter] public Guid PatientId { get; set; }
     [Parameter] public string PatientName { get; set; }
+
     private string footerMessage;
+
 
     private void OnMessageFooterChange(string title)
     {
@@ -53,7 +56,7 @@
     {
         // Aquí puedes definir qué hacer cuando se selecciona una visita.
         // Por ejemplo, navegar a una página de detalle de la visita.
-        NavigationManager.NavigateTo($"/medical-visit/detail/{selectedVisit.Id}/{PatientName}");
+        NavigationManager.NavigateTo($"/medical-visit/detail/{PatientId}/{selectedVisit.Id}/{PatientName}");
     }
 }
 
@@ -66,20 +69,19 @@
         overflow: hidden; /* evita scroll global */
     }
 
-    /* contenedor principal */
     .body-content {
         display: flex;
         flex-direction: column;
-        flex: 1;
-        min-height: 100vh;
-        overflow: hidden; /* para que el scroll solo sea interno */
+        height: 100vh;
+        overflow: hidden;
         background-color: var(--page-background, #f8f9fa);
     }
 
-    /* sección que scrollea */
     .scrollable-section {
-        flex: 1;
-        overflow-y: auto;
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        min-height: 0; /* Importante para que el hijo con flex:1 no desborde */
         padding: 1rem;
         box-sizing: border-box;
     }

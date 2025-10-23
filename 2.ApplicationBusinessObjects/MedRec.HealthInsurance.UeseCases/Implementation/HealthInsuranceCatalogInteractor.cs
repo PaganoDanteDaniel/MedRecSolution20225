@@ -15,7 +15,7 @@ internal class HealthInsuranceCatalogInteractor(IHealthInsuranceCatalogOutputPor
         // Limpiar el error antes de iniciar la operación
         await _outputPort.ErrorAsync(null);
 
-        var totalResult = await _queriesRepository.GetCount(pagination.Filter, cts);
+        var totalResult = await _queriesRepository.GetCount(pagination.FilterOne, cts);
         if (!totalResult.IsSuccess)
         {
             await _outputPort.ErrorAsync(totalResult.Error);

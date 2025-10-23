@@ -7,5 +7,5 @@ public interface IPatientCommandsDataContext : IDataContextUnitOfWork
     Task CreatePatientAsync(Patient patient, CancellationToken cancellationToken = default);
     Task UpdatePatientAsync(Patient patient, CancellationToken cancellationToken = default);
     Task HardDeletePatientAsync(Guid patientId, CancellationToken cancellationToken = default);
-    Task SoftDeletePatientAsync(Patient patientId, CancellationToken cancellationToken = default);
+    Task SoftDeletePatientAsync(Patient patient, CancellationToken cancellationToken = default);
 }

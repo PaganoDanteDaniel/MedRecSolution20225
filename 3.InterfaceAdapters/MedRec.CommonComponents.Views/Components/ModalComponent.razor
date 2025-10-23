@@ -15,13 +15,13 @@
             <div class="my-modal-footer">
                 @if (ShowAcceptButton)
                 {
-                    <button type="button" @onclick="OnAccept">
+                    <button type="button" class="btn-accept" @onclick="OnAccept">
                         <i class="bi bi-check-lg"></i> Aceptar
                     </button>
                 }
                 @if (ShowCancelButton)
                 {
-                    <button type="button" @onclick="Close">
+                    <button type="button" class="btn-cancel" @onclick="Close">
                         <i class="bi bi-x-lg"></i> Cerrar
                     </button>
                 }

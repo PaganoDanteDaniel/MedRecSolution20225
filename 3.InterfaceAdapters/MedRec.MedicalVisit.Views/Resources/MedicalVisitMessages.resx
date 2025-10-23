@@ -123,6 +123,9 @@
   <data name="ButtonClear" xml:space="preserve">
     <value>LIMPIAR</value>
   </data>
+  <data name="ButtonExit" xml:space="preserve">
+    <value>SALIR</value>
+  </data>
   <data name="ButtonSaveMedicalVisit" xml:space="preserve">
     <value>GUARDAR VISITA MÉDICA</value>
   </data>

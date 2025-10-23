@@ -1,0 +1,111 @@
+.my-table-container {
+    border-radius: 6px;
+    overflow-x: auto; /* Scroll horizontal si es necesario */
+    overflow-y: hidden;
+    border: 1px solid var(--table-border);
+    background-color: var(--table-background);
+    -webkit-overflow-scrolling: touch; /* Mejor UX en iOS */
+}
+.my-table-container ::deep table{
+    width: 100%;
+}
+
+.ptbl-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    background-color: var(--table-background);
+    color: var(--table-cell-text);
+}
+
+    .ptbl-table ::deep .actions {
+        text-align: center; /* Centrar horizontalmente el contenido dentro de la celda */
+        vertical-align: middle; /* Centrar verticalmente el contenido dentro de la celda */
+    }
+
+        .ptbl-table ::deep .actions a {
+            display: inline-block; /* Asegura que los enlaces se comporten como elementos en línea */
+            margin: 0 auto; /* Centrar los enlaces horizontalmente */
+        }
+
+            .ptbl-table ::deep .actions a i {
+                background-color: var(--link-background)!important;
+                border: 1px solid var(--link-border)!important;
+                color: var(--link-text) !important;
+                padding-left: 5px;
+                padding-right: 5px;
+                border-radius: 4px;
+                text-decoration: none;
+                transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+            }
+     .ptbl-table ::deep tbody tr.table-row-even {
+         background-color: var(--table-row-even-background);
+     }
+
+    .ptbl-table ::deep tr.table-row-odd {
+        background-color: var(--table-row-odd-background);
+    }
+
+    .ptbl-table ::deep tbody tr:hover {
+        background-color: var(--table-row-hover-background);
+        cursor: pointer;
+    }
+
+    .ptbl-table ::deep thead th {
+        background-color: var(--table-header-background);
+        color: var(--table-header-text);
+        text-transform: uppercase;
+        height: 5rem;
+    }
+
+    .ptbl-table ::deep th,
+    .ptbl-table ::deep td {
+        padding: 6px;
+        text-align: left;
+        border-bottom: 1px solid var(--table-border);
+        vertical-align: middle; /* Asegura que el contenido esté centrado verticalmente */
+    }
+
+    .ptbl-table .number-type {
+        text-align: right;
+    }
+
+/* ===== Responsive: Modo apilado en móviles (<768px) ===== */
+
+/* ===== Pantallas medianas (tablets, laptops pequeñas) ===== */
+@media screen and (max-width: 1281px) {
+    .ptbl-table ::deep th, 
+    .ptbl-table ::deep td,
+    .ptbl-table ::deep tr{
+        padding: 4px 6px !important;
+        font-size: var(--font-size-1281) !important;
+    }
+
+    .ptbl-table ::deep thead th {
+        height: 3rem !important;
+    }
+    .ptbl-table ::deep tbody tr {
+        height: 1.5rem !important;
+    }
+
+    .ptbl-table .actions ::deep a {
+        margin: 0 3px !important;
+    }
+}
+@media screen and (max-width: 1921px) {
+    .ptbl-table ::deep th, .ptbl-table ::deep td {
+        padding: 4px 6px !important;
+        font-size: var(--font-size-1921);
+    }
+
+    .ptbl-table ::deep thead th {
+        height: 4rem;
+    }
+
+    .ptbl-table ::deep tbody tr{
+        height: 2.5rem;
+    }
+    .ptbl-table .actions ::deep a {
+        margin: 0 4px;
+    }
+}

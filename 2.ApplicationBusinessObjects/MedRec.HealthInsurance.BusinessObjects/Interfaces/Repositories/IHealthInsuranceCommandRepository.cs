@@ -3,7 +3,7 @@ using MedRec.Entity.POCOEntities;
 using MedRec.Entity.Results;
 
 namespace MedRec.HealthInsurance.BusinessObjects.Interfaces.Repositories;
-public interface IHealthInsuranceCommandRepository : ICommandUnitOfWork
+public interface IHealthInsuranceCommandRepository : IUnitOfWork
 {
     Task<Result<HealthInsuranceCompany>> Create(HealthInsuranceCompany entity, CancellationToken cts);
     Task<Result<Unit>> Update(HealthInsuranceCompany entity, CancellationToken cts);

@@ -23,13 +23,13 @@ public class CreateMedicalVisitModel
             MedicalHistoryId = model.MedicalHistoryId,
             VisitDate = model.VisitDate,
             Reason = model.Reason,
-            Diagnosis = model.Diagnosis,
-            Treatment = model.Treatment,
+            Diagnosis = (model.Diagnosis ?? string.Empty).ToUpperInvariant(),
+            Treatment = (model.Treatment ?? string.Empty).ToUpperInvariant(),
             SystolicPressure = model.SystolicPressure,
             DiastolicPressure = model.DiastolicPressure,
             PulsePerMinute = model.PulsePerMinute,
             Temperature = model.Temperature,
-            Notes = model.Notes
+            Notes = (model.Notes ?? string.Empty).ToUpperInvariant()
         };
     }
 }

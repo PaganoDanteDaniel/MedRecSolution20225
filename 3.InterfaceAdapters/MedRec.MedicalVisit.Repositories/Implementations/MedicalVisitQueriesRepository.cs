@@ -51,12 +51,12 @@ internal class MedicalVisitQueriesRepository(IMedicalVisitQueriesDataContext _qu
         }
     }
 
-    public async Task<Result<IEnumerable<PatientMedicalVisit>>> GetMedicalVisits(Guid patientId, CancellationToken cts = default)
+    public async Task<Result<IEnumerable<PatientMedicalVisit>>> GetMedicalVisits(Guid patientId, PaginationDto paginationDto = default, CancellationToken cts = default)
     {
         Result<IEnumerable<PatientMedicalVisit>> result = null!;
         try
         {
-            var medicalVisit = await _queriesDataContext.GetAllMedicalVisitAsync(patientId, cts);
+            var medicalVisit = await _queriesDataContext.GetAllMedicalVisitAsync(patientId, paginationDto, cts);
             if (medicalVisit != null)
             {
                 return result = Result<IEnumerable<PatientMedicalVisit>>.Ok(medicalVisit);

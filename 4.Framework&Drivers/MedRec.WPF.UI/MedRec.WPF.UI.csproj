@@ -11,7 +11,13 @@
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>MedRec.WPF.UI</RootNamespace>
+        <ApplicationIcon>MedRec.ico</ApplicationIcon>
+        <Version>1.0.1</Version>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Content Include="MedRec.ico" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Wpf" Version="9.*" />
@@ -34,7 +40,6 @@
 
     <ItemGroup>
       <Folder Include="Data\" />
-      <Folder Include="Pages\" />
     </ItemGroup>
 
     <ItemGroup>

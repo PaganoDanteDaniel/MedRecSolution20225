@@ -16,9 +16,9 @@ internal class HealthInsuranceQueriesDataContext(IOptions<DBOptionsMySql> option
             .AsNoTracking()
             .Where(h => !h.IsDeleted);
 
-        if (!string.IsNullOrWhiteSpace(paginationDto.Filter))
+        if (!string.IsNullOrWhiteSpace(paginationDto.FilterOne))
         {
-            var filter = paginationDto.Filter.ToLower();
+            var filter = paginationDto.FilterOne.ToLower();
             query = query.Where(h =>
                 h.Name.ToLower().Contains(filter) ||
                 h.Acronym.ToLower().Contains(filter));

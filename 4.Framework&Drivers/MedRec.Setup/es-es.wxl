@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="es-ES" Codepage="1252">
+	<!-- Textos del tema HyperlinkLicense -->
+	<String Id="Caption" Overridable="yes" Value="Instalador de MedRec" />
+	<String Id="Title" Overridable="yes" Value="Instalador de MedRec" />
+
+	<!-- Pantalla de opciones / ventana principal -->
+	<String Id="InstallMessage" Overridable="yes" Value="Este asistente instalará [WixBundleName] en su equipo." />
+	<String Id="InstallVersion" Overridable="yes" Value="Versión [WixBundleVersion]" />
+	<String Id="ConfirmCancelMessage" Overridable="yes" Value="¿Está seguro de que desea cancelar?" />
+
+	<!-- Botones -->
+	<String Id="InstallInstallButton" Overridable="yes" Value="Instalar" />
+	<String Id="InstallCloseButton" Overridable="yes" Value="Cerrar" />
+	<String Id="OptionsCancelButton" Overridable="yes" Value="Cancelar" />
+	<String Id="InstallOptionsButton" Overridable="yes" Value="Opciones" />
+	<String Id="InstallCancelButton" Overridable="yes" Value="Cancelar" />
+
+	<!-- Enlaces -->
+	<String Id="HelpHeader" Overridable="yes" Value="Ayuda" />
+	<String Id="HelpText" Overridable="yes" Value="Para obtener ayuda, visite:" />
+	<String Id="HelpUrl" Overridable="yes" Value="https://www.ejemplo.com/ayuda" />
+
+	<!-- Pantalla de progreso -->
+	<String Id="ProgressHeader" Overridable="yes" Value="Instalando MedRec" />
+	<String Id="ProgressLabel" Overridable="yes" Value="Por favor espere mientras se instala [WixBundleName]." />
+	<String Id="OverallProgressPackageText" Overridable="yes" Value="Inicializando..." />
+	<String Id="ProgressCancelButton" Overridable="yes" Value="Cancelar" />
+
+	<!-- Pantalla de éxito -->
+	<String Id="SuccessHeader" Overridable="yes" Value="¡Instalación completada!" />
+	<String Id="SuccessInstallHeader" Overridable="yes" Value="Instalación completada correctamente" />
+	<String Id="SuccessLayoutHeader" Overridable="yes" Value="Diseño completado correctamente" />
+	<String Id="SuccessRepairHeader" Overridable="yes" Value="Reparación completada correctamente" />
+	<String Id="SuccessUninstallHeader" Overridable="yes" Value="Desinstalación completada correctamente" />
+	<String Id="SuccessCloseButton" Overridable="yes" Value="Cerrar" />
+	<String Id="SuccessRestartButton" Overridable="yes" Value="Reiniciar" />
+
+	<!-- Pantalla de fallo -->
+	<String Id="FailureHeader" Overridable="yes" Value="Error de instalación" />
+	<String Id="FailureInstallHeader" Overridable="yes" Value="Error durante la instalación" />
+	<String Id="FailureUninstallHeader" Overridable="yes" Value="Error durante la desinstalación" />
+	<String Id="FailureRepairHeader" Overridable="yes" Value="Error durante la reparación" />
+	<String Id="FailureHyperlinkLogText" Overridable="yes" Value="Ver el registro de errores" />
+	<String Id="FailureMessage" Overridable="yes" Value="Hubo un error durante la instalación. Consulte el registro para más detalles." />
+	<String Id="FailureCloseButton" Overridable="yes" Value="Cerrar" />
+	<String Id="FailureRestartButton" Overridable="yes" Value="Reiniciar" />
+
+</WixLocalization>

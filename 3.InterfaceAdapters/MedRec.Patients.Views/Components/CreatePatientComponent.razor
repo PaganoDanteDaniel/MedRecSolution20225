@@ -5,17 +5,17 @@
 
 @inject IModelValidatorHub<CreatePatientModel> patientValidator
 
-<EditForm EditContext="_editContext" OnValidSubmit="AddPatient" autocomplete="off">
+<EditForm EditContext="_editContext" OnValidSubmit="AddPatient" autocomplete="off" >
     <DataAnnotationsValidator />
     <ModelValidator T = "CreatePatientModel"
                     Validator = "patientValidator"
                     ValidationRules = "vm => CreatePatientValidator.Validate((CreatePatientDto)vm)" />
-
+    <div class="new-patient-form">
     @* ---------- Campos trampa para capturar autofill de Chromium ---------- *@
     <input autocomplete="username" style="position: absolute; left: -9999px; top: -9999px;" />
     <input autocomplete="current-password" type="password" style="position: absolute; left: -9999px; top: -9999px;" />
 
-  <div class="new-patient-form">
+  
         <div class="new-patient-row">
             <div class="new-patient-col">
                 <label for="firstName">@CreatePatientMessages.FirstNameLabel</label>
@@ -57,7 +57,7 @@
                                @bind-Value="VM.Model.DateOfBirth"
                                style="width: 40%"
                                autocomplete="off" />
-                    <span>@CalculateAge()</span>
+                    <span><label>@CalculateAge()</label></span>
                     <ValidationMessage For="() => VM.Model.DateOfBirth" class="validation-message" />
                 </div>
 
@@ -101,26 +101,32 @@
                     </button>
                 </div>
             </div>
+            <ModalComponent Title="SELECTOR DE OBRAS SOCIALES"
+                            Show="@_showHealthCompanyList"
+                            Type="ModalType.LargeContent"
+                            ShowChanged="(value) => _showHealthCompanyList = value">
+
+                <HealthInsuranceComponent MaxPageButton="3"
+                                          OnHealthCompanySelected="@OnHealthCompanySelected" />
+            </ModalComponent>
             <div class="new-patient-col">
-                <label for="insuranceHealthMemberNumber">@CreatePatientMessages.InsuranceHealthMemberNumberLabel</label>
-                <InputText id="insuranceHealthMemberNumber"
-                           @bind-value = "VM.Model.HealthInsuranceMemberNumber"
-                           class="uppercase-input" 
-                           style="width: 53%;" 
-                        />
-                <ValidationMessage For="() => VM.Model.HealthInsuranceMemberNumber" class="validation-message" />
+                <label for="insuranceHealthCard">@CreatePatientMessages.InsuranceHealthCardLabel</label>
+                <InputText id="insuranceHealthCard"
+                           @bind-value="VM.Model.HealthInsuranceCard"
+                           class="uppercase-input"
+                           style="width: 65%;" />
+                <ValidationMessage For="() => VM.Model.HealthInsuranceCard" class="validation-message" />
             </div>
         </div>
         <div class="new-patient-row">
             <div class="new-patient-col">
-                <label for="insuranceHealthCard">@CreatePatientMessages.InsuranceHealthCardLabel</label>
-                <InputText id="insuranceHealthCard"
-                           @bind-value = "VM.Model.HealthInsuranceCard"
-                           class = "uppercase-input" 
-                           style = "width: 65%;" 
-                        />
-                <ValidationMessage For="() => VM.Model.HealthInsuranceCard" class="validation-message" />
-            </div>
+                <label for="insuranceHealthMemberNumber">@CreatePatientMessages.InsuranceHealthMemberNumberLabel</label>
+                <InputText id="insuranceHealthMemberNumber"
+                           @bind-value="VM.Model.HealthInsuranceMemberNumber"
+                           class="uppercase-input"
+                           style="width: 53%;" />
+                <ValidationMessage For="() => VM.Model.HealthInsuranceMemberNumber" class="validation-message" />
+            </div>            
             <div class="new-patient-col">
                 <label for="insuranceHealthPlan">@CreatePatientMessages.InsuranceHealthPlanLabel</label>
                 <InputText id="insuranceHealthPlan"
@@ -145,39 +151,13 @@
   </div>  
     
 </EditForm>
-
-<ModalComponent Title="Éxito" Show="@_showModal" ShowChanged="@((value) => _showModal = value)"
-                OnAccept="OnAccept" CenterText="true" Type="ModalType.MessageSuccess" ShowAcceptButton="true">
-    <div>
-        @CreatePatientMessages.PatientAddedMessage
-    </div>
-</ModalComponent>
-
-@*aquí agregar un modal para el mensaje de error*@
-
-<ModalComponent Title="Error" Show="@_showErrorModal" ShowChanged="@((value) => _showErrorModal = value)"
-                OnAccept="OnAccept" CenterText="true" Type="ModalType.MessageError" ShowCancelButton="true">
-    <div >
-        @((MarkupString)VM.InformationMessage)
-    </div>
-</ModalComponent>
-<ModalComponent Title="Advertencia" 
-    Show="@_showWarning" 
-    ShowChanged="@((value) => _showWarning = value)"
-    OnAccept="OnAccept" 
-    CenterText="true" 
-    Type="ModalType.MessageWarning" 
-    ShowCancelButton="true">
-    <div>
-        @((MarkupString)VM.InformationMessage)
-    </div>
-</ModalComponent>
-
-<ModalComponent Title="SELECTOR DE OBRAS SOCIALES"
-    Show="@_showHealthCompanyList"
-    Type="ModalType.LargeContent"
-    ShowChanged="(value) => _showHealthCompanyList = value">
-
-        <HealthInsuranceComponent MaxPageButton="3"
-                    OnHealthCompanySelected="@OnHealthCompanySelected" />
+<ModalComponent Show="@_showModal"
+                ShowChanged="@((bool val) => _showModal = val)"
+                Title="@_modalTitle"
+                Type="@_modalType"
+                CenterText="true"
+                ShowAcceptButton="true"
+                OnAccept="@CloseModal"
+                ShowCancelButton="false">
+    @((MarkupString)VM.InformationMessage)
 </ModalComponent>

@@ -75,24 +75,52 @@
     --calendar-day-border: #b0bec5; /* Gris pastel para bordes de días */
     --calendar-container-border: #e1bee7; /* Rosa pastel suave */
     --calendar-header-border: #ce93d8; /* Rosa más oscuro */
-    /* General Modal */
+    /* Modal genérico (sin estado) */
     --modal-background: #ffffff;
     --modal-border: #e1bee7;
     --modal-title-text: #673ab7;
     --modal-body-text: #9c27b0;
-    --modal-footer-background: #f8f8ff;
-    --modal-footer-border: #e1bee7;
-    /* Modal estados */
-    --modal-success-background: #e8f5e9;
-    --modal-success-border: #a5d6a7;
-    --modal-success-text: #388e3c;
+    --modal-header-background: #f3e5f5; /* Morado pastel más oscuro que el body blanco */
+    --modal-footer-background: #f3e5f5; /* Igual que header, o ligeramente más claro si prefieres */
+    /* Modal éxito */
+    --modal-success-background: #f1f8e9;
+    --modal-success-border: #c5e1a5;
+    --modal-success-text: #558b2f;
+    --modal-success-header-footer: #dcedc8; /* Verde pastel suave, más oscuro que el body */
+    /* Modal error */
     --modal-error-background: #ffebee;
-    --modal-error-border: #ef9a9a;
-    --modal-error-text: #c62828;
-    --modal-warning-background: #fff8e1;
-    --modal-warning-border: #ffe082;
-    --modal-warning-text: #f9a825;
-    --modal-info-background: #e3f2fd;
-    --modal-info-border: #90caf9;
-    --modal-info-text: #1565c0;
+    --modal-error-border: #f8bbd0;
+    --modal-error-text: #b71c1c;
+    --modal-error-header-footer: #ffcdd2; /* Rosa/rojo pastel suave, más oscuro que el body */
+    /* Modal advertencia */
+    --modal-warning-background: #fffde7;
+    --modal-warning-border: #fff59d;
+    --modal-warning-text: #f57f17;
+    --modal-warning-header-footer: #fff9c4; /* Amarillo pastel suave, ligeramente más saturado */
+    /* Modal info */
+    --modal-info-background: #e8f4fc;
+    --modal-info-border: #b3e0f6;
+    --modal-info-text: #0277bd;
+    --modal-info-header-footer: #bbdefb; /* Azul pastel suave, más oscuro que el body */
+    /* --- Botones en modales (genérico) --- */
+    /* Verde pastel suave */
+    --modal-button-accept-background: #c8e6c9; 
+    --modal-button-accept-border: #81c784;
+    --modal-button-accept-text: #388e3c;
+    --modal-button-accept-hover: #a5d6a7;
+    --modal-button-accept-active: #66bb6a;
+    /* Rosa/rojo pastel suave (no agresivo) */
+    --modal-button-cancel-background: #ffcdd2; 
+    --modal-button-cancel-border: #ef9a9a;
+    --modal-button-cancel-text: #c62828;
+    --modal-button-cancel-hover: #ff8a80;
+    --modal-button-cancel-active: #e57373;
+    /* Tamaño base para escritorio grande */
+    --font-size-base: 1rem;
+    --font-size-small: 0.85rem;
+    --font-size-label: 0.9375rem;
+    --font-size-button: 0.9375rem;
+    --font-size-900: 0.758rem;
+    --font-size-1281: 0.825rem;
+    --font-size-1921: 1rem;
 }

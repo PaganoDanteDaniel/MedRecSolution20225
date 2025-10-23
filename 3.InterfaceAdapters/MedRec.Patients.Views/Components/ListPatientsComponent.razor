@@ -1,88 +1,83 @@
-﻿@using MedRec.CommonComponents.Views.Components
+﻿
 @using MedRec.CommonComponents.Views.Helpers
 @using Microsoft.AspNetCore.Components.Forms
+@using MedRec.Patients.BusinessObjects.DTOs
 
 <div class="container">
-    <div class="me-configuration">
-    <div class="me-filter">
-        <label class="me-filter-label" for="filter">@ListPatientsMessages.FilterLabel</label>
-            <input type="text"
-                   id="filter"
-                   class="me-filter-text uppercase-input"
-                   @bind="_paginationDto.Filter"
-                   @oninput="OnSearchTermChanged"
-                   autocomplete="off"
-                   placeholder="@ListPatientsMessages.PalaceholderFilterInput" />
+    <div class="search-section">
+    <SearchAndAddComponent LabelText="Buscar Paciente:"
+                           Placeholder="@ListPatientsMessages.PlaceholderFilterInput"
+                           ButtonText="AGREGAR"
+                           @bind-Value="Filter"
+                           OnButtonClick="OnAddNewPatient" 
+                           ShowButton/>
     </div>
-    </div>
-    <div class="me-table-container">
-        <table class="me-table">
-            <colgroup>
-                <col style="width: 40%"> <!-- APELLIDO Y NOMBRE -->
-                <col style="width: 10%"> <!-- DNI -->
-                <col style="width: 15%"> <!-- TELÉFONO -->
-                <col style="width: 25%"> <!-- ACCIONES -->
-            </colgroup>
-            <thead>
-                <tr>
-                    <th scope="col">@ListPatientsMessages.HeadIdText</th>
-                    <th scope="col">@ListPatientsMessages.HeadLastNameText y @ListPatientsMessages.HeadNameText</th>
-                    <th scope="col" class="header-center">@ListPatientsMessages.HeadDocumentNumberText</th>
-                    <th scope="col" class="header-center">@ListPatientsMessages.HeadPhoneText</th>
-                    <th scope="col" class="header-center">@ListPatientsMessages.HeadActionsText</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (PagedPatients.Any())
-                {
-                    int rowIndex = 0;
-                    @foreach (var patient in PagedPatients)
-                    {
-                        
-                        var rowClass = rowIndex % 2 == 0 ? "table-row-even" : "table-row-odd";
-                        Console.WriteLine(rowClass);
-                        <tr @onclick="() => SelectPatient(patient.PatientId)" class="@rowClass">
-                            <td>@patient.PatientId</td>
+
+    <div class="table-container">
+        <TableComponent TItem="PatientSummaryDto"
+                        Items="pagedPatients.ToList()"                        
+                        OnEdit="OnEditPatient"
+                        OnDelete="OnDeletePatient">
+                        <ColGroup>
+                            <colgroup>
+                                <col style="width: 30%"> <!-- APELLIDO Y NOMBRE -->
+                                <col style="width: 10%"> <!-- DNI -->
+                                <col style="width: 15%"> <!-- TELÉFONO -->
+                                <col style="width: 25%"> <!-- ACCIONES -->
+                            </colgroup>
+                        </ColGroup>
+                        <FullHeaderTemplate>
+                            <thead>
+                                <tr>
+                                    <th scope="col">@ListPatientsMessages.HeadLastNameText y @ListPatientsMessages.HeadNameText</th>
+                                    <th scope="col" class="header-center">@ListPatientsMessages.HeadDocumentNumberText</th>
+                                    <th scope="col" class="header-center">@ListPatientsMessages.HeadPhoneText</th>
+                                    <th scope="col" class="actions">@ListPatientsMessages.HeadActionsText</th>
+                                </tr>
+                            </thead>
+                        </FullHeaderTemplate>
+                        <RowTemplate Context="patient">
                             <td>@patient.LastName, @patient.FirstName</td>
                             <td class="number-type">@FormatStringAsNumber.WithDots(patient.DocumentNumber)</td>
                             <td class="number-type">@patient.PhoneNumber</td>
-                            <td class="actions" style="width: 12%;">
-                                <a href="javascript:void(0);" @onclick:stopPropagation @onclick="() => 
-                                    OnEditPatient(patient.PatientId)">
-                                    <i class="bi bi-pencil-square" data-bs-toggle="tooltip" data-bs-placement="top" title=@ListPatientsMessages.ToolTipEditButtonMessage></i>
-                                </a>
-                                <a href="javascript:void(0);" @onclick:stopPropagation @onclick="() => 
-                                    OnDeletePatient(patient.PatientId, patient.LastName)">
-                                    <i class="bi bi-trash-fill" data-bs-toggle="tooltip" data-bs-placement="top" title=@ListPatientsMessages.ToolTipDeletButtonMessage></i>
-                                </a>
-                                @* <a href="javascript:void(0);" @onclick:stopPropagation @onclick='() => 
-                                    OnAddHealthIssue(patient.PatientId, patient.LastName + ", " + patient.FirstName)'>
-                                    <i class="bi bi-clipboard-pulse" data-bs-toggle="tooltip" data-bs-placement="top"></i>
-                                </a> *@
-                                <a href="javascript:void(0);" @onclick:stopPropagation @onclick='() =>
-                                    OnAddMedicalVisit(patient.PatientId, patient.LastName + ", " + patient.FirstName)'>
-                                    <i class="bi bi-clipboard-pulse" data-bs-toggle="tooltip" data-bs-placement="top"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        rowIndex++;
-                    }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="5" class="text-message">@ListPatientsMessages.ThereAreNoPatientsMessage</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+                        </RowTemplate>
+                        <AdditionalAction Context="patient">
+                            <a href="javascript:void(0);"
+                               @onclick="() => OnAddMedicalVisit(patient)"
+                               @onclick:stopPropagation="true">
 
-    <PaginationComponent CurrentPage="@_paginationDto.CurrentPage" 
-        TotalPages="@_totalPages" 
-        PageChanged="HandlePageChanged"
-        MaxPageButton="MaxPageButton"/>
+                                <i class="bi bi-clipboard-pulse text-info mx-1"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="Registrar Visita Médica">
+                                </i>
+                            </a>
+                        </AdditionalAction>
+                    </TableComponent>
+    </div>
+    <div class="pagination-section">
+        <PaginationComponent CurrentPage="@_paginationDto.CurrentPage" 
+            TotalPages="@_totalPages" 
+            PageChanged="HandlePageChanged"
+            MaxPageButton="MaxPageButton"/>
+    </div>
 </div>
+
+    <ModalComponent Title=@ListPatientsMessages.ModalTitleText
+                    Show="@_showDeleteConfirmation"
+                    ShowChanged="(value) => OnCloseDeleteModal(value)"
+                    ShowAcceptButton = "true"
+                    ShowCancelButton = "true"
+                    CenterText = "true"
+                    OnAccept="OnAcceptDelete"
+                    Type="ModalType.MessageWarning">
+        <div >
+            @ListPatientsMessages.ModalMessageText
+        </div>
+        <div>
+            @string.Format(ListPatientsMessages.ModalMessageTextTemplate, $"{(_patientToDelete?.LastName ?? "")}, {(_patientToDelete?.FirstName ?? "")}")
+        </div>
+    </ModalComponent>
 
 <script >
     // Inicializa los tooltips
@@ -91,3 +86,4 @@
         return new bootstrap.Tooltip(tooltipTriggerEl);
       });
 </script >
+

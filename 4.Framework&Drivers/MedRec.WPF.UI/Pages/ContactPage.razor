@@ -1,0 +1,96 @@
+﻿@page "/contact"
+
+<div class="contact-container">
+    <h1>Dante Pagano Soluciones Informáticas</h1>
+
+    <div class="contact-details">
+        <p>
+            <strong>Email:</strong>
+            <a href="mailto:pagano.dante@gmail.com" class="contact-link">pagano.dante@gmail.com</a>
+        </p>
+        <p>
+            <strong>Teléfono / WhatsApp:</strong>
+            <a href="https://wa.me/5492625439197" target="_blank" class="contact-link">+54 9 2625 439197</a>
+        </p>
+    </div>
+
+    <div class="software-info">
+        <h2>Sobre nuestro software</h2>
+        <p>
+            Desarrollamos soluciones especializadas para el ámbito de la salud, con enfoque en la gestión eficiente y segura de historias clínicas de pacientes.
+            Nuestra plataforma permite a profesionales médicos registrar, consultar y administrar información clínica de forma intuitiva, cumpliendo con los más altos
+            estándares de privacidad y protección de datos.
+        </p>
+    </div>
+
+    <footer class="copyright">
+        © @DateTime.Now.Year Dante Pagano Soluciones Informáticas. Todos los derechos reservados.
+    </footer>
+</div>
+
+<style>
+    .contact-container {
+        padding: 2rem;
+        max-width: 900px;
+        margin: 0 auto;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #2c3e50;
+    }
+
+    h1 {
+        font-size: 2.2rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #9b59b6;
+        padding-bottom: 0.5rem;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+        font-weight: 500;
+        color: #34495e;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .contact-details, .software-info {
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .contact-link {
+        color: #9b59b6;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+        .contact-link:hover {
+            text-decoration: underline;
+            color: #8e44ad;
+        }
+
+    .copyright {
+        font-size: 0.9rem;
+        color: #7f8c8d;
+        text-align: center;
+        margin-top: 3rem;
+        padding-top: 1rem;
+        border-top: 1px solid #ecf0f1;
+    }
+
+    /* Ajustes para pantallas pequeñas */
+    @@media (max-width: 768px) {
+        .contact-container {
+            padding: 1rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+        }
+    }
+</style>

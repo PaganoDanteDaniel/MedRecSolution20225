@@ -60,13 +60,13 @@ public class CreateMedicalVisitVM(
                 Model.MedicalHistoryId = response.MedicalHistoryId;
                 Model.VisitDate = response.VisitDate;
                 Model.Reason = response.Reason;
-                Model.Diagnosis = response.Diagnosis;
-                Model.Treatment = response.Treatment;
+                Model.Diagnosis = (response.Diagnosis ?? string.Empty).ToUpperInvariant();
+                Model.Treatment = (response.Treatment ?? string.Empty).ToUpperInvariant();
                 Model.SystolicPressure = response.SystolicPressure;
                 Model.DiastolicPressure = response.DiastolicPressure;
                 Model.PulsePerMinute = response.PulsePerMinute;
                 Model.Temperature = response.Temperature;
-                Model.Notes = response.Notes;
+                Model.Notes = (response.Notes ?? string.Empty).ToUpperInvariant();
 
             }
 

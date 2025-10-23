@@ -133,7 +133,7 @@
     <value>FECHA NACIMIENTO</value>
   </data>
   <data name="HeadDocumentNumberText" xml:space="preserve">
-    <value>N° DE D.N.I.</value>
+    <value>D.N.I.</value>
   </data>
   <data name="HeadIdText" xml:space="preserve">
     <value>ID</value>
@@ -145,15 +145,18 @@
     <value>NOMBRE</value>
   </data>
   <data name="HeadPhoneText" xml:space="preserve">
-    <value>N° DE TELÉFONO</value>
+    <value>TELÉFONO</value>
+  </data>
+  <data name="ModalMessageText" xml:space="preserve">
+    <value>¿ESTA SEGURO DE ELIMINAR AL PACIENTE?</value>
   </data>
   <data name="ModalMessageTextTemplate" xml:space="preserve">
-    <value>¿ESTA SEGURO DE ELIMINAR AL PACIENTE {0}? </value>
+    <value>{0}</value>
   </data>
   <data name="ModalTitleText" xml:space="preserve">
     <value>POCESO DE ELIMINACION</value>
   </data>
-  <data name="PalaceholderFilterInput" xml:space="preserve">
+  <data name="PlaceholderFilterInput" xml:space="preserve">
     <value>INGRESE EL NOMBRE DEL PACIENTE PARA FILTRAR</value>
   </data>
   <data name="RecoberButton" xml:space="preserve">

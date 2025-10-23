@@ -21,6 +21,28 @@ public class UpdatePatientModel
     public string SelectedHealthCompanyName { get; set; }
     public byte[] RowVersion { get; set; }
 
+    public UpdatePatientModel Clone()
+    {
+        return new UpdatePatientModel
+        {
+            Id = this.Id,
+            FirstName = this.FirstName,
+            LastName = this.LastName,
+            DocumentNumber = this.DocumentNumber,
+            Address = this.Address,
+            PhoneNumber = this.PhoneNumber,
+            DateOfBirth = this.DateOfBirth,
+            Email = this.Email,
+            BiologicalSexId = this.BiologicalSexId,
+            HealthInsuranceCompanyId = this.HealthInsuranceCompanyId,
+            HealthInsuranceMemberNumber = this.HealthInsuranceMemberNumber,
+            HealthInsuranceCard = this.HealthInsuranceCard,
+            HealthInsurancePlan = this.HealthInsurancePlan,
+            SelectedCityName = this.SelectedCityName,
+            SelectedHealthCompanyName = this.SelectedHealthCompanyName,
+            RowVersion = this.RowVersion != null ? (byte[])this.RowVersion.Clone() : null
+        };
+    }
 
     public static explicit operator UpdatePatientDto(UpdatePatientModel model)
     {
