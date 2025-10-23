@@ -1,4 +1,4 @@
-﻿@using MedRec.CommonComponents.Views.Components
+﻿
 @using MedRec.CommonComponents.Views.Helpers
 @using Microsoft.AspNetCore.Components.Forms
 @using MedRec.Patients.BusinessObjects.DTOs
@@ -15,8 +15,7 @@
 
     <div class="table-container">
         <TableComponent TItem="PatientSummaryDto"
-                        Items="PagedPatients.ToList()"
-                        OnRowClick="SelectPatient"
+                        Items="pagedPatients.ToList()"                        
                         OnEdit="OnEditPatient"
                         OnDelete="OnDeletePatient">
                         <ColGroup>
@@ -64,6 +63,22 @@
     </div>
 </div>
 
+    <ModalComponent Title=@ListPatientsMessages.ModalTitleText
+                    Show="@_showDeleteConfirmation"
+                    ShowChanged="(value) => OnCloseDeleteModal(value)"
+                    ShowAcceptButton = "true"
+                    ShowCancelButton = "true"
+                    CenterText = "true"
+                    OnAccept="OnAcceptDelete"
+                    Type="ModalType.MessageWarning">
+        <div >
+            @ListPatientsMessages.ModalMessageText
+        </div>
+        <div>
+            @string.Format(ListPatientsMessages.ModalMessageTextTemplate, $"{(_patientToDelete?.LastName ?? "")}, {(_patientToDelete?.FirstName ?? "")}")
+        </div>
+    </ModalComponent>
+
 <script >
     // Inicializa los tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -71,3 +86,4 @@
         return new bootstrap.Tooltip(tooltipTriggerEl);
       });
 </script >
+

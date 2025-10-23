@@ -223,7 +223,7 @@ namespace MedRec.Patients.Views.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a PACIENTE {0} ACTUALIZADO.
+        ///   Busca una cadena traducida similar a PACIENTE ACTUALIZADO EXITOSAMENTE.
         /// </summary>
         internal static string UpdatePatientTemplate {
             get {

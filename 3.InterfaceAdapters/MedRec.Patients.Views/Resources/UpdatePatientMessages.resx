@@ -172,6 +172,6 @@
     <value>ACTUALIZACIÓN DE LOS DATOS DEL PACIENTE</value>
   </data>
   <data name="UpdatePatientTemplate" xml:space="preserve">
-    <value>PACIENTE {0} ACTUALIZADO</value>
+    <value>PACIENTE ACTUALIZADO EXITOSAMENTE</value>
   </data>
 </root>

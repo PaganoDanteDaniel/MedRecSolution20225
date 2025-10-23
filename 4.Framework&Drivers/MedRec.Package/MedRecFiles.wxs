@@ -1,374 +1,371 @@
 ﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
     <Fragment>
         <DirectoryRef Id="INSTALLFOLDER">
-            <Component Id="cmpOGkoJkApsx09TmwlmeSYNXu8O2k" Guid="25D82F92-3BCB-4EAA-A780-4484A9146B90">
+            <Component Id="cmpOGkoJkApsx09TmwlmeSYNXu8O2k" Guid="9D421D6F-B773-4094-8679-5231457E8C8C">
                 <File Id="filhOmU2zCUvc3hRee0kCgcGDUVj8c" KeyPath="yes" Source="C:\medrec\publish\appsettings.json" />
             </Component>
-            <Component Id="cmpsFIjssA527yJ_tAo64PuWv_GDS4" Guid="E6A918A7-953C-475F-8B05-4A7DAAE78421">
+            <Component Id="cmpsFIjssA527yJ_tAo64PuWv_GDS4" Guid="E94C60CF-7412-4CF5-8E50-8C127EF2A03C">
                 <File Id="filzw.d1Je..5k9ifaq9cbD594TD0c" KeyPath="yes" Source="C:\medrec\publish\MedRec.BusinessObjects.dll" />
             </Component>
-            <Component Id="cmpWdhcvLSbFNQRGvnoqj0RGGZ40bE" Guid="0F413F2F-61FB-4892-BA22-092D7C8FE5F7">
+            <Component Id="cmpWdhcvLSbFNQRGvnoqj0RGGZ40bE" Guid="7D0CC2B9-4D22-4028-A879-2D1AB186464F">
                 <File Id="filNSPqkf12W0_7jmZCOrFXxU_zxAM" KeyPath="yes" Source="C:\medrec\publish\MedRec.BusinessObjects.pdb" />
             </Component>
-            <Component Id="cmpoAStn5D26VQknLrPNkO4hzF49jk" Guid="1BFA8623-FD28-431D-B397-7D012C7354EA">
+            <Component Id="cmpoAStn5D26VQknLrPNkO4hzF49jk" Guid="4EC1B0EF-406E-4100-9E4E-D6A17CA639C1">
                 <File Id="filjSQ.9apU1mDMpCIDwiHgbiyhnnY" KeyPath="yes" Source="C:\medrec\publish\MedRec.Common.Repositories.dll" />
             </Component>
-            <Component Id="cmp8KzYKA4y58gT3C75MywFviOitzE" Guid="02870D74-BB4F-4CED-B73C-D1A649AAA6A0">
+            <Component Id="cmp8KzYKA4y58gT3C75MywFviOitzE" Guid="B340B012-9300-4998-95AB-7C6CA9097AF5">
                 <File Id="fil.MUzIKRTWEozvFhV3iU7TiWLRus" KeyPath="yes" Source="C:\medrec\publish\MedRec.Common.Repositories.pdb" />
             </Component>
-            <Component Id="cmpePG_251131zI36h.uoeYqXq8S.g" Guid="89497608-9C18-4788-9301-553019C7F577">
+            <Component Id="cmpePG_251131zI36h.uoeYqXq8S.g" Guid="23F11414-B4A1-4989-A518-EC8E283DDA45">
                 <File Id="filvwa_eK01MxzF8OZJ22xvP09S6i4" KeyPath="yes" Source="C:\medrec\publish\MedRec.CommonComponents.Views.dll" />
             </Component>
-            <Component Id="cmpq86279PI56G9cjDqehKU.j8O54M" Guid="C220CB38-F143-4180-98C7-BA8F9261ECCF">
+            <Component Id="cmpq86279PI56G9cjDqehKU.j8O54M" Guid="9585F009-85DC-4A6C-9AD7-EEA110B37F63">
                 <File Id="fil_j7NIicG4x8qFF58q4OtKi_ScXA" KeyPath="yes" Source="C:\medrec\publish\MedRec.CommonComponents.Views.pdb" />
             </Component>
-            <Component Id="cmpWOP5mOlq9Lmi1hRaaErDocX5c0w" Guid="4D88B537-747E-43E9-A985-EF2543D27D2F">
+            <Component Id="cmpWOP5mOlq9Lmi1hRaaErDocX5c0w" Guid="F15B8BC0-9D4F-46C3-B656-9E9567EB56BF">
                 <File Id="filIvhC53FQFy5wSAc8VtC7LhRpnTw" KeyPath="yes" Source="C:\medrec\publish\MedRec.DataContext.MySql.dll" />
             </Component>
-            <Component Id="cmpJDBiFlE1Omz.pyniplJ1TctSucs" Guid="800AECE2-78D3-4414-BB5D-09B0B8CEF13C">
+            <Component Id="cmpJDBiFlE1Omz.pyniplJ1TctSucs" Guid="95D703B0-EEF8-488E-B676-2599EC85C441">
                 <File Id="fil0fcYVxa.vz4_K6pAKu52PNt7FWw" KeyPath="yes" Source="C:\medrec\publish\MedRec.DataContext.MySql.pdb" />
             </Component>
-            <Component Id="cmpXV3gvVgXtaSa1TaapLmD2.v4gxM" Guid="B82C27C2-A46E-4B23-A05B-C8A63B2E9805">
+            <Component Id="cmpXV3gvVgXtaSa1TaapLmD2.v4gxM" Guid="FBE4CE4A-53FD-48B4-A68B-A9BE11224727">
                 <File Id="filmqFBXx6fwLX5QF7DX2WBCJmcjp0" KeyPath="yes" Source="C:\medrec\publish\MedRec.Entity.dll" />
             </Component>
-            <Component Id="cmpUadOxbMtCZsVSmBzG_29YHjJHcg" Guid="70BD7524-D3FE-420A-89F1-94F2719AE399">
+            <Component Id="cmpUadOxbMtCZsVSmBzG_29YHjJHcg" Guid="304DEEFC-14DB-4C36-AEA1-3C19B7DE0575">
                 <File Id="fil5GurWRCY27bR4FymA8N8edC18Zc" KeyPath="yes" Source="C:\medrec\publish\MedRec.Entity.pdb" />
             </Component>
-            <Component Id="cmpm367BFWqiMid9sPMVqu2hcnJIow" Guid="9C139020-6F09-41D5-BF23-2C47B50C7511">
+            <Component Id="cmpm367BFWqiMid9sPMVqu2hcnJIow" Guid="F8C8D595-CE49-4E87-A452-1471B8B0B1EC">
                 <File Id="filitR23eUAQrwGo8az09uk0wIMVVQ" KeyPath="yes" Source="C:\medrec\publish\MedRec.HealthInsurance.BusinessObjects.dll" />
             </Component>
-            <Component Id="cmpPNyN01rHuqGnQEqK1xK9w_woGm0" Guid="D03DB19C-2999-4C83-97A6-0BDDACACC9F4">
+            <Component Id="cmpPNyN01rHuqGnQEqK1xK9w_woGm0" Guid="BFA64BF3-90E7-427F-AD5E-D80EEC1734EE">
                 <File Id="filbWquBigpnScvXDhV1Sxld.bkXgg" KeyPath="yes" Source="C:\medrec\publish\MedRec.HealthInsurance.BusinessObjects.pdb" />
             </Component>
-            <Component Id="cmpnDr62UfcxXJRuNPaXtbhriqm_jU" Guid="CD3A5B3F-6083-4970-9F13-B631F76063B2">
+            <Component Id="cmpnDr62UfcxXJRuNPaXtbhriqm_jU" Guid="108281E9-A1DD-4DAF-90F4-9C5123EB3336">
                 <File Id="filF6Ga31LeV_TtAsMKpGqTm6bEO50" KeyPath="yes" Source="C:\medrec\publish\MedRec.HealthInsurance.DataContext.EF.dll" />
             </Component>
-            <Component Id="cmpUJBE_.QNXScHHUF7ZhGesWOBE7c" Guid="78DFB574-FF4E-414F-B4FF-3B5F812AA75F">
+            <Component Id="cmpUJBE_.QNXScHHUF7ZhGesWOBE7c" Guid="14A6DF22-351E-4ACA-B677-F27AA9D609F5">
                 <File Id="filhTOetz8KkpeI02buZk5Hx.Lq5e0" KeyPath="yes" Source="C:\medrec\publish\MedRec.HealthInsurance.DataContext.EF.pdb" />
             </Component>
-            <Component Id="cmpKa8XT2GdSii6cNzKauyowARUxvk" Guid="1A07F69E-F278-458B-A3B7-F27F84FF5F80">
+            <Component Id="cmpKa8XT2GdSii6cNzKauyowARUxvk" Guid="E5A6C599-5352-4D00-BB83-811ACB3922FA">
                 <File Id="filUzBeA1NNwI.pAIshUV.nL9Qujmw" KeyPath="yes" Source="C:\medrec\publish\MedRec.HealthInsurance.Presenters.dll" />
             </Component>
-            <Component Id="cmpkAQKg02ITqVjg6bZaYwbz71xLCo" Guid="059E908C-F11C-4B55-BAAD-85408CED46B1">
+            <Component Id="cmpkAQKg02ITqVjg6bZaYwbz71xLCo" Guid="2511F70F-C7CF-4046-AE13-B4A68915B996">
                 <File Id="fil6y1hlNEotj6JYA1IYDpb5K94fJY" KeyPath="yes" Source="C:\medrec\publish\MedRec.HealthInsurance.Presenters.pdb" />
             </Component>
-            <Component Id="cmpmswb3JWbdr8mrmbg9o4dXuFc1jo" Guid="EF363856-51D9-461F-A05F-B416AB8F74AE">
+            <Component Id="cmpmswb3JWbdr8mrmbg9o4dXuFc1jo" Guid="C0F1BBBD-0B87-4272-A474-AEA4214B9899">
                 <File Id="filTCu.jEMAGOCxp2dq0ThOfThEhJY" KeyPath="yes" Source="C:\medrec\publish\MedRec.HealthInsurance.UseCases.dll" />
             </Component>
-            <Component Id="cmpEQ1bRtV.Q6m8xo9FiAmoBSdmvIE" Guid="96C4AA30-D8A8-4BA3-9215-23B127AC0A9F">
+            <Component Id="cmpEQ1bRtV.Q6m8xo9FiAmoBSdmvIE" Guid="1968D1F1-86FA-47F6-ACF0-9A27A166C27C">
                 <File Id="filXHztiQnN5OBfR3O65RdKb1UOh.w" KeyPath="yes" Source="C:\medrec\publish\MedRec.HealthInsurance.UseCases.pdb" />
             </Component>
-            <Component Id="cmp0O6p7ckBK3q04kT6JZEC0qxdGd8" Guid="F5AF63C9-BBBD-460B-B9D7-71858510F5E1">
+            <Component Id="cmp0O6p7ckBK3q04kT6JZEC0qxdGd8" Guid="7CAA0B7F-69EE-44D9-ACDF-1C6AC5748F8D">
                 <File Id="filID3K3zq9HtzWVRRphmRI4BYdH6Y" KeyPath="yes" Source="C:\medrec\publish\MedRec.HealthInsurance.ViewModels.dll" />
             </Component>
-            <Component Id="cmpPD4Kj0kwYHxGYa5YA6GJsg1_.Hk" Guid="48CEAD64-5A0B-4989-B0A8-CF2AB064D44B">
+            <Component Id="cmpPD4Kj0kwYHxGYa5YA6GJsg1_.Hk" Guid="44F6AF4C-3CE2-4CD7-A0B9-E031CF72B1C5">
                 <File Id="filWhSU3bfApQUtheiAZpOLkOJJK9Y" KeyPath="yes" Source="C:\medrec\publish\MedRec.HealthInsurance.ViewModels.pdb" />
             </Component>
-            <Component Id="cmpAwj2AFGJv54Gzn_bWomazSCKSl4" Guid="25E5E0E1-7E3B-4BE6-AEE6-C006C3E93FE2">
+            <Component Id="cmpAwj2AFGJv54Gzn_bWomazSCKSl4" Guid="2FCAA1CE-1C12-4CD2-9D34-7972DCDBDE5E">
                 <File Id="fil6HVFA2kMlPYT7eCB5sek_X.rYig" KeyPath="yes" Source="C:\medrec\publish\MedRec.HealthInsurance.Views.dll" />
             </Component>
-            <Component Id="cmpGYJwXWySk534dk2SdZgyT10qosg" Guid="5D556D85-2801-4C29-BBB1-A3BB68306260">
+            <Component Id="cmpGYJwXWySk534dk2SdZgyT10qosg" Guid="2C34E8B1-B490-42BF-80F5-BE876DAF3F56">
                 <File Id="filEahJZgHlwQlWKNb5CAA0UnjtfQM" KeyPath="yes" Source="C:\medrec\publish\MedRec.HealthInsurance.Views.pdb" />
             </Component>
-            <Component Id="cmpjG7.jUcuNZPGipwdkIEDVbh5VaA" Guid="17DEB1FA-35B9-4266-A55C-4CBE1E5C094B">
-                <File Id="filulwyiErxdThYDTDm2XUs8su8cbY" KeyPath="yes" Source="C:\medrec\publish\MedRec.ico" />
-            </Component>
-            <Component Id="cmpKV.zrzTKkZvGTIhxCdSnJ3j.X8Y" Guid="6D9BDE53-C15F-4AFB-9787-66651A75BBCD">
+            <Component Id="cmpKV.zrzTKkZvGTIhxCdSnJ3j.X8Y" Guid="EDE5A7F6-2104-498E-8E4C-8E5FF915EE82">
                 <File Id="filYdYVEf0kk1JNx22rrPiqtIdUW7M" KeyPath="yes" Source="C:\medrec\publish\MedRec.IoC.dll" />
             </Component>
-            <Component Id="cmpvvVQvlsNKKLDVUnrSn7A1IjuVlQ" Guid="BB71250E-7C36-496D-B692-80CCDAA8737A">
+            <Component Id="cmpvvVQvlsNKKLDVUnrSn7A1IjuVlQ" Guid="7B69E298-7C85-46A9-947D-157F4579607F">
                 <File Id="filE3ISHBXOeCO6B1whkn0PInp8d9M" KeyPath="yes" Source="C:\medrec\publish\MedRec.IoC.pdb" />
             </Component>
-            <Component Id="cmpDU2PMMlaaLK_N7lpoTL8mm2Y5kw" Guid="86CA63EC-0750-4CE3-B946-F947E9CB1448">
+            <Component Id="cmpDU2PMMlaaLK_N7lpoTL8mm2Y5kw" Guid="EBF78680-8C60-41E5-A2D4-564A5DCCCD39">
                 <File Id="filIDAbNBsEqW_UFgnmQDWRplmyT7k" KeyPath="yes" Source="C:\medrec\publish\MedRec.MedicalVisit.BusinessObjects.dll" />
             </Component>
-            <Component Id="cmpxeokuejGUTFLrhlOln3Y10Q.Yyk" Guid="3BAB7618-36A8-415E-BD0C-7EAF45B53E5C">
+            <Component Id="cmpxeokuejGUTFLrhlOln3Y10Q.Yyk" Guid="82B903CC-49E4-4AD3-9E9C-6BC4F3DE2BF6">
                 <File Id="filkKaXhMQ1A10Q1depu0ROxtsU48k" KeyPath="yes" Source="C:\medrec\publish\MedRec.MedicalVisit.BusinessObjects.pdb" />
             </Component>
-            <Component Id="cmpEI6fRnFi52wJbQUCmIlqNJeAq4A" Guid="C8B04230-87B1-40F6-84B8-D70203BED636">
+            <Component Id="cmpEI6fRnFi52wJbQUCmIlqNJeAq4A" Guid="9F167AC6-9FB0-447B-A0E1-56228B88E140">
                 <File Id="filCa5PkehqCyB6w86Bfflk2qIXCI8" KeyPath="yes" Source="C:\medrec\publish\MedRec.MedicalVisit.DataContext.MySql.dll" />
             </Component>
-            <Component Id="cmpQkSKXiQg0rndMPC_p2bGqcDxo38" Guid="8716A1E7-0CA7-4E8F-AAA5-67B1C5593677">
+            <Component Id="cmpQkSKXiQg0rndMPC_p2bGqcDxo38" Guid="4FC1C571-D30E-46C3-9340-D5E62F34C004">
                 <File Id="filIjGfafIlWCgedT1l64cPUlzXItA" KeyPath="yes" Source="C:\medrec\publish\MedRec.MedicalVisit.DataContext.MySql.pdb" />
             </Component>
-            <Component Id="cmpR1H97SN8q8RV3kyzWBJTMkSFBRc" Guid="3E29BDBB-8E90-4B8F-8846-2EC6E3638DAB">
+            <Component Id="cmpR1H97SN8q8RV3kyzWBJTMkSFBRc" Guid="B5AC0CDB-0884-439F-BE1E-0F5D6503E7DF">
                 <File Id="filVKQZroCCtxepdozaot3fzNAXzHQ" KeyPath="yes" Source="C:\medrec\publish\MedRec.MedicalVisit.Presenters.dll" />
             </Component>
-            <Component Id="cmp3YQRhXxyhhMS7DOpgc3WDC7bMik" Guid="CD8791D4-FD08-4BE5-9857-4D7CE6D1A2F8">
+            <Component Id="cmp3YQRhXxyhhMS7DOpgc3WDC7bMik" Guid="61F39DF6-9C6C-4F45-89CE-3EF86E3812E4">
                 <File Id="fil7yTT9SEgcfEd4qBVzazkHqxGpk0" KeyPath="yes" Source="C:\medrec\publish\MedRec.MedicalVisit.Presenters.pdb" />
             </Component>
-            <Component Id="cmp7mogsaC03W4xCZkHq5sZ0I7nL6g" Guid="4A85F96F-E818-4EC3-809D-6242F98F6AF7">
+            <Component Id="cmp7mogsaC03W4xCZkHq5sZ0I7nL6g" Guid="44939BAF-F490-4F64-AFBF-F51E5B2E480D">
                 <File Id="filFwnZQwY1A4da953ZXspH74210_s" KeyPath="yes" Source="C:\medrec\publish\MedRec.MedicalVisit.Repositories.dll" />
             </Component>
-            <Component Id="cmpZGYyp8NDFZENcMQv0D6btrRcmls" Guid="0D9722A4-E353-48E2-A629-4BE8D266D884">
+            <Component Id="cmpZGYyp8NDFZENcMQv0D6btrRcmls" Guid="27BBEDEF-6DCA-448E-A313-6775ADE473EC">
                 <File Id="filnfIAGeuxZrrhK0.sQCEvuwBGUaQ" KeyPath="yes" Source="C:\medrec\publish\MedRec.MedicalVisit.Repositories.pdb" />
             </Component>
-            <Component Id="cmp6PnMFpScqlEKZDFDVJ9xl9zWsx4" Guid="EC72574C-3B57-4167-B15E-42EB6A21400B">
+            <Component Id="cmp6PnMFpScqlEKZDFDVJ9xl9zWsx4" Guid="F76BD531-4884-4D85-B1A4-899283F0C509">
                 <File Id="filHha4IuR46vguE1XSAswsSl__5tA" KeyPath="yes" Source="C:\medrec\publish\MedRec.MedicalVisit.UseCases.dll" />
             </Component>
-            <Component Id="cmppqBcxzbtxBXS1dW6aQkdCINTEOQ" Guid="F903CF45-E8C4-4DA7-85BF-AA50E130D699">
+            <Component Id="cmppqBcxzbtxBXS1dW6aQkdCINTEOQ" Guid="6C39AD7F-D266-4D13-A612-5AF3645CD5DE">
                 <File Id="filkj3dAqxed6pyoFnn.NRPeRwjXFw" KeyPath="yes" Source="C:\medrec\publish\MedRec.MedicalVisit.UseCases.pdb" />
             </Component>
-            <Component Id="cmp15j4Qwcg3SpoyGx0GqYY4NEG1Xo" Guid="6DAD4E0B-57AA-479F-A3E3-487F5422CEC6">
+            <Component Id="cmp15j4Qwcg3SpoyGx0GqYY4NEG1Xo" Guid="8264708E-8BCF-4C85-B3BF-BA8697355EDE">
                 <File Id="filXOeM0io6_EXb6O..paHf9PYmuC4" KeyPath="yes" Source="C:\medrec\publish\MedRec.MedicalVisit.ViewModels.dll" />
             </Component>
-            <Component Id="cmpWiS4iFQy6WRuz_WD9vajGZztAZo" Guid="51715057-428F-47BB-B278-DA6476AEBB5E">
+            <Component Id="cmpWiS4iFQy6WRuz_WD9vajGZztAZo" Guid="E4BFAD04-6A10-4387-918D-62BCEFF23A00">
                 <File Id="filaNi6J8R1kS9C15d2D3pZjCMMzkY" KeyPath="yes" Source="C:\medrec\publish\MedRec.MedicalVisit.ViewModels.pdb" />
             </Component>
-            <Component Id="cmpmgkKNjmAKi9Y_jQhN8V85XIbSao" Guid="B8E4847B-3CAF-4B61-A4AB-8FBB6D232B50">
+            <Component Id="cmpmgkKNjmAKi9Y_jQhN8V85XIbSao" Guid="0AB247CD-FE30-4153-BDD2-B2CE94FBC779">
                 <File Id="fil.FsD8wI9kLsXsnm0iV9GdWonZ9E" KeyPath="yes" Source="C:\medrec\publish\MedRec.MedicalVisit.Views.dll" />
             </Component>
-            <Component Id="cmpPriMSdXmmGUI8zDwg2TyjuM9hAM" Guid="37F2A98E-DD9C-4C3F-9BA3-B704DD766C9F">
+            <Component Id="cmpPriMSdXmmGUI8zDwg2TyjuM9hAM" Guid="5A797D52-75DD-4D38-BCA6-16AAEAC7F075">
                 <File Id="filcR9QGa7X27UVEsaNwAZ8bVmrSU0" KeyPath="yes" Source="C:\medrec\publish\MedRec.MedicalVisit.Views.pdb" />
             </Component>
-            <Component Id="cmpNwKqBNnKkSeQIthaoRabCEks68c" Guid="4E7CD86C-F90A-4FEF-AA6C-568336C073FD">
+            <Component Id="cmpNwKqBNnKkSeQIthaoRabCEks68c" Guid="79F8F855-F86C-4580-9C3B-3ED2EB82DEDE">
                 <File Id="filwds_wZcplapyaS3S1XEfrLzJCwI" KeyPath="yes" Source="C:\medrec\publish\MedRec.Patients.BusinessObjects.dll" />
             </Component>
-            <Component Id="cmpK64_hJdQ86WqQxuJbXtCJ8GYo1k" Guid="B75E1F23-30F5-4F77-B1C7-00218855FC28">
+            <Component Id="cmpK64_hJdQ86WqQxuJbXtCJ8GYo1k" Guid="FC01F6C7-BF4E-4F00-AEAA-92FE114E5A8B">
                 <File Id="filbMKXF.258EPmFwx38RQgR8JHRf8" KeyPath="yes" Source="C:\medrec\publish\MedRec.Patients.BusinessObjects.pdb" />
             </Component>
-            <Component Id="cmpk94lVKJoAWTsR2JVz8sjwx.Why0" Guid="73248620-96AC-4AEB-B838-734B83E54836">
+            <Component Id="cmpk94lVKJoAWTsR2JVz8sjwx.Why0" Guid="19A6B09E-AF7C-4285-8A2F-B3B524B1E90B">
                 <File Id="fil0acXDLJuXrBIW3cET7UGk4QnQBk" KeyPath="yes" Source="C:\medrec\publish\MedRec.Patients.DataContext.MySql.dll" />
             </Component>
-            <Component Id="cmpTZvDMCtdGf56Vd6xqhBF1F6eKco" Guid="34796726-6178-4573-A1C1-E2B975BBE998">
+            <Component Id="cmpTZvDMCtdGf56Vd6xqhBF1F6eKco" Guid="9944FCAB-4AAC-4CA6-91EA-709F00ABD590">
                 <File Id="filQxNBobPOJvuNVuXUzwfr_mSwARA" KeyPath="yes" Source="C:\medrec\publish\MedRec.Patients.DataContext.MySql.pdb" />
             </Component>
-            <Component Id="cmp6WKdZrX86d7mKYJeoFl.WVsW1go" Guid="B6995AD8-5B16-4DC9-96AE-EEDC83A37516">
+            <Component Id="cmp6WKdZrX86d7mKYJeoFl.WVsW1go" Guid="3E9B2D07-98CA-490A-A3AF-A36B22D0F6F7">
                 <File Id="filks6yenhUMnsc4eUHDeL2JFFug7w" KeyPath="yes" Source="C:\medrec\publish\MedRec.Patients.Presenters.dll" />
             </Component>
-            <Component Id="cmpx8QpBjW6kM78O26pCK1_SkZN.VY" Guid="4968E20A-2164-4B40-8756-FD823F5E17A6">
+            <Component Id="cmpx8QpBjW6kM78O26pCK1_SkZN.VY" Guid="A5E7912E-3C28-4505-92C5-A9C8F703437F">
                 <File Id="filnP2Y.vD2DG5vQKHealmu1BkDgDU" KeyPath="yes" Source="C:\medrec\publish\MedRec.Patients.Presenters.pdb" />
             </Component>
-            <Component Id="cmp45L7Mj8jSx80FTm9DNCyjDynSuk" Guid="66901810-B8B3-4ADA-9EE1-237BDE4E1413">
+            <Component Id="cmp45L7Mj8jSx80FTm9DNCyjDynSuk" Guid="7F492EAC-93CE-4103-9A01-A8F73C1201EE">
                 <File Id="fili79FV4QLtMb59AsgNqxBrs0jrZ4" KeyPath="yes" Source="C:\medrec\publish\MedRec.Patients.Repositories.dll" />
             </Component>
-            <Component Id="cmpDBwAXRpnGArRBdhQ.Z.maAhcl7c" Guid="0F50184F-F5A8-4A10-B09B-07320FBB9A36">
+            <Component Id="cmpDBwAXRpnGArRBdhQ.Z.maAhcl7c" Guid="47C5C042-9A17-47C7-8380-28EE714E8812">
                 <File Id="filtUzHmDgyhpAFhCvLZBkUcvuPH60" KeyPath="yes" Source="C:\medrec\publish\MedRec.Patients.Repositories.pdb" />
             </Component>
-            <Component Id="cmpIhnBC.cFIPR1_ghkIptWn8a_fD8" Guid="C9E6081E-711F-40E3-AD7A-BC9385F5449C">
+            <Component Id="cmpIhnBC.cFIPR1_ghkIptWn8a_fD8" Guid="EF498982-BB15-4B44-BA5B-319FCDB87DAC">
                 <File Id="filVsFbqVUKR7qyasx0_nyft5rnzQY" KeyPath="yes" Source="C:\medrec\publish\MedRec.Patients.UseCases.dll" />
             </Component>
-            <Component Id="cmpZiLDH5sqbeq2jh6TP7zs6CYtUZ0" Guid="DE12F7A9-22C6-49AE-A59F-56957DE87868">
+            <Component Id="cmpZiLDH5sqbeq2jh6TP7zs6CYtUZ0" Guid="20912608-CB48-43DF-A31E-0EDBC702D011">
                 <File Id="filnERwMAQH29K1GSlcJTmrG_FXgOA" KeyPath="yes" Source="C:\medrec\publish\MedRec.Patients.UseCases.pdb" />
             </Component>
-            <Component Id="cmptjvgZnSAWEmPObbP3LdlI.1Gvyg" Guid="E9042B73-B3C0-4D51-9E4A-6262283E28FB">
+            <Component Id="cmptjvgZnSAWEmPObbP3LdlI.1Gvyg" Guid="DC730D0D-653B-4DD8-9498-B0342237BCF6">
                 <File Id="fil1HDNlq8u4RmeBZ.SZXgiuUjPYcI" KeyPath="yes" Source="C:\medrec\publish\MedRec.Patients.ViewModels.dll" />
             </Component>
-            <Component Id="cmpUcPB5DqGrFP1DwmLhuC02rUb4ls" Guid="7D28AA70-456B-4568-80E6-67A9CA261F57">
+            <Component Id="cmpUcPB5DqGrFP1DwmLhuC02rUb4ls" Guid="7BF4FBD1-F005-496D-9C05-1CF9719EBF7A">
                 <File Id="filclcRHzZ1Jqn82MLsPbcXH8IuVhY" KeyPath="yes" Source="C:\medrec\publish\MedRec.Patients.ViewModels.pdb" />
             </Component>
-            <Component Id="cmpA4F8Hd5tUm8hnghDsJ6_0OBa0Z0" Guid="C9EE47F7-8B7E-4CF5-B588-4D6F435B032F">
+            <Component Id="cmpA4F8Hd5tUm8hnghDsJ6_0OBa0Z0" Guid="EB30BE57-F167-451D-9F62-8D655071DCA6">
                 <File Id="filcJjODSv3qv18Z06MO4efIV5DMtw" KeyPath="yes" Source="C:\medrec\publish\MedRec.Patients.Views.dll" />
             </Component>
-            <Component Id="cmpHCfm9Q0RLDnKyvpSieseNN2TIjA" Guid="23DA3A9F-0362-4904-AD50-7C45B757FC6C">
+            <Component Id="cmpHCfm9Q0RLDnKyvpSieseNN2TIjA" Guid="5E352A36-ADD4-4B16-9D91-1059BB218FB4">
                 <File Id="filCQg4U4GeUYrdyRUn2j9cUzDAiYU" KeyPath="yes" Source="C:\medrec\publish\MedRec.Patients.Views.pdb" />
             </Component>
-            <Component Id="cmpOUyNKZkfa4NxS1WUuI8fHtsduik" Guid="05AA319D-887A-442F-99A8-67004EA1C72E">
+            <Component Id="cmpOUyNKZkfa4NxS1WUuI8fHtsduik" Guid="8151E784-DCFF-4993-8585-829905586783">
                 <File Id="filGnSJeVgDtF5anRAOy8CA0iDfM9Y" KeyPath="yes" Source="C:\medrec\publish\MedRec.Repositories.dll" />
             </Component>
-            <Component Id="cmptBsLy_nYytla8vKcG_yHSJzQI0Y" Guid="8E6446F9-9BBC-46A4-AF57-8BC716B53894">
+            <Component Id="cmptBsLy_nYytla8vKcG_yHSJzQI0Y" Guid="65E587EA-A11C-4FFB-AD50-6F5D0CB0CD6A">
                 <File Id="filoixdP8tBHi8nHR.5hPDwSSgcvpc" KeyPath="yes" Source="C:\medrec\publish\MedRec.Repositories.pdb" />
             </Component>
-            <Component Id="cmpHz4hm14gzSDa85Od.MUY04d_7o8" Guid="466C6C3F-8F6B-4E5F-B2FF-881A43C2EEA4">
+            <Component Id="cmpHz4hm14gzSDa85Od.MUY04d_7o8" Guid="8B12EE41-5A96-4E21-8324-B38DF7159B0A">
                 <File Id="filK8v8XpURXeOW8bFBloLa7SeoZYg" KeyPath="yes" Source="C:\medrec\publish\MedRec.Shared.dll" />
             </Component>
-            <Component Id="cmpKu6znwyguDEWSBES5q_oLjBUu9o" Guid="CFDF1E76-C95E-41C9-9574-698C2DB4080E">
+            <Component Id="cmpKu6znwyguDEWSBES5q_oLjBUu9o" Guid="C75C6EF8-C57A-44B6-B59D-60D1AB7C5571">
                 <File Id="filcjWgu7RWrp8bQxGyq6KoHp2365M" KeyPath="yes" Source="C:\medrec\publish\MedRec.Shared.pdb" />
             </Component>
-            <Component Id="cmpNB2aNBT9sv13gtmNPqUWdY_xyYo" Guid="38CC22C5-AF14-44CC-8053-D24340131774">
+            <Component Id="cmpNB2aNBT9sv13gtmNPqUWdY_xyYo" Guid="B8E4FBC1-9E9A-4D41-A782-C6CCD8D65464">
                 <File Id="filKG.jhKycg1uKBWUYK2VXKasvUsg" KeyPath="yes" Source="C:\medrec\publish\MedRec.Validator.dll" />
             </Component>
-            <Component Id="cmpZ6CAXeTAUJPjDxjz8yCQE6ddyt8" Guid="907FC225-D95D-4FCE-83CB-9EDE028768BF">
+            <Component Id="cmpZ6CAXeTAUJPjDxjz8yCQE6ddyt8" Guid="344A38FB-B0E6-4868-A403-5B5F84A8B68E">
                 <File Id="filMBC_RatwQIuhC9TJZV6ZAth1Sgk" KeyPath="yes" Source="C:\medrec\publish\MedRec.Validator.pdb" />
             </Component>
-            <Component Id="cmp1oB7EAu4BK_afizJ.GSs0oUGseM" Guid="484BDEBD-3D41-47C2-97C4-BDF576817C0E">
+            <Component Id="cmp1oB7EAu4BK_afizJ.GSs0oUGseM" Guid="811B60E6-38EA-4032-A2A0-7815059D8A66">
                 <File Id="fil.q3ylwgTd65tKsGD_.V9gFQ6U8c" KeyPath="yes" Source="C:\medrec\publish\MedRec.WPF.UI.deps.json" />
             </Component>
-            <Component Id="cmpJQCngRcHNgEMmPXAz1JmmA6JAoo" Guid="9F71FDE4-AD29-437A-8168-50698587A628">
+            <Component Id="cmpJQCngRcHNgEMmPXAz1JmmA6JAoo" Guid="180DC602-D834-4B09-9533-CE50941805F4">
                 <File Id="filLfuUnKN4C37hOaWLlMApzlH5jbI" KeyPath="yes" Source="C:\medrec\publish\MedRec.WPF.UI.dll" />
             </Component>
-            <Component Id="cmpa6U4i2FT1VWiDxu2oWJzYS0Lpio" Guid="FB59736D-6558-4CBE-A93D-87FE4A58633F">
+            <Component Id="cmpa6U4i2FT1VWiDxu2oWJzYS0Lpio" Guid="DA81DDD1-93D8-42E9-85CE-4F17443DB241">
                 <File Id="fil3vW1hc0bPZt0hM3FCqMKO3YGLpY" KeyPath="yes" Source="C:\medrec\publish\MedRec.WPF.UI.exe" />
             </Component>
-            <Component Id="cmp9nJBX08_Oa6RVz1IY7KaH0ZPD3k" Guid="744823DD-DFF0-4A01-8409-0C25864A3E02">
+            <Component Id="cmp9nJBX08_Oa6RVz1IY7KaH0ZPD3k" Guid="79FB4C05-8B84-4168-BF30-F46D3FB53843">
                 <File Id="filBaLx88FFaj0Z_CffZNNvthfHpg0" KeyPath="yes" Source="C:\medrec\publish\MedRec.WPF.UI.pdb" />
             </Component>
-            <Component Id="cmprdxnufq4O_5IoYGGM7cU09idUNM" Guid="A290E898-DE57-4AAF-8239-6D73364C5EFF">
+            <Component Id="cmprdxnufq4O_5IoYGGM7cU09idUNM" Guid="9248263A-E2C3-48BD-AC6B-3A3076ECDB5B">
                 <File Id="fil94c4iUP5S2L.PfLhAQaQw7oo3mM" KeyPath="yes" Source="C:\medrec\publish\MedRec.WPF.UI.runtimeconfig.json" />
             </Component>
-            <Component Id="cmpF2AvtGXf7eS8mDazkRYcqA07gVI" Guid="29CDF3E7-7038-48C2-819E-D4298C647AA1">
+            <Component Id="cmpF2AvtGXf7eS8mDazkRYcqA07gVI" Guid="0A036E68-8A40-4859-9CC1-B9480CD3B476">
                 <File Id="filtZpynIDMswajNN8PUdXbbiCsGi4" KeyPath="yes" Source="C:\medrec\publish\MedRec.WPF.UI.staticwebassets.endpoints.json" />
             </Component>
-            <Component Id="cmpUUXY495J6r7UlRkR4VhaPVLsprE" Guid="32D1BB3C-05B6-41F0-AD26-5BB3C4B85363">
+            <Component Id="cmpUUXY495J6r7UlRkR4VhaPVLsprE" Guid="3EF859BB-995F-45A6-81E9-5675F90B8DE2">
                 <File Id="filzdBJxmbpK_pR7AYjOuieGmb7euo" KeyPath="yes" Source="C:\medrec\publish\Microsoft.AspNetCore.Authorization.dll" />
             </Component>
-            <Component Id="cmpYuk5le5X1LVo565fHX1Idi17vYs" Guid="5836C6E4-DB3A-46F2-8331-DD9C47F27941">
+            <Component Id="cmpYuk5le5X1LVo565fHX1Idi17vYs" Guid="D88DC25B-0CC8-4FA9-BA79-F0B58D50813A">
                 <File Id="fil7gfSC5CIe6.hxK37BYWxyKF9ZEk" KeyPath="yes" Source="C:\medrec\publish\Microsoft.AspNetCore.Components.dll" />
             </Component>
-            <Component Id="cmpBUeHVIu79jAvGmQtnOCoMqMRpxk" Guid="9DC57B00-A960-461B-8BBA-DB19F0930FCD">
+            <Component Id="cmpBUeHVIu79jAvGmQtnOCoMqMRpxk" Guid="26269A5B-EA07-4B3D-825F-9DE15CB9234F">
                 <File Id="filTk3Z74NadLnI7cB_Askmr86n3_U" KeyPath="yes" Source="C:\medrec\publish\Microsoft.AspNetCore.Components.Forms.dll" />
             </Component>
-            <Component Id="cmpnFDx.pa5JH.isod7Xm4nB7GCTd4" Guid="A8F0AE7F-E42C-4972-8266-6994431AC43A">
+            <Component Id="cmpnFDx.pa5JH.isod7Xm4nB7GCTd4" Guid="41836E38-369B-4D9F-8F18-3D2F25CAF7E6">
                 <File Id="fildpAdje_OSjDVZDku6sIautyyrZk" KeyPath="yes" Source="C:\medrec\publish\Microsoft.AspNetCore.Components.Web.dll" />
             </Component>
-            <Component Id="cmpm3q5g2Gx2CwJngducW8ynDioVCw" Guid="BC896622-9CEF-4E6D-9FFA-43D3B5479FF5">
+            <Component Id="cmpm3q5g2Gx2CwJngducW8ynDioVCw" Guid="84F6AA07-87BE-4E59-ADB8-E3958E658E37">
                 <File Id="filyqEvOg.S0PVxUvS0IwxEqod.VTU" KeyPath="yes" Source="C:\medrec\publish\Microsoft.AspNetCore.Components.WebView.dll" />
             </Component>
-            <Component Id="cmpsmvYJofCNuXD1ake.Knn6QYtEO4" Guid="FB61BD47-50EB-47EA-BEC6-2AF0F1D39651">
+            <Component Id="cmpsmvYJofCNuXD1ake.Knn6QYtEO4" Guid="C2664027-6A21-44A7-AADA-DD1C2CA58276">
                 <File Id="filsafIUBArTfibu.ZcwxqI016wPdo" KeyPath="yes" Source="C:\medrec\publish\Microsoft.AspNetCore.Components.WebView.Wpf.dll" />
             </Component>
-            <Component Id="cmpDdf1xW6fzAslF0ZD8NFDbFaG9us" Guid="E17774AA-CE85-40A2-A16C-53411D271569">
+            <Component Id="cmpDdf1xW6fzAslF0ZD8NFDbFaG9us" Guid="EF9715B4-5AD7-4B55-B1FA-0B1302ACCBDF">
                 <File Id="filMvuzfTm02YNXRGMXNVL0HHXwToA" KeyPath="yes" Source="C:\medrec\publish\Microsoft.AspNetCore.Metadata.dll" />
             </Component>
-            <Component Id="cmpqMIbHKoMOkyYZw_9LvstzfvoO20" Guid="EB4BCB91-994E-4BC2-BB83-29EB7F4322E9">
+            <Component Id="cmpqMIbHKoMOkyYZw_9LvstzfvoO20" Guid="6DAAB0FA-20B5-4307-A753-8DA674737D43">
                 <File Id="filyvRfHQZBtiGVp29yTAS2265S8R4" KeyPath="yes" Source="C:\medrec\publish\Microsoft.EntityFrameworkCore.Abstractions.dll" />
             </Component>
-            <Component Id="cmp_DOIDMJ1BjiNYJ3O8Dj04n809BM" Guid="13668410-983E-46F5-95A5-05249FD3FD7D">
+            <Component Id="cmp_DOIDMJ1BjiNYJ3O8Dj04n809BM" Guid="F1C7D202-4593-4FE7-8CE3-85E3B3D3FD77">
                 <File Id="filVSHYzrgc8RU7C7w4blOa6n2VKGY" KeyPath="yes" Source="C:\medrec\publish\Microsoft.EntityFrameworkCore.dll" />
             </Component>
-            <Component Id="cmpZ2.bh6zEn6BjiJ2_6NUjASfjC44" Guid="27223399-69A1-4E91-AA42-FEDB31614190">
+            <Component Id="cmpZ2.bh6zEn6BjiJ2_6NUjASfjC44" Guid="997248E0-4E5E-4AC5-A84C-A272E946BEF6">
                 <File Id="filVCxOa7dENOfxBReLY1_.XHThwPo" KeyPath="yes" Source="C:\medrec\publish\Microsoft.EntityFrameworkCore.Relational.dll" />
             </Component>
-            <Component Id="cmp6JzVzj5BARsOCwfOBca6BUp34Zc" Guid="36D2D659-6F72-46B7-AF45-D56AF286638A">
+            <Component Id="cmp6JzVzj5BARsOCwfOBca6BUp34Zc" Guid="32BCF5C7-E3DC-4802-B721-3DAC6DCF71E6">
                 <File Id="fil8HjwxbUH.P6lkp7gKr212B8Dmoc" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Caching.Abstractions.dll" />
             </Component>
-            <Component Id="cmpc9hYPklEguaRQ0vzmIU42TwlYu4" Guid="AFC8534D-88BE-4A81-9D8A-332346E6E4B2">
+            <Component Id="cmpc9hYPklEguaRQ0vzmIU42TwlYu4" Guid="F747B576-7E7A-4BD7-BF60-41FD726BE6BC">
                 <File Id="filfQVC6QOayQLxHz9QRRcRFVng_bY" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Caching.Memory.dll" />
             </Component>
-            <Component Id="cmpIE6GWkafIrnTmPIgFwaZvSGHphg" Guid="1E7A95E0-7A90-43BD-B630-9C2408722280">
+            <Component Id="cmpIE6GWkafIrnTmPIgFwaZvSGHphg" Guid="9857FA45-0194-4A4B-A6E3-5FD3355E1EDD">
                 <File Id="filwZ1mVrB3G4lbSn5owKKXcuzqxPU" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Configuration.Abstractions.dll" />
             </Component>
-            <Component Id="cmptf6b.nolsDtM4JDvW5YHRlxxEqQ" Guid="677DD37A-8A5C-4E4D-97C5-DE43FA0D6C47">
+            <Component Id="cmptf6b.nolsDtM4JDvW5YHRlxxEqQ" Guid="68B1814C-7BB1-4B94-AF0F-577F75D085F6">
                 <File Id="filuzL7o0zf5Lg3GwOGxpwtA8jCNnY" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Configuration.Binder.dll" />
             </Component>
-            <Component Id="cmpk6XmgqewGR63KBuA7mN.3s42E44" Guid="B7DFBE0B-DB38-4F33-BD0A-C8408AA013F1">
+            <Component Id="cmpk6XmgqewGR63KBuA7mN.3s42E44" Guid="0B4951D4-E858-4740-9F6E-ED50363FAEDE">
                 <File Id="fil06adirXF9N8pp7YX8v4TytbTG6c" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Configuration.CommandLine.dll" />
             </Component>
-            <Component Id="cmp_JLpAcK_R4ryBRYdzdrFNlG5ORk" Guid="DF5A12BA-179E-46EC-AB46-6B0996D68B52">
+            <Component Id="cmp_JLpAcK_R4ryBRYdzdrFNlG5ORk" Guid="FA0411FC-DDFB-40AD-8691-196594847F99">
                 <File Id="filLvOq29ppcsQew2Nih1aAlySZrHQ" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Configuration.dll" />
             </Component>
-            <Component Id="cmpvtfstQbGh3sjeXwXV.kbdYeabuc" Guid="93C559CB-54B5-4B24-BCFC-13B2D8F263EC">
+            <Component Id="cmpvtfstQbGh3sjeXwXV.kbdYeabuc" Guid="6CE3280A-B96B-476E-BFD8-63EC137ED047">
                 <File Id="filMQmGjQnXtxq6klQ.t2aC8_dpZaE" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Configuration.EnvironmentVariables.dll" />
             </Component>
-            <Component Id="cmp6GpAjRrPeKqwKn.QgxVm3Iuaowc" Guid="F2A2B3DD-C377-44E6-A43C-7C97F705119C">
+            <Component Id="cmp6GpAjRrPeKqwKn.QgxVm3Iuaowc" Guid="54E7478F-DF62-4998-A12D-F74F06D1D90E">
                 <File Id="filXsBCHzWpuqyTIWPOn_uzEsAP.xI" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Configuration.FileExtensions.dll" />
             </Component>
-            <Component Id="cmpVWhTUgTdGAfoL1IIx8yLpvIyqaw" Guid="A89E9098-3686-494F-814F-6A33C7C9ABF6">
+            <Component Id="cmpVWhTUgTdGAfoL1IIx8yLpvIyqaw" Guid="D345299D-5290-4B98-8E80-77673D2F5024">
                 <File Id="filSTSDuG25STGY4ULLjDgc56pa6XQ" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Configuration.Json.dll" />
             </Component>
-            <Component Id="cmp0BqgK45phW.DWLYY.VhhksBeE2w" Guid="7012690B-A8EC-49B4-B44D-C5918ADA46BE">
+            <Component Id="cmp0BqgK45phW.DWLYY.VhhksBeE2w" Guid="652D1DCB-CB7B-4EDE-A070-C78A1FAB6BD0">
                 <File Id="filkS6gO5WZskmsI3se0uQzuRwynA0" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Configuration.UserSecrets.dll" />
             </Component>
-            <Component Id="cmpcSXcwo7ihWnC9Q4uS07WX_yQd90" Guid="B9813A7F-E35E-419A-A821-7D92BB73A548">
+            <Component Id="cmpcSXcwo7ihWnC9Q4uS07WX_yQd90" Guid="46C8C095-599B-4B1D-BDC3-291B333C5D0E">
                 <File Id="filVAx9bsdjt1pq8_qapAd5dN8Gq0M" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
             </Component>
-            <Component Id="cmpptcqFK6fKvlKClRr7anAH2T10IA" Guid="5A872157-1585-4F9A-9639-9FF9815379BD">
+            <Component Id="cmpptcqFK6fKvlKClRr7anAH2T10IA" Guid="8DC3CE65-F6F4-4347-9BBA-DA5835057B0C">
                 <File Id="filSJOrUJKgnObO47RKLelCAm_vWeI" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.DependencyInjection.dll" />
             </Component>
-            <Component Id="cmpVH0LRbQytjdlNBd3kwQO00fVvc8" Guid="0BA8ACAE-BD83-4D41-A19B-08CCCBD6FC96">
+            <Component Id="cmpVH0LRbQytjdlNBd3kwQO00fVvc8" Guid="F7B75830-776C-4411-AC5D-5C64371610E3">
                 <File Id="fil9lCrFw6aYOkWJ9fceHCbLzLRbLs" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Diagnostics.Abstractions.dll" />
             </Component>
-            <Component Id="cmprOU7doOvQ.DzYuH2h8ZUOU0NFVI" Guid="AB4CFA7A-8191-4560-93BD-D17F255174B2">
+            <Component Id="cmprOU7doOvQ.DzYuH2h8ZUOU0NFVI" Guid="BB891D7E-B2A7-4417-9D43-E033595579F6">
                 <File Id="fillSOBEXPLdwW.KgWajxtnwRbmvls" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Diagnostics.dll" />
             </Component>
-            <Component Id="cmpgS6KcbdOOW8c_NK9DddHTj1kuEw" Guid="440EBEC5-B4BD-4862-9A04-A4238C1C53B6">
+            <Component Id="cmpgS6KcbdOOW8c_NK9DddHTj1kuEw" Guid="78203A1A-C924-4647-8AD8-7BF248D52AB6">
                 <File Id="fil1x.XLx._HB1gWmgTh9hjiOgH06g" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.FileProviders.Abstractions.dll" />
             </Component>
-            <Component Id="cmpynBv4bR_jwbPZ3RQfHRmW8fYiiM" Guid="10C217B4-F19C-4ACB-8ED3-477263783EF2">
+            <Component Id="cmpynBv4bR_jwbPZ3RQfHRmW8fYiiM" Guid="D3710E04-D2D2-4DF7-A1E6-0353DCD80B2A">
                 <File Id="fil_kBuykZ_9r2yqGidCzJCxOQlFJo" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.FileProviders.Composite.dll" />
             </Component>
-            <Component Id="cmpGrK11HM_fySkGjyYJzIYyB3ZMqM" Guid="ACD4A03E-4879-4990-B06B-E4BF78B08B58">
+            <Component Id="cmpGrK11HM_fySkGjyYJzIYyB3ZMqM" Guid="8DB01D8C-EA22-4CC6-B1D2-ECE422EEA830">
                 <File Id="filliWem8shRS.eiFQnDYddk7PIyrg" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.FileProviders.Embedded.dll" />
             </Component>
-            <Component Id="cmpadzsKkdQ0kpoy.HB_s6mQclJ3a4" Guid="5598C124-C468-440E-A162-0246546379C0">
+            <Component Id="cmpadzsKkdQ0kpoy.HB_s6mQclJ3a4" Guid="EA245F48-4C22-47E7-A3FA-561B1229F544">
                 <File Id="filWV4jXns5inUtey520J2S664Jubs" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.FileProviders.Physical.dll" />
             </Component>
-            <Component Id="cmp8yZkc6AgL9nJgJi4aci_grxHjeY" Guid="71DA52DB-223B-4475-A195-F03AC331883D">
+            <Component Id="cmp8yZkc6AgL9nJgJi4aci_grxHjeY" Guid="8F263B1C-F4C8-4B53-A8A8-3A55BDEE7D3E">
                 <File Id="filsAxQXgq3bPI_gqfhxKZudbVjm6k" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.FileSystemGlobbing.dll" />
             </Component>
-            <Component Id="cmpCHrbE5d7LVTPKWnKN3NGRCEsit8" Guid="FDE0FA05-2DEF-4C96-B4FB-95284741A833">
+            <Component Id="cmpCHrbE5d7LVTPKWnKN3NGRCEsit8" Guid="3FEF5C62-E9B5-4BA9-83D7-8FF3D84531F1">
                 <File Id="fil8LrUePRnjQOidJRyZaysu2tVm0k" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Hosting.Abstractions.dll" />
             </Component>
-            <Component Id="cmpzX0Y31hhr4PBnaQzgFtXbpJ6h9k" Guid="4004349A-EFE9-4BE9-9386-43B0B67C7FE4">
+            <Component Id="cmpzX0Y31hhr4PBnaQzgFtXbpJ6h9k" Guid="CC0F6505-E66B-480D-8626-72EAD66C5742">
                 <File Id="filJO46UkwfJd6U3PYf9.hTNetwN1c" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Hosting.dll" />
             </Component>
-            <Component Id="cmp5C5AkWbR.BF5EXhocOhDDSDYrfQ" Guid="2D4AB9C1-090E-4F87-A182-6A85CCC7059B">
+            <Component Id="cmp5C5AkWbR.BF5EXhocOhDDSDYrfQ" Guid="A8F0321C-7F99-4885-942F-9F9C9496EFA0">
                 <File Id="filFkmtfto13ByIN2jY4YBzWmmgWnQ" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Logging.Abstractions.dll" />
             </Component>
-            <Component Id="cmpCgt3eCjLaNGx89Z2_UvEcpEpMJ8" Guid="D623A959-1596-493D-83E6-2A95FA2795A1">
+            <Component Id="cmpCgt3eCjLaNGx89Z2_UvEcpEpMJ8" Guid="79A9D5ED-414D-48A4-8392-ED72C9752457">
                 <File Id="filSF8gbLSRv6uqeptE5xS6R1S9X6s" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Logging.Configuration.dll" />
             </Component>
-            <Component Id="cmpSZBsZyK5d7.0rLk3n9vc2TkfACc" Guid="C34178D0-5137-4F0F-A55C-BA907644F761">
+            <Component Id="cmpSZBsZyK5d7.0rLk3n9vc2TkfACc" Guid="D4CFB895-42AF-44FE-A583-FCB2525AA4FF">
                 <File Id="fil7rSEE6gU3UcCP5_7xFwuDWTZ5J4" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Logging.Console.dll" />
             </Component>
-            <Component Id="cmpx_AXOcmMDXg3dlUi7Jj.3baQaUI" Guid="DD82EFE7-312A-494C-AAB9-2342A4915EF4">
+            <Component Id="cmpx_AXOcmMDXg3dlUi7Jj.3baQaUI" Guid="98BCD090-7CD9-46E1-84C6-AECDF3404036">
                 <File Id="filya7xzP5oOaVnEa0Li0_UuNpQAYw" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Logging.Debug.dll" />
             </Component>
-            <Component Id="cmp9DU_tRdw4cT4DZKwqb8SuCJjbUk" Guid="01898294-D93A-4E78-A30F-3854F5352BA8">
+            <Component Id="cmp9DU_tRdw4cT4DZKwqb8SuCJjbUk" Guid="B7A47FCC-5D53-4144-8CC4-1B3A2C945784">
                 <File Id="filI06K1DgxUW6U4LGM_X3G8389GeM" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Logging.dll" />
             </Component>
-            <Component Id="cmpq.THUt4zecQGADkVXu1TlKoI8I0" Guid="3832BF2B-E34A-4DE7-B39E-FBEC3903EEA6">
+            <Component Id="cmpq.THUt4zecQGADkVXu1TlKoI8I0" Guid="B45155F7-4297-413C-BA7A-78CD08645E62">
                 <File Id="filtjxYxY2C3vbdwk_Iaf686TBRM0A" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Logging.EventLog.dll" />
             </Component>
-            <Component Id="cmpbnu2F8ssBixcrnKRH4j_7R4jY90" Guid="22CBA987-6753-43B9-8C3A-7C79A2A2B419">
+            <Component Id="cmpbnu2F8ssBixcrnKRH4j_7R4jY90" Guid="F0467F5B-3778-4857-90B6-417C784F4FD8">
                 <File Id="fil_YkTBHZ.FnohAk3xLjKZZlgizJ0" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Logging.EventSource.dll" />
             </Component>
-            <Component Id="cmpRHALtaLPmIhqMgm5mHMNKy9M0rY" Guid="8A793AF3-F830-4D20-A5A9-D3C3E4C5F549">
+            <Component Id="cmpRHALtaLPmIhqMgm5mHMNKy9M0rY" Guid="7AE49270-326B-47E3-B5FA-129E114B54B1">
                 <File Id="filaewtqnc.qByHVAIHQ9r4RhFxEMM" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Options.ConfigurationExtensions.dll" />
             </Component>
-            <Component Id="cmpPQR6lxHdDSJdr00gdc6FOnZQzWg" Guid="E01FD9DD-4DF3-4B50-A053-25633AF7D0B7">
+            <Component Id="cmpPQR6lxHdDSJdr00gdc6FOnZQzWg" Guid="5617C54E-B071-49DC-A8D7-E38614A0791B">
                 <File Id="filG37OwKa7ir7Q.l8Ep4G7ukziapU" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Options.dll" />
             </Component>
-            <Component Id="cmpocbvehq9Bk9geawQYJ7zqz4cIps" Guid="8BB004B7-B045-413F-A11C-38BC9CCDF641">
+            <Component Id="cmpocbvehq9Bk9geawQYJ7zqz4cIps" Guid="0F494947-3B1B-42F5-845F-D47345E14BF7">
                 <File Id="filC6gUssKkys3yCVgW_5RlzmRqq8s" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Extensions.Primitives.dll" />
             </Component>
-            <Component Id="cmp80Zx7.xgt24S7WiGXI97hfhDO6U" Guid="66165233-17D6-405C-B299-607CA75A47F1">
+            <Component Id="cmp80Zx7.xgt24S7WiGXI97hfhDO6U" Guid="3A91821C-2C11-4F91-80B9-0D2BF45055EC">
                 <File Id="filcMJpSRLdk_zc4yYqp6qdWMTw3MU" KeyPath="yes" Source="C:\medrec\publish\Microsoft.JSInterop.dll" />
             </Component>
-            <Component Id="cmpMU.ceUZ2qlSnluMYJaQxCqUn9xc" Guid="16D7F04F-49FF-48C6-B464-FFA7083C27F2">
+            <Component Id="cmpMU.ceUZ2qlSnluMYJaQxCqUn9xc" Guid="B8AA5CA7-6EB1-402C-BFC3-8F13E419952F">
                 <File Id="fil9iADy6qHIuY22GuisidCTYdgunw" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Web.WebView2.Core.dll" />
             </Component>
-            <Component Id="cmpiTb._6S9Kx3RsUhw55FfUFdv6aE" Guid="BD4908B1-D977-4DF3-8E38-C7D66E849E08">
+            <Component Id="cmpiTb._6S9Kx3RsUhw55FfUFdv6aE" Guid="46ED482C-1049-40ED-86C8-4A9DC53836C3">
                 <File Id="filell_rqo3jJMdsl9e5VOMzoLGmio" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Web.WebView2.Core.xml" />
             </Component>
-            <Component Id="cmp5BMlkVA1uuLyoXt3UIfau2JviM0" Guid="9B310196-2D2A-4BD1-9970-E9037B47AA78">
+            <Component Id="cmp5BMlkVA1uuLyoXt3UIfau2JviM0" Guid="3D0648DF-3924-47F4-B36F-FF43DE13D234">
                 <File Id="filqR73lvCnDy37IatZe61mr2BhBd4" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Web.WebView2.WinForms.dll" />
             </Component>
-            <Component Id="cmpTkrwo.jSHARnBig0t.ha.riSn9I" Guid="920CDDB8-4315-425F-B9B0-212815816101">
+            <Component Id="cmpTkrwo.jSHARnBig0t.ha.riSn9I" Guid="54A186F3-F884-44E4-8DFF-032D0E15E17B">
                 <File Id="filnzgCRB2Whz8vboJ_IgZP5pBOJjE" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Web.WebView2.WinForms.xml" />
             </Component>
-            <Component Id="cmpnFlYaFfFGrantvD24YuIZQsS2YU" Guid="41E24539-4E1E-4B48-B632-50CDCBEA1E58">
+            <Component Id="cmpnFlYaFfFGrantvD24YuIZQsS2YU" Guid="DB8D6E7C-7158-46D8-9FC6-37155581EE39">
                 <File Id="fil0CliNCofo6r8gPpxs_3GhHeKK4E" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Web.WebView2.Wpf.dll" />
             </Component>
-            <Component Id="cmpDcllxv46u9BPeoXor1sFpvFC.hY" Guid="94F88D64-2C14-41F8-ABCA-D925E81A280B">
+            <Component Id="cmpDcllxv46u9BPeoXor1sFpvFC.hY" Guid="95D53C1A-5DDA-47F4-BE9E-ECE9DBD64C13">
                 <File Id="fil7bwT8hQnukMeXPH3wMwaak5SNJg" KeyPath="yes" Source="C:\medrec\publish\Microsoft.Web.WebView2.Wpf.xml" />
             </Component>
-            <Component Id="cmp0o7picUm3MQAEqhLDN_KZsQjwjY" Guid="FCD8417F-A3C0-4A81-9D50-89C1FE75B783">
+            <Component Id="cmp0o7picUm3MQAEqhLDN_KZsQjwjY" Guid="E874D720-D877-4EAE-AA76-30415E18CC39">
                 <File Id="fil8FIlU9UyboMVDc_Onm9YqW8.a6E" KeyPath="yes" Source="C:\medrec\publish\MrdRec.HealthInsurance.Repositories.dll" />
             </Component>
-            <Component Id="cmprD5Ij2xK_Mp.qWahJeKygd7y0qU" Guid="2357D1E1-FB39-436C-BDC7-F09FF87604FA">
+            <Component Id="cmprD5Ij2xK_Mp.qWahJeKygd7y0qU" Guid="255BA396-CAD7-4E6D-BAEF-38CC97CFC05F">
                 <File Id="filyrbSI4h6fKzXbg1uhEvKbY9y.cI" KeyPath="yes" Source="C:\medrec\publish\MrdRec.HealthInsurance.Repositories.pdb" />
             </Component>
-            <Component Id="cmpeDiMrggWxOaEBN2eDrdj_UyBh6g" Guid="B05578FB-55F3-41B0-AFEC-D0C8B84DC01F">
+            <Component Id="cmpeDiMrggWxOaEBN2eDrdj_UyBh6g" Guid="8F8A2260-46D0-42CE-B1CF-D096E5CD87E7">
                 <File Id="filT2C..axz.OOYe7aIfigOImw3hkU" KeyPath="yes" Source="C:\medrec\publish\MySqlConnector.dll" />
             </Component>
-            <Component Id="cmpyjDAB.WKcTwgVDE4D_sbUZAeN4U" Guid="F3826A07-5D0E-498C-BF85-FAE5FF1427C7">
+            <Component Id="cmpyjDAB.WKcTwgVDE4D_sbUZAeN4U" Guid="CFF60B9C-607F-42C4-A011-5EBCC9ABAC0A">
                 <File Id="filQoyHtvEBAT9fl0PuEAK0iAJV518" KeyPath="yes" Source="C:\medrec\publish\Newtonsoft.Json.dll" />
             </Component>
-            <Component Id="cmp2VUjRVb26iyLNMuRC034qXcMuTg" Guid="E9E9C553-0E51-4460-8FA8-5154F2CFFC60">
+            <Component Id="cmp2VUjRVb26iyLNMuRC034qXcMuTg" Guid="19B481B9-FA5D-41A7-BA9E-3D42A6A03717">
                 <File Id="filBa46G8_BOfPwY1lpLgRXmRaaf_I" KeyPath="yes" Source="C:\medrec\publish\Pomelo.EntityFrameworkCore.MySql.dll" />
             </Component>
-            <Component Id="cmp9mn.YnmzCqjJ9l4vmUreVMAAXFQ" Guid="A6D3EA12-3AB1-46ED-A3FC-B7D78A7FFB06">
+            <Component Id="cmp9mn.YnmzCqjJ9l4vmUreVMAAXFQ" Guid="16F25AFE-0F15-49BB-9237-BAB2453BD9F2">
                 <File Id="filDCVVux4Pf68SSwbA1WV3TXCCA5U" KeyPath="yes" Source="C:\medrec\publish\System.Diagnostics.EventLog.dll" />
             </Component>
-            <Component Id="cmpMc25vYpKQ8MhCcOJ4Lzk0sqXqQU" Guid="2C04282C-AFEE-4BD7-AC65-62D9E8310A48">
+            <Component Id="cmpMc25vYpKQ8MhCcOJ4Lzk0sqXqQU" Guid="2ADB106F-1BF5-4911-8293-1EA636635109">
                 <File Id="filoPdzhW5PK9DirS.PHZHUFWj2ZJk" KeyPath="yes" Source="C:\medrec\publish\System.Security.Cryptography.ProtectedData.dll" />
             </Component>
             <Directory Id="dirfAQ.n.ugMbQFLycEA_Wx792dYiI" Name="runtimes">
                 <Directory Id="dir8DdDj.RTGHTYFUVPCrOFASJ6EEk" Name="win">
                     <Directory Id="dire9w9JBlMo.alyvmbebEDYHq2MQk" Name="lib">
                         <Directory Id="dirxKgjB7iJvIxbF1U5YY6y6haMDqM" Name="net9.0">
-                            <Component Id="cmpW9wrwGQmKD5HBhxfSznYhyt8Uxc" Guid="6DBB091E-B725-4A00-892B-24E8C2788348">
+                            <Component Id="cmpW9wrwGQmKD5HBhxfSznYhyt8Uxc" Guid="9CAFB533-6FB9-404C-87F4-76314BF180F8">
                                 <File Id="fil6VUxDvXktdx1jYr8Rc7aGf_A2L0" KeyPath="yes" Source="C:\medrec\publish\runtimes\win\lib\net9.0\System.Diagnostics.EventLog.dll" />
                             </Component>
                         </Directory>
@@ -376,221 +373,221 @@
                 </Directory>
                 <Directory Id="dirB5keA_AP1F6fSP53UmF061wZEYU" Name="win-arm64">
                     <Directory Id="dir6pcC8nQylhp86sqRbyFUqllQce8" Name="native">
-                        <Component Id="cmpiMSKVGj8.q7kalKI_.61Xts6.6A" Guid="FB595B37-985D-423B-AFDC-F429F0A353B2">
+                        <Component Id="cmpiMSKVGj8.q7kalKI_.61Xts6.6A" Guid="69C61740-C6BB-4409-8BF1-4B62595B58F7">
                             <File Id="filRF0q7tn2tDQ9qSJ.Cu7rvJzeTZs" KeyPath="yes" Source="C:\medrec\publish\runtimes\win-arm64\native\WebView2Loader.dll" />
                         </Component>
                     </Directory>
                 </Directory>
                 <Directory Id="dir0T2y4LJRjwSqPBrXnAAF4emW08k" Name="win-x64">
                     <Directory Id="dir81_a3cG5Dg.sCTOPta_gm7Qq7GM" Name="native">
-                        <Component Id="cmpxYOFMsXI.lf_NMgqPzVwDMTSOZc" Guid="F130F8DC-7C99-43D9-AF8F-D06BEBDEF438">
+                        <Component Id="cmpxYOFMsXI.lf_NMgqPzVwDMTSOZc" Guid="FF6BC34D-6C27-4BB7-95B2-55CEF0392250">
                             <File Id="filjQD9UiWmFtuxO_p0sm1CKim5akw" KeyPath="yes" Source="C:\medrec\publish\runtimes\win-x64\native\WebView2Loader.dll" />
                         </Component>
                     </Directory>
                 </Directory>
                 <Directory Id="dirAGRnEqCtbrYY88dTCSkNZEtoVCQ" Name="win-x86">
                     <Directory Id="dirhgTz683e09TgKIrc_M5gDeiMP.Y" Name="native">
-                        <Component Id="cmpWZbYmkSx1gVAHyH8hWQxCzgSves" Guid="859FA215-24B3-49F1-AD3B-3F9AF9C12A12">
+                        <Component Id="cmpWZbYmkSx1gVAHyH8hWQxCzgSves" Guid="F1002129-4DA1-474E-8C9E-B0D86979AE50">
                             <File Id="filRrVsy0aaZAlGdw2iYIAMiG85lW0" KeyPath="yes" Source="C:\medrec\publish\runtimes\win-x86\native\WebView2Loader.dll" />
                         </Component>
                     </Directory>
                 </Directory>
             </Directory>
             <Directory Id="dirLvDLgTxzEbCkhw2_kZ.OUtkYhdA" Name="wwwroot">
-                <Component Id="cmpASvEd2tWjVfHGI7B_mUoQ.YZ2zg" Guid="52FB7C0D-208E-47F3-B001-D37EB5A38015">
+                <Component Id="cmpASvEd2tWjVfHGI7B_mUoQ.YZ2zg" Guid="EDBFCC6E-B731-4855-8426-6F7DA7151B4B">
                     <File Id="fil7CxQ.TEeoDOMqlWE6t5jnyokFJU" KeyPath="yes" Source="C:\medrec\publish\wwwroot\favicon.ico" />
                 </Component>
-                <Component Id="cmp3fJp7o3V8LCgwuCUT5YfCa8cqiY" Guid="817F44F5-FDD9-421A-A282-6085E10407FE">
+                <Component Id="cmp3fJp7o3V8LCgwuCUT5YfCa8cqiY" Guid="619AC6D5-238A-453B-985F-EA796D565972">
                     <File Id="filxWz6cFi617DSiG4UtKe6hffRd3c" KeyPath="yes" Source="C:\medrec\publish\wwwroot\favicon.ico.br" />
                 </Component>
-                <Component Id="cmppiK3lfr8t4KPsXBRT2aRGO2LesA" Guid="39E312B3-7190-4900-B95C-33DB16D6E138">
+                <Component Id="cmppiK3lfr8t4KPsXBRT2aRGO2LesA" Guid="5EA4EC0B-EF78-4996-979E-6F7A8BF0D15E">
                     <File Id="filp7WSWFS_obdicbY_tqMudrrtKoM" KeyPath="yes" Source="C:\medrec\publish\wwwroot\favicon.ico.gz" />
                 </Component>
-                <Component Id="cmpnlc1Msc8RvybZcVOJewKgpeHqww" Guid="FEF1EBA6-F848-4FE6-80E4-C60653350CFD">
+                <Component Id="cmpnlc1Msc8RvybZcVOJewKgpeHqww" Guid="8D7DC612-0F88-4935-A725-FDC3CF96E1AA">
                     <File Id="fil45HLZOjZFVyKiZKV2rICc0QyyIo" KeyPath="yes" Source="C:\medrec\publish\wwwroot\index.html" />
                 </Component>
-                <Component Id="cmpaQnnF6sU9gH98rTnXWNByv_F0ak" Guid="DC7C007E-D942-4E83-9350-806583900ABF">
+                <Component Id="cmpaQnnF6sU9gH98rTnXWNByv_F0ak" Guid="20DE5D66-5CD9-47BD-B828-5D7139404675">
                     <File Id="filNopThwHvpoS5yJZpAnr2OHD1Ws8" KeyPath="yes" Source="C:\medrec\publish\wwwroot\index.html.br" />
                 </Component>
-                <Component Id="cmprIS5nUV.zZ.O.Tovtbuiet3uThY" Guid="5E5CD3E6-B46B-46F3-A3F2-0169EAEEBE42">
+                <Component Id="cmprIS5nUV.zZ.O.Tovtbuiet3uThY" Guid="2699A757-A2D0-46F0-893D-DC38E351C229">
                     <File Id="fildwDX.BvYhRsZCbWoApRite1We8g" KeyPath="yes" Source="C:\medrec\publish\wwwroot\index.html.gz" />
                 </Component>
-                <Component Id="cmpTEKSusDBEnb_qhZURQSB5jLXWhA" Guid="6414B3E9-FD09-4E06-A152-F0F14007DA97">
+                <Component Id="cmpTEKSusDBEnb_qhZURQSB5jLXWhA" Guid="95AC4D07-B480-4202-B020-158A900BC3D0">
                     <File Id="filEEF37cx_.LdzJL3iCVaM2Ie3qtw" KeyPath="yes" Source="C:\medrec\publish\wwwroot\MedRec.WPF.UI.styles.css" />
                 </Component>
-                <Component Id="cmpS8i9wGh2bI2ilN3HZ6klbvldKRI" Guid="D863A673-9736-47F5-BBB0-983902A0A740">
+                <Component Id="cmpS8i9wGh2bI2ilN3HZ6klbvldKRI" Guid="AF835B8B-000B-40DA-985D-CB7E44C45106">
                     <File Id="filiHiqhwe3w3o8rBgYOExaBIrx.38" KeyPath="yes" Source="C:\medrec\publish\wwwroot\MedRec.WPF.UI.styles.css.br" />
                 </Component>
-                <Component Id="cmpwses3ijIjITDZw107Zv71lJ_oNM" Guid="3C50AB2B-98C5-4942-B681-ED3517E2A070">
+                <Component Id="cmpwses3ijIjITDZw107Zv71lJ_oNM" Guid="F12A95F6-72CB-4CF8-946B-A1153DA67186">
                     <File Id="filXHRqTS5LYOoJ1KhSIwGAO4z_zYA" KeyPath="yes" Source="C:\medrec\publish\wwwroot\MedRec.WPF.UI.styles.css.gz" />
                 </Component>
                 <Directory Id="dirbEd61.9GxSqiQWrPP3RVP7u_I9U" Name="css">
-                    <Component Id="cmphtG0G4RkQrTjSOpGuTrOVWdIR.I" Guid="18F8BA23-A179-41CE-85CE-6F65DBE01DC0">
+                    <Component Id="cmphtG0G4RkQrTjSOpGuTrOVWdIR.I" Guid="F03742A1-E3DE-4197-A1D3-6C599B95D65B">
                         <File Id="filO6vPHGxu7qjRv5mOWgUwJoSlG28" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\app.css" />
                     </Component>
-                    <Component Id="cmpyoxe6e6TOo0K.s.dGGgvlK8wCI0" Guid="ACB27915-420C-4AEC-9D52-2E34492B8561">
+                    <Component Id="cmpyoxe6e6TOo0K.s.dGGgvlK8wCI0" Guid="ADDEB4EA-553B-4565-B80B-2AFA20AFB674">
                         <File Id="filRur6ARV0Q.j8jvDI2fpRaKy3EMU" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\app.css.br" />
                     </Component>
-                    <Component Id="cmpXwsEQOcqfXxbBDLzwgW1Md10LqY" Guid="C653305C-FB0E-455B-8E74-E31401F1B815">
+                    <Component Id="cmpXwsEQOcqfXxbBDLzwgW1Md10LqY" Guid="B9D2967D-05BD-457C-A22E-BB787CA34D12">
                         <File Id="filTGqs6WH3gi3CoMZ17PDGNcnirHc" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\app.css.gz" />
                     </Component>
-                    <Component Id="cmpn6MLzJB.MkSd0vFkLBVPoOd0Mw4" Guid="31D06703-CAEA-4CA7-AC5A-25DDCC64053D">
+                    <Component Id="cmpn6MLzJB.MkSd0vFkLBVPoOd0Mw4" Guid="BA072423-4A98-49A5-BF6B-8B20BB3C6202">
                         <File Id="filC8cjC6ehLrYVk6p40UiiRb1L5hg" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\variables.css" />
                     </Component>
-                    <Component Id="cmpZ2YZGmHsc9BCAZjnQoIRzEEpvNg" Guid="DB061EBD-D7CB-430D-A138-03F5048269E7">
+                    <Component Id="cmpZ2YZGmHsc9BCAZjnQoIRzEEpvNg" Guid="C71D6623-3E02-476B-9B03-4BE5B1DEF291">
                         <File Id="filrP21ZN2W6TpUs2GpEmW7tiky7vU" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\variables.css.br" />
                     </Component>
-                    <Component Id="cmpaMSvLbp510kSViNesSmjsCxCzy8" Guid="B179226C-8083-4E73-8A19-5C09CA5ACDC0">
+                    <Component Id="cmpaMSvLbp510kSViNesSmjsCxCzy8" Guid="DA3C54C3-F6AE-4977-8869-BD199C5ED40C">
                         <File Id="fildZbqYF.Oqip.KiYmEyAmjIT_IWo" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\variables.css.gz" />
                     </Component>
                     <Directory Id="dirXD9PGxXvRHZI1Hel4.1AJOtpXuo" Name="bootstrap">
-                        <Component Id="cmp3OioX5PaZaGCN6qiBI8rnB5GKTg" Guid="2FDC77B8-F4DE-458C-B398-414236D4C3A0">
+                        <Component Id="cmp3OioX5PaZaGCN6qiBI8rnB5GKTg" Guid="AD607CBD-B366-41E9-9D79-76A35D02DE5C">
                             <File Id="filS.kyBrI2mg3VkD2khmJas2SiFvY" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\bootstrap\bootstrap-icons.css" />
                         </Component>
-                        <Component Id="cmpba7NNYxe0E0Gt5CJPwdPRcpMtZY" Guid="05E135C3-A9AD-4FBE-AAE7-0A6BAC02F4A8">
+                        <Component Id="cmpba7NNYxe0E0Gt5CJPwdPRcpMtZY" Guid="73A5811B-AEEE-40FF-ABD4-E4ED48AF0544">
                             <File Id="filYgvL7f1xyP9bKqx_TxjINF54vRs" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\bootstrap\bootstrap-icons.css.br" />
                         </Component>
-                        <Component Id="cmpoxGKJChwgVUmZwC8Tr932hzjKxc" Guid="5B5F92F0-63FF-4F53-8BB4-EEA1C73ED31D">
+                        <Component Id="cmpoxGKJChwgVUmZwC8Tr932hzjKxc" Guid="BBB7903A-7A22-4FC6-8987-5D307128DD76">
                             <File Id="filhwC3Mq78pz51pud08TkhxhMmMKA" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\bootstrap\bootstrap-icons.css.gz" />
                         </Component>
-                        <Component Id="cmpbf6_J70ImnVMA56MBV1LxF.bVLw" Guid="E3FF3B5F-41A2-4C5A-83D5-13FDF36A58CD">
+                        <Component Id="cmpbf6_J70ImnVMA56MBV1LxF.bVLw" Guid="5A34419C-FE4A-4DF9-AC4B-C257AA6BE713">
                             <File Id="fil5WjqoQHR_TPGjLoTaDBSnQOFRwY" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\bootstrap\bootstrap-icons.min.css" />
                         </Component>
-                        <Component Id="cmp6xVc4X9gNrQnf7RbiruHbrOb_us" Guid="5F7FE429-8616-4F87-8508-F0E6462E8151">
+                        <Component Id="cmp6xVc4X9gNrQnf7RbiruHbrOb_us" Guid="B6FFDE7D-D8EE-43F7-BAF4-5C0F71AFF887">
                             <File Id="filCq6SAhf50s3ns516sLkXWJ8yA3Y" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\bootstrap\bootstrap-icons.min.css.br" />
                         </Component>
-                        <Component Id="cmpRGNVfI_4z7LAKM3w6RgdNpWlELE" Guid="3E0A343C-4522-4778-B0CB-D7804D9BD9E8">
+                        <Component Id="cmpRGNVfI_4z7LAKM3w6RgdNpWlELE" Guid="7F8B5D04-A119-4F73-B9AA-FD332AE4C9BE">
                             <File Id="filF00WJfSGvhL0u19yiHc9oWCW2ok" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\bootstrap\bootstrap-icons.min.css.gz" />
                         </Component>
-                        <Component Id="cmp4WzCW1mAI_kMNErGTM_ER6vIQ0I" Guid="4BDF7AB7-5818-4C12-9934-D32F34A5F097">
+                        <Component Id="cmp4WzCW1mAI_kMNErGTM_ER6vIQ0I" Guid="B845153A-8CE4-48EB-A60A-DB1219D230E9">
                             <File Id="filgjUX7OU7fjMPUuPgQp3Oh.2ezhk" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\bootstrap\bootstrap.min.css" />
                         </Component>
-                        <Component Id="cmpp50BjbZ7cVq_40JLIa.3FfDX7mU" Guid="E5410A29-9E6A-4A18-8F91-3B1EB403C75C">
+                        <Component Id="cmpp50BjbZ7cVq_40JLIa.3FfDX7mU" Guid="A72463BB-4590-4334-A1A2-ADFE36640475">
                             <File Id="filZC9fTdlbbTokJCRQYDmZnTEyv2g" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\bootstrap\bootstrap.min.css.br" />
                         </Component>
-                        <Component Id="cmpBcsyXIMDjeCLV8ohBrSkVygbzqI" Guid="94280553-7C4A-4CED-B8D3-34DDD2C7FE9F">
+                        <Component Id="cmpBcsyXIMDjeCLV8ohBrSkVygbzqI" Guid="0B939F33-DB77-4C28-9511-6B0B7A5F2170">
                             <File Id="filxyddBNpNST.kY9OV8fty5jJr27s" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\bootstrap\bootstrap.min.css.gz" />
                         </Component>
-                        <Component Id="cmpPAMCMS3wM78xmZdUaZLIxapFjOQ" Guid="B816A2A7-D474-4370-AC12-06F52D0B9745">
+                        <Component Id="cmpPAMCMS3wM78xmZdUaZLIxapFjOQ" Guid="0D18F9F8-FF57-464F-8816-88EBDAB8D049">
                             <File Id="filzGpCv_5qak7eTJnDRa91PzVih0w" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\bootstrap\bootstrap.min.css.map" />
                         </Component>
-                        <Component Id="cmp1j3L38vbn5SRormY.FnCaX4lCfg" Guid="13E15C42-C0B5-4EB7-AB37-A3C2CFD4D287">
+                        <Component Id="cmp1j3L38vbn5SRormY.FnCaX4lCfg" Guid="C49C30DE-B19B-4C93-946B-15400D212898">
                             <File Id="filUxvCrvfpymTo7YheJ9xxC03L_K8" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\bootstrap\bootstrap.min.css.map.br" />
                         </Component>
-                        <Component Id="cmpgHHvf5ukHHruPXbAvbE1hQkn3HQ" Guid="C99216DC-84D6-4F35-93A7-7D8726F7BA8B">
+                        <Component Id="cmpgHHvf5ukHHruPXbAvbE1hQkn3HQ" Guid="9822EAFF-3DE9-43CA-A2F7-6E3FDF5CFB75">
                             <File Id="filhZnrwH19e33kAHSkebTwKLb1RNc" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\bootstrap\bootstrap.min.css.map.gz" />
                         </Component>
-                        <Component Id="cmpZViJZSV..w8rBRhBvmyDE.PhY7w" Guid="56BD3B9F-D228-4D79-96BD-707EE3F62B75">
+                        <Component Id="cmpZViJZSV..w8rBRhBvmyDE.PhY7w" Guid="614812CE-E94F-4D1C-BA1D-DF5148A75443">
                             <File Id="filewGL3V18WIw5gsnIlZiqA0MiWWI" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\bootstrap\fonts.svg" />
                         </Component>
-                        <Component Id="cmpbNeDeHIfytAvfGXxfJRaWlooxtU" Guid="1BF2FD74-3362-4608-B8EB-080DBE0B8C04">
+                        <Component Id="cmpbNeDeHIfytAvfGXxfJRaWlooxtU" Guid="699C986A-9550-437C-BF63-E60D67A84729">
                             <File Id="fil.z9gxcEPMR3e.qn9V._7QK8y.Vg" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\bootstrap\fonts.svg.br" />
                         </Component>
-                        <Component Id="cmpStHlFzrbt_caEntHF0oIYJGZ2cQ" Guid="31539D4B-62CD-45AF-874E-9BD701985840">
+                        <Component Id="cmpStHlFzrbt_caEntHF0oIYJGZ2cQ" Guid="9F59D872-0A7F-4AB3-86A0-17D5FB672F67">
                             <File Id="filNgwChOrJWjHy0vhFsp.3.5nloTc" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\bootstrap\fonts.svg.gz" />
                         </Component>
                         <Directory Id="dir4.mF4gFRL9jTJH34tCk21lifrO0" Name="fonts">
-                            <Component Id="cmp_ZAaZuR7K2BIJCIvYRe.927444I" Guid="27DFCCCF-923C-4DE7-B676-DB709C7F8C2E">
+                            <Component Id="cmp_ZAaZuR7K2BIJCIvYRe.927444I" Guid="6B103356-4F4C-497A-BDE8-C6009AC0563E">
                                 <File Id="filoGXxdFbfzucB2CmEgglhxbx.6zE" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\bootstrap\fonts\bootstrap-icons.woff" />
                             </Component>
-                            <Component Id="cmplXHSb0a.PA3.ZzjUERf0NUDVaHs" Guid="2D199C3A-2FFF-4F60-BD3B-7A3A4D66E53A">
+                            <Component Id="cmplXHSb0a.PA3.ZzjUERf0NUDVaHs" Guid="9CEA5FB2-5F25-474B-90DA-A90E1F1A04CA">
                                 <File Id="filc42vy7vOPpmnT.1OtHN5382.cIo" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\bootstrap\fonts\bootstrap-icons.woff2" />
                             </Component>
                         </Directory>
                     </Directory>
                     <Directory Id="dir0InMKIHyNW0_sR76TUWW7JuWN6Y" Name="font-awesome">
                         <Directory Id="dirc3tFSbA_E6wrtme7r.inVFJCBG8" Name="css">
-                            <Component Id="cmp1J7WUBHlbG8EXABPwB7QOGoEEWo" Guid="DD77A11A-3BDD-440D-9B34-C2EEF32B8985">
+                            <Component Id="cmp1J7WUBHlbG8EXABPwB7QOGoEEWo" Guid="0EE964F3-5CF6-4452-A404-0DFD4C626D61">
                                 <File Id="filnM9I0mo_oMkvQX5mAi1zSsyFRVU" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\font-awesome\css\all.min.css" />
                             </Component>
-                            <Component Id="cmp21BSiCOvlWG05w0C5LQf4iCXwbI" Guid="FFF1FD01-E21C-43E2-8E49-2DC94788E31B">
+                            <Component Id="cmp21BSiCOvlWG05w0C5LQf4iCXwbI" Guid="6FB69549-ECB1-4076-9585-1CC6FB020D95">
                                 <File Id="filnMWKcqcL5qY14CJGpnTVkLT2i00" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\font-awesome\css\all.min.css.br" />
                             </Component>
-                            <Component Id="cmp0oxQSBzJ8NjHfIFqZXZkZvv6Zs0" Guid="37856581-84E3-4817-9EA1-B904AA756921">
+                            <Component Id="cmp0oxQSBzJ8NjHfIFqZXZkZvv6Zs0" Guid="EE30B187-0A40-464A-BDE6-1F76B86ABA9A">
                                 <File Id="fil2_1eabwJXiGSr20vQ3otj.7U.FM" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\font-awesome\css\all.min.css.gz" />
                             </Component>
                         </Directory>
                         <Directory Id="dirrUe4kQ_3Rl7Mie4JEv7r168D4k4" Name="webfonts">
-                            <Component Id="cmppfC1AXg4av_ORVbZRAWM2WrY2J0" Guid="030372BF-8ED8-4021-8DD9-FADFEF02AAD5">
+                            <Component Id="cmppfC1AXg4av_ORVbZRAWM2WrY2J0" Guid="3C9F750B-0342-467F-9A82-FA72A3BDD960">
                                 <File Id="filTGYNo8ZFCy8zdC11UWrU_dmMyos" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\font-awesome\webfonts\fa-brands-400.ttf" />
                             </Component>
-                            <Component Id="cmp7dyTpPmwSbfYhVlU2ajGhE9ll6A" Guid="94AB4AF6-7174-437C-830D-51D9D51DDDD9">
+                            <Component Id="cmp7dyTpPmwSbfYhVlU2ajGhE9ll6A" Guid="28876429-8C58-47DF-8E45-CDE8977E3CD1">
                                 <File Id="filz.hwUKg.2ocB8x34PtjuC9fC7bg" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\font-awesome\webfonts\fa-brands-400.woff2" />
                             </Component>
-                            <Component Id="cmpPF6p_XtNnCzYHuAJIX9H1eoRleY" Guid="2281E841-C57F-4AE0-8823-638F79440909">
+                            <Component Id="cmpPF6p_XtNnCzYHuAJIX9H1eoRleY" Guid="775E58A4-1849-433F-A542-40A906EDDBBF">
                                 <File Id="fil9Lz_qHzPe4xUqnHswMKhYT9XhZk" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\font-awesome\webfonts\fa-regular-400.ttf" />
                             </Component>
-                            <Component Id="cmpXfw4ccQdK1DeKqfqtzMRHu9yLyQ" Guid="BED38AE8-969E-419D-8F4A-21708A9C796A">
+                            <Component Id="cmpXfw4ccQdK1DeKqfqtzMRHu9yLyQ" Guid="032956E1-C71C-43CC-A6C3-914FCDD2C0DC">
                                 <File Id="filF5zwe625FQi0qVXmxcDwvnuhng0" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\font-awesome\webfonts\fa-regular-400.woff2" />
                             </Component>
-                            <Component Id="cmpBuh5diuPpwzJynY0b0VWco4soac" Guid="EC85CBBA-8FC4-46E8-9E9D-25811604BF8A">
+                            <Component Id="cmpBuh5diuPpwzJynY0b0VWco4soac" Guid="52C963B8-89F7-4FB0-8FD1-303CD83CC649">
                                 <File Id="filCNtKwSagC9CLw9KE.Ca7azEu.wA" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\font-awesome\webfonts\fa-solid-900.ttf" />
                             </Component>
-                            <Component Id="cmpxxlJYLUsx0VahZjG6eGNlIg8dXw" Guid="48D1B05A-6E78-4C38-9754-5249A0480A20">
+                            <Component Id="cmpxxlJYLUsx0VahZjG6eGNlIg8dXw" Guid="7D4AE73E-698B-426D-9798-B5E567F79EC1">
                                 <File Id="filXeSPEyvF9Sc0C_2R1uj3QQlJQcg" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\font-awesome\webfonts\fa-solid-900.woff2" />
                             </Component>
-                            <Component Id="cmplTbH_rN4pKm1DMUiQrCxbPT17pQ" Guid="58950DAB-67C3-47DF-959E-04ADD97126A4">
+                            <Component Id="cmplTbH_rN4pKm1DMUiQrCxbPT17pQ" Guid="57916152-A288-4097-BEB8-7A71EC515A19">
                                 <File Id="filu8J5PpBUeKAAizG.siwdsPGwDFo" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\font-awesome\webfonts\fa-v4compatibility.ttf" />
                             </Component>
-                            <Component Id="cmp4By.pOtTw8cAGacetxPooJuu5s0" Guid="EEE5DB25-8D8A-4AA5-A285-655348B5EC9B">
+                            <Component Id="cmp4By.pOtTw8cAGacetxPooJuu5s0" Guid="6F81F542-331A-47EE-AE88-294C14587E07">
                                 <File Id="filb7rpvlRhKdMt_rlURuJD9uWRcBg" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\font-awesome\webfonts\fa-v4compatibility.woff2" />
                             </Component>
                         </Directory>
                     </Directory>
                     <Directory Id="diroyJDTM2v16EXkeVpBPREw_VHqtQ" Name="open-iconic">
-                        <Component Id="cmpEN1Ri.7fKzg0HyLSIHyOjmHAr0g" Guid="342AAF45-0141-4E33-B356-7CF57F27A4B3">
+                        <Component Id="cmpEN1Ri.7fKzg0HyLSIHyOjmHAr0g" Guid="FEE135AE-AC23-4D70-9CAF-3DEC84A98526">
                             <File Id="filP4KSKqjqB9EQ2CFNETy1P8jLsC8" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\open-iconic\FONT-LICENSE" />
                         </Component>
-                        <Component Id="cmpPLE3Q6BDjcUFtMIRrlXnHxOgj3w" Guid="1D5A7080-8632-46FF-AD98-1A385742F76D">
+                        <Component Id="cmpPLE3Q6BDjcUFtMIRrlXnHxOgj3w" Guid="6582293C-A981-433F-A94A-ECEC67E8A85D">
                             <File Id="filD0dCzEbS5tBppSnFLxkKyGjWPh4" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\open-iconic\ICON-LICENSE" />
                         </Component>
-                        <Component Id="cmpWzCZeWiR_03icYYKpBCKOKSxB_4" Guid="68451923-F11B-4977-A07E-CD463F5B70F4">
+                        <Component Id="cmpWzCZeWiR_03icYYKpBCKOKSxB_4" Guid="A4807BE1-7061-4BAF-A282-6F3D81B02E12">
                             <File Id="filCWxPFpCs_1u_RzuWP3LSMKqwcbw" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\open-iconic\README.md" />
                         </Component>
-                        <Component Id="cmp2WqBW0.leKTPWhYSe2hSCz5GV78" Guid="80735304-4A39-4E82-8A08-F7BA400BE382">
+                        <Component Id="cmp2WqBW0.leKTPWhYSe2hSCz5GV78" Guid="F0A5A753-3C17-4CE1-8DCA-46118C49A4A0">
                             <File Id="filhKcPCU65nOUorzwJ0LXgv3Rrz.4" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\open-iconic\README.md.br" />
                         </Component>
-                        <Component Id="cmpkdXSSjJjSW9ZVy3kIzha.pSM1wU" Guid="F4A72540-6829-4D72-8706-FC30FF4A906E">
+                        <Component Id="cmpkdXSSjJjSW9ZVy3kIzha.pSM1wU" Guid="8815E744-7327-4DB8-9EC7-3E16A01D7643">
                             <File Id="filpXBchMqLgK5oUjG.jG0SthhEddE" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\open-iconic\README.md.gz" />
                         </Component>
                         <Directory Id="dirtHPn2WBfqD9CKJEyag.ScyHQdqs" Name="font">
                             <Directory Id="dir4i78cmyZkUguGKP9RIAJ3qpDnCo" Name="css">
-                                <Component Id="cmpIZJkC1PNNmIhbCz_w8BEff5XpT8" Guid="2A7BB1E2-EFB5-425B-BB15-29BA71987F57">
+                                <Component Id="cmpIZJkC1PNNmIhbCz_w8BEff5XpT8" Guid="042E79A8-3884-4BB7-AC66-CC71C50E8773">
                                     <File Id="fil70XA6stiHypDX1Ghg5Bi7GqogiE" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\open-iconic\font\css\open-iconic-bootstrap.min.css" />
                                 </Component>
-                                <Component Id="cmpb04nN6QryFbNpQ1cegfWDIKcgeo" Guid="6300E298-89A6-451C-9999-384FBBBCEC25">
+                                <Component Id="cmpb04nN6QryFbNpQ1cegfWDIKcgeo" Guid="7A86DD4D-2D03-4803-8953-444346639BC8">
                                     <File Id="filONPs9a6MD_S4yqIReGn_zvb8VFg" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\open-iconic\font\css\open-iconic-bootstrap.min.css.br" />
                                 </Component>
-                                <Component Id="cmpSmh2VN8lUsJ0bJ_NRKRuDSdMKRs" Guid="3A32B503-0AF6-4B5D-9842-ABF5A02E2F90">
+                                <Component Id="cmpSmh2VN8lUsJ0bJ_NRKRuDSdMKRs" Guid="46A77CAA-011F-4886-85D0-2D91BFCDAD8D">
                                     <File Id="filBgm204h.TGaO_jVAfVZilcR0ZTI" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\open-iconic\font\css\open-iconic-bootstrap.min.css.gz" />
                                 </Component>
                             </Directory>
                             <Directory Id="dir0vE8ZS5NJh9Colno6QgjMctOxu0" Name="fonts">
-                                <Component Id="cmpMttUCDEj1SJtPhNMa3OEeEuFndE" Guid="65BC07E4-3A74-47EF-8B74-0D6EB3BBDD80">
+                                <Component Id="cmpMttUCDEj1SJtPhNMa3OEeEuFndE" Guid="C8549D0A-FB03-45EE-8723-69C13ADC8839">
                                     <File Id="filKB4FpbJKjvQ75p9RcmArYe7qpv4" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\open-iconic\font\fonts\open-iconic.eot" />
                                 </Component>
-                                <Component Id="cmpPPzP_MY1VohaSch20BuruDH3Aj4" Guid="FC6AF24D-87D2-4FE2-99EF-32AE2E06E469">
+                                <Component Id="cmpPPzP_MY1VohaSch20BuruDH3Aj4" Guid="A9EE58ED-D745-471D-8F2F-5A7FA2E72679">
                                     <File Id="film9km279SHrW3UZOgx_QAqZ7xycU" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\open-iconic\font\fonts\open-iconic.otf" />
                                 </Component>
-                                <Component Id="cmpf1EnMPZvOUcXhUg65C_D9UxJtgc" Guid="509DD253-0D24-458A-8A66-E9214B468E82">
+                                <Component Id="cmpf1EnMPZvOUcXhUg65C_D9UxJtgc" Guid="24DEDDAA-FDBF-4F01-9432-3A9146D5D635">
                                     <File Id="fil0rWSDXJMgWitmkfZfTwOo8kFrZU" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\open-iconic\font\fonts\open-iconic.otf.br" />
                                 </Component>
-                                <Component Id="cmpZgyN8nBJ6tS_iE3WEM48l_O80Es" Guid="1F36CCAF-3608-45A1-8929-E924DF1C0021">
+                                <Component Id="cmpZgyN8nBJ6tS_iE3WEM48l_O80Es" Guid="DBE80F27-DC6E-475A-8751-2B76EF58D88F">
                                     <File Id="filnWFmmjIGLNWN_6gTlxfOahFoVUg" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\open-iconic\font\fonts\open-iconic.otf.gz" />
                                 </Component>
-                                <Component Id="cmp46DUJ1jyRXa21z8I_sUdtFS0uBk" Guid="DFF519AE-28D6-4A93-97E4-8F8C9C6CA821">
+                                <Component Id="cmp46DUJ1jyRXa21z8I_sUdtFS0uBk" Guid="59ADBD0F-B6E5-485E-A3C0-24A543A5C9A5">
                                     <File Id="fildHnN0i7D373CuTiLuZSwdD1_9Lk" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\open-iconic\font\fonts\open-iconic.svg" />
                                 </Component>
-                                <Component Id="cmp7Q34PWy59t1kCyetMPPYA.vR6aI" Guid="823477F3-C845-4E4E-9FD3-90AA3D6E0F5C">
+                                <Component Id="cmp7Q34PWy59t1kCyetMPPYA.vR6aI" Guid="B29376D0-BA65-48FC-AF50-40EF5839BE04">
                                     <File Id="fil5jFw6uVsOOSanSRhKUYE7uq5RUg" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\open-iconic\font\fonts\open-iconic.svg.br" />
                                 </Component>
-                                <Component Id="cmp1N4tBk5sgRzuCgx78jYoLVcP4YM" Guid="26A1721E-5000-45D2-BBD4-5954D2DDECA8">
+                                <Component Id="cmp1N4tBk5sgRzuCgx78jYoLVcP4YM" Guid="766FCFF6-A91D-4895-8739-256ADE91FDDE">
                                     <File Id="filjHMyBG6rbyTicqVdcSWPM5lIcP4" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\open-iconic\font\fonts\open-iconic.svg.gz" />
                                 </Component>
-                                <Component Id="cmp..cRMucaG8n7cJ6aeGJ6tqg3pDs" Guid="1D2E60CB-C27C-424C-8CC5-F247317D00FC">
+                                <Component Id="cmp..cRMucaG8n7cJ6aeGJ6tqg3pDs" Guid="17D0A2D2-7E61-46EF-811F-C3B2A631913E">
                                     <File Id="filN4PSGy6i82wEf5gEQErS5qrYkG0" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\open-iconic\font\fonts\open-iconic.ttf" />
                                 </Component>
-                                <Component Id="cmpejfKjuaWVLNvObKF6gLmOo5Ktto" Guid="018715B7-E1D2-4421-8599-D08EC3A79F0D">
+                                <Component Id="cmpejfKjuaWVLNvObKF6gLmOo5Ktto" Guid="DC4C4105-0AB1-4642-88FF-6E091CB31C44">
                                     <File Id="filw1mnhplglZ5CXBCWdXU_8ROeCaM" KeyPath="yes" Source="C:\medrec\publish\wwwroot\css\open-iconic\font\fonts\open-iconic.woff" />
                                 </Component>
                             </Directory>
@@ -599,46 +596,46 @@
                 </Directory>
                 <Directory Id="dircvSnwreDgUN9IAgfRYUc8P.Pl1g" Name="_content">
                     <Directory Id="dirQHN5yFvs1hngyoQFvVoVc56hcT0" Name="MedRec.CommonComponents.Views">
-                        <Component Id="cmpV.BrZ9tyyLws85vxb8JBpadLn3c" Guid="365AB3FA-8D19-487A-B83E-22BFBF932C24">
-                            <File Id="filjZSz_3wz9.0ffYNrCihaQXKswfI" KeyPath="yes" Source="C:\medrec\publish\wwwroot\_content\MedRec.CommonComponents.Views\MedRec.CommonComponents.Views.ifpxw8zsss.bundle.scp.css" />
+                        <Component Id="cmpeOeApDiliURQioskmNjX4Q_VEZg" Guid="2FBB8415-B962-4B2B-A3D5-39C4BE9CBAA5">
+                            <File Id="filZ15LB_ZTcbT7lFOqu7rJIk26ZWs" KeyPath="yes" Source="C:\medrec\publish\wwwroot\_content\MedRec.CommonComponents.Views\MedRec.CommonComponents.Views.mnjmlgz3oh.bundle.scp.css" />
                         </Component>
-                        <Component Id="cmpvgTTBdu86N64uc5b98Zl.qRZ1_o" Guid="0348D09E-4B8D-47B7-A53F-75C72FED6EA1">
-                            <File Id="filFS1yWg8c5K_WsdOU7jJwHZYt8rQ" KeyPath="yes" Source="C:\medrec\publish\wwwroot\_content\MedRec.CommonComponents.Views\MedRec.CommonComponents.Views.ifpxw8zsss.bundle.scp.css.br" />
+                        <Component Id="cmpLyIf37JuSFrJhmgL8W8CH16vVeE" Guid="FFD2135E-C9D4-420B-A7CC-DC6CEF3A0BF5">
+                            <File Id="filwMZycAAy4QxGfNVJ52UT9P.Gukg" KeyPath="yes" Source="C:\medrec\publish\wwwroot\_content\MedRec.CommonComponents.Views\MedRec.CommonComponents.Views.mnjmlgz3oh.bundle.scp.css.br" />
                         </Component>
-                        <Component Id="cmpaeFpGHdyPv.pSMWttgHghoFwle0" Guid="B7EB53CD-DD0D-467E-99B5-36DE206C17B1">
-                            <File Id="filG083CWUY_qklV2smCUHe_fKS4U4" KeyPath="yes" Source="C:\medrec\publish\wwwroot\_content\MedRec.CommonComponents.Views\MedRec.CommonComponents.Views.ifpxw8zsss.bundle.scp.css.gz" />
+                        <Component Id="cmpdWvNZPjDNpWIVg3Qzf5S7FBw..E" Guid="5FC3349C-B044-4C63-8CC7-0FAD96752D71">
+                            <File Id="filDEHoODaaA9UwDulS0pgNG1tpxhE" KeyPath="yes" Source="C:\medrec\publish\wwwroot\_content\MedRec.CommonComponents.Views\MedRec.CommonComponents.Views.mnjmlgz3oh.bundle.scp.css.gz" />
                         </Component>
                     </Directory>
                     <Directory Id="dirkCjukykLzDyNmaqXssQsUJgO6.Y" Name="MedRec.HealthInsurance.Views">
-                        <Component Id="cmpvfu8aP5wg.vz_JuFDChEiQvuTiA" Guid="43841C4B-3659-418C-8101-AE995F0DA0C1">
+                        <Component Id="cmpvfu8aP5wg.vz_JuFDChEiQvuTiA" Guid="D535AD56-B14B-4D5C-816C-B213377CCB26">
                             <File Id="filS8kU_nF1bJa5tpm_XABZ34u5EJk" KeyPath="yes" Source="C:\medrec\publish\wwwroot\_content\MedRec.HealthInsurance.Views\MedRec.HealthInsurance.Views.csv13ob2ub.bundle.scp.css" />
                         </Component>
-                        <Component Id="cmpBIOBfae3vQZSo7fnjxcicBsFNzk" Guid="06172ECD-A8A7-4212-B584-CDED9F294D2F">
+                        <Component Id="cmpBIOBfae3vQZSo7fnjxcicBsFNzk" Guid="EB577A4D-3E35-4AB9-A34E-92F6460593EE">
                             <File Id="filrPmvn_lX4TDUHzns.GZ0m5NMcf4" KeyPath="yes" Source="C:\medrec\publish\wwwroot\_content\MedRec.HealthInsurance.Views\MedRec.HealthInsurance.Views.csv13ob2ub.bundle.scp.css.br" />
                         </Component>
-                        <Component Id="cmpbh3DHTYaHthg.L6YYcbxbds7RL0" Guid="8E438E24-E3C2-4D9D-ABE0-01CB376E740A">
+                        <Component Id="cmpbh3DHTYaHthg.L6YYcbxbds7RL0" Guid="057CBB9E-7E0B-4BFB-BF69-A0A0B53909F4">
                             <File Id="filOueLfOWyx3S_RQwI8bCdxDOMUVw" KeyPath="yes" Source="C:\medrec\publish\wwwroot\_content\MedRec.HealthInsurance.Views\MedRec.HealthInsurance.Views.csv13ob2ub.bundle.scp.css.gz" />
                         </Component>
                     </Directory>
                     <Directory Id="dirDtfEHQ4lEfEWT5OicvL_4u06gLE" Name="MedRec.MedicalVisit.Views">
-                        <Component Id="cmpgYrrjq2obNXOV4R8TYdCtYCIybk" Guid="246E700F-7660-48D7-B60A-D54CA56B624D">
-                            <File Id="filw7P2W.ADhpfnduy0VqPhRZTuqHc" KeyPath="yes" Source="C:\medrec\publish\wwwroot\_content\MedRec.MedicalVisit.Views\MedRec.MedicalVisit.Views.d192eqy2qd.bundle.scp.css" />
+                        <Component Id="cmpoyO989Jq35QmcbKjqrOBgWCfSlo" Guid="F5E9F483-4362-4D85-819F-6B59938C1F97">
+                            <File Id="filFrsEjSrgK1WYXKFtX2ON6LdbXj0" KeyPath="yes" Source="C:\medrec\publish\wwwroot\_content\MedRec.MedicalVisit.Views\MedRec.MedicalVisit.Views.iif96xfrjg.bundle.scp.css" />
                         </Component>
-                        <Component Id="cmpwfUX6XTbHhGOhmODJq7mnOrc4Zo" Guid="BC4A7E1D-E5C2-42D2-BE35-6F68D4C863C9">
-                            <File Id="filY_TTGh4m1HoMosm15qkNy5JjB.M" KeyPath="yes" Source="C:\medrec\publish\wwwroot\_content\MedRec.MedicalVisit.Views\MedRec.MedicalVisit.Views.d192eqy2qd.bundle.scp.css.br" />
+                        <Component Id="cmpPk.aN3mX9jlP1ZOL4WcVTUtp38Q" Guid="D692E9BE-7778-4F55-A151-86EEF8BBDC16">
+                            <File Id="filMfUVPnWD5TVSQl1hPjcEnbCqSvQ" KeyPath="yes" Source="C:\medrec\publish\wwwroot\_content\MedRec.MedicalVisit.Views\MedRec.MedicalVisit.Views.iif96xfrjg.bundle.scp.css.br" />
                         </Component>
-                        <Component Id="cmpS_3As8qvG0uArwFSC37vyg5I_yg" Guid="88D5ABEE-2890-4F2A-A2CC-6AFFA28AB721">
-                            <File Id="filrMJCE4qWjuMLFZ8VotvmsSsox4A" KeyPath="yes" Source="C:\medrec\publish\wwwroot\_content\MedRec.MedicalVisit.Views\MedRec.MedicalVisit.Views.d192eqy2qd.bundle.scp.css.gz" />
+                        <Component Id="cmpBZrb8deLWHZxAxMrZe0btEN2PeA" Guid="86FA66A1-3CB5-4453-96A7-B0C65B7A36CE">
+                            <File Id="filggoiJHSgnPfRld_YGmTlwNCaG44" KeyPath="yes" Source="C:\medrec\publish\wwwroot\_content\MedRec.MedicalVisit.Views\MedRec.MedicalVisit.Views.iif96xfrjg.bundle.scp.css.gz" />
                         </Component>
                     </Directory>
                     <Directory Id="dirzb0es3V5d9bGSzbnLBV8_AOzyaA" Name="MedRec.Patients.Views">
-                        <Component Id="cmp4xEab1FjZw9ePWDkKVj6ePJhTtk" Guid="690EEFB8-0485-4F85-8C28-12693094908A">
+                        <Component Id="cmp4xEab1FjZw9ePWDkKVj6ePJhTtk" Guid="18F80F21-0738-4EF8-AADF-3398237FD649">
                             <File Id="filOM.Mr2L2oiERX4ZKQyDEYG4Fa0U" KeyPath="yes" Source="C:\medrec\publish\wwwroot\_content\MedRec.Patients.Views\MedRec.Patients.Views.x8dv63t038.bundle.scp.css" />
                         </Component>
-                        <Component Id="cmp5t4CIkkbuZCovNWCrGLF8lPHr2g" Guid="DCB3C353-1608-4558-90E9-5E13CAA27B42">
+                        <Component Id="cmp5t4CIkkbuZCovNWCrGLF8lPHr2g" Guid="D186D711-EDB7-435C-ACE8-85F9FF846068">
                             <File Id="filCLI6NTn6CqmpdSQ0pJNeqXIv6wQ" KeyPath="yes" Source="C:\medrec\publish\wwwroot\_content\MedRec.Patients.Views\MedRec.Patients.Views.x8dv63t038.bundle.scp.css.br" />
                         </Component>
-                        <Component Id="cmpo28R9pM0Ip1RSBX9DzRSMOExHlw" Guid="5D981BD0-F0BA-4C33-A869-CECE7801EE69">
+                        <Component Id="cmpo28R9pM0Ip1RSBX9DzRSMOExHlw" Guid="F2CAE1A4-8D31-4912-961E-A99E578C79D7">
                             <File Id="filIS5bZqvJEPX__T4OP5VL9QYOIu4" KeyPath="yes" Source="C:\medrec\publish\wwwroot\_content\MedRec.Patients.Views\MedRec.Patients.Views.x8dv63t038.bundle.scp.css.gz" />
                         </Component>
                     </Directory>
@@ -671,7 +668,6 @@
             <ComponentRef Id="cmpPD4Kj0kwYHxGYa5YA6GJsg1_.Hk" />
             <ComponentRef Id="cmpAwj2AFGJv54Gzn_bWomazSCKSl4" />
             <ComponentRef Id="cmpGYJwXWySk534dk2SdZgyT10qosg" />
-            <ComponentRef Id="cmpjG7.jUcuNZPGipwdkIEDVbh5VaA" />
             <ComponentRef Id="cmpKV.zrzTKkZvGTIhxCdSnJ3j.X8Y" />
             <ComponentRef Id="cmpvvVQvlsNKKLDVUnrSn7A1IjuVlQ" />
             <ComponentRef Id="cmpDU2PMMlaaLK_N7lpoTL8mm2Y5kw" />
@@ -833,15 +829,15 @@
             <ComponentRef Id="cmp1N4tBk5sgRzuCgx78jYoLVcP4YM" />
             <ComponentRef Id="cmp..cRMucaG8n7cJ6aeGJ6tqg3pDs" />
             <ComponentRef Id="cmpejfKjuaWVLNvObKF6gLmOo5Ktto" />
-            <ComponentRef Id="cmpV.BrZ9tyyLws85vxb8JBpadLn3c" />
-            <ComponentRef Id="cmpvgTTBdu86N64uc5b98Zl.qRZ1_o" />
-            <ComponentRef Id="cmpaeFpGHdyPv.pSMWttgHghoFwle0" />
+            <ComponentRef Id="cmpeOeApDiliURQioskmNjX4Q_VEZg" />
+            <ComponentRef Id="cmpLyIf37JuSFrJhmgL8W8CH16vVeE" />
+            <ComponentRef Id="cmpdWvNZPjDNpWIVg3Qzf5S7FBw..E" />
             <ComponentRef Id="cmpvfu8aP5wg.vz_JuFDChEiQvuTiA" />
             <ComponentRef Id="cmpBIOBfae3vQZSo7fnjxcicBsFNzk" />
             <ComponentRef Id="cmpbh3DHTYaHthg.L6YYcbxbds7RL0" />
-            <ComponentRef Id="cmpgYrrjq2obNXOV4R8TYdCtYCIybk" />
-            <ComponentRef Id="cmpwfUX6XTbHhGOhmODJq7mnOrc4Zo" />
-            <ComponentRef Id="cmpS_3As8qvG0uArwFSC37vyg5I_yg" />
+            <ComponentRef Id="cmpoyO989Jq35QmcbKjqrOBgWCfSlo" />
+            <ComponentRef Id="cmpPk.aN3mX9jlP1ZOL4WcVTUtp38Q" />
+            <ComponentRef Id="cmpBZrb8deLWHZxAxMrZe0btEN2PeA" />
             <ComponentRef Id="cmp4xEab1FjZw9ePWDkKVj6ePJhTtk" />
             <ComponentRef Id="cmp5t4CIkkbuZCovNWCrGLF8lPHr2g" />
             <ComponentRef Id="cmpo28R9pM0Ip1RSBX9DzRSMOExHlw" />

@@ -1,4 +1,5 @@
-﻿using MedRec.Patients.ViewModels.VM;
+﻿using MedRec.CommonComponents.Views;
+using MedRec.Patients.ViewModels.VM;
 using MedRec.Patients.Views.Resources;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -11,14 +12,17 @@ public partial class CreatePatientComponent : IDisposable
     #region Fields
     private EditContext _editContext;
     private bool _showHealthCompanyList;
-    private bool _showModal = false;
     private bool _showErrorModal = false;
     private bool _showWarning = false;
-    private CancellationTokenSource _cts;
-    #endregion
 
-    #region Events handler
-    [Parameter] public EventCallback OnPatientAdded { get; set; }
+    private bool _navigateAfterClose = false;
+    private string _navigationUrl = "/";
+    private bool _showModal;
+    private string _modalTitle = "Mensaje del sistema";
+    private ModalType _modalType = ModalType.MessageInfo;
+
+
+    private CancellationTokenSource _cts;
     #endregion
 
     #region Inject Services
@@ -29,12 +33,59 @@ public partial class CreatePatientComponent : IDisposable
     [Parameter] public CreatePatientVM VM { get; set; }
     #endregion
 
+    #region Actions
+    private Action _onPatientAdded;
+    private Action _onShowMessage;
+    private Action _onShowWarning;
+    private Action _onShowError;
+    private Action _onShowConcurrencyError;
+    #endregion
+
     protected override void OnInitialized()
     {
         _editContext = new EditContext(VM.Model);
-        VM.OnPatientAdded += PatientAdded;
-        VM.OnShowMessage += ShowError;
-        VM.OnShowWarning += ShowWarning;
+
+        _onPatientAdded = () => ShowModalMessageAndNavigate("Registro exitos...", ModalType.MessageSuccess, "/");
+        _onShowMessage = () => ShowModalMessage("Información", ModalType.MessageInfo);
+        _onShowWarning = () => ShowModalMessage("Advertencia", ModalType.MessageWarning);
+        _onShowError = () => ShowModalMessage("Error", ModalType.MessageError);
+        _onShowConcurrencyError = () => ShowModalMessage("Conflicto de concurrencia", ModalType.MessageError);
+
+        VM.OnShowMessage += _onShowMessage;
+        VM.OnShowWarning += _onShowWarning;
+        VM.OnShowError += _onShowError;
+        VM.OnShowConcurrencyError += _onShowConcurrencyError;
+
+        VM.OnPatientAdded += _onPatientAdded;
+        StateHasChanged();
+    }
+    private void ShowModalMessageAndNavigate(string title, ModalType type, string navigationUrl)
+    {
+        VM.InformationMessage = UpdatePatientMessages.UpdatePatientTemplate;
+        _modalTitle = title;
+        _modalType = type;
+        _showModal = true;
+        _navigateAfterClose = true;
+        _navigationUrl = navigationUrl;
+        InvokeAsync(StateHasChanged);
+    }
+    private void ShowModalMessage(string title, ModalType type)
+    {
+        _modalTitle = title;
+        _modalType = type;
+        _showModal = true;
+        _navigateAfterClose = false;
+        InvokeAsync(StateHasChanged);
+    }
+    private void CloseModal()
+    {
+        _showModal = false;
+
+        if (_navigateAfterClose)
+        {
+            _navigateAfterClose = false;
+            Navigation.NavigateTo(_navigationUrl, true);
+        }
     }
     public async Task AddPatient()
     {
@@ -45,23 +96,7 @@ public partial class CreatePatientComponent : IDisposable
             await VM.AddPatientAsync(_cts.Token);
         }
     }
-    private void PatientAdded()
-    {
-        OnPatientAdded.InvokeAsync();
-        _showModal = true;
-        Navigation.NavigateTo("/", true);
-    }
 
-    private void ShowWarning()
-    {
-        _showWarning = true;
-        StateHasChanged();
-    }
-    private void ShowError()
-    {
-        _showErrorModal = true;
-        StateHasChanged(); // fuerza actualización de UI
-    }
     private void OpenHealthCompanyList()
     {
         _showHealthCompanyList = true;
@@ -72,11 +107,6 @@ public partial class CreatePatientComponent : IDisposable
         VM.Model.SelectedHealthCompanyName = selectedCompany.nameselectedCompany;
         _showHealthCompanyList = false; // Cerrar el modal
         await Task.CompletedTask;
-    }
-    private void OnAccept()
-    {
-        _showModal = false;
-        _showWarning = false;
     }
     private void ExitForm(MouseEventArgs e)
     {
@@ -117,8 +147,12 @@ public partial class CreatePatientComponent : IDisposable
 
     public void Dispose()
     {
-        VM.OnShowMessage -= ShowError;
-        VM.OnPatientAdded -= PatientAdded;
-        VM.OnShowWarning -= ShowWarning;
+        VM.OnPatientAdded -= _onPatientAdded;
+        VM.OnShowMessage -= _onShowMessage;
+        VM.OnShowWarning -= _onShowWarning;
+        VM.OnShowError -= _onShowError;
+        VM.OnShowConcurrencyError -= _onShowConcurrencyError;
+
+        _cts?.Dispose();
     }
 }

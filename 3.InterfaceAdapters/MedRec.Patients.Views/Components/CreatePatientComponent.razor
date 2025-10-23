@@ -101,6 +101,14 @@
                     </button>
                 </div>
             </div>
+            <ModalComponent Title="SELECTOR DE OBRAS SOCIALES"
+                            Show="@_showHealthCompanyList"
+                            Type="ModalType.LargeContent"
+                            ShowChanged="(value) => _showHealthCompanyList = value">
+
+                <HealthInsuranceComponent MaxPageButton="3"
+                                          OnHealthCompanySelected="@OnHealthCompanySelected" />
+            </ModalComponent>
             <div class="new-patient-col">
                 <label for="insuranceHealthCard">@CreatePatientMessages.InsuranceHealthCardLabel</label>
                 <InputText id="insuranceHealthCard"
@@ -143,39 +151,13 @@
   </div>  
     
 </EditForm>
-
-<ModalComponent Title="Éxito" Show="@_showModal" ShowChanged="@((value) => _showModal = value)"
-                OnAccept="OnAccept" CenterText="true" Type="ModalType.MessageSuccess" ShowAcceptButton="true">
-    <div>
-        @CreatePatientMessages.PatientAddedMessage
-    </div>
-</ModalComponent>
-
-@*aquí agregar un modal para el mensaje de error*@
-
-<ModalComponent Title="Error" Show="@_showErrorModal" ShowChanged="@((value) => _showErrorModal = value)"
-                OnAccept="OnAccept" CenterText="true" Type="ModalType.MessageError" ShowCancelButton="true">
-    <div >
-        @((MarkupString)VM.InformationMessage)
-    </div>
-</ModalComponent>
-<ModalComponent Title="Advertencia" 
-    Show="@_showWarning" 
-    ShowChanged="@((value) => _showWarning = value)"
-    OnAccept="OnAccept" 
-    CenterText="true" 
-    Type="ModalType.MessageWarning" 
-    ShowCancelButton="true">
-    <div>
-        @((MarkupString)VM.InformationMessage)
-    </div>
-</ModalComponent>
-
-<ModalComponent Title="SELECTOR DE OBRAS SOCIALES"
-    Show="@_showHealthCompanyList"
-    Type="ModalType.LargeContent"
-    ShowChanged="(value) => _showHealthCompanyList = value">
-
-        <HealthInsuranceComponent MaxPageButton="3"
-                    OnHealthCompanySelected="@OnHealthCompanySelected" />
+<ModalComponent Show="@_showModal"
+                ShowChanged="@((bool val) => _showModal = val)"
+                Title="@_modalTitle"
+                Type="@_modalType"
+                CenterText="true"
+                ShowAcceptButton="true"
+                OnAccept="@CloseModal"
+                ShowCancelButton="false">
+    @((MarkupString)VM.InformationMessage)
 </ModalComponent>

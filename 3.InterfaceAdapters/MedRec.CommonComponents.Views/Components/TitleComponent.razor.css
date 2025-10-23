@@ -18,7 +18,7 @@
         color: #9c27b0; /* Color del texto del título */
     }
 
-@media (max-width: 1300px) {
+@media (max-width: 1281px) {
 
     .titlebar h1 {
         font-size: 1.5rem;

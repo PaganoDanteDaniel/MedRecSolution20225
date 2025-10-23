@@ -6,6 +6,9 @@
     background-color: var(--table-background);
     -webkit-overflow-scrolling: touch; /* Mejor UX en iOS */
 }
+.my-table-container ::deep table{
+    width: 100%;
+}
 
 .ptbl-table {
     width: 100%;
@@ -68,76 +71,40 @@
     }
 
 /* ===== Responsive: Modo apilado en móviles (<768px) ===== */
-@media screen and (max-width: 767px) {
-    .ptbl-table,
-    .ptbl-table thead,
-    .ptbl-table tbody,
-    .ptbl-table th,
-    .ptbl-table td,
-    .ptbl-table tr {
-        display: block;
+
+/* ===== Pantallas medianas (tablets, laptops pequeñas) ===== */
+@media screen and (max-width: 1281px) {
+    .ptbl-table ::deep th, 
+    .ptbl-table ::deep td,
+    .ptbl-table ::deep tr{
+        padding: 4px 6px !important;
+        font-size: var(--font-size-1281) !important;
     }
 
-        /* Ocultar el thead en móviles */
-        .ptbl-table thead {
-            display: none;
-        }
+    .ptbl-table ::deep thead th {
+        height: 3rem !important;
+    }
+    .ptbl-table ::deep tbody tr {
+        height: 1.5rem !important;
+    }
 
-        /* Cada fila se convierte en un bloque */
-        .ptbl-table tr {
-            border: 1px solid var(--table-border);
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 4px;
-            background-color: var(--table-row-odd-background);
-        }
-
-        /* Cada celda ocupa el 100% y muestra su etiqueta */
-        .ptbl-table td {
-            text-align: right;
-            position: relative;
-            padding-left: 50%;
-            padding-right: 10px;
-            border: none;
-            border-bottom: 1px solid var(--table-border-light);
-        }
-
-            /* Mostrar el "data-label" como pseudo-elemento */
-            .ptbl-table td::before {
-                content: attr(data-label) ": ";
-                position: absolute;
-                left: 10px;
-                width: 45%;
-                font-weight: bold;
-                text-align: left;
-                color: var(--table-header-text);
-            }
-
-            /* Estilo especial para la celda de acciones */
-            .ptbl-table td.ptbl-actions {
-                text-align: center;
-                padding-left: 10px;
-            }
-
-                .ptbl-table td.ptbl-actions::before {
-                    content: "Acciones: ";
-                    left: auto;
-                    width: auto;
-                    font-weight: bold;
-                }
+    .ptbl-table .actions ::deep a {
+        margin: 0 3px !important;
+    }
 }
-/* ===== Pantallas medianas (tablets, laptops pequeñas) ===== */
-@media screen and (max-width: 1300px) {
+@media screen and (max-width: 1921px) {
     .ptbl-table ::deep th, .ptbl-table ::deep td {
-        padding: 4px 6px;
-        font-size: 0.875rem;
+        padding: 4px 6px !important;
+        font-size: var(--font-size-1921);
     }
 
     .ptbl-table ::deep thead th {
         height: 4rem;
-        font-size: 0.875rem;
     }
 
+    .ptbl-table ::deep tbody tr{
+        height: 2.5rem;
+    }
     .ptbl-table .actions ::deep a {
         margin: 0 4px;
     }

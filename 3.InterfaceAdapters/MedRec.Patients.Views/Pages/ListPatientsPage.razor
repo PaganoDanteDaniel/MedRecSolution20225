@@ -13,7 +13,6 @@
                 <ListPatientsComponent VM="Model"
                                        MaxPageButton="MaxPageButton"
                                        FooterMessageParameterChanged="OnMessageFooterChange"
-                                       OnPatientDeleted="PatientDelete"
                                        OnPatientUpdate="PatientUpdate" />
             </ChildContent>
             <ErrorContent>
@@ -28,17 +27,3 @@
         <FooterComponent Message="@footerMessage" />
     </div>
 </div>
-
-@if (showPatientDelete)
-{
-    <ModalComponent Title=@ListPatientsMessages.ModalTitleText
-                    Show="@showPatientDelete"
-                    ShowChanged="(value) => OnClosePatientDelete(value)"
-                    ShowAcceptButton="true"
-                    OnAccept="OnAcceptDelete"
-                    Type="ModalType.MessageWarning">
-        <div style="color: red;">
-            @string.Format(ListPatientsMessages.ModalMessageTextTemplate, name)
-        </div>
-    </ModalComponent>
-}

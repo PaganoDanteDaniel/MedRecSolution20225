@@ -147,8 +147,11 @@
   <data name="HeadPhoneText" xml:space="preserve">
     <value>TELÉFONO</value>
   </data>
+  <data name="ModalMessageText" xml:space="preserve">
+    <value>¿ESTA SEGURO DE ELIMINAR AL PACIENTE?</value>
+  </data>
   <data name="ModalMessageTextTemplate" xml:space="preserve">
-    <value>¿ESTA SEGURO DE ELIMINAR AL PACIENTE {0}? </value>
+    <value>{0}</value>
   </data>
   <data name="ModalTitleText" xml:space="preserve">
     <value>POCESO DE ELIMINACION</value>

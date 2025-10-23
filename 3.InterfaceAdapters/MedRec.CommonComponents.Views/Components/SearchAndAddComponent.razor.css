@@ -71,26 +71,17 @@
     }
 
 /* ===== Laptop pequeña (1280×800) ===== */
-@media (max-width: 1199px) {
-    :root {
-        --font-size-base: 0.90rem; /* 15px */
-        --font-size-label: 0.875rem; /* 14px */
-        --font-size-button: 0.875rem;
+@media (max-width: 1281px) {
+    .me-button {
+        font-size: 0.875rem !important;
     }
-}
-/* ===== Tablet / 800×600 ===== */
-@media (max-width: 850px) {
-    :root {
-        --font-size-base: 0.875rem; /* 14px */
-        --font-size-label: 0.8125rem; /* 13px */
-        --font-size-button: 0.875rem;
+
+    .me-filter-text,
+    ::deep select {
+        font-size: 0.875rem !important;
     }
-}
-/* ===== Móviles ===== */
-@media (max-width: 576px) {
-    :root {
-        --font-size-base: 0.8125rem; /* 13px */
-        --font-size-label: 0.75rem; /* 12px */
-        --font-size-button: 0.8125rem;
+
+    .me-filter-label {
+        font-size: 0.875rem !important;
     }
 }

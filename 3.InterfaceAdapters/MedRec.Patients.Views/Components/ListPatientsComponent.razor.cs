@@ -10,13 +10,18 @@ public partial class ListPatientsComponent
     #region Fields
     private int _totalPages = 1;
     private string _footerMessage = "";
-    private Guid _selectedPatientId;
     private PaginationDto _paginationDto = new(1, 10);
     private CancellationTokenSource _debounceCts;
+
+    private bool _showDeleteConfirmation;
+    private PatientSummaryDto _patientToDelete;
+
+    private TaskCompletionSource<bool> _deleteConfirmationTcs;
+    private IEnumerable<PatientSummaryDto> pagedPatients = [];
     #endregion
 
     #region Properties
-    private IEnumerable<PatientSummaryDto> PagedPatients = [];
+
     private string Filter
     {
         get => _paginationDto.FilterOne;
@@ -92,11 +97,11 @@ public partial class ListPatientsComponent
     {
         Navigation.NavigateTo("/create-patient");
     }
-    private void SelectPatient(PatientSummaryDto patient)
-    {
-        _selectedPatientId = patient.Id;
-        _paginationDto.CurrentPage = 1; // Reset visit page when selecting a new patient
-    }
+    //private void SelectPatient(PatientSummaryDto patient)
+    //{
+    //    _selectedPatientId = patient.Id;
+    //    _paginationDto.CurrentPage = 1; // Reset visit page when selecting a new patient
+    //}
     private async Task HandlePageChanged(int newPage)
     {
         _paginationDto.CurrentPage = newPage;
@@ -106,10 +111,27 @@ public partial class ListPatientsComponent
     {
         _ = OnPatientUpdate.InvokeAsync(patient.Id);
     }
-    private void OnDeletePatient(PatientSummaryDto patient)
+    private async void OnDeletePatient(PatientSummaryDto patient)
     {
-        _ = OnPatientDeleted.InvokeAsync((patient.Id, $"{patient.LastName}, {patient.FirstName}"));
-        _ = LoadPatients();
+        _patientToDelete = patient;
+        _showDeleteConfirmation = true;
+        _deleteConfirmationTcs = new TaskCompletionSource<bool>();
+        StateHasChanged();
+
+        bool confirmed = await _deleteConfirmationTcs.Task;
+        if (confirmed)
+        {
+            await VM.DeleteAsync(patient.Id);
+            // Aquí puedes invocar el callback al padre (opcional, si el padre necesita saberlo)
+            //await OnPatientDeleted.InvokeAsync((patient.Id, $"{patient.LastName}, {patient.FirstName}"));
+
+            // Y recargar directamente desde aquí
+            await LoadPatients(); // Esto ya tiene acceso a _paginationDto
+        }
+
+        _patientToDelete = null;
+        _showDeleteConfirmation = false;
+        StateHasChanged();
     }
     private void OnAddHealthIssue(PatientSummaryDto patient)
     {
@@ -122,11 +144,21 @@ public partial class ListPatientsComponent
     private async Task LoadPatients()
     {
         await VM.LoadPatientsAsync(_paginationDto);
-        PagedPatients = VM.PatientsList;
+        pagedPatients = VM.PatientsList;
         var total = VM.TotalRecords;
         _totalPages = (int)Math.Ceiling((double)total / _paginationDto.PageSize);
         FooterMessage = string.Format(ListPatientsMessages.TotalPatientMessageTemplate, total);
         StateHasChanged(); // Forzar la actualización del componente
+    }
+    private void OnAcceptDelete()
+    {
+        _deleteConfirmationTcs?.SetResult(true);
+    }
+
+    private void OnCloseDeleteModal(bool value)
+    {
+        _showDeleteConfirmation = value;
+        _deleteConfirmationTcs?.SetResult(false);
     }
     #endregion
 }

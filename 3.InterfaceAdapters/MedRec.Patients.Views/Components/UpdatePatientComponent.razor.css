@@ -41,7 +41,7 @@
         border-radius: 4px;
         background-color: var(--input-background);
         color: var(--input-text);
-        font-size: 1rem;
+        font-size: var(--font-size-1921);
     }
 
     .update-patient-form ::deep input:focus,
@@ -77,7 +77,7 @@
     /* Mensajes de validación */
     .update-patient-form .validation-message {
         color: var(--error-color, red);
-        font-size: 0.875rem;
+        font-size: var(--font-size-1281);
         margin-top: 4px;
     }
 
@@ -99,7 +99,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1rem;
+        font-size: var(--font-size-1921);
         transition: all 0.2s ease;
     }
 
@@ -110,14 +110,14 @@
         }
 
         .update-patient-form button i {
-            font-size: 1rem;
+            font-size: var(--font-size-1921);
             margin-right: 8px;
         }
 
 /* Responsivo */
-@media (max-width: 1300px) {
+@media (max-width: 1921px) {
     .update-patient-form {
-        padding: 30px;
+        padding: 50px !important;
         width: 75vw;
         height:75vh;
         max-width: none;
@@ -125,19 +125,44 @@
     }
 
         .update-patient-form label {
-            font-size: 0.85rem;
+            font-size: var(--font-size-1921);
         }
 
         .update-patient-form ::deep input,
         .update-patient-form ::deep select,
         .update-patient-form ::deep textarea {
             padding: 8px;
-            font-size: 0.85rem;
+            font-size: var(--font-size-1921);
         }
 
         .update-patient-form button {
             padding: 8px 16px;
-            font-size: 0.85rem;
+            font-size: var(--font-size-1921);
+        }
+}
+@media (max-width: 1281px) {
+    .update-patient-form {
+        padding: 30px;
+        width: 75vw;
+        height: 75vh;
+        max-width: none;
+        max-height: none;
+    }
+
+        .update-patient-form label {
+            font-size: var(--font-size-1281);
+        }
+
+        .update-patient-form ::deep input,
+        .update-patient-form ::deep select,
+        .update-patient-form ::deep textarea {
+            padding: 8px;
+            font-size: var(--font-size-1281);
+        }
+
+        .update-patient-form button {
+            padding: 8px 16px;
+            font-size: var(--font-size-1281);
         }
 }
 
@@ -148,6 +173,7 @@
         height:auto;
         max-height: none;
         max-width: none;
+        font-size: var(--font-size-900) !important;
     }
 
         .update-patient-form .update-patient-row {
@@ -185,12 +211,12 @@
 
         .update-patient-form button {
             padding: 6px 14px; /* botones más compactos */
-            font-size: 0.85rem;
+            font-size: var(--font-size-900);
         }
 
         .update-patient-form label {
             margin-bottom: 4px;
-            font-size: 0.85rem;
+            font-size: var(--font-size-900);
         }
 
         .update-patient-form ::deep input,

@@ -1,7 +1,7 @@
 ﻿using MedRec.Entity.Results;
 
 namespace MedRec.Entity.Interfaces;
-public interface ICommandUnitOfWork
+public interface IUnitOfWork
 {
     Task<Result<Unit>> ExecuteTransactionAsync(Func<Task> operation,
        CancellationToken cancellationToken = default);

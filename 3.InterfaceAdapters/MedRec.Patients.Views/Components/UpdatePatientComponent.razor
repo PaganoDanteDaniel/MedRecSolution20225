@@ -22,6 +22,7 @@
                 <label for="firstName">@UpdatePatientMessages.FirstNameLabel</label>
                 <InputText id="firstName"
                            @bind-value="VM.Model.FirstName"
+                           @bind-value:after="() => OnFieldChanged(() => VM.Model.FirstName)"
                            autocomplete="new-firstname"
                            readonly
                            onfocus="this.removeAttribute('readonly');"
@@ -61,6 +62,7 @@
                 <div>
                     <InputDate id="dateOfBirth"
                                @bind-Value="VM.Model.DateOfBirth"
+                               @bind-Value:after="() => OnFieldChanged(() => VM.Model.DateOfBirth)"
                                style="width: 40%"
                                autocomplete="off" />
                     <span>@CalculateAge()</span>
@@ -112,6 +114,7 @@
                 <label for="biologicalSex">@UpdatePatientMessages.BiologicalSexLabel</label>
                 <select id="biologicalSex"
                         @bind="VM.Model.BiologicalSexId"
+                        @bind:after="() => OnFieldChanged(() => VM.Model.BiologicalSexId)"
                         class="form-control">
                     @foreach (var sex in Enum.GetValues<BiologicalSex>())
                     {
@@ -127,6 +130,7 @@
                 <div class="inline-group">
                     <input id="healthCompany" 
                            @bind="VM.Model.SelectedHealthCompanyName"
+                           @bind:after="() => OnFieldChanged(() => VM.Model.SelectedHealthCompanyName)"
                            style="width: 85%;" 
                            readonly autocomplete="off" />
                     <button type="button" @onclick="OpenHealthCompanyList">
@@ -136,11 +140,11 @@
                 @if(_showHealthCompanyList)
                 {
                     <ModalComponent Type="ModalType.LargeContent" 
-                    Show="@_showHealthCompanyList" 
-                    ShowChanged="@((value) => _showHealthCompanyList = value)">
-                        <HealthInsuranceComponent 
-                            MaxPageButton="3" 
-                            OnHealthCompanySelected="OnHealthCompanySelected"/>
+                        Show="@_showHealthCompanyList" 
+                        ShowChanged="@((value) => _showHealthCompanyList = value)">
+                            <HealthInsuranceComponent 
+                                MaxPageButton="3" 
+                                OnHealthCompanySelected="OnHealthCompanySelected"/>
                     </ModalComponent>
                 }
             </div>
@@ -179,12 +183,14 @@
             </div>
         </div>
         <div class="update-patient-row button-group">
-            <button type="submit">
+            <button type="submit" disabled="@(!HasChanges)">
                 <i class="fas fa-check"></i> @UpdatePatientMessages.SubmitButton
             </button>
+            @* 
             <button type="button" @onclick="ClearForm">
                 <i class="fas fa-eraser"></i> @UpdatePatientMessages.ClearButton
-            </button>
+            </button> 
+            *@
             <button type="button" @onclick="ExitForm">
                 <i class="fas fa-times"></i> @UpdatePatientMessages.ExitButton
             </button>
@@ -202,28 +208,3 @@
                 ShowCancelButton="false">
     @((MarkupString)VM.InformationMessage)
 </ModalComponent>
-
-@* <ModalComponent Title="Éxito" Show="@_showModal" ShowChanged="@((value) => _showModal = value)"
-                Closing="Dispose" OnAccept="OnAccept" Type="ModalType.MessageSuccess" ShowAcceptButton="true">
-    <div style="color: green;">
-        La actualización se realizó con éxito.
-    </div>
-</ModalComponent>
-
-<ModalComponent Title="Error" Show="@_showErrorModal" ShowChanged="@((value) => _showErrorModal = value)"
-                OnAccept="OnAccept" CenterText="true" Type="ModalType.MessageError" ShowCancelButton="true">
-    <div>
-        @((MarkupString)VM.InformationMessage)
-    </div>
-</ModalComponent>
-<ModalComponent Title="Advertencia"
-                Show="@_showWarning"
-                ShowChanged="@((value) => _showWarning = value)"
-                OnAccept="OnAccept"
-                CenterText="true"
-                Type="ModalType.MessageWarning"
-                ShowCancelButton="true">
-    <div>
-        @((MarkupString)VM.InformationMessage)
-    </div>
-</ModalComponent> *@

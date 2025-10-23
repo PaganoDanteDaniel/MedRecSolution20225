@@ -1,6 +1,9 @@
 
 .container {
-    width: 90%;
+    display: flex;
+    flex-direction: column;
+    width: 90vw;
+    height:75vh;
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
@@ -8,10 +11,19 @@
     border-radius: 8px;
     border: 1px solid #ccc;
     box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-    /* Elimina esto si lo tienes */
-    /* flex: 1; */
-    /* min-height: 0; */
-    /* Opcional: limita la altura máxima */
     max-height: 90vh;
     overflow: auto;
+}
+.table-container {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* Esto asegura que la tabla no se estire, pero el espacio libre quede abajo */
+}
+
+.pagination-section {
+    margin-top: auto; /* ¡Esto es clave! Empuja la paginación al final */
+    padding-top: 1rem;
 }

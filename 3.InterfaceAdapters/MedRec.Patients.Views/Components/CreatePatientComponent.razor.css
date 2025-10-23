@@ -113,6 +113,34 @@
         margin-right: 8px;
     }
 
+@media (max-width: 1921px) {
+    .new-patient-form {
+        padding: 50px !important;
+        width: 75vw;
+        height: 75vh;
+    }
+
+        .new-patient-form label {
+            font-size: 0.90rem;
+        }
+
+        .new-patient-form ::deep input,
+        .new-patient-form ::deep select,
+        .new-patient-form ::deep textarea {
+            padding: 10px;
+            font-size: 0.90rem;
+        }
+
+        .new-patient-form button {
+            padding: 8px 16px;
+            font-size: 0.90rem;
+        }
+
+            .new-patient-form button i {
+                font-size: 0.7rem;
+                margin-right: 6px;
+            }
+}
 @media (max-width: 1300px) {
     .new-patient-form {
         padding: 10px;
