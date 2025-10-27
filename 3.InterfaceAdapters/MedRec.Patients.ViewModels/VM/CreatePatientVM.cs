@@ -63,7 +63,7 @@ public class CreatePatientVM
             }
             else
             {
-                InformationMessage = "Paciente creado con éxito";
+                InformationMessage = "PACIENTE CREADO EXITOSAMENTE.";
                 Model = new CreatePatientModel();
                 OnPatientAdded?.Invoke();
             }
@@ -72,7 +72,7 @@ public class CreatePatientVM
         catch (Exception ex)
         {
             // Para ErrorBoundary
-            throw new InvalidOperationException("Error crítico al agregar paciente", ex);
+            throw new InvalidOperationException(ex.Message);
         }
         finally
         {

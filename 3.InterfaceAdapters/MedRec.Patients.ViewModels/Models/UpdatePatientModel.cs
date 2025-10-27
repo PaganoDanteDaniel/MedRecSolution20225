@@ -17,7 +17,6 @@ public class UpdatePatientModel
     public string HealthInsuranceMemberNumber { get; set; }
     public string HealthInsuranceCard { get; set; }
     public string HealthInsurancePlan { get; set; }
-    public string SelectedCityName { get; set; }
     public string SelectedHealthCompanyName { get; set; }
     public byte[] RowVersion { get; set; }
 
@@ -26,20 +25,19 @@ public class UpdatePatientModel
         return new UpdatePatientModel
         {
             Id = this.Id,
-            FirstName = this.FirstName,
-            LastName = this.LastName,
+            FirstName = this.FirstName?.ToUpperInvariant(),
+            LastName = this.LastName?.ToUpperInvariant(),
             DocumentNumber = this.DocumentNumber,
-            Address = this.Address,
+            Address = this.Address?.ToUpperInvariant(),
             PhoneNumber = this.PhoneNumber,
             DateOfBirth = this.DateOfBirth,
             Email = this.Email,
             BiologicalSexId = this.BiologicalSexId,
             HealthInsuranceCompanyId = this.HealthInsuranceCompanyId,
-            HealthInsuranceMemberNumber = this.HealthInsuranceMemberNumber,
-            HealthInsuranceCard = this.HealthInsuranceCard,
-            HealthInsurancePlan = this.HealthInsurancePlan,
-            SelectedCityName = this.SelectedCityName,
-            SelectedHealthCompanyName = this.SelectedHealthCompanyName,
+            HealthInsuranceMemberNumber = this.HealthInsuranceMemberNumber?.ToUpperInvariant(),
+            HealthInsuranceCard = this.HealthInsuranceCard?.ToUpperInvariant(),
+            HealthInsurancePlan = this.HealthInsurancePlan?.ToUpperInvariant(),
+            SelectedHealthCompanyName = this.SelectedHealthCompanyName?.ToUpperInvariant(),
             RowVersion = this.RowVersion != null ? (byte[])this.RowVersion.Clone() : null
         };
     }

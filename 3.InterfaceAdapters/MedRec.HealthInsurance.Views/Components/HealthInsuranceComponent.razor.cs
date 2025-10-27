@@ -9,7 +9,9 @@
 //------------------------------------------------------------------------------
 
 using MedRec.Entity.DTOs;
+using MedRec.HealthInsurance.ViewModels.Models;
 using MedRec.HealthInsurance.ViewModels.VM;
+using MedRec.HealthInsurance.Views.Pages;
 using MedRec.HealthInsurance.Views.Resources;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -39,6 +41,19 @@ public partial class HealthInsuranceComponent
             }
         }
     }
+    private string Filter
+    {
+        get => _paginationDto.FilterOne;
+        set
+        {
+            if (_paginationDto.FilterOne != value)
+            {
+                _paginationDto.FilterOne = value;
+                // Llamar al método de debounce cada vez que el valor cambia
+                _ = OnSearchTermChanged(value);
+            }
+        }
+    }
 
     private PaginationDto _paginationDto = new(1, 10);
     private int _totalPages = 1;
@@ -61,23 +76,21 @@ public partial class HealthInsuranceComponent
     {
         base.OnAfterRender(firstRender);
     }
-    private async void OnSearchTermChanged(ChangeEventArgs e)
+    private async Task OnSearchTermChanged(string searchTerm)
     {
-        _paginationDto.FilterOne = e.Value?.ToString() ?? string.Empty;
-
         // Cancelar la búsqueda anterior si existe
         _debounceCts?.Cancel();
         _debounceCts = new CancellationTokenSource();
 
         // Solo buscar si hay más de 2 caracteres o está vacío
-        if (_paginationDto.FilterOne.Length > 2 || _paginationDto.FilterOne.Length == 0)
+        if (searchTerm.Length > 2 || searchTerm.Length == 0)
         {
             try
             {
-                // Esperar 400ms antes de buscar
+                // Esperar 600ms antes de buscar
                 await Task.Delay(600, _debounceCts.Token);
-                await LoadHealthCompanies();
                 _paginationDto.CurrentPage = 1;
+                await LoadHealthCompanies();
             }
             catch (TaskCanceledException)
             {
@@ -85,9 +98,9 @@ public partial class HealthInsuranceComponent
             }
         }
     }
-    private async Task SelectHealthInsurance(Guid healthCompanyId, string name)
+    private async Task SelectHealthInsurance(HealthInsuranceModel healthInsurance)
     {
-        await OnHealthCompanySelected.InvokeAsync((healthCompanyId, name));
+        await OnHealthCompanySelected.InvokeAsync((healthInsurance.Id, healthInsurance.Name));
     }
     private async Task LoadHealthCompanies()
     {
@@ -106,15 +119,15 @@ public partial class HealthInsuranceComponent
         await LoadHealthCompanies();
     }
     //{healthCompanyId}
-    private void OnUpdateHealthInsurance(Guid healthCompanyId)
+    private void OnUpdateHealthInsurance(HealthInsuranceModel healthCompany)
     {
         showHealthCompanyUpdate = true;
-        this.healthCompanyId = healthCompanyId;
+        this.healthCompanyId = healthCompany.Id;
     }
-    private void OnDeleteHealthInsurance(Guid healthCompanyId)
+    private void OnDeleteHealthInsurance(HealthInsuranceModel healthCompany)
     {
         showHealthCompanyDelete = true;
-        this.healthCompanyId = healthCompanyId;
+        this.healthCompanyId = healthCompany.Id;
     }
     private async Task OnAcceptDelete()
     {
@@ -122,7 +135,7 @@ public partial class HealthInsuranceComponent
         showHealthCompanyDelete = false;
         await LoadHealthCompanies();
     }
-    private void OnAddHealthCompany(MouseEventArgs e)
+    private void OnAddHealthCompany()
     {
         showHealthCompanyAdd = true;
     }

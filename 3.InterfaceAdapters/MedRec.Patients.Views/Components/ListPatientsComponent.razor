@@ -5,7 +5,7 @@
 
 <div class="container">
     <div class="search-section">
-    <SearchAndAddComponent LabelText="Buscar Paciente:"
+        <SearchAndAddComponent LabelText="@ListPatientsMessages.FilterLabel"
                            Placeholder="@ListPatientsMessages.PlaceholderFilterInput"
                            ButtonText="AGREGAR"
                            @bind-Value="Filter"
@@ -55,6 +55,7 @@
                         </AdditionalAction>
                     </TableComponent>
     </div>
+    
     <div class="pagination-section">
         <PaginationComponent CurrentPage="@_paginationDto.CurrentPage" 
             TotalPages="@_totalPages" 

@@ -1,84 +1,46 @@
 ﻿@using MedRec.CommonComponents.Views.Components
 @using MedRec.Entity.DTOs
 @using MedRec.HealthInsurance.ViewModels.VM
+@using MedRec.HealthInsurance.ViewModels.Models
 @using MedRec.HealthInsurance.Views.Resources
 @using Microsoft.AspNetCore.Components.Forms
 <div class="container">
-    <div class="me-configuration">
-        <!-- Filtro de búsqueda -->
-        <div class="me-filter">
-            <label class="me-filter-label" for="filter">@HealthInsuranceMessages.FilterLabelText</label>
-            <input type="text"
-                id="filter"
-                class="me-filter-text uppercase-input"
-                @bind="_paginationDto.FilterOne"
-                @oninput="OnSearchTermChanged"
-                autocomplete="off"
-                placeholder=@HealthInsuranceMessages.PlaceholderFilterInput />
-        </div>
-        <div class="me-buttons-content">
-            <button type="button" class="me-button" @onclick="OnAddHealthCompany">Agregar</button>
- @*            @if (showHealthCompanyAdd)
-            {
-                <ModalComponent Title=@AddHealthCompanyMessages.TitleText
-                                Show="@showHealthCompanyAdd"
-                                ShowChanged="(value) => OnCloseHealthCompanyAdd(value)">
-                    <AddHealthCompanyComponent CompanyName="" CompanyAcronym="" OnAddedCompany="@OnAddedCompany" OnCancelAdd="@OnCancelAdder" />
-                </ModalComponent>
-            } *@
-        </div>
+    <div class="search-section">
+        <SearchAndAddComponent LabelText="@HealthInsuranceMessages.FilterLabelText"
+                               Placeholder="@HealthInsuranceMessages.PlaceholderFilterInput"
+                               ButtonText="AGREGAR"
+                               @bind-Value="Filter"
+                               OnButtonClick="OnAddHealthCompany"
+                               ShowButton />
     </div>
-
-
-    <!-- Tabla de obras sociales -->
-    <div class="me-table-container">
-        <table class="me-table">
-            <thead>
-                <tr>
-                    <th scope="col">Id</th>
-                    <th style="width: 12%;" scope="col">Sigla</th>
-                    <th scope="col">Nombre</th>
-                    <th class="actions" style="width: 12%;" scope="col">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.HealthInsuranceCatalog.Any())
-                {
-                    int rowIndex = 0; // Contador para alternar las clases
-                    @foreach (var healthInsurance in Model.HealthInsuranceCatalog)
-                    {
-                        var rowClass = rowIndex % 2 == 0 ? "table-row-even" : "table-row-odd";
-                        <tr @onclick="() => SelectHealthInsurance(healthInsurance.Id, healthInsurance.Name)"
-                            class="@rowClass">
-                            <td>@healthInsurance.Id</td>
-                            <td style="width:12%;"><span class="truncate">@healthInsurance.Acronym</span></td>
-                            <td style="width: 100%;"><span class="truncate">@healthInsurance.Name</span></td>
-                            <td class="actions" style="width: 12%;">
-                                <a href="javascript:void(0);" @onclick:stopPropagation @onclick="() => OnUpdateHealthInsurance(healthInsurance.Id)">
-                                    <i class="bi bi-pencil-square"></i>                                                        
-                                </a>                                                                                           
-                                <a href="javascript:void(0);" @onclick:stopPropagation @onclick="() => OnDeleteHealthInsurance(healthInsurance.Id)">
-                                    <i class="bi bi-trash-fill"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        rowIndex++; // Incrementar el contador
-                    }
-                }
-                else
-                {
+    <div class="table-container">
+        <TableComponent TItem="HealthInsuranceModel"
+                        Items="Model.HealthInsuranceCatalog.ToList()"
+                        OnRowClick="SelectHealthInsurance"
+                        OnEdit="OnUpdateHealthInsurance"
+                        OnDelete="OnDeleteHealthInsurance">
+            <FullHeaderTemplate>
+                <thead>
                     <tr>
-                        <td colspan="4" class="text-message">No se encontraron obras sociales.</td>
+                        <th style="width: 12%;" scope="col">Sigla</th>
+                        <th scope="col">Nombre</th>
+                        <th class="actions" style="width: 12%;" scope="col">Acciones</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                    </thead>
+            </FullHeaderTemplate>
+            <RowTemplate Context="healthInsurance">
+                <td style="width:12%;"><span class="truncate">@healthInsurance.Acronym</span></td>
+                <td style="width: 100%;"><span class="truncate">@healthInsurance.Name</span></td>
+            </RowTemplate>
+        </TableComponent>
     </div>
-    <!--Pagination-->
-    <PaginationComponent CurrentPage="@_paginationDto.CurrentPage"
-                         TotalPages="@_totalPages"
-                         MaxPageButton="@MaxPageButton"
-                         PageChanged="HandlePageChanged" />
+    <div class="pagination-section">
+        <PaginationComponent CurrentPage="@_paginationDto.CurrentPage"
+                             TotalPages="@_totalPages"
+                             MaxPageButton="@MaxPageButton"
+                             PageChanged="HandlePageChanged" />
+    </div>
+   
 </div>
 @if (showHealthCompanyDelete)
 {
@@ -103,5 +65,3 @@
     </ModalComponent>
 
 } *@
-
-

@@ -1,81 +1,59 @@
-﻿/* Estilos para el pie de página */
+﻿/* ===============================
+   PIE DE PÁGINA
+   =============================== */
 .footerbar {
     background-color: var(--footer-background);
     border-top: 1px solid var(--form-border);
-    border-radius: 8px;
-    padding: 1.3rem;
-    margin-top: 1rem;
+    border-radius: 0.5rem; /* 8px aproximado */
+    padding: var(--space-md);
+    margin-top: var(--space-xs);
     text-align: left;
     color: var(--form-text);
-    box-shadow: 0 -3px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 -0.1875rem 0.25rem rgba(0, 0, 0, 0.1); /* 3px 4px equivalente */
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap; /* Permite que los elementos se ajusten en pantallas pequeñas */
+    flex-wrap: wrap; /* permite ajuste en pantallas pequeñas */
     width: 100%;
     box-sizing: border-box;
+   /* font-size: var(--font-size-small);*/
+    font-family: var(--font-family-base);
 }
 
-.footerbar p {
-    margin: 0;
-    font-size: 0.8rem;
-    font-family: Arial, sans-serif;
-}
+    .footerbar p {
+        margin: 0;
+    }
 
 .left-span,
-.center-span,
 .right-span {
-    width: 33.33%;
-    min-width: 120px;
+    width: 45%;
+    min-width: 7.5rem; /* 120px equivalente en rem */
     box-sizing: border-box;
 }
 
 .center-span {
     text-align: center;
+    width: 10%;
+    box-sizing: border-box;
 }
 
 .right-span {
     text-align: right;
-    font-size: .70rem;
+    /*font-size: 0.75rem;  escala fluida cercana a 0.7rem */
 }
 
-/* Responsive: pantallas medianas */
-@media (max-width: 1300px) {
-    .footerbar {
-        padding: 0.8rem;
-        font-size: .70rem;
-    }
+/* Responsive footer */
+@media (max-width: 900px) {
     .left-span,
-    .center-span {
-        min-width: 30px;
-        font-size: 0.80rem;
-    }
+    .center-span,
     .right-span {
-        min-width: 30px;
-        font-size: 0.60rem;
+        width: 100%;
+        text-align: center;
+        margin-bottom: var(--space-xs);
     }
-}
 
-/* Responsive: pantallas pequeñas */
-@media (max-width: 800px) {
     .footerbar {
+        padding: var(--space-sm);
         flex-direction: column;
-        align-items: flex-start;
-        padding: 0.2rem;
-    }
-    .left-span,
-    .center-span{
-        width: 30%;
-        text-align: left;
-        margin-bottom: 2px;
-        font-size: 0.70rem;
-    }
-    .right-span {
-        width: 30%;
-        text-align: left;
-        margin-bottom: 2px;
-        font-size: 0.55rem;
-    }
-    .right-span {
-        margin-bottom: 0;
+        align-items: center;
     }
 }

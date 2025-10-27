@@ -20,20 +20,24 @@
         }
 
         @* Selector dinámico (opcional) *@
-        @if (EnumOptions?.Any() == true)
+        @if (ShowInputSelect)
         {
-            <InputSelect class="me-filter-select"
-                         TValue="string"
-                         Value="@SelectedEnumValue"
-                         ValueChanged="@(async (value) => await OnEnumValueChanged(value))"
-                         ValueExpression="() => SelectedEnumValue">
-                <option value="">@EnumPlaceholder</option>
-                @foreach (var option in EnumOptions)
-                {
-                    <option value="@option.Value">@option.Text</option>
-                }
-            </InputSelect>
+            @if (EnumOptions?.Any() == true)
+            {
+                <InputSelect class="me-filter-select"
+                             TValue="string"
+                             Value="@SelectedEnumValue"
+                             ValueChanged="@(async (value) => await OnEnumValueChanged(value))"
+                             ValueExpression="() => SelectedEnumValue">
+                    <option value="">@EnumPlaceholder</option>
+                    @foreach (var option in EnumOptions)
+                    {
+                        <option value="@option.Value">@option.Text</option>
+                    }
+                </InputSelect>
+            }
         }
+        
     </div>
 
     @if (ShowButton)
@@ -57,6 +61,7 @@
     [Parameter] public string SelectedEnumValue { get; set; }
     [Parameter] public EventCallback<string> SelectedEnumValueChanged { get; set; }
     [Parameter] public string EnumPlaceholder { get; set; } = "SELECCIONE...";
+    [Parameter] public bool ShowInputSelect { get; set; }
 
     // === Comunes ===
     [Parameter] public string LabelText { get; set; } = string.Empty;

@@ -178,7 +178,7 @@ namespace MedRec.Patients.Views.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a INGRESE EL NOMBRE DEL PACIENTE PARA FILTRAR.
+        ///   Busca una cadena traducida similar a INGRESE EL NOMBRE DEL PACIENTE O EL DNI SIN PUNTOS PARA FILTRAR.
         /// </summary>
         internal static string PlaceholderFilterInput {
             get {

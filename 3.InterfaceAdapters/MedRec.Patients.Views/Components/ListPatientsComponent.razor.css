@@ -1,29 +1,56 @@
-
+/* ===============================
+   CONTENEDOR PRINCIPAL
+   =============================== */
 .container {
     display: flex;
     flex-direction: column;
-    width: 90vw;
-    height:75vh;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    background-color: white;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    width: 75vw;
+    height: 75vh;
     max-height: 90vh;
+    margin: 0 auto;
+    padding: var(--space-lg); /* escala fluida */
+    background-color: var(--form-secction-background);
+    border-radius: 0.5rem; /* 8px aproximado */
+    border: 1px solid var(--form-border);
+    box-shadow: 0 0.125rem 0.625rem rgba(0,0,0,0.15); /* 2px 10px equivalentes */
     overflow: auto;
+    font-size: var(--font-size-base); /* hereda escala fluida */
+    color: var(--form-text);
 }
+
+/* ===============================
+   CONTENEDOR DE TABLA
+   =============================== */
 .table-container {
     flex: 1;
     display: flex;
-    overflow: hidden;
     flex-direction: column;
     justify-content: flex-start;
-    /* Esto asegura que la tabla no se estire, pero el espacio libre quede abajo */
+    overflow: hidden; /* previene scroll extra dentro del contenedor */
 }
 
+/* ===============================
+   SECCIÓN DE PAGINACIÓN
+   =============================== */
 .pagination-section {
-    margin-top: auto; /* ¡Esto es clave! Empuja la paginación al final */
-    padding-top: 1rem;
+    margin-top: auto; /* empuja la paginación al final del contenedor */
+    padding-top: var(--space-md);
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+}
+
+/* ===============================
+   MEDIA QUERIES RESPONSIVE
+   =============================== */
+@media (max-height: 800px) {
+    .container {
+        width: 75vw;
+        /*height: 65vh;*/
+        padding: var(--space-sm);
+    }
+
+    .pagination-section {
+        justify-content: center;
+    }
 }

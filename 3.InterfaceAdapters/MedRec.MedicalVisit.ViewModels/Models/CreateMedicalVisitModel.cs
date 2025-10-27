@@ -1,5 +1,4 @@
-﻿using MedRec.Entity.Enums;
-using MedRec.MedicalVisit.BusinessObjects.DTOs;
+﻿using MedRec.MedicalVisit.BusinessObjects.DTOs;
 
 namespace MedRec.MedicalVisit.ViewModels.Models;
 public class CreateMedicalVisitModel
@@ -7,7 +6,7 @@ public class CreateMedicalVisitModel
     public Guid PatientId { get; set; }
     public Guid MedicalHistoryId { get; set; }
     public DateTime VisitDate { get; set; } = DateTime.Now;
-    public VisitReason Reason { get; set; }
+    public string Reason { get; set; }
     public string Diagnosis { get; set; }
     public string Treatment { get; set; }
     public int? SystolicPressure { get; set; }
