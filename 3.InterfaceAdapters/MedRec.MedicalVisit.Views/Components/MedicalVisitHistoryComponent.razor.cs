@@ -11,6 +11,7 @@
 using MedRec.Entity.DTOs;
 using MedRec.Entity.Enums;
 using MedRec.Entity.Extensions;
+using MedRec.Entity.POCOEntities;
 using MedRec.MedicalVisit.ViewModels.Models;
 using MedRec.MedicalVisit.ViewModels.VM;
 using Microsoft.AspNetCore.Components;
@@ -27,6 +28,7 @@ public partial class MedicalVisitHistoryComponent
     [Parameter] public EventCallback<MedicalVisitModel> OnVisitSelected { get; set; }
     [Parameter] public Guid PatientId { get; set; }
     [Parameter] public string PatientName { get; set; }
+    [Parameter] public DateTime DateOfBirth { get; set; }
     #endregion
 
     #region Campos
@@ -49,38 +51,6 @@ public partial class MedicalVisitHistoryComponent
             }
         }
     }
-    private string SelectedVisitReason
-    {
-        get
-        {
-            // Convertir de int (almacenado como string) a string del enum
-            if (int.TryParse(_paginationDto.FilterTwo, out var intValue) &&
-                Enum.IsDefined(typeof(VisitReason), intValue))
-            {
-                return ((VisitReason)intValue).ToString();
-            }
-            return string.Empty;
-        }
-        set
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                _paginationDto.FilterTwo = null;
-            }
-            else if (Enum.TryParse<VisitReason>(value, out var reason))
-            {
-                // Aquí está el cambio: usamos el valor numérico
-                _paginationDto.FilterTwo = ((int)reason).ToString();
-            }
-            else
-            {
-                _paginationDto.FilterTwo = null;
-            }
-
-            _paginationDto.CurrentPage = 1;
-            _ = LoadVisits();
-        }
-    }
     #endregion
     protected override async Task OnInitializedAsync()
     {
@@ -96,7 +66,11 @@ public partial class MedicalVisitHistoryComponent
     }
     private void OnButtonClick()
     {
-        Navigation.NavigateTo($"/medical-visit/create/{PatientId}/{PatientName}");
+        var nombreCodificado = System.Web.HttpUtility.UrlEncode(PatientName);
+        var fechaCodificada = DateOfBirth.ToString("yyyy-MM-dd");
+        var url = $"/medical-visit/create?id={PatientId}&nombre={nombreCodificado}&fechaNac={fechaCodificada}";
+
+        Navigation.NavigateTo(url, true);
     }
 
     private async Task OnSearchTermChanged(string searchTerm)

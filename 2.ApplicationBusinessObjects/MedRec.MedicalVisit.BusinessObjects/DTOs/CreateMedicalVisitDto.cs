@@ -1,11 +1,10 @@
-﻿using MedRec.Entity.Enums;
-using MedRec.Entity.POCOEntities;
+﻿using MedRec.Entity.POCOEntities;
 namespace MedRec.MedicalVisit.BusinessObjects.DTOs;
 public class CreateMedicalVisitDto()
 {
     public Guid MedicalHistoryId { get; init; }
     public DateTime VisitDate { get; init; }
-    public VisitReason Reason { get; init; }
+    public string Reason { get; init; }
     public string Diagnosis { get; init; }
     public string Treatment { get; init; }
     public int? SystolicPressure { get; init; }

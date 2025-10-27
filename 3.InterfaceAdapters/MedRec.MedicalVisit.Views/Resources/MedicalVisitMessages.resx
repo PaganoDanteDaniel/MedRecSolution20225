@@ -129,11 +129,11 @@
   <data name="ButtonSaveMedicalVisit" xml:space="preserve">
     <value>GUARDAR VISITA MÉDICA</value>
   </data>
-  <data name="CreateMedicalVisitTemplate" xml:space="preserve">
-    <value>VISITA MEDICA REGISTRADA CON ID {0} SATISFACTORIAMENTE</value>
+  <data name="CreateMedicalVisit" xml:space="preserve">
+    <value>VISITA MEDICA REGISTRADA SATISFACTORIAMENTE</value>
   </data>
   <data name="CreateMedicalVisitTitleTemplate" xml:space="preserve">
-    <value>REGISTRO DE VISITA MÉDICA PARA {0}</value>
+    <value>PACIENTE {0}  -  EDAD {1} AÑOS</value>
   </data>
   <data name="HeaderLabResults" xml:space="preserve">
     <value>RESULTADOS DE LABORATORIO</value>

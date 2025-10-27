@@ -1,87 +1,78 @@
 .me-configuration {
     display: flex;
-    flex-direction: row;
+    flex-wrap: wrap; /*  permite que el botón baje en móviles */
     align-items: center;
-    gap: 10px; /* Espacio entre label+input y botón */
-    padding-left: 0;
-    padding-right: 0;
-    margin-bottom: 8px;
+    gap: var(--space-sm); /* 0.5rem */
+    padding-inline: 0;
+    margin-bottom: var(--space-sm); /* 0.5rem */
 }
 
-/* El contenedor del label + input crece para llenar el espacio */
-.me-filter {
+/* En pantallas pequeñas, el botón va abajo */
+@media (max-width: 768px) {
+    .me-configuration {
+        flex-direction: column;
+        align-items: stretch; /* botón ocupa 100% del ancho */
+    }
+}
+
+/* Contenedor del label + input/select */
+.me-configuration ::deep .me-filter {
     display: flex;
     align-items: center;
-    flex: 1; /* Ocupa todo el espacio disponible */
-    min-width: 0; /* Permite que el input se contraiga si es necesario */
+    flex: 1;
+    min-width: 0;
+    gap: var(--space-sm); /* espacio entre label e input */
 }
 
-.me-filter-label {
+.me-configuration ::deep .me-filter-label {
     color: var(--form-text);
-    font-size:var(--font-size-label);
-    white-space: nowrap; /* Evita que el label se rompa en varias líneas */
-    margin-right: 10px; /* Espacio entre label e input */
-    /* Elimina margin-bottom si no hay otros elementos debajo */
+    font-size: var(--font-size-label);
+    white-space: nowrap;
+    flex-shrink: 0; /* evita que el label se encoja demasiado */
 }
 
-.me-filter-text,
-::deep select{
+.me-configuration ::deep .me-filter .me-filter-text,
+.me-configuration ::deep .me-filter select {
     font-size: var(--font-size-base);
-    flex: 1; /* El input crece para llenar el espacio restante */
-    min-width: 0; /* Permite que el input se contraiga */
-    padding: 10px;
+    flex: 1;
+    min-width: 0;
+    padding: var(--space-sm); /* 0.5rem  equivale a 8px si base=16px */
     border: 1px solid var(--input-border);
-    border-radius: 6px;
+    border-radius: var(--space-sm); /* 0.5rem = 8px */
     background-color: var(--input-background);
     color: var(--input-text);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    margin-left: 5px;
 }
 
-/* El botón no debe tener width fijo */
-.me-buttons-content {
+/* Contenedor del botón */
+.me-configuration ::deep .me-buttons-content {
     display: flex;
-    align-items: center;
-    /* Elimina width, height, margin-bottom */
+    /* En desktop: alineado con el input; en móvil: ocupa todo el ancho */
 }
 
-.me-button {
+.me-configuration ::deep .me-button {
     font-size: var(--font-size-button);
     background-color: var(--button-background);
     border: 1px solid var(--button-border);
     color: var(--button-text);
-    padding: 10px 20px;
-    border-radius: 4px;
+    padding: var(--space-sm) var(--space-md); /* 0.5rem 1rem */
+    border-radius: var(--space-xs); /* 0.25rem = 4px */
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Elimina width: 90% y margin-left (el gap ya maneja el espaciado) */
+    gap: var(--space-xs); /* espacio entre ícono y texto */
+    width: 100%; /* útil en móviles */
 }
 
-    .me-button:hover {
+    .me-configuration ::deep .me-button:hover {
         background-color: var(--button-hover-background);
         border-color: var(--button-hover-border);
         color: var(--button-hover-text);
     }
 
-    .me-button ::deep i {
-        font-size: 1rem;
-        margin-right: 8px;
+    /* Ícono dentro del botón */
+    .me-configuration ::deep .me-button ::deep i {
+        font-size: 1em; /* relativo al font-size del botón */
+        /* margin-right ya no es necesario usamos gap */
     }
-
-/* ===== Laptop pequeña (1280×800) ===== */
-@media (max-width: 1281px) {
-    .me-button {
-        font-size: 0.875rem !important;
-    }
-
-    .me-filter-text,
-    ::deep select {
-        font-size: 0.875rem !important;
-    }
-
-    .me-filter-label {
-        font-size: 0.875rem !important;
-    }
-}

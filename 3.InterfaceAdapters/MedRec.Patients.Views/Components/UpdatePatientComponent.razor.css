@@ -1,7 +1,10 @@
 .update-patient-form {
-    max-width: 1200px;
-    width: 90vw;
-    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    /*max-width: 1200px;*/
+    width: 75vw;
+    height: 75vh;
+    padding: 3rem 3rem 0 3rem;
     color: var(--form-text);
     box-sizing: border-box; /* clave */
     background-color: white;
@@ -83,10 +86,11 @@
 
     /* Botonera */
     .update-patient-form .button-group {
+        margin-top: auto; /* Esto es la clave */
         display: flex;
         justify-content: flex-end;
-        gap: 12px;
-        margin-top: 20px;
+        gap: var(--space-sm);
+        padding-top: var(--space-md); /* opcional: un poco de separación visual */
     }
 
     .update-patient-form button {
@@ -115,113 +119,33 @@
         }
 
 /* Responsivo */
-@media (max-width: 1921px) {
-    .update-patient-form {
-        padding: 50px !important;
-        width: 75vw;
-        height:75vh;
-        max-width: none;
-        max-height: none;
-    }
 
-        .update-patient-form label {
-            font-size: var(--font-size-1921);
-        }
-
-        .update-patient-form ::deep input,
-        .update-patient-form ::deep select,
-        .update-patient-form ::deep textarea {
-            padding: 8px;
-            font-size: var(--font-size-1921);
-        }
-
-        .update-patient-form button {
-            padding: 8px 16px;
-            font-size: var(--font-size-1921);
-        }
-}
-@media (max-width: 1281px) {
-    .update-patient-form {
-        padding: 30px;
-        width: 75vw;
-        height: 75vh;
-        max-width: none;
-        max-height: none;
-    }
-
-        .update-patient-form label {
-            font-size: var(--font-size-1281);
-        }
-
-        .update-patient-form ::deep input,
-        .update-patient-form ::deep select,
-        .update-patient-form ::deep textarea {
-            padding: 8px;
-            font-size: var(--font-size-1281);
-        }
-
-        .update-patient-form button {
-            padding: 8px 16px;
-            font-size: var(--font-size-1281);
-        }
-}
-
-@media (max-width: 900px) {
-    .update-patient-form {
-        padding: 20px;
-        width: 80vw;
-        height:auto;
-        max-height: none;
-        max-width: none;
-        font-size: var(--font-size-900) !important;
-    }
-
-        .update-patient-form .update-patient-row {
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .update-patient-form .update-patient-col {
-            min-width: auto;
-            width: 100%;
-        }
-
-        .update-patient-form .button-group {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 10px;
-        }
-
-        .update-patient-form button {
-            width: 100%;
-            justify-content: center;
-            padding: 12px;
-        }
-}
 /* Ajuste para pantallas de poca altura */
 @media (max-height: 800px) {
-    .update-patient-form .update-patient-row {
-        margin-bottom: 10px; /* antes 20px */
-        gap: 10px; /* antes 20px */
-    }
-
     .update-patient-form {
-        padding: 20px; /* reduce el padding general para ganar espacio */
+        max-width: none;
+        max-height:none;
+        width: 75vw;
+        height: auto;
+        padding: 3rem 3rem 0 3rem; /* reduce el padding general para ganar espacio */
     }
 
         .update-patient-form button {
             padding: 6px 14px; /* botones más compactos */
-            font-size: var(--font-size-900);
         }
 
         .update-patient-form label {
             margin-bottom: 4px;
-            font-size: var(--font-size-900);
         }
 
         .update-patient-form ::deep input,
         .update-patient-form ::deep select,
         .update-patient-form ::deep textarea {
             padding: 6px 8px;
+        }
+
+        .update-patient-form .update-patient-row {
+            margin-bottom: 10px; /* antes 20px */
+            gap: 10px; /* antes 20px */
         }
 }

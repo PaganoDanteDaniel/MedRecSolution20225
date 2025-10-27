@@ -16,7 +16,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Content Include="MedRec.ico" />
+      <Content Include="MedRec.ico">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>

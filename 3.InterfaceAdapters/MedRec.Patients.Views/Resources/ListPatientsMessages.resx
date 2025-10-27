@@ -157,7 +157,7 @@
     <value>POCESO DE ELIMINACION</value>
   </data>
   <data name="PlaceholderFilterInput" xml:space="preserve">
-    <value>INGRESE EL NOMBRE DEL PACIENTE PARA FILTRAR</value>
+    <value>INGRESE EL NOMBRE DEL PACIENTE O EL DNI SIN PUNTOS PARA FILTRAR</value>
   </data>
   <data name="RecoberButton" xml:space="preserve">
     <value>ACEPTAR</value>

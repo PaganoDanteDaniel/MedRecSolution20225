@@ -27,7 +27,9 @@ public static class CreateMedicalVisitValidator
 
         // Reason
         var reasonValidation = Guard.Against(visit.Reason, nameof(visit.Reason))
-            .IsDefined(MedicalVisitValidatorMessages.Reason_Required);
+            .NotNullOrEmpty(MedicalVisitValidatorMessages.Reason_Required)
+            .MaxLength(MedicalVisitConstraints.MaxLengthReason, MedicalVisitValidatorMessages.Reason_MaxLength);
+
         errors.AddRange(reasonValidation.Errors);
 
         // Diagnosis (opcional, pero con longitud)
