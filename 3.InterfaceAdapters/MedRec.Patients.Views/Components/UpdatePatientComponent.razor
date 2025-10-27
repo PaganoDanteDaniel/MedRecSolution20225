@@ -65,7 +65,7 @@
                                @bind-Value:after="() => OnFieldChanged(() => VM.Model.DateOfBirth)"
                                style="width: 40%"
                                autocomplete="off" />
-                    <span>@CalculateAge()</span>
+                               <span><label>@VM.Model.DateOfBirth.CalculateFullAge()</label></span>
                     <ValidationMessage For="() => VM.Model.DateOfBirth" class="validation-message" />
                 </div>
             </div>
@@ -114,8 +114,7 @@
                 <label for="biologicalSex">@UpdatePatientMessages.BiologicalSexLabel</label>
                 <select id="biologicalSex"
                         @bind="VM.Model.BiologicalSexId"
-                        @bind:after="() => OnFieldChanged(() => VM.Model.BiologicalSexId)"
-                        class="form-control">
+                        @bind:after="() => OnFieldChanged(() => VM.Model.BiologicalSexId)">
                     @foreach (var sex in Enum.GetValues<BiologicalSex>())
                     {
                         <option value="@sex">@sex.GetDescription()</option>
@@ -139,12 +138,12 @@
                 </div>
                 @if(_showHealthCompanyList)
                 {
-                    <ModalComponent Type="ModalType.LargeContent" 
-                        Show="@_showHealthCompanyList" 
-                        ShowChanged="@((value) => _showHealthCompanyList = value)">
-                            <HealthInsuranceComponent 
-                                MaxPageButton="3" 
-                                OnHealthCompanySelected="OnHealthCompanySelected"/>
+                   <ModalComponent Title="SELECTOR DE OBRAS SOCIALES"
+                                    Show="@_showHealthCompanyList"
+                                    Type="ModalType.LargeContent"
+                                    ShowChanged="(value) => _showHealthCompanyList = value">
+                        <HealthInsuranceComponent MaxPageButton="3"
+                                                  OnHealthCompanySelected="@OnHealthCompanySelected" />
                     </ModalComponent>
                 }
             </div>

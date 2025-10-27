@@ -1,9 +1,11 @@
-﻿@page "/medical-visit/create/{patientId:guid}/{patientName}"
-@page "/medical-visit/detail/{patientId:guid}/{visitId:guid}/{patientName}"
+﻿@page "/medical-visit/create"
+@page "/medical-visit/detail"
 @using MedRec.CommonComponents.Views.Components
 @using MedRec.CommonComponents.Views.Exceptions
 @using MedRec.MedicalVisit.Views.Components
 @using MedRec.MedicalVisit.Views.Resources
+
+@inject NavigationManager Navigation
 
 <div class="body-content">
     <TitleComponent Title="@Title" />
@@ -15,6 +17,7 @@
                 <CreateMedicalVisitComponent 
                     PatientId="@PatientId" 
                     PatientName="@PatientName"
+                    DateOfBirth="@DateOfBirth"
                     VM="@VM" 
                     IsReadOnly="@IsReadOnly" />
             </ChildContent>

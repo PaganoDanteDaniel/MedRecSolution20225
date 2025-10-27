@@ -12,21 +12,12 @@
         string.IsNullOrEmpty(encoded) ? "" : System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
 }
 <div class="search-container">
-@*     <SearchAndAddComponent LabelText="RAZÓN DE VISITA:"
-                           ButtonText="REGISTRAR VISITA"
-                           EnumOptions="_visitReasonOptions"
-                           @bind-SelectedEnumValue="SelectedVisitReason"
-                           OnButtonClick="OnButtonClick"
-                           ShowButton /> *@
-
            <SearchAndAddComponent LabelText="FILTROS DE VISITA:"
-                           Placeholder="BUSCAR DIAGNÓSTICO, TRATAMIENTO O NOTAS..."
-                           EnumPlaceholder="FILTRAR POR RAZÓN DE VISITA..."
-                               ButtonText="REGISTRAR VISITA"
-                               @bind-Value="TextFilter"
-                               EnumOptions="_visitReasonOptions" 
-                               @bind-SelectedEnumValue="SelectedVisitReason"
-                               OnButtonClick="OnButtonClick"/>
+                             
+                    Placeholder="BUSCAR MOTIVO, DIAGNÓSTICO, TRATAMIENTO O NOTAS..."
+                    ButtonText="REGISTRAR VISITA"
+                    @bind-Value="TextFilter"
+                    OnButtonClick="OnButtonClick"/>
 
 </div>
 <div class="visit-history">
@@ -53,9 +44,7 @@
                         <strong>@visit.VisitDate.ToString("dd/MM/yyyy")</strong>
                     </div>
                     <div class="card-body">
-                        <p><strong>Razón:</strong> @visit.Reason.GetDescription()</p>
-                       @*  <p><strong>Diagnóstico:</strong> @Truncate(visit.Diagnosis, 120)</p>
-                        <p><strong>Tratamiento:</strong> @Truncate(visit.Treatment, 120)</p> *@
+                        <p><strong>Razón:</strong> @visit.Reason</p>
                         @if (!string.IsNullOrEmpty(visit.Notes))
                         {
                             <p><strong>Notas:</strong> @Truncate(visit.Notes, 120)</p>

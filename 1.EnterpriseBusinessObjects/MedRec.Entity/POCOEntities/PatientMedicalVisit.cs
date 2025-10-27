@@ -1,12 +1,10 @@
-﻿using MedRec.Entity.Enums;
-
-namespace MedRec.Entity.POCOEntities;
+﻿namespace MedRec.Entity.POCOEntities;
 public class PatientMedicalVisit
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     public Guid MedicalHistoryId { get; set; }               // FK a Patient
     public DateTime VisitDate { get; set; }
-    public VisitReason Reason { get; set; } = VisitReason.Other;
+    public string Reason { get; set; }
     public string Diagnosis { get; set; } = String.Empty;
     public string Treatment { get; set; } = String.Empty;
     public int? SystolicPressure { get; set; }

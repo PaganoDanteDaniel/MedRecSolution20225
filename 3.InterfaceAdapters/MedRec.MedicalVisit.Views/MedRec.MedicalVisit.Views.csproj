@@ -13,10 +13,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="9.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\1.EnterpriseBusinessObjects\MedRec.Entity\MedRec.Entity.csproj" />
     <ProjectReference Include="..\MedRec.CommonComponents.Views\MedRec.CommonComponents.Views.csproj" />
     <ProjectReference Include="..\MedRec.MedicalVisit.ViewModels\MedRec.MedicalVisit.ViewModels.csproj" />
     <ProjectReference Include="..\MedRec.Patients.ViewModels\MedRec.Patients.ViewModels.csproj" />

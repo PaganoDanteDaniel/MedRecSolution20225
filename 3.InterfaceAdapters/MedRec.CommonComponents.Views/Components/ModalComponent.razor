@@ -2,11 +2,11 @@
     <div class="my-modal-dialog @(IsLargeModal ? "my-modal-lg" : "")">
         <div class="my-modal-content">
             <div class="my-modal-header">
-                <h5 class="my-modal-title">
+                <div class="my-modal-title">
                     @GetIcon()
                     @Title
-                </h5>
-                <button type="button" class="btn-close" aria-label="Close" @onclick="Close"></button>
+                </div>
+                <button type="button" class="btn-close" aria-label="Close" @onclick="Close"/>
             </div>
             <div class="my-modal-body @(CenterText ? "centered-text" : "")">
                 @ChildContent

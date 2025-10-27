@@ -133,13 +133,13 @@ public partial class ListPatientsComponent
         _showDeleteConfirmation = false;
         StateHasChanged();
     }
-    private void OnAddHealthIssue(PatientSummaryDto patient)
-    {
-        Navigation.NavigateTo($"/medical-information/create/{patient.Id}/{patient.LastName}, {patient.FirstName}", true);
-    }
     private void OnAddMedicalVisit(PatientSummaryDto patient)
     {
-        Navigation.NavigateTo($"/medical-visit/list/{patient.Id}/{patient.LastName}, {patient.FirstName}", true);
+        var nombreCodificado = System.Web.HttpUtility.UrlEncode($"{patient.LastName}, {patient.FirstName}");
+        var fechaCodificada = patient.DateOfBirth.ToString("yyyy-MM-dd");
+        var url = $"/medical-visit/list?id={patient.Id}&nombre={nombreCodificado}&fechaNac={fechaCodificada}";
+
+        Navigation.NavigateTo(url, true);
     }
     private async Task LoadPatients()
     {

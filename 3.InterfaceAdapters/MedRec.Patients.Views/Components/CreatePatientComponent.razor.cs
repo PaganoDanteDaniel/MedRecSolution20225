@@ -4,7 +4,6 @@ using MedRec.Patients.Views.Resources;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
-using System.Linq.Expressions;
 
 namespace MedRec.Patients.Views.Components;
 public partial class CreatePatientComponent : IDisposable
@@ -61,7 +60,7 @@ public partial class CreatePatientComponent : IDisposable
     }
     private void ShowModalMessageAndNavigate(string title, ModalType type, string navigationUrl)
     {
-        VM.InformationMessage = UpdatePatientMessages.UpdatePatientTemplate;
+        VM.InformationMessage = CreatePatientMessages.PatientAddedMessage;
         _modalTitle = title;
         _modalType = type;
         _showModal = true;
@@ -111,38 +110,6 @@ public partial class CreatePatientComponent : IDisposable
     private void ExitForm(MouseEventArgs e)
     {
         Navigation.NavigateTo("/", true);
-    }
-    private string CalculateAge()
-    {
-        var today = DateTime.Today;
-        var birthDate = VM.Model.DateOfBirth;
-
-        // Calculating the age
-        int year = today.Year - birthDate.Year;
-        int month = today.Month - birthDate.Month;
-        int day = today.Day - birthDate.Day;
-
-        // Ajuste si el día actual es menor que el d�a de nacimiento
-        if (day < 0)
-        {
-            month--;
-            day += DateTime.DaysInMonth(today.Year, today.Month - 1);
-        }
-
-        // Ajuste si el mes actual es menor que el mes de nacimiento
-        if (month < 0)
-        {
-            year--;
-            month += 12;
-        }
-        return (string.Format(CreatePatientMessages.AgeOfPatientTemplate, year.ToString(), month.ToString()));
-    }
-
-    private void OnFieldChanged<T>(Expression<Func<T>> propertyExpression)
-    {
-        var fieldIdentifier = FieldIdentifier.Create(propertyExpression);
-
-        _editContext?.NotifyFieldChanged(fieldIdentifier);
     }
 
     public void Dispose()
