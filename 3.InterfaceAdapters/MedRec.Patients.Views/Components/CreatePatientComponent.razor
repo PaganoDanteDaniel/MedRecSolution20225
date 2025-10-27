@@ -1,4 +1,5 @@
-﻿@using MedRec.HealthInsurance.Views.Components
+﻿@using MedRec.Entity.Extensions
+@using MedRec.HealthInsurance.Views.Components
 @using MedRec.Patients.BusinessObjects.DTOs
 @using MedRec.Patients.ViewModels.Models
 @using Microsoft.AspNetCore.Components.Forms
@@ -57,7 +58,7 @@
                                @bind-Value="VM.Model.DateOfBirth"
                                style="width: 40%"
                                autocomplete="off" />
-                    <span><label>@CalculateAge()</label></span>
+                    <span><label>@VM.Model.DateOfBirth.CalculateFullAge()</label></span>
                     <ValidationMessage For="() => VM.Model.DateOfBirth" class="validation-message" />
                 </div>
 
@@ -105,9 +106,8 @@
                             Show="@_showHealthCompanyList"
                             Type="ModalType.LargeContent"
                             ShowChanged="(value) => _showHealthCompanyList = value">
-
                 <HealthInsuranceComponent MaxPageButton="3"
-                                          OnHealthCompanySelected="@OnHealthCompanySelected" />
+                    OnHealthCompanySelected="@OnHealthCompanySelected" />
             </ModalComponent>
             <div class="new-patient-col">
                 <label for="insuranceHealthCard">@CreatePatientMessages.InsuranceHealthCardLabel</label>

@@ -1,6 +1,5 @@
 ﻿using MedRec.DataContext.MySql.DataContext;
 using MedRec.Entity.DTOs;
-using MedRec.Entity.Enums;
 using MedRec.Entity.POCOEntities;
 using MedRec.MedicalVisit.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -52,20 +51,8 @@ internal class MedicalVisitQueriesDataContextMySql(DataBaseContextMySql context)
                 query = query.Where(v =>
                     v.Diagnosis.Contains(filterOne) ||
                     v.Treatment.Contains(filterOne) ||
+                    v.Reason.Contains(filterOne) ||
                     v.Notes.Contains(filterOne));
-            }
-        }
-
-        if (!string.IsNullOrWhiteSpace(paginationDto?.FilterTwo))
-        {
-            var filterTwo = paginationDto.FilterTwo.Trim();
-
-            // 3. Filtrar por VALOR NUMÉRICO del enum (ej: "1", "2", "3")
-            if (int.TryParse(filterTwo, out int reasonValue) &&
-                     Enum.IsDefined(typeof(VisitReason), reasonValue))
-            {
-                var reason = (VisitReason)reasonValue;
-                query = query.Where(v => (int)v.Reason == reasonValue);
             }
         }
 

@@ -1,220 +1,146 @@
 
 .new-patient-form {
-    width: 70vw;
-    padding: 20px; 
+    display: flex;
+    flex-direction: column;
+    /*max-width: 1200px;*/
+    width: 75vw;
+    height:75vh;
+    padding:3rem 3rem 0 3rem;
     color: var(--form-text);
-    box-sizing: border-box;
+    box-sizing: border-box; /* clave */
     background-color: white;
     border-radius: 8px;
     border: 1px solid #ccc;
     box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+/* Distribución de columnas similar */
+.new-patient-form  .new-patient-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+.new-patient-form  .new-patient-col {
+    flex: 1;
+    min-width: 280px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    max-height: 100vh; 
 }
-    .new-patient-form  .inline-group {
-        display: flex;
-        align-items: center;
-        gap: 8px; /* Espacio entre input y botón */
-    }
 
-    .new-patient-form  .inline-group input {
-        flex: 1; /* Ocupa el espacio disponible */
-        min-width: 0; /* Permite que se encoja si es necesario */
-    }
+/* Etiquetas */
+.new-patient-form  label {
+    margin-bottom: 6px;
+    font-weight: 500;
+}
 
-    .new-patient-form  .inline-group button {
-        width: 36px; /* Ancho fijo */
-        height: 36px; /* Alto fijo (ajusta según diseño) */
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+/* Inputs, selects, textareas */
+.new-patient-form  ::deep input,
+.new-patient-form  ::deep select,
+.new-patient-form  ::deep textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    background-color: var(--input-background);
+    color: var(--input-text);
+    
+}
 
-    .new-patient-form  .new-patient-row {
-        display: flex;
-        flex-wrap: wrap;
-        margin-bottom: 20px;
-        gap: 20px; /* Mejor que margin-right manual */
-    }
-
-    .new-patient-form  .new-patient-col {
-        flex: 1;
-        min-width: 280px; /* Evita columnas demasiado estrechas */
-        display: flex;
-        flex-direction: column;
-    }
-
-/* Ya no necesitas :last-child con gap */
-    .new-patient-form  label {
-        margin-bottom: 6px;
-        font-weight: 500;
-    }
-
-    .new-patient-form ::deep input,
-    .new-patient-form ::deep select,
-    .new-patient-form ::deep textarea {
-        width: 100%;
-        padding: 8px; /* Reducir el padding interno de los inputs */
-        border: 1px solid var(--input-border);
-        border-radius: 4px;
-        background-color: var(--input-background);
-        color: var(--input-text) !important;
-        font-size: 0.875rem;
-    }
-
-    .new-patient-form ::deep input:focus,
-    .new-patient-form ::deep select:focus,
-    .new-patient-form ::deep textarea:focus {
+    .new-patient-form  ::deep input:focus,
+    .new-patient-form  ::deep select:focus,
+    .new-patient-form  ::deep textarea:focus {
         outline: none;
         border-color: var(--input-focus-border);
         background-color: var(--input-focus-background);
         color: var(--input-focus-text);
     }
 
-    .new-patient-form  .validation-message {
-        color: var(--error-color, red);
-        font-size: 0.875rem;
-        margin-top: 4px;
+/* Inline group (buscador, íconos, etc.) */
+.new-patient-form  .inline-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .new-patient-form  .inline-group ::deep input {
+        flex: 1;
+        min-width: 0;
     }
 
-    .new-patient-form  .button-group {
-        display: flex;
-        justify-content: flex-end;
-        gap: 12px;
-        margin-top: 20px;
-    }
-
-
-    .new-patient-form  button {
-        background-color: var(--button-background);
-        border: 1px solid var(--button-border);
-        color: var(--button-text);
-        padding: 10px 20px;
-        border-radius: 4px;
-        cursor: pointer;
+    .new-patient-form  .inline-group button {
+        width: 36px;
+        height: 36px;
+        padding: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1rem;
-        transition: all 0.2s ease;
     }
 
-    .new-patient-form button:hover {
+/* Mensajes de validación */
+.new-patient-form  .validation-message {
+    color: var(--error-color, red);
+    margin-top: 4px;
+}
+
+/* Botonera */
+    .new-patient-form .button-group {
+        margin-top: auto; /* Esto es la clave */
+        display: flex;
+        justify-content: flex-end;
+        gap: var(--space-sm);
+        padding-top: var(--space-md); /* opcional: un poco de separación visual */
+    }
+
+.new-patient-form  button {
+    background-color: var(--button-background);
+    border: 1px solid var(--button-border);
+    color: var(--button-text);
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+    .new-patient-form  button:hover {
         background-color: var(--button-hover-background);
         border-color: var(--button-hover-border);
         color: var(--button-hover-text);
     }
 
     .new-patient-form  button i {
-        font-size: 1rem;
         margin-right: 8px;
     }
 
-@media (max-width: 1921px) {
+/* Ajuste para pantallas de poca altura */
+@media (max-height: 800px) {
     .new-patient-form {
-        padding: 50px !important;
+        max-width: none;
+        max-height: none;
         width: 75vw;
-        height: 75vh;
+        height: auto;
+        padding: 3rem 3rem 0 3rem; /* reduce el padding general para ganar espacio */
     }
-
-        .new-patient-form label {
-            font-size: 0.90rem;
-        }
-
-        .new-patient-form ::deep input,
-        .new-patient-form ::deep select,
-        .new-patient-form ::deep textarea {
-            padding: 10px;
-            font-size: 0.90rem;
-        }
-
-        .new-patient-form button {
-            padding: 8px 16px;
-            font-size: 0.90rem;
-        }
-
-            .new-patient-form button i {
-                font-size: 0.7rem;
-                margin-right: 6px;
-            }
-}
-@media (max-width: 1300px) {
-    .new-patient-form {
-        padding: 10px;
-        width: 75vw;
-    }
-
-        .new-patient-form  label {
-            font-size: 0.85rem;
-        }
-
-        .new-patient-form ::deep input,
-        .new-patient-form ::deep select,
-        .new-patient-form ::deep textarea {
-            padding: 8px;
-            font-size: 0.85rem;
-        }
 
         .new-patient-form  button {
-            padding: 8px 16px;
-            font-size: 0.85rem;
+            padding: 6px 14px; /* botones más compactos */
         }
 
-            .new-patient-form  button i {
-                font-size: 0.7rem;
-                margin-right: 6px;
-            }
-}
+        .new-patient-form  label {
+            margin-bottom: 4px;
+        }
 
-@media (max-width: 900px) {
-    .new-patient-form {
-        padding: 20px;
-        width: 65vw;
-        height:auto;
-        max-width: none;
-        max-height:none;
+        .new-patient-form  ::deep input,
+        .new-patient-form  ::deep select,
+        .new-patient-form  ::deep textarea {
+            padding: 6px 8px;
+        } 
+        .new-patient-form  .new-patient-row {
+        margin-bottom: 10px; /* antes 20px */
+        gap: 10px; /* antes 20px */
     }
-
-        .new-patient-form label {
-            font-size: 0.75rem;
-        }
-
-        .new-patient-form .new-patient-row {
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .new-patient-form .new-patient-col {
-            min-width: auto;
-            width: 100%;
-        }
-
-        .new-patient-form ::deep input,
-        .new-patient-form ::deep select,
-        .new-patient-form ::deep textarea {
-            padding: 10px;
-            font-size: 0.75rem;
-        }
-
-        .new-patient-form .button-group {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 10px;
-        }
-
-        .new-patient-form button {
-            width: 100%;
-            margin-left: 0;
-            justify-content: center;
-            padding: 12px;
-            font-size: 0.75rem;
-        }
-
-            .new-patient-form button i {
-                margin-right: 10px;
-            }
 }
-

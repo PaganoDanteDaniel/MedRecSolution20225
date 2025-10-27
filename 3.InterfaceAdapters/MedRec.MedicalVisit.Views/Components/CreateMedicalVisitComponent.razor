@@ -17,7 +17,7 @@
 
     <ModelValidator T="CreateMedicalVisitModel"
                     Validator = "visitValidator"
-                    ValidationRules="vm => CreateMedicalVisitValidator.Validate((CreateMedicalVisitDto)vm)" />
+                    ValidationRules="vm => CreateMedicalVisitValidator.Validate((CreateMedicalVisitDto)vm,DateOfBirth.CalculateAge())" />
 
     @* ---------- Campos trampa para capturar autofill de Chromium ---------- *@
     <input autocomplete="username" style="position: absolute; left: -9999px; top: -9999px;" />
@@ -41,14 +41,10 @@
                 </div>
                 <div class="visit-col long-field">
                     <label for="reason">@MedicalVisitMessages.LabelVisitReason</label>
-                    <InputSelect id="reason"
+                    <InputText id="reason"
                                  @bind-value="VM.Model.Reason"
                                  class="form-control" disabled="@IsReadOnly">
-                        @foreach (var reason in Enum.GetValues<VisitReason>())
-                        {
-                            <option value="@reason">@reason.GetDescription()</option>
-                        }
-                    </InputSelect>
+                    </InputText>
                     <ValidationMessage For="() => VM.Model.Reason" class="validation-message" />
                 </div>
             </div>

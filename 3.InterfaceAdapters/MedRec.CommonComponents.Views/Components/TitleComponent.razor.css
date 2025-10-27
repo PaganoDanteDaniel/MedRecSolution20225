@@ -1,33 +1,36 @@
-/* Estilos para la barra de título */
+/* ===============================
+   BARRA DE TÍTULO
+   =============================== */
 .titlebar {
-    background-color: var(--form-background); /* Fondo de la barra de título */
-    border-bottom: 2px solid var(--form-border); /* Borde inferior */
-    border-radius: 8px; /* Bordes redondeados */
-    color: #9c27b0; /* Color del texto */
-    padding: 15px 20px; /* Espaciado interno */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil para profundidad */
-    margin-bottom: auto; /* Margen inferior para separar del contenido */
-    text-align: center; /* Alinear el texto al centro */
+    display: flex;
+    flex-wrap: wrap;
+    background-color: var(--form-background);
+    border-bottom: 2px solid var(--form-border);
+    border-radius: 0.5rem; /* 8px aproximado */
+    color: var(--menu-text);
+    padding: var(--space-md) var(--space-lg);
+    box-shadow: 0 0.25rem 0.375rem rgba(0, 0, 0, 0.1); /* 4px 6px */
+    margin-bottom: var(--space-xs);
+    text-align: center;
+    font-family: var(--font-family-base);
+    width: 100%;
+    justify-content:center;
 }
 
     .titlebar h1 {
-        margin: 0; /* Quitar margen del encabezado */
-        font-size: 2rem; /* Tamaño de la fuente del título */
-        font-family: 'Arial', sans-serif; /* Fuente del título */
-        font-weight: bold; /* Peso de la fuente */
-        color: #9c27b0; /* Color del texto del título */
+        margin: 0;
+        font-size: clamp(1rem, 1.5vw + 0.5rem, 2.5rem); /* tamaño fluido */
+        font-weight: bold;
+        color: var(--menu-text);
     }
 
-@media (max-width: 1281px) {
-
-    .titlebar h1 {
-        font-size: 1.5rem;
+/* Responsive title */
+@media (max-width: 900px) {
+    .titlebar {
+        padding: var(--space-sm) var(--space-md);
     }
-}
 
-@media (max-width: 800px) {
-
-    .titlebar h1 {
-        font-size: 1rem;
-    }
+       /* .titlebar h1 {
+            font-size: clamp(1.25rem, 4vw + 0.5rem, 2rem);
+        }*/
 }

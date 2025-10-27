@@ -5,7 +5,7 @@
 public static class MedicalVisitConstraints
 {
     // Longitudes máximas para propiedades de texto
-    public const int MaxLengthReason = 500;
+    public const int MaxLengthReason = 50;
     public const int MaxLengthDiagnosis = 1000;
     public const int MaxLengthTreatment = 1000;
     public const int MaxLengthNotes = 2000;

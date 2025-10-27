@@ -14,7 +14,7 @@ public class MedicalVisitConfiguration : IEntityTypeConfiguration<PatientMedical
 
         builder.Property(e => e.MedicalHistoryId).IsRequired();
         builder.Property(e => e.VisitDate).IsRequired();
-        builder.Property(e => e.Reason).HasMaxLength(500);
+        builder.Property(e => e.Reason).HasMaxLength(50);
         builder.Property(e => e.Diagnosis).HasMaxLength(1000).IsRequired(false);
         builder.Property(e => e.Treatment).HasMaxLength(1000).IsRequired(false);
         builder.Property(e => e.SystolicPressure).IsRequired(false);

@@ -1,22 +1,24 @@
 .search-container {
     background-color: #ffffff;
-    padding: 0.75rem 0.5rem;
+    padding: 0.5rem 0.7rem 0 0.7rem;
+    
     border-bottom: 1px solid #ccc;
     box-shadow: 0 2px 4px rgba(0,0,0,0.08);
     z-index: 10;
     border-radius: 6px;
+    align-items: center;
 }
-
-/* Solo el área de las visitas hace scroll */
-.visit-history {
-    overflow-y: auto;
-    max-height: calc(100vh - 220px); /* ajustá este valor según tu layout */
-    padding: 1rem;
-}
+    
+    /* Solo el área de las visitas hace scroll */
+    .visit-history {
+        overflow-y: auto;
+        max-height: calc(100vh - 220px); /* ajustá este valor según tu layout */
+        padding: 1rem;
+    }
 
 .visit-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(18.75rem, 1fr));
     gap: 1rem;
 }
 

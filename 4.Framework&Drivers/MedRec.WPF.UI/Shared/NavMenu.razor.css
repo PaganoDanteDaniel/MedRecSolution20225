@@ -27,7 +27,7 @@
     background: none;
     border: none;
     color: var(--menu-text);
-    font-size: 20px;
+    font-size: 1.5rem;
     cursor: pointer;
     margin-right: 12px;
     display: flex;
@@ -45,7 +45,7 @@
 
 .app-name {
     font-weight: 700;
-    font-size: 18px;
+    font-size: 1.5rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -74,7 +74,7 @@
         border-radius: 10px;
         transition: all 0.2s ease;
         font-weight: 500;
-        font-size: 15px;
+        font-size: 1rem;
     }
 
         .nav-links a:hover {
@@ -90,7 +90,7 @@
         }
 
     .nav-links i {
-        font-size: 18px;
+        font-size: 1.5rem;
         margin-right: 12px;
         min-width: 20px;
         text-align: center;

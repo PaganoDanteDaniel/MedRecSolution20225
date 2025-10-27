@@ -24,6 +24,7 @@ public partial class CreateMedicalVisitComponent
     [Parameter] public Guid PatientId { get; set; }
     [Parameter] public string PatientName { get; set; }
     [Parameter] public bool IsReadOnly { get; set; }
+    [Parameter] public DateTime DateOfBirth { get; set; }
 
     private EditContext _editContext;
     private string _modalTitle = "Mensaje del sistema";
@@ -71,10 +72,17 @@ public partial class CreateMedicalVisitComponent
         InvokeAsync(StateHasChanged);
     }
 
-    private void HandleButtonClick()
+    private string CreateUrl()
     {
-        // Lógica para ejecutar al hacer clic en el botón
-        Navigation.NavigateTo($"/medical-visit/list/{PatientId}/{PatientName}");
+        var nombreCodificado = System.Web.HttpUtility.UrlEncode($"{PatientName}");
+        var fechaCodificada = DateOfBirth.ToString("yyyy-MM-dd");
+        var url = $"/medical-visit/list?id={PatientId}&nombre={nombreCodificado}&fechaNac={fechaCodificada}";
+        return url;
+    }
+    private void HandleButtonClick()
+    {      
+
+        Navigation.NavigateTo(CreateUrl(), true);
     }
     public async Task AddVisit()
     {
@@ -95,7 +103,8 @@ public partial class CreateMedicalVisitComponent
                 _cts?.Dispose();
                 _cts = new CancellationTokenSource();
                 await VM.AddMedicalVisitAsync(_cts.Token);
-                Navigation.NavigateTo($"/medical-visit/list/{PatientId}/{PatientName}", true);
+
+                Navigation.NavigateTo(CreateUrl(), true);
             }
             
         }

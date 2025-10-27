@@ -97,16 +97,16 @@ namespace MedRec.MedicalVisit.Views.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a VISITA MEDICA REGISTRADA CON ID {0} SATISFACTORIAMENTE.
+        ///   Busca una cadena traducida similar a VISITA MEDICA REGISTRADA SATISFACTORIAMENTE.
         /// </summary>
-        internal static string CreateMedicalVisitTemplate {
+        internal static string CreateMedicalVisit {
             get {
-                return ResourceManager.GetString("CreateMedicalVisitTemplate", resourceCulture);
+                return ResourceManager.GetString("CreateMedicalVisit", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a REGISTRO DE VISITA MÉDICA PARA {0}.
+        ///   Busca una cadena traducida similar a PACIENTE {0}  -  EDAD {1} AÑOS.
         /// </summary>
         internal static string CreateMedicalVisitTitleTemplate {
             get {

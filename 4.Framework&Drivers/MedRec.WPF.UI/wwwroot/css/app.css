@@ -1,9 +1,19 @@
-﻿html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+﻿/* ===============================
+   BASE GLOBAL
+   =============================== */
+
+html {
+    font-size: 16px;
+}
+body {
+    font-size: var(--font-size-base);
+    font-family: var(--font-family-base);
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden; /* opcional, si no quieres scroll global */
+    overflow: hidden;
+    background-color: var(--form-background);
+    color: var(--form-text);
 }
 
 #app {
@@ -12,39 +22,76 @@
     flex-direction: column;
 }
 
-h1:focus {
-    outline: none;
-}
+/* ===============================
+   ENLACES Y BOTONES
+   =============================== */
 
 a, .btn-link {
-    color: #0071c1;
+    color: var(--link-text);
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
 }
 
+    a:hover, .btn-link:hover {
+        color: var(--link-hover-text);
+        background-color: var(--link-hover-background);
+        border-color: var(--link-hover-border);
+    }
+
 .btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    color: var(--button-text);
+    background-color: var(--button-background);
+    border: 1px solid var(--button-border);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+    .btn-primary:hover {
+        background-color: var(--button-hover-background);
+        border-color: var(--button-hover-border);
+        color: var(--button-hover-text);
+    }
+
+    .btn-primary:active {
+        background-color: var(--button-active-background);
+        border-color: var(--button-active-border);
+        color: var(--button-active-text);
+    }
+
+/* ===============================
+   FORMULARIOS E INPUTS
+   =============================== */
+
+.uppercase-input {
+    text-transform: uppercase;
 }
 
 .valid.modified:not([type=checkbox]) {
-    outline: 1px solid #26b050;
+    outline: 1px solid var(--modal-button-accept-border);
 }
 
 .invalid {
-    outline: 1px solid red;
+    outline: 1px solid var(--modal-error-border);
 }
 
 .validation-message {
-    color: red;
+    color: var(--modal-error-text);
 }
 
+/* ===============================
+   BLOQUE DE ERROR BLAZOR
+   =============================== */
+
 #blazor-error-ui {
-    background: lightyellow;
+    background: var(--modal-warning-background);
+    color: var(--modal-warning-text);
     bottom: 0;
     box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
     display: none;
     left: 0;
-    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    padding: var(--space-sm) var(--space-md);
     position: fixed;
     width: 100%;
     z-index: 1000;
@@ -53,21 +100,21 @@ a, .btn-link {
     #blazor-error-ui .dismiss {
         cursor: pointer;
         position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
+        right: var(--space-md);
+        top: var(--space-sm);
     }
-/* Estilos input text */
-.uppercase-input {
-    text-transform: uppercase; /* Convierte el texto a mayúsculas */
-}
+
+/* ===============================
+   LAYOUT GENERAL
+   =============================== */
 
 .body-content {
-    flex: 1; /* Ocupa todo el espacio vertical disponible */
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
-/* Estilos adicionales según tus necesidades */
+
 .main-layout {
     display: flex;
     height: 100vh;
@@ -76,17 +123,26 @@ a, .btn-link {
 .content {
     display: flex;
     flex-direction: column;
-    padding: 10px;
+    padding: var(--space-md);
     box-sizing: border-box;
     overflow: auto;
     width: 100%;
+    background-color: var(--form-secction-background);
+    color: var(--form-text);
 }
 
 .my-footer {
-    margin-top: auto; /* Empuja el FooterBar hacia abajo */
+    margin-top: auto;
+    background-color: var(--footer-background);
+    color: var(--link-hover-text);
+    text-align: center;
+    padding: var(--space-sm);
 }
 
-/* Estilos del loader */
+/* ===============================
+   LOADER
+   =============================== */
+
 .loader-container {
     position: fixed;
     top: 0;
@@ -105,12 +161,12 @@ a, .btn-link {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 60px;
+    width: 3.75rem; /* 60px a 1rem=16px (escala fluida) */
 }
 
 .dot {
-    width: 15px;
-    height: 15px;
+    width: 0.9375rem; /* 15px */
+    height: 0.9375rem;
     background-color: var(--link-hover-background);
     border-radius: 50%;
     animation: bounce 1.2s infinite;
@@ -125,12 +181,14 @@ a, .btn-link {
     }
 
 .loading-text {
-    margin-top: 20px;
-    font-size: 18px;
+    margin-top: var(--space-md);
+    font-size: 1.125rem; /* ~18px base */
     color: var(--link-text);
 }
 
-/* Animación del loader */
+/* ===============================
+   ANIMACIONES
+   =============================== */
 @keyframes bounce {
     0%, 60%, 100% {
         transform: translateY(0);
@@ -139,9 +197,4 @@ a, .btn-link {
     30% {
         transform: translateY(-15px);
     }
-}
-
-/* Estilos para el contenido */
-.content {
-    padding: 20px;
 }
