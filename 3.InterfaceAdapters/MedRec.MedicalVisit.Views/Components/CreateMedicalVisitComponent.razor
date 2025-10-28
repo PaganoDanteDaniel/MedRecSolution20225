@@ -27,24 +27,27 @@
 
         <!-- Sección: Datos de la visita -->
         <fieldset class="form-section">
-            <legend>Datos de la visita</legend>
+            <legend>DATOS DE LA VISITA</legend>
             <div class="visit-row">
                 <div class="visit-col short-field">
-                    <label for="visit-date">@MedicalVisitMessages.LabelVisitDate</label>
                     <div class="date-input-wrapper">
+                        <label for="visit-date">@MedicalVisitMessages.LabelVisitDate</label>
                         <InputDate id="visit-date" 
-                                   @bind-Value="VM.Model.VisitDate" 
-                                   class="date-input"
-                                   readonly="@IsReadOnly" />
+                            @bind-Value="VM.Model.VisitDate"
+                            class="date-input"
+                            readonly="@IsReadOnly" />
                     </div>
                     <ValidationMessage For="() => VM.Model.VisitDate" class="validation-message" />
                 </div>
+
                 <div class="visit-col long-field">
-                    <label for="reason">@MedicalVisitMessages.LabelVisitReason</label>
-                    <InputText id="reason"
-                                 @bind-value="VM.Model.Reason"
-                                 class="form-control" disabled="@IsReadOnly">
-                    </InputText>
+                    <div class="input-reason-wrapper">
+                        <label for="reason">@MedicalVisitMessages.LabelVisitReason</label>
+                        <InputText id="reason"
+                            @bind-value="VM.Model.Reason"
+                            disabled="@IsReadOnly">
+                        </InputText>
+                    </div>
                     <ValidationMessage For="() => VM.Model.Reason" class="validation-message" />
                 </div>
             </div>
@@ -52,7 +55,7 @@
 
         <!-- Sección: Signos vitales y notas -->
         <fieldset class="form-section vitals-notes-section">
-            <legend>Signos vitales y notas</legend>
+            <legend>SIGNOS VITALES Y NOTAS</legend>
             <div class="vitals-notes-container">
 
                 <!-- Signos vitales (columna izquierda) -->

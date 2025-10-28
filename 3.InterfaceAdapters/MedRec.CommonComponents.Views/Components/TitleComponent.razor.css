@@ -19,7 +19,7 @@
 
     .titlebar h1 {
         margin: 0;
-        font-size: clamp(1rem, 1.5vw + 0.5rem, 2.5rem); /* tamaño fluido */
+        font-size: var(--font-size-title);
         font-weight: bold;
         color: var(--menu-text);
     }
@@ -30,7 +30,7 @@
         padding: var(--space-sm) var(--space-md);
     }
 
-       /* .titlebar h1 {
-            font-size: clamp(1.25rem, 4vw + 0.5rem, 2rem);
-        }*/
+        .titlebar h1 {
+            font-size: 1.2rem;
+        }
 }
