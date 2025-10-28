@@ -1,13 +1,22 @@
 ﻿:root {
     /* Tipografía base */
-    --font-family-base: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    --font-size-base: clamp(0.55rem, 0.5vw + 0.4rem, 1.5rem);
+    --font-family-base: 'Calibri', Helvetica, Arial, sans-serif;
+    --font-size-base: clamp(0.9rem, min(1vw, 1.6vh), 1.1rem); /*clamp(0.75rem, min(1vw, 1.6vh), 1.3rem);*/
+    --font-size-title: clamp(1.2rem, min(2.4vw, 3.4vh), 1.8rem);
+    --font-size-header: clamp(1rem, min(1.8vw, 2.8vh), 1.3rem);
+    --font-size-label: clamp(0.85rem, min(0.9vw, 1.5vh), 1rem);
     /* Escala de espaciado */
     --space-xs: 0.25rem;
     --space-sm: 0.5rem;
     --space-md: 1rem;
     --space-lg: 2rem;
     --space-xl: 4rem;
+    /* Espaciado dinámico (fluido) */
+    --space-xs-fluid: clamp(0.2rem, min(0.4vw, 0.6vh), 0.3rem);
+    --space-sm-fluid: clamp(0.35rem, min(0.7vw, 1.1vh), 0.6rem);
+    --space-md-fluid: clamp(0.75rem, min(1.4vw, 2.2vh), 1.2rem);
+    --space-lg-fluid: clamp(1.4rem, min(2.6vw, 4vh), 2.2rem);
+    --space-xl-fluid: clamp(2.5rem, min(4.8vw, 7vh), 4.2rem);
     /* Colores de formulario */
     --form-background: #f8f8ff; /* Morado muy suave */
     --form-border: #e1bee7; /* Rosa pastel suave */
