@@ -1,7 +1,8 @@
 ﻿using MedRec.Entity.POCOEntities;
 namespace MedRec.MedicalVisit.BusinessObjects.DTOs;
-public class CreateMedicalVisitDto()
+public class MedicalVisitDto()
 {
+    public Guid Id { get; init; }
     public Guid MedicalHistoryId { get; init; }
     public DateTime VisitDate { get; init; }
     public string Reason { get; init; }
@@ -12,11 +13,13 @@ public class CreateMedicalVisitDto()
     public int? PulsePerMinute { get; init; }
     public double? Temperature { get; init; }
     public string Notes { get; init; }
+    public byte[] RowVersion { get; init; }
     //public IEnumerable<CreatePatientLaboratoryResultDto> PatientLaboratoryResults { get; init; } = [];
 
-    public static explicit operator PatientMedicalVisit(CreateMedicalVisitDto dto) =>
+    public static explicit operator PatientMedicalVisit(MedicalVisitDto dto) =>
         new()
         {
+            Id = dto.Id,
             MedicalHistoryId = dto.MedicalHistoryId,
             VisitDate = dto.VisitDate,
             Reason = dto.Reason,
@@ -26,6 +29,7 @@ public class CreateMedicalVisitDto()
             DiastolicPressure = dto.DiastolicPressure,
             PulsePerMinute = dto.PulsePerMinute,
             Temperature = dto.Temperature,
-            Notes = dto.Notes
+            Notes = dto.Notes,
+            RowVersion = dto.RowVersion,
         };
 }

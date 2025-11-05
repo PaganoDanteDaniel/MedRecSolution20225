@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MedRec.CommonComponents.Views\MedRec.CommonComponents.Views.csproj" />
+    <ProjectReference Include="..\MedRec.MedicalAppointmnts.ViewModels\MedRec.MedicalAppointments.ViewModels.csproj" />
+    <ProjectReference Include="..\MedRec.Patients.Views\MedRec.Patients.Views.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\WeeklyScheduleMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>WeeklyScheduleMessages.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\WeeklyScheduleMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>WeeklyScheduleMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

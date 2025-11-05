@@ -10,7 +10,8 @@ public static class DependencyContainer
                 .AddScoped<IUpdatePatientOutputPort, UpdatePatientPresenter>()
                 .AddScoped<IPatientDetailsOutputPort, PatientDetailPresenter>()
                 .AddScoped<IDeletePatientOutputPort, DeletePatientPresenter>()
-                .AddScoped<IPatientsListOutputPort, PatientsListPresenter>();
+                .AddScoped<IPatientsListOutputPort, PatientsListPresenter>()
+                .AddScoped<IPatientForMedicalVisitOutputPort, PatientForMedicalVisitPresenter>();
 
         return services;
     }

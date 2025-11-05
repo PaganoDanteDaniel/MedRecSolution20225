@@ -19,6 +19,7 @@ public partial class UpdatePatientComponent
     private string _modalTitle = "Mensaje del sistema";
     private ModalType _modalType = ModalType.MessageInfo;
     private UpdatePatientModel _originalModel;
+    private string _healthInsuranceCardDisplay = string.Empty;
 
     private EditContext _editContext;
 
@@ -63,8 +64,8 @@ public partial class UpdatePatientComponent
         // 1. Primero carga los datos
         await VM.GetPatient(PatientId, _cts.Token);
         _originalModel = VM.Model.Clone();
-        // 2. Luego crea el EditContext con el modelo YA CARGADO
 
+        // 2. Luego crea el EditContext con el modelo YA CARGADO
         VM.OnShowMessage += () => ShowModalMessage("Información", ModalType.MessageInfo);
         VM.OnShowWarning += () => ShowModalMessage("Advertencia", ModalType.MessageWarning);
         VM.OnShowError += () => ShowModalMessage("Error", ModalType.MessageError);
@@ -111,32 +112,6 @@ public partial class UpdatePatientComponent
         await VM.UpdatePatient(_cts.Token);
     }
 
-    private string CalculateAge()
-    {
-        var today = DateTime.Today;
-        var birthDate = VM.Model.DateOfBirth;
-
-        // Calculating the age
-        int year = today.Year - birthDate.Year;
-        int month = today.Month - birthDate.Month;
-        int day = today.Day - birthDate.Day;
-
-        // Ajuste si el día actual es menor que el d�a de nacimiento
-        if (day < 0)
-        {
-            month--;
-            day += DateTime.DaysInMonth(today.Year, today.Month - 1);
-        }
-
-        // Ajuste si el mes actual es menor que el mes de nacimiento
-        if (month < 0)
-        {
-            year--;
-            month += 12;
-        }
-        return (string.Format(CreatePatientMessages.AgeOfPatientTemplate, year.ToString(), month.ToString()));
-    }
-
     private bool DeepEquals(UpdatePatientModel a, UpdatePatientModel b)
     {
         if (a == null || b == null) return a == b;
@@ -163,6 +138,44 @@ public partial class UpdatePatientComponent
         VM.Model.HealthInsuranceCompanyId = selectedCompany.id;
         VM.Model.SelectedHealthCompanyName = selectedCompany.name;
         _showHealthCompanyList = false;
+    }
+    private void OnHealthInsuranceCardInput(ChangeEventArgs e)
+    {
+        var input = e.Value?.ToString() ?? string.Empty;
+
+        // Remover espacios para obtener solo caracteres válidos
+        var cleanValue = input.Replace(" ", "");
+
+        // Guardar en el modelo SIN espacios (para la DB)
+        VM.Model.HealthInsuranceCard = cleanValue;
+
+        // Formatear para visualización con espacios cada 4 caracteres
+        _healthInsuranceCardDisplay = FormatCardNumberLinq(cleanValue);
+
+        // Notificar cambio para validación
+        OnFieldChanged(() => VM.Model.HealthInsuranceCard);
+    }
+
+    private string FormatCardNumberLinq(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        return string.Concat(
+            value.Select((c, i) => i > 0 && i % 4 == 0 ? $" {c}" : c.ToString())
+        );
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (!string.IsNullOrEmpty(VM.Model.HealthInsuranceCard))
+        {
+            _healthInsuranceCardDisplay = FormatCardNumberLinq(
+                VM.Model.HealthInsuranceCard.Replace(" ", "")
+            );
+        }
+
+        base.OnParametersSet();
     }
     private void ClearForm()
     {

@@ -1,5 +1,5 @@
 ﻿.sidebar {
-    background: linear-gradient(160deg, var(--menu-background), #f0e6f5);
+    background: linear-gradient(160deg, var(--menu-background), var(--menu-background-degree));
     color: var(--menu-text);
     height: 100vh;
     width: 60px;
@@ -27,7 +27,7 @@
     background: none;
     border: none;
     color: var(--menu-text);
-    font-size: 1.5rem;
+    font-size: var(--font-size-header);
     cursor: pointer;
     margin-right: 12px;
     display: flex;
@@ -45,7 +45,7 @@
 
 .app-name {
     font-weight: 700;
-    font-size: 1.5rem;
+    font-size: var(--font-size-header);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -74,7 +74,7 @@
         border-radius: 10px;
         transition: all 0.2s ease;
         font-weight: 500;
-        font-size: 1rem;
+        font-size: var(--font-size-header);
     }
 
         .nav-links a:hover {

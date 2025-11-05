@@ -1,19 +1,26 @@
-﻿using MedRec.Entity.Enums;
+﻿using MedRec.Entity.DTOs;
+using MedRec.Entity.Enums;
 using MedRec.MedicalVisit.BusinessObjects.DTOs;
 using MedRec.MedicalVisit.BusinessObjects.Interfaces.Ports;
 using MedRec.MedicalVisit.ViewModels.Models;
+using MedRec.Patients.BusinessObjects.Interfaces.Ports;
 
 namespace MedRec.MedicalVisit.ViewModels.VM;
 public class CreateMedicalVisitVM(
-    ICreateMedicalVisitInputPort _createMedicalVisitInputPort,
-    ICreateMedicalVisitOutputPort _createMedicalVisitOutputPort,
-    IGetMedicalHistoryIdInputPort _getMedicalHistoryIdInputPort,
-    IGetMedicalHistoryIdOutputPort _getMedicalHistoryIdOutputPort,
-    IGetMedicalVisitInputPort _getMedicalVisitInputPort,
-    IGetMedicalVisitOutputPort _getMedicalVisitOutputPort)
+    ICreateMedicalVisitInputPort createMedicalVisitInputPort,
+    ICreateMedicalVisitOutputPort createMedicalVisitOutputPort,
+    IGetMedicalHistoryIdInputPort getMedicalHistoryIdInputPort,
+    IGetMedicalHistoryIdOutputPort getMedicalHistoryIdOutputPort,
+    IGetMedicalVisitInputPort getMedicalVisitInputPort,
+    IGetMedicalVisitOutputPort getMedicalVisitOutputPort,
+    IPatientForMedicalVisitInputPort patientForMedicalVisitInputPort,
+    IPatientForMedicalVisitOutputPort patientForMedicalVisitOutputPort,
+    IUpdateMedicalVisitInputPort updateMedicalVisitInputPort,
+    IUpdateMedicalVisitOutputPort updateMedicalVisitOutputPort)
 {
 
     public event Action OnMedicalVisitAdded;
+    public event Action OnMedicalVisitUpdated;
     public event Action OnShowMessage;
     public event Action OnShowWarning;
     public event Action OnShowError;
@@ -23,6 +30,34 @@ public class CreateMedicalVisitVM(
     public CreateMedicalVisitModel Model { get; set; } = new();
     public string InformationMessage { get; set; }
 
+
+    public async Task LoadDataPatient(Guid patientId, CancellationToken cts = default)
+    {
+        try
+        {
+            cts.ThrowIfCancellationRequested();
+            await patientForMedicalVisitInputPort.Handle(patientId, cts);
+            if (patientForMedicalVisitOutputPort.ErrorMessage is not null)
+            {
+                HandleErrors(patientForMedicalVisitOutputPort.ErrorMessage);
+            }
+            else
+            {
+                var response = patientForMedicalVisitOutputPort.DataPatient;
+                Model.FullName = response.FullName;
+                Model.DateOfBirth = response.DateOfBirth;
+                Model.HealthInsuranceName = response.HealthInsuranceName;
+                Model.Acronym = response.Acronym;
+                Model.HealthInsuranceCard = response.HealthInsuranceCard;
+                Model.HealthInsuranceMemberNumber = response.HealthInsuranceMemberNumber;
+                Model.HealthInsurancePlan = response.HealthInsurancePlan;
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("Error crítico al obtener la historia clínica del paciente", ex);
+        }
+    }
     //LoadVisitAsync InitializeNewVisit
     public async Task LoadVisitAsync(Guid visitId, CancellationToken cts = default)
     {
@@ -31,32 +66,17 @@ public class CreateMedicalVisitVM(
             InformationMessage = "";
             cts.ThrowIfCancellationRequested();
 
-            await _getMedicalVisitInputPort.Handle(visitId, cts);
-            if (_getMedicalVisitOutputPort.ErrorMessage is not null)
-            {
-                var error = _getMedicalVisitOutputPort.ErrorMessage;
-                InformationMessage = error.Message;
+            //await LoadDataPatient(Model.PatientId, cts);
 
-                switch (error.Code)
-                {
-                    case ErrorCode.DuplicateKey:
-                        OnShowWarning?.Invoke();
-                        break;
-                    case ErrorCode.ConcurrencyError:
-                        OnShowConcurrencyError?.Invoke();
-                        break;
-                    case ErrorCode.DatabaseError:
-                        OnShowError?.Invoke();
-                        break;
-                    default:
-                        OnShowMessage?.Invoke();
-                        break;
-                }
+            await getMedicalVisitInputPort.Handle(visitId, cts);
+            if (getMedicalVisitOutputPort.ErrorMessage is not null)
+            {
+                HandleErrors(getMedicalVisitOutputPort.ErrorMessage);
             }
             else
             {
-                var response = _getMedicalVisitOutputPort.MedicalVisit;
-
+                var response = getMedicalVisitOutputPort.MedicalVisit;
+                Model.Id = response.Id;
                 Model.MedicalHistoryId = response.MedicalHistoryId;
                 Model.VisitDate = response.VisitDate;
                 Model.Reason = response.Reason;
@@ -67,7 +87,7 @@ public class CreateMedicalVisitVM(
                 Model.PulsePerMinute = response.PulsePerMinute;
                 Model.Temperature = response.Temperature;
                 Model.Notes = (response.Notes ?? string.Empty).ToUpperInvariant();
-
+                Model.RowVersion = response.RowVersion;
             }
 
         }
@@ -85,32 +105,17 @@ public class CreateMedicalVisitVM(
 
             cts.ThrowIfCancellationRequested();
 
-            await _getMedicalHistoryIdInputPort.Handle(patientId, cts);
+            //await LoadDataPatient(Model.PatientId, cts);
 
-            if (_getMedicalHistoryIdOutputPort.ErrorMessage is not null)
+            await getMedicalHistoryIdInputPort.Handle(patientId, cts);
+
+            if (getMedicalHistoryIdOutputPort.ErrorMessage is not null)
             {
-                var error = _getMedicalHistoryIdOutputPort.ErrorMessage;
-                InformationMessage = error.Message;
-
-                switch (error.Code)
-                {
-                    case ErrorCode.DuplicateKey:
-                        OnShowWarning?.Invoke();
-                        break;
-                    case ErrorCode.ConcurrencyError:
-                        OnShowConcurrencyError?.Invoke();
-                        break;
-                    case ErrorCode.DatabaseError:
-                        OnShowError?.Invoke();
-                        break;
-                    default:
-                        OnShowMessage?.Invoke();
-                        break;
-                }
+                HandleErrors(getMedicalHistoryIdOutputPort.ErrorMessage);
             }
             else
             {
-                Model.MedicalHistoryId = _getMedicalHistoryIdOutputPort.HistoryId;
+                Model.MedicalHistoryId = getMedicalHistoryIdOutputPort.HistoryId;
 
             }
 
@@ -128,34 +133,15 @@ public class CreateMedicalVisitVM(
         {
             InformationMessage = "";
 
-            cts.ThrowIfCancellationRequested();
-
-            await _createMedicalVisitInputPort.Handle((CreateMedicalVisitDto)Model, cts);
-            if (_createMedicalVisitOutputPort.ValidationErrors?.Any() == true)
+            await createMedicalVisitInputPort.Handle((MedicalVisitDto)Model, cts);
+            if (createMedicalVisitOutputPort.ValidationErrors?.Any() == true)
             {
-                InformationMessage = string.Join("<br />", _createMedicalVisitOutputPort.ValidationErrors.Select(e => e.ErrorMessage));
+                InformationMessage = string.Join("<br />", createMedicalVisitOutputPort.ValidationErrors.Select(e => e.ErrorMessage));
                 OnShowMessage?.Invoke();
             }
-            else if (_createMedicalVisitOutputPort.ErrorMessage is not null)
+            else if (createMedicalVisitOutputPort.ErrorMessage is not null)
             {
-                var error = _createMedicalVisitOutputPort.ErrorMessage;
-                InformationMessage = error.Message;
-
-                switch (error.Code)
-                {
-                    case ErrorCode.DuplicateKey:
-                        OnShowWarning?.Invoke();
-                        break;
-                    case ErrorCode.ConcurrencyError:
-                        OnShowConcurrencyError?.Invoke();
-                        break;
-                    case ErrorCode.DatabaseError:
-                        OnShowError?.Invoke();
-                        break;
-                    default:
-                        OnShowMessage?.Invoke();
-                        break;
-                }
+                HandleErrors(createMedicalVisitOutputPort.ErrorMessage);
             }
             else
             {
@@ -170,6 +156,54 @@ public class CreateMedicalVisitVM(
 
             throw new InvalidOperationException("Error crítico al agregar paciente", ex);
         }
+    }
+    public async Task UpdateMedicalVisitAsync(CancellationToken cts)
+    {
+        try
+        {
+            InformationMessage = "";
+            await updateMedicalVisitInputPort.Handle((MedicalVisitDto)Model, cts);
+            if (updateMedicalVisitOutputPort.ValidationErrors?.Any() == true)
+            {
+                InformationMessage = string.Join("<br />", updateMedicalVisitOutputPort.ValidationErrors.Select(e => e.ErrorMessage));
+                OnShowMessage?.Invoke();
+            }
+            else if (updateMedicalVisitOutputPort.ErrorMessage is not null)
+            {
+                HandleErrors(updateMedicalVisitOutputPort.ErrorMessage);
+            }
+            else
+            {
+                InformationMessage = "Visita registrada con exito.";
+                //Model = new CreateMedicalVisitModel();
+                OnShowMessage?.Invoke();
+                OnMedicalVisitUpdated?.Invoke();
+            }
+        }
+        catch (Exception)
+        {
 
+            throw;
+        }
+    }
+    private void HandleErrors(ErrorInfo error)
+    {
+        InformationMessage = error.Message;
+
+        switch (error.Code)
+        {
+            case ErrorCode.DuplicateKey:
+                OnShowWarning?.Invoke();
+                break;
+            case ErrorCode.ConcurrencyError:
+                OnShowConcurrencyError?.Invoke();
+                break;
+            case ErrorCode.DatabaseError:
+                OnShowError?.Invoke();
+                break;
+            default:
+                OnShowMessage?.Invoke();
+                break;
+        }
     }
 }

@@ -1,0 +1,11 @@
+﻿namespace MedRec.Entity.POCOEntities;
+public class MedicalAppointment
+{
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public DateTime DateTime { get; set; }
+    public Guid PatientId { get; set; }
+    public Guid DoctorId { get; set; } = Guid.Empty;
+    public string Reason { get; set; } = string.Empty;
+    public bool IsDeleted { get; set; } = false;
+    public byte[] RowVersion { get; set; }
+}

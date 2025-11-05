@@ -32,4 +32,22 @@ internal class MedicalVisitCommandDataContextMySql(DataBaseContextMySql context)
 
     public async Task CreateMedicalHistoryAsync(PatientMedicalHistory medHist, CancellationToken cts = default) =>
         await context.PatientMedicalHistories.AddAsync(medHist, cts);
+
+    public async Task UpdateAsync(PatientMedicalVisit medicalVisit, CancellationToken cts = default)
+    {
+
+        var existingVisit = await context.PatientMedicalVisits
+            .FirstOrDefaultAsync(p => p.Id == medicalVisit.Id, cts);
+
+        if (existingVisit == null)
+            throw new InvalidOperationException("Paciente no encontrado.");
+
+        context.Entry(existingVisit).CurrentValues.SetValues(medicalVisit);
+
+        // Indicar el valor original de RowVersion para concurrencia
+        context.Entry(existingVisit).OriginalValues["RowVersion"] = medicalVisit.RowVersion;
+
+    }
+
+
 }

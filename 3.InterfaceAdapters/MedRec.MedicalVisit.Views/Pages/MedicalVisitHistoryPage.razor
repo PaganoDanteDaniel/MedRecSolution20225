@@ -104,9 +104,7 @@
 
     private void HandleVisitSelected(MedicalVisitModel selectedVisit)
     {
-        var nombreCodificado = System.Web.HttpUtility.UrlEncode($"{PatientName}");
-        var fechaCodificada = DateOfBirth.ToString("yyyy-MM-dd");
-        var url = $"/medical-visit/detail?id={PatientId}&visitId={selectedVisit.Id}&nombre={nombreCodificado}&fechaNac={fechaCodificada}";
+        var url = $"/medical-visit/detail/{PatientId}/{selectedVisit.Id}";
 
         Navigation.NavigateTo(url, true);
     }

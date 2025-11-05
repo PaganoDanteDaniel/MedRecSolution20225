@@ -7,7 +7,7 @@ using MedRec.Shared.Gruards;
 
 public static class CreateMedicalVisitValidator
 {
-    public static IReadOnlyList<ValidationError> Validate(CreateMedicalVisitDto visit, int? patientAge = null)
+    public static IReadOnlyList<ValidationError> Validate(MedicalVisitDto visit, int? patientAge = null)
     {
         if (visit == null)
             throw new ArgumentNullException(nameof(visit));
