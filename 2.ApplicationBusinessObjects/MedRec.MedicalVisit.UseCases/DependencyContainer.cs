@@ -9,7 +9,8 @@ public static class DependencyContainer
         services.AddScoped<ICreateMedicalVisitInputPort, CreateMedicalVisitInteractor>()
                 .AddScoped<IMedicalVisitSummaryListInputPort, MedicalVisitSummaryListInteractor>()
                 .AddScoped<IGetMedicalHistoryIdInputPort, GetMedicalHistoryIdInteractor>()
-                .AddScoped<IGetMedicalVisitInputPort, GetMedicalVisitInteractor>();
+                .AddScoped<IGetMedicalVisitInputPort, GetMedicalVisitInteractor>()
+                .AddScoped<IUpdateMedicalVisitInputPort, UpdateMedicalVisitInteractor>();
 
 
         return services;

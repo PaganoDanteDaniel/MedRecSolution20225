@@ -1,8 +1,9 @@
 ﻿namespace MedRec.Entity.Interfaces;
 public interface IRepositoryUnitOfWork : IDisposable
 {
-    Task BeginTransactionAsync(CancellationToken ct = default);
-    Task CommitAsync(CancellationToken ct = default);
-    Task RollbackAsync(CancellationToken ct = default);
-    Task<int> SaveChangesAsync(CancellationToken ct = default);
+    Task BeginTransaction(CancellationToken ct = default);
+    Task CommitTransaction(CancellationToken ct = default);
+    Task RollbackTransaction(CancellationToken ct = default);
+    Task<int> SaveChanges(CancellationToken ct = default);
+    Task ExecuteWithRetryAsync(Func<Task> operation, CancellationToken ct = default);
 }

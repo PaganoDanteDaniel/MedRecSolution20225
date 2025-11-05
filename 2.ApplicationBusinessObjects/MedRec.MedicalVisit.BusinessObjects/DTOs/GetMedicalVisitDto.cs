@@ -12,4 +12,5 @@ public class GetMedicalVisitDto()
     public int? PulsePerMinute { get; init; }
     public double? Temperature { get; init; }
     public string Notes { get; init; }
+    public byte[] RowVersion { get; init; }
 }

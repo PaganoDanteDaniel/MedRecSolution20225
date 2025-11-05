@@ -13,111 +13,135 @@
 
 @inject IModelValidatorHub<CreateMedicalVisitModel> visitValidator
 
-<EditForm EditContext="_editContext" OnSubmit="AddVisit" autocomplete="off">
+<EditForm EditContext="_editContext" OnSubmit="SaveChanged" autocomplete="off">
 
     <ModelValidator T="CreateMedicalVisitModel"
-                    Validator = "visitValidator"
-                    ValidationRules="vm => CreateMedicalVisitValidator.Validate((CreateMedicalVisitDto)vm,DateOfBirth.CalculateAge())" />
+                    Validator="visitValidator"
+                    ValidationRules="vm => CreateMedicalVisitValidator.Validate((MedicalVisitDto)vm, VM.Model.DateOfBirth.CalculateAge())" />
 
-    @* ---------- Campos trampa para capturar autofill de Chromium ---------- *@
+    @* ---------- Campos trampa para autofill ---------- *@
     <input autocomplete="username" style="position: absolute; left: -9999px; top: -9999px;" />
     <input autocomplete="current-password" type="password" style="position: absolute; left: -9999px; top: -9999px;" />
-    
+
+    <!-- Contenedor principal: 2 columnas -->
     <div class="medical-visit-form">
-
-        <!-- Sección: Datos de la visita -->
-        <fieldset class="form-section">
-            <legend>DATOS DE LA VISITA</legend>
-            <div class="visit-row">
-                <div class="visit-col short-field">
-                    <div class="date-input-wrapper">
-                        <label for="visit-date">@MedicalVisitMessages.LabelVisitDate</label>
-                        <InputDate id="visit-date" 
-                            @bind-Value="VM.Model.VisitDate"
-                            class="date-input"
-                            readonly="@IsReadOnly" />
-                    </div>
-                    <ValidationMessage For="() => VM.Model.VisitDate" class="validation-message" />
-                </div>
-
-                <div class="visit-col long-field">
-                    <div class="input-reason-wrapper">
-                        <label for="reason">@MedicalVisitMessages.LabelVisitReason</label>
-                        <InputText id="reason"
-                            @bind-value="VM.Model.Reason"
-                            disabled="@IsReadOnly">
-                        </InputText>
-                    </div>
-                    <ValidationMessage For="() => VM.Model.Reason" class="validation-message" />
-                </div>
+        <!-- Panel izquierdo: Datos del paciente -->
+        <div class="patient-info-panel">
+            <div class="patient-info-item">
+                <div class="patient-label">NOMBRE:</div>
+                <div class="patient-value">@VM.Model.FullName</div>
             </div>
-        </fieldset>
-
-        <!-- Sección: Signos vitales y notas -->
-        <fieldset class="form-section vitals-notes-section">
-            <legend>SIGNOS VITALES Y NOTAS</legend>
-            <div class="vitals-notes-container">
-
-                <!-- Signos vitales (columna izquierda) -->
-                <div class="vitals-column">
-                    <div class="vital-row">
-                        <label for="systolic">@MedicalVisitMessages.LabelSystPress</label>
-                        <InputNumber id="systolic"
-                                     @bind-Value="VM.Model.SystolicPressure" 
-                                     class="vital-input" 
-                                     readonly="@IsReadOnly" />
-                    </div>
-                    <ValidationMessage For="() => VM.Model.SystolicPressure" class="validation-message" />
-
-                    <div class="vital-row">
-                        <label for="diastolic">@MedicalVisitMessages.LabelDiastPress</label>
-                        <InputNumber id="diastolic"
-                                     @bind-Value="VM.Model.DiastolicPressure" 
-                                     class="vital-input" 
-                                     readonly="@IsReadOnly" />
-                    </div>
-                    <ValidationMessage For="() => VM.Model.DiastolicPressure" class="validation-message" />
-
-                    <div class="vital-row">
-                        <label for="pulse">@MedicalVisitMessages.LabelPulsePerMinute</label>
-                        <InputNumber id="pulse"
-                                     @bind-Value="VM.Model.PulsePerMinute" 
-                                     class="vital-input" 
-                                     readonly="@IsReadOnly" />
-                    </div>
-                    <ValidationMessage For="() => VM.Model.PulsePerMinute" class="validation-message" />
-
-                    <div class="vital-row">
-                        <label for="temperature">@MedicalVisitMessages.LabelTemperature</label>
-                        <InputNumber id="temperature"
-                                     @bind-Value="VM.Model.Temperature" 
-                                     class="vital-input" 
-                                     readonly="@IsReadOnly" />
-                    </div>
-                    <ValidationMessage For="() => VM.Model.Temperature" class="validation-message" />
-                </div>
-
-                <!-- Notas (columna derecha) -->
-                <div class="notes-column">
-                    <label for="notes">@MedicalVisitMessages.LabelVisitNotes</label>
-                    <InputTextArea id="notes"
-                                   @bind-Value="VM.Model.Notes" 
-                                   rows="7" 
-                                   readonly="@IsReadOnly" />
-                    <ValidationMessage For="() => VM.Model.Notes" class="validation-message" />
-                </div>
+            <div class="patient-info-item">
+                <div class="patient-label">EDAD:</div>
+                <div class="patient-value">@VM.Model.DateOfBirth.CalculateFullAge()</div>
             </div>
-        </fieldset>
+            <div class="patient-info-item">
+                <div class="patient-label">OBRA SOCIAL: @VM.Model.Acronym</div>
+                <div class="patient-value">@VM.Model.HealthInsuranceName</div>
+            </div>
+            <div class="patient-info-item">
+                <div class="patient-label">N° CRECENCIAL:</div>
+                <div class="patient-value">@VM.Model.HealthInsuranceCard</div>
+            </div>
+            <div class="patient-info-item">
+                <div class="patient-label">N° SOCIO:</div>
+                <div class="patient-value">@VM.Model.HealthInsuranceMemberNumber</div>
+            </div>
+            <div class="patient-info-item">
+                <div class="patient-label">PLAN:</div>
+                <div class="patient-value">@VM.Model.HealthInsurancePlan</div>
+            </div>
+        </div>
 
-        <!-- Botón de envío -->
-        <div class="button-group">
-            <button type="button" @onclick="() => HandleButtonClick()">
-                <i class="bi bi-save2"></i> @MedicalVisitMessages.ButtonExit
-            </button>
-            
-            <button type="submit" disabled="@IsReadOnly">
-                <i class="bi bi-save2"></i> @MedicalVisitMessages.ButtonSaveMedicalVisit
-            </button>
+        <!-- Panel derecho: Formulario (contiene ambas secciones) -->
+        <div class="form-content-panel">
+            <!-- Sección: DATOS DE LA VISITA -->
+            <fieldset class="form-section visit-data-section">
+                <legend>DATOS DE LA VISITA</legend>
+                <div class="visit-row">
+                    <div class="visit-col short-field">
+                        <div class="date-input-wrapper">
+                            <label for="visit-date">@MedicalVisitMessages.LabelVisitDate</label>
+                            <InputDate id="visit-date"
+                                       @bind-Value="VM.Model.VisitDate"
+                                       class="date-input"
+                                       readonly="@IsReadOnly" />
+                        </div>
+                        <ValidationMessage For="() => VM.Model.VisitDate" class="validation-message" />
+                    </div>
+
+                    <div class="visit-col long-field">
+                        <div class="input-reason-wrapper">
+                            <label for="reason">@MedicalVisitMessages.LabelVisitReason</label>
+                            <InputText id="reason"
+                                       @bind-value="VM.Model.Reason">
+                            </InputText>
+                        </div>
+                        <ValidationMessage For="() => VM.Model.Reason" class="validation-message" />
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Sección: SIGNOS VITALES Y NOTAS -->
+            <fieldset class="form-section vitals-notes-section">
+                <legend>SIGNOS VITALES Y NOTAS</legend>
+                <div class="vitals-notes-container">
+                    <!-- Columna izquierda: signos vitales -->
+                    <div class="vitals-column">
+                        <div class="vital-row">
+                            <label for="systolic">@MedicalVisitMessages.LabelSystPress</label>
+                            <InputNumber id="systolic"
+                                         @bind-Value="VM.Model.SystolicPressure"
+                                         class="vital-input" />
+                        </div>
+                        <ValidationMessage For="() => VM.Model.SystolicPressure" class="validation-message" />
+
+                        <div class="vital-row">
+                            <label for="diastolic">@MedicalVisitMessages.LabelDiastPress</label>
+                            <InputNumber id="diastolic"
+                                         @bind-Value="VM.Model.DiastolicPressure"
+                                         class="vital-input" />
+                        </div>
+                        <ValidationMessage For="() => VM.Model.DiastolicPressure" class="validation-message" />
+
+                        <div class="vital-row">
+                            <label for="pulse">@MedicalVisitMessages.LabelPulsePerMinute</label>
+                            <InputNumber id="pulse"
+                                         @bind-Value="VM.Model.PulsePerMinute"
+                                         class="vital-input" />
+                        </div>
+                        <ValidationMessage For="() => VM.Model.PulsePerMinute" class="validation-message" />
+
+                        <div class="vital-row">
+                            <label for="temperature">@MedicalVisitMessages.LabelTemperature</label>
+                            <InputNumber id="temperature"
+                                         @bind-Value="VM.Model.Temperature"
+                                         class="vital-input" />
+                        </div>
+                        <ValidationMessage For="() => VM.Model.Temperature" class="validation-message" />
+                    </div>
+
+                    <!-- Columna derecha: notas -->
+                    <div class="notes-column">
+                        <label for="notes">@MedicalVisitMessages.LabelVisitNotes</label>
+                        <InputTextArea id="notes"
+                                       @bind-Value="VM.Model.Notes"
+                                       rows="7"/>
+                        <ValidationMessage For="() => VM.Model.Notes" class="validation-message" />
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Botones -->
+            <div class="button-group">                            
+                <button type="button" @onclick="() => HandleButtonClick()">
+                    <i class="bi bi-save2"></i> @MedicalVisitMessages.ButtonExit
+                </button>
+
+                <button type="submit" disabled="@HasChanges">
+                    <i class="bi bi-save2"></i> @MedicalVisitMessages.ButtonSaveMedicalVisit
+                </button>
+            </div>
         </div>
     </div>
 
@@ -129,8 +153,194 @@
                 Title="@_modalTitle"
                 Type="@_modalType"
                 CenterText="true"
-                ShowAcceptButton="true" 
-                ShowCancelButton="true"
+                ShowAcceptButton="_showAcceptButton" 
+                ShowCancelButton="_showCancelButton"
                 OnAccept="@OnAcceptSave">
     @((MarkupString)VM.InformationMessage)
 </ModalComponent>
+@code{
+    [Inject] private NavigationManager Navigation { get; set; }
+    [Parameter] public CreateMedicalVisitVM VM { get; set; }
+    [Parameter] public Guid PatientId { get; set; }
+    [Parameter] public Guid? VisitId { get; set; }
+    [Parameter] public bool IsReadOnly { get; set; }
+    [Parameter] public bool IsEditMode { get; set; }
+    [Parameter] public bool CloneNow { get; set; } = false;
+
+    private EditContext _editContext;
+    private string _modalTitle = "Mensaje del sistema";
+    private ModalType _modalType = ModalType.MessageInfo;
+    private bool _showAcceptButton = false;
+    private bool _showCancelButton = false;
+    private bool _isConfirmationModal = false;
+    private bool _showModal;
+
+
+    private CreateMedicalVisitModel _originalModel;
+    private bool HasChanges => DeepEquals(_originalModel, VM.Model);
+
+    private bool _navigateAfterClose = false;
+    private string _navigationUrl = "/";
+
+
+    private TaskCompletionSource<bool> _saveConfirmationTcs;
+
+    private CancellationTokenSource _cts;
+
+    protected override void OnInitialized()
+    {
+        VM.Model.PatientId = PatientId;
+        _editContext = new EditContext(VM.Model);
+
+        // Suscripción a eventos del ViewModel
+        VM.OnShowMessage += () => ShowModalMessage("Información", ModalType.MessageInfo);
+        VM.OnShowWarning += () => ShowModalMessage("Advertencia", ModalType.MessageWarning);
+        VM.OnShowError += () => ShowModalMessage("Error", ModalType.MessageError);
+        VM.OnShowConcurrencyError += () => ShowModalMessage("Conflicto de concurrencia", ModalType.MessageError);
+        VM.OnMedicalVisitAdded += StateHasChanged;
+        VM.OnMedicalVisitUpdated += StateHasChanged;
+    }
+    protected override Task OnParametersSetAsync()
+    {
+        // Clonar SOLO cuando el modelo está cargado y la versión cambia
+        if (VM.Model != null && CloneNow)
+        {
+            _originalModel = VM.Model.Clone();
+
+        }
+
+        return Task.CompletedTask;
+    }
+    private void ShowModalMessageAndNavigate(string title, ModalType type, string navigationUrl, bool showAcceptButton = true, bool showCancelButton = false)
+    {
+        _modalTitle = title;
+        _modalType = type;
+        _showModal = true;
+        _navigateAfterClose = true;
+        _navigationUrl = navigationUrl;
+        InvokeAsync(StateHasChanged);
+    }
+    private void ShowModalMessage(string title, ModalType type, bool showAcceptButton = true, bool showCancelButton = false)
+    {
+        _modalTitle = title;
+        _modalType = type;
+        _showModal = true;
+        _showAcceptButton = showAcceptButton;
+        _showCancelButton = showCancelButton;
+        _navigateAfterClose = false;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private string CreateUrl()
+    {
+        var nombreCodificado = System.Web.HttpUtility.UrlEncode($"{VM.Model.FullName}");
+        var fechaCodificada = VM.Model.DateOfBirth.ToString("yyyy-MM-dd");
+        var url = $"/medical-visit/list?id={PatientId}&nombre={nombreCodificado}&fechaNac={fechaCodificada}";
+        return url;
+    }
+    private void HandleButtonClick()
+    {
+
+        Navigation.NavigateTo(CreateUrl(), true);
+    }
+    public async Task SaveChanged()
+    {
+        if (!IsEditMode)
+        {
+            if (_editContext.Validate() == true)
+            {
+                _cts?.Dispose();
+                _cts = new CancellationTokenSource();
+                await VM.AddMedicalVisitAsync(_cts.Token);
+
+                VM.InformationMessage = "LOS DATOS FUERON GUARDADOS SATISFACTORIAMENTE";
+                _isConfirmationModal = false; // No es confirmación
+                ShowModalMessageAndNavigate("CONFIRMACIÓN DE GUARDADO", ModalType.MessageSuccess, CreateUrl());
+            }
+        }
+        else
+        {
+            if (_editContext.Validate() == true)
+            {
+                _cts?.Dispose();
+                _cts = new CancellationTokenSource();
+                // Modal de confirmación
+                VM.InformationMessage = "¿SEGURO DESEA ACTUALIZAR LOS DATOS DE LA VISITA?";
+                _showAcceptButton = true;
+                _showCancelButton = true;
+                _isConfirmationModal = true; // Activar flag
+                ShowModalMessage("CONFIRMACIÓN DE ACTUALIZACIÓN", ModalType.MessageWarning, true, true);
+
+                _saveConfirmationTcs = new TaskCompletionSource<bool>();
+                bool confirmed = await _saveConfirmationTcs.Task; // Espera aquí
+
+                if (confirmed)
+                {
+                    await Task.Delay(50);
+                    // Aquí deberías ejecutar la actualización real
+                    var url = CreateUrl();
+                    await VM.UpdateMedicalVisitAsync(_cts.Token);
+
+                    // Modal informativo de éxito
+                    VM.InformationMessage = "LOS DATOS FUERON ACTUALIZADOS SATISFACTORIAMENTE";
+                    _isConfirmationModal = false; // Ya no es confirmación
+                    _showAcceptButton = true;
+                    _showCancelButton = false;
+                    ShowModalMessageAndNavigate("CONFIRMACIÓN DE ACTUALIZACIÓN", ModalType.MessageSuccess, url);
+                }
+            }
+        }
+    }
+    private bool DeepEquals(CreateMedicalVisitModel a, CreateMedicalVisitModel b)
+    {
+        if (a == null || b == null) return a == b;
+
+        var hasChange = a.Reason.ToUpperInvariant() == b.Reason.ToUpperInvariant() &&
+               a.Diagnosis.ToUpperInvariant() == b.Diagnosis.ToUpperInvariant() &&
+               a.Treatment.ToUpperInvariant() == b.Treatment.ToUpperInvariant() &&
+               a.SystolicPressure == b.SystolicPressure &&
+               a.DiastolicPressure == b.DiastolicPressure &&
+               a.PulsePerMinute == b.PulsePerMinute &&
+               a.Temperature == b.Temperature &&
+               a.Notes.ToUpperInvariant() == b.Notes.ToUpperInvariant();
+        return hasChange;
+    }
+    private void OnAcceptSave()
+    {        // Solo establecer resultado si es un modal de confirmación
+        if (_isConfirmationModal && _saveConfirmationTcs != null)
+        {
+            _saveConfirmationTcs.SetResult(true);
+            _saveConfirmationTcs = null; // Limpiar para evitar reutilización
+            _isConfirmationModal = false;
+            _showModal = false;
+            return;
+        }
+
+        CloseModal();
+    }
+
+    private void CloseModal()
+    {
+        _showModal = false;
+
+        if (_navigateAfterClose)
+        {
+            _navigateAfterClose = false;
+            Navigation.NavigateTo(_navigationUrl, true);
+        }
+    }
+
+    public void Dispose()
+    {
+        if (VM is not null)
+        {
+            VM.OnShowMessage -= () => ShowModalMessage("Información", ModalType.MessageInfo);
+            VM.OnShowWarning -= () => ShowModalMessage("Advertencia", ModalType.MessageWarning);
+            VM.OnShowError -= () => ShowModalMessage("Error", ModalType.MessageError);
+            VM.OnShowConcurrencyError -= () => ShowModalMessage("Conflicto de concurrencia", ModalType.MessageError);
+            VM.OnMedicalVisitAdded -= StateHasChanged;
+            VM.OnMedicalVisitUpdated -= StateHasChanged;
+        }
+        _cts?.Dispose();
+    }
+}

@@ -1,22 +1,61 @@
-﻿/* CreateMedicalVisitComponent.razor.css
-   Corregido: todos los ::deep precedidos por .medical-visit-form
-*/
+﻿/* Contenedor principal */
 
-/* Contenedor principal */
 .medical-visit-form {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
+    flex-direction: row;
+    gap: var(--space-xs-fluid);
     padding: var(--space-md-fluid);
     background-color: var(--form-background);
     border: 1px solid var(--form-border);
-    border-radius: 0.5rem; /* 8px aprox */
+    border-radius: 0.5rem;
     box-shadow: 0 6px 18px rgba(0,0,0,0.06);
     max-width: 100%;
     box-sizing: border-box;
+    align-items: flex-start;
 }
+    /* Panel izquierdo: datos del paciente */
 
+    .medical-visit-form .patient-info-panel {
+        flex: 0 0 240px;
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-sm);
+        padding: var(--space-xs-fluid);
+        background-color: var(--form-detail-background);
+        border: 2px solid var(--form-detail-border);
+        border-radius: 0.375rem;
+        font-size: var(--font-size-label);
+    }
+
+    .medical-visit-form .patient-info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .medical-visit-form .patient-label {
+        font-weight: 600;
+        color: var(--form-text);
+        font-size: var(--font-size-label);
+    }
+
+    .medical-visit-form .patient-value {
+        font-weight: 400;
+        color: var(--form-text);
+        font-size: var(--font-size-default);
+        word-break: break-word;
+    }
+    /* Panel derecho: contiene las secciones del formulario */
+
+    .medical-visit-form .form-content-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs-fluid);
+    }
     /* Secciones (fieldset) */
+
     .medical-visit-form .form-section {
         border: 1px solid var(--form-border);
         border-radius: 0.375rem;
@@ -31,12 +70,13 @@
             color: var(--form-text);
             padding: 0 0.5rem;
         }
-
     /* Visit row (fecha + motivo) */
+
     .medical-visit-form .visit-row {
         display: flex;
         flex-wrap: wrap;
-        gap: var(--space-xs-dinamic);
+        gap: clamp(0.5rem, 2vw, 1.5rem);
+        align-items: flex-start;
     }
 
     .medical-visit-form .visit-col {
@@ -52,25 +92,22 @@
     }
 
     .medical-visit-form .long-field {
-        flex: 1.4;
+        flex: 2;
     }
+    /* Labels */
 
-    /* Labels (usando ::deep solo en inputs, labels se pueden seleccionar normal) */
     .medical-visit-form label {
         white-space: nowrap;
         font-weight: 500;
         color: var(--form-text);
         margin-bottom: 0.25rem;
-        /*font-size: clamp(0.85rem, 0.9vw, 0.95rem);*/
+        font-size: var(--font-size-label);
     }
+    /* INPUTS, SELECTS, TEXTAREAS — usando ::deep porque son componentes Blazor */
 
-    /* INPUTS, SELECTS, TEXTAREAS — CORRECTO: componente ::deep selector precedido */
-    .medical-visit-form ::deep input,
-    .medical-visit-form ::deep textarea,
-    .medical-visit-form ::deep select{
+    .medical-visit-form ::deep input, .medical-visit-form ::deep textarea, .medical-visit-form ::deep select {
         width: 100%;
         padding: 0.45rem;
-        /*font-size: 0.75rem;*/
         border: 1px solid var(--input-border);
         border-radius: 0.375rem;
         background-color: var(--input-background);
@@ -79,11 +116,11 @@
         transition: border-color .18s ease, box-shadow .18s ease;
         text-transform: uppercase;
     }
+
     .medical-visit-form ::deep .date-input {
         width: 70%;
         text-align: center;
         padding: 0.45rem;
-        /*font-size: 0.75rem;*/
         border: 1px solid var(--input-border);
         border-radius: 0.375rem;
         background-color: var(--input-background);
@@ -92,77 +129,78 @@
         transition: border-color .18s ease, box-shadow .18s ease;
         text-transform: uppercase;
     }
+    /* Focus visual */
 
-        /* Focus visual */
-        .medical-visit-form ::deep input:focus,
-        .medical-visit-form ::deep textarea:focus,
-        .medical-visit-form ::deep select:focus {
-            outline: none;
-            border-color: var(--input-focus-border);
-            background-color: var(--input-focus-background);
-            color: var(--input-focus-text);
-            box-shadow: 0 0 0.25rem rgba(206,147,216,0.15);
-        }
-
+    .medical-visit-form ::deep input:focus, .medical-visit-form ::deep textarea:focus, .medical-visit-form ::deep select:focus {
+        outline: none;
+        border-color: var(--input-focus-border);
+        background-color: var(--input-focus-background);
+        color: var(--input-focus-text);
+        box-shadow: 0 0 0.25rem rgba(206,147,216,0.15);
+    }
     /* Mensajes de validación */
+
     .medical-visit-form .validation-message {
         color: var(--modal-error-text);
-        /*font-size: 0.75rem;*/
         margin-top: 0.25rem;
     }
-
     /* Vitals & notes container */
+
     .medical-visit-form .vitals-notes-container {
         display: flex;
         flex-wrap: wrap;
-        gap: clamp(1rem, 1.6vw, 2rem);
+        gap: var(--space-xs-fluid);
     }
 
     .medical-visit-form .vitals-column {
+        flex: 0 0 clamp(14rem, 22vw, 18rem);
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        gap: var(--space-sm);
+        gap: var(--space-sm-fluid);
+        width: 30%;
     }
 
     .medical-visit-form .notes-column {
         flex: 2;
-        min-width: 260px;
+        width: 70%;
         display: flex;
         flex-direction: column;
     }
+    /* Vital-row: etiqueta + input */
 
-    /* Vital-row: etiqueta + input compactos */
     .medical-visit-form .vital-row {
         display: grid;
-        grid-template-columns: 180px 1fr; /* 180px para label, resto para input */
+        grid-template-columns: 35% 1fr;
         align-items: center;
-        column-gap: var(--space-md);
+        column-gap: var(--space-xl);
         width: 100%;
+        min-height: 2.6rem;
     }
 
         .medical-visit-form .vital-row label {
             text-align: left;
             font-weight: 500;
             white-space: nowrap;
-            /*font-size: 0.75rem;*/
+            overflow-wrap: break-word;
+            min-width: 180px;
         }
 
     .medical-visit-form ::deep .vital-input {
-        width: clamp(60px, 10vw, 120px);
+        width: clamp(3.5rem, 5rem, 8rem);
+        text-align: right;
         padding: 0.45rem;
-        /*font-size: clamp(0.85rem, 0.9vw, 0.95rem);*/
     }
-
     /* Date input wrapper */
-    .medical-visit-form .date-input-wrapper,
-    .medical-visit-form .input-reason-wrapper {
+
+    .medical-visit-form .date-input-wrapper, .medical-visit-form .input-reason-wrapper {
         display: flex;
         align-items: center;
+        min-height: 2.25rem;
         gap: 0.5rem;
     }
-
     /* Buttons group */
+
     .medical-visit-form .button-group {
         display: flex;
         justify-content: flex-end;
@@ -170,13 +208,13 @@
         margin-top: var(--space-md);
         flex-wrap: wrap;
     }
+    /* Botones */
 
-    /* Botones (usar ::deep para botones nativos si están en el scope aislado) */
     .medical-visit-form ::deep button {
         background-color: var(--button-background);
         border: 1px solid var(--button-border);
         color: var(--button-text);
-        padding: var(--space-xs-fluid) var(--space-sm-fluid); /*clamp(0.5rem, 0.9vw, 0.75rem) clamp(0.9rem, 1.6vw, 1.25rem);*/
+        padding: var(--space-xs-fluid) var(--space-sm-fluid);
         border-radius: 0.375rem;
         cursor: pointer;
         display: inline-flex;
@@ -196,35 +234,47 @@
             cursor: not-allowed;
         }
 
-    /* Date input icon color (webkit) */
+    /* Date input icon (solo WebKit) */
+
     .medical-visit-form ::deep input[type="date"]::-webkit-calendar-picker-indicator {
         cursor: pointer;
         filter: invert(35%) sepia(70%) saturate(400%) hue-rotate(250deg);
         margin-right: var(--space-xs-fluid);
     }
+/* Responsive: en móviles, apilar verticalmente */
 
-/* Responsive: colapsa columnas en móviles */
 @media (max-width: 768px) {
-    .medical-visit-form .visit-row,
-    .medical-visit-form .vitals-notes-container {
+    .medical-visit-form {
         flex-direction: column;
         gap: var(--space-md);
     }
 
-    .medical-visit-form .short-field,
-    .medical-visit-form .long-field,
-    .medical-visit-form .vitals-column,
-    .medical-visit-form .notes-column {
-        min-width: unset;
-        width: 100%;
-        flex: none;
-    }
+        .medical-visit-form .patient-info-panel {
+            flex: none;
+            width: 100%;
+            order: -1; /* Aparece primero en móviles */
+        }
 
-    .medical-visit-form .button-group {
-        justify-content: center;
-    }
+        .medical-visit-form .form-content-panel {
+            width: 100%;
+        }
 
-    .medical-visit-form ::deep button {
-        width: 100%;
-    }
+        .medical-visit-form .visit-row, .medical-visit-form .vitals-notes-container {
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .medical-visit-form .short-field, .medical-visit-form .long-field, .medical-visit-form .vitals-column, .medical-visit-form .notes-column {
+            min-width: unset;
+            width: 100%;
+            flex: none;
+        }
+
+        .medical-visit-form .button-group {
+            justify-content: center;
+        }
+
+        .medical-visit-form ::deep button {
+            width: 100%;
+        }
 }

@@ -21,7 +21,7 @@
     overflow-y: auto;
     display: flex;
     justify-content: center; /* Centrado horizontal */
-    align-items: flex-start; /* Centrado vertical */
+    align-items: center; /* Centrado vertical */
     min-height: 0; /* Importante para flexbox */
     padding: 0; /* Sin padding para aprovechar el alto */
     box-sizing: border-box;

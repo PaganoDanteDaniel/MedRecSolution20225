@@ -1,5 +1,6 @@
 ﻿using MedRec.DataContext.MySql.Configurations;
 using MedRec.Entity.POCOEntities;
+using MedRec.MedicalAppointments.BusinessObjects.EntityView;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedRec.DataContext.MySql.DataContext;
@@ -31,20 +32,15 @@ public class MedRecContextMySql : DbContext
     public DbSet<HealthInsuranceCompany> HealthInsuranceCompanies { get; set; }
     public DbSet<LaboratoryResultType> LaboratoryResultTypes { get; set; }
     public DbSet<PatientLaboratoryResult> PatientLaboratoryResults { get; set; }
+    public DbSet<Doctor> Doctors { get; set; }
+    public DbSet<MedicalAppointment> MedicalAppointments { get; set; }
 
+    public DbSet<MedicalAppointmentView> MedicalAppointmentsView => Set<MedicalAppointmentView>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new CityConfiguration());
-        modelBuilder.ApplyConfiguration(new HealthInsuranceCompanyConfiguration());
-        modelBuilder.ApplyConfiguration(new LaboratoryResultTypeConfiguration());
-        modelBuilder.ApplyConfiguration(new MedicalConditionConfiguration());
-        modelBuilder.ApplyConfiguration(new MedicalConditionTypeConfiguration());
-        modelBuilder.ApplyConfiguration(new PatientConfiguration());
-        modelBuilder.ApplyConfiguration(new PatientLaboratoryResultConfiguration());
-        modelBuilder.ApplyConfiguration(new PatientMedicalConditionConfiguration());
-        modelBuilder.ApplyConfiguration(new PatientMedicalHistoryConfiguration());
-        modelBuilder.ApplyConfiguration(new MedicalVisitConfiguration());
-        modelBuilder.ApplyConfiguration(new ProvinceConfiguration());
+
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(PatientConfiguration).Assembly);
+
     }
 }
 //Add-Migration InitialCreate -p MedRec.DataContext.MySql -s MedRec.DataContext.MySql -c MedRecContextMySql
