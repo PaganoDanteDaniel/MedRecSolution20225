@@ -59,7 +59,7 @@ public partial class WeeklyScheduleComponent(WeeklyScheduleViewModel VM) : Compo
     {
         turno = turno == "MAÑANA" ? "TARDE" : "MAÑANA";
 
-        // modoMoverActivo = false;
+        // activeMoveMode = false;
         // claveOrigen = null;
     }
 
