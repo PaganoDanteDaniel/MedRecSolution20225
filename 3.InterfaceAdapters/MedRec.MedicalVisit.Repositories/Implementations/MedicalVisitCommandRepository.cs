@@ -64,4 +64,29 @@ internal class MedicalVisitCommandRepository(
             return Result<Guid>.Fail(new ErrorInfo("Error al crear el registro: " + ex.Message, ErrorCode.Unknown));
         }
     }
+
+    public async Task<Result<Unit>> Update(PatientMedicalVisit medicalVisit, CancellationToken cts = default)
+    {
+        try
+        {
+            cts.ThrowIfCancellationRequested();
+            return await ExecuteTransactionAsync(async () =>
+            {
+                await _commandsDb.UpdateAsync(medicalVisit, cts);
+
+            }, cts);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<Unit>.Fail(new ErrorInfo("La operación fue cancelada.", ErrorCode.Unknown));
+        }
+        catch (ConcurrencyConflictException ex)
+        {
+            return Result<Unit>.Fail(new ErrorInfo(ex.Message, ErrorCode.ConcurrencyError));
+        }
+        catch (Exception ex)
+        {
+            return Result<Unit>.Fail(new ErrorInfo("Error al crear el registro: " + ex.Message, ErrorCode.Unknown));
+        }
+    }
 }

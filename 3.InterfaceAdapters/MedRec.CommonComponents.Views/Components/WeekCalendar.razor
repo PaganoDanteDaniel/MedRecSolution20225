@@ -1,0 +1,247 @@
+﻿@using System.Globalization
+<style>
+    .week-calendar {
+        max-width: 100%;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .calendar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+    }
+
+        .calendar-header h2 {
+            font-size: var(--font-size-label);
+            font-weight: 600;
+            margin: 0;
+            color: #333;
+            text-align:center;
+        }
+
+    .nav-btn {
+        background: none;
+        border: 1px solid #ccc;
+        border-radius: 50% !important;
+        width: 2.2rem !important;
+        height: 2.2rem !important;
+        font-size: var(--font-size-header) !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: background 0.2s !important;
+    }
+
+        .nav-btn:hover {
+            background: #f0f0f0;
+        }
+
+    .week-days-header {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+    }
+
+    .day-header {
+        text-align: center;
+        font-size: clamp(0.75rem, 3vw, 0.85rem);
+        font-weight: 600;
+        padding: 0.4rem 0;
+        color: #555;
+    }
+
+    .days-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .week-row {
+        display: flex;
+        gap: 2px;
+    }
+
+    .day-cell {
+        flex: 1; /* Esto es clave: cada celda ocupa 1/7 del ancho */
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(0.8rem, 4vw, 1rem);
+        background: white;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: #333;
+        min-width: 0; /* Evita que se colapse */
+    }
+
+        .day-cell.other-month {
+            color: #ccc;
+            background: #fafafa;
+        }
+
+        .day-cell.today {
+            background: #e3f2fd;
+            font-weight: bold;
+            color: #1976d2;
+        }
+
+    /* Hover: toda la semana */
+    .week-row.hover-week .day-cell {
+        background: #e8f5e9 !important;
+        color: #2e7d32;
+    }
+
+    /* Selección: toda la semana */
+    .week-row.selected-week .day-cell {
+        background: #c8e6c9 !important;
+        color: #1b5e20;
+        font-weight: 600;
+    }
+
+    .selected-week-info {
+        margin-top: 1rem;
+        padding: 0.75rem;
+        background: #f5f5f5;
+        border-radius: 8px;
+        font-size: clamp(0.9rem, 4vw, 1rem);
+        text-align: center;
+        color: #444;
+    }
+
+    /* Responsive: en pantallas pequeñas, más espacio */
+    @@media (max-width: 600px) {
+        .nav-btn
+
+    {
+        width: 2rem;
+        height: 2rem;
+        font-size: 1rem;
+    }
+
+    }
+</style>
+<div class="week-calendar">
+    <!-- Encabezado: navegación y título -->
+    <div class="calendar-header">
+        <button @onclick="PreviousMonth" class="nav-btn"><i class="bi bi-arrow-left-short"></i></button>
+        <h2>@CurrentMonth.ToString("MMMM yyyy", CultureInfo.CreateSpecificCulture("es-ES")).ToUpperInvariant()</h2>
+        <button @onclick="NextMonth" class="nav-btn"><i class="bi bi-arrow-right-short"></i></button>
+    </div>
+
+    <!-- Encabezados de días de la semana -->
+    <div class="week-days-header">
+        @foreach (var day in WeekDayNames)
+        {
+            <div class="day-header">@day</div>
+        }
+    </div>
+
+    <!-- Cuadrícula de días -->
+    <div class="days-grid">
+        @foreach (var week in Weeks)
+        {
+            <div class="week-row @(IsHoveredWeek(week) ? "hover-week" : "") @(IsSelectedWeek(week) ? "selected-week" : "")"
+                 @onmouseover="() => SetHoveredWeek(week)"
+                 @onclick="() => SelectWeek(week)">
+                @foreach (var day in week)
+                {
+                    <div class="day-cell @(day.IsOtherMonth ? "other-month" : "") @(IsToday(day.Date) ? "today" : "")">
+                        @day.Date.Day
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@if (SelectedWeekStart != null)
+{
+    <div class="selected-week-info">
+        Semana seleccionada:
+        <strong>@SelectedWeekStart.Value.ToString("dd/MM/yyyy")</strong> –
+        <strong>@SelectedWeekEnd.Value.ToString("dd/MM/yyyy")</strong>
+    </div>
+}
+
+@code{
+    private DateTime CurrentMonth = DateTime.Today;
+    private List<List<CalendarDay>> Weeks = new();
+    private List<CalendarDay>? HoveredWeek;
+    private List<CalendarDay>? SelectedWeek;
+
+    [Parameter] public EventCallback<(DateTime Start, DateTime End)> OnWeekSelected { get; set; }
+
+    public DateTime? SelectedWeekStart => SelectedWeek?.FirstOrDefault()?.Date;
+    public DateTime? SelectedWeekEnd => SelectedWeek?.LastOrDefault()?.Date;
+
+    private static readonly string[] WeekDayNames = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+
+    protected override void OnParametersSet()
+    {
+        GenerateCalendar();
+    }
+
+    private void GenerateCalendar()
+    {
+        var firstDay = new DateTime(CurrentMonth.Year, CurrentMonth.Month, 1);
+        // Ajustar para que la semana empiece en lunes
+        var daysToSubtract = (firstDay.DayOfWeek - DayOfWeek.Monday + 7) % 7;
+        var start = firstDay.AddDays(-daysToSubtract);
+
+        Weeks = new();
+        for (int i = 0; i < 6; i++)
+        {
+            var week = new List<CalendarDay>();
+            for (int j = 0; j < 7; j++)
+            {
+                var date = start.AddDays(i * 7 + j);
+                week.Add(new CalendarDay
+                {
+                    Date = date,
+                    IsOtherMonth = date.Month != CurrentMonth.Month
+                });
+            }
+            Weeks.Add(week);
+        }
+    }
+
+    private void PreviousMonth() => UpdateMonth(-1);
+    private void NextMonth() => UpdateMonth(1);
+
+    private void UpdateMonth(int months)
+    {
+        CurrentMonth = CurrentMonth.AddMonths(months);
+        GenerateCalendar();
+        HoveredWeek = null;
+        SelectedWeek = null;
+    }
+
+    private void SetHoveredWeek(List<CalendarDay> week) => HoveredWeek = week;
+    private void SelectWeek(List<CalendarDay> week)
+    {
+        SelectedWeek = week;
+        var start = SelectedWeek.First().Date;
+        var end = SelectedWeek.Last().Date;
+        _ = OnWeekSelected.InvokeAsync((start, end));
+    }
+
+    private bool IsHoveredWeek(List<CalendarDay> week) =>
+        HoveredWeek != null && week.First().Date == HoveredWeek.First().Date;
+
+    private bool IsSelectedWeek(List<CalendarDay> week) =>
+        SelectedWeek != null && week.First().Date == SelectedWeek.First().Date;
+
+    private bool IsToday(DateTime date) =>
+        date.Date == DateTime.Today;
+
+    public class CalendarDay
+    {
+        public DateTime Date { get; set; }
+        public bool IsOtherMonth { get; set; }
+    }
+}

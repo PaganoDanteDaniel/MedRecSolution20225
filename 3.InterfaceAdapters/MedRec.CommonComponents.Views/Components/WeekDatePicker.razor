@@ -1,0 +1,134 @@
+﻿@using System.Globalization
+<style>
+    .week-date-picker {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        max-width: clamp(12rem, min(0.9vw, 1.8vh), 16rem);
+    }
+
+    .input-container {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        /* padding: 0.5rem; */
+        background: white;
+        cursor: pointer;
+        gap: 0.5rem;
+    }
+
+        .input-container:hover {
+            border-color: #888;
+        }
+
+    .form-control {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: var(--font-size-base) !important;
+        color: #333;
+        text-align: center;
+    }
+
+    .toggle-icon {
+        font-size: 1.2rem;
+        color: #555;
+    }
+
+    .calendar-overlay {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1000;
+        margin-top: 4px;
+        width: 115%;
+    }
+
+    .calendar-popup {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        padding: 12px;
+    }
+</style>
+<div class="week-date-picker">
+    <div class="input-container" @onclick="ToggleCalendar">
+        <input type="text"
+               readonly
+               class="form-control"
+               value="@DisplayText"/>
+        <span class="toggle-icon">📅</span>
+    </div>
+
+    @if (IsOpen)
+    {
+        <div class="calendar-overlay" @onclick="CloseOnOutsideClick">
+            <div class="calendar-popup" @onclick:stopPropagation>
+                <WeekCalendar OnWeekSelected="OnWeekSelectedInternal" />
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private bool IsOpen;
+    private (DateTime Start, DateTime End)? SelectedWeek;
+
+    [Parameter] public EventCallback<(DateTime Start, DateTime End)> OnWeekSelected { get; set; }
+
+    private string DisplayText => SelectedWeek is null
+        ? ""
+        : $"{SelectedWeek.Value.Start:dd/MM} – {SelectedWeek.Value.End:dd/MM}";
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        if (SelectedWeek is null)
+        {
+            var (start, end) = GetWeekRange(DateTime.Today, CultureInfo.CurrentCulture);
+            SelectedWeek = (start, end);
+
+            // Si quieres notificar al componente padre en la carga inicial:
+            // _ = OnWeekSelected.InvokeAsync(SelectedWeek.Value);
+        }
+    }
+
+    private static (DateTime Start, DateTime End) GetWeekRange(DateTime date, CultureInfo culture)
+    {
+        var firstDay = culture.DateTimeFormat.FirstDayOfWeek; // es-ES => Monday
+        int diff = (7 + (date.DayOfWeek - firstDay)) % 7;
+        var start = date.Date.AddDays(-diff);
+        var end = start.AddDays(6);
+        return (start, end);
+    }
+
+    private void ToggleCalendar()
+    {
+        IsOpen = !IsOpen;
+        StateHasChanged();
+    }
+
+    private void OnWeekSelectedInternal((DateTime Start, DateTime End) week)
+    {
+        SelectedWeek = week;
+        _ = OnWeekSelected.InvokeAsync(week);
+        IsOpen = false; // Cierra al seleccionar
+        StateHasChanged();
+    }
+
+    private void CloseOnOutsideClick()
+    {
+        IsOpen = false;
+        StateHasChanged();
+    }
+
+    private void OnFocusOut(FocusEventArgs _)
+    {
+        // Opcional: cerrar al hacer clic fuera
+        // Pero en Hybrid, focusout no siempre funciona bien → mejor usar overlay con clic fuera
+    }
+}

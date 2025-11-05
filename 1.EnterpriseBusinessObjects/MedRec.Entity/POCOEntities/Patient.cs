@@ -19,4 +19,6 @@ public class Patient
     public string HealthInsurancePlan { get; set; }
     public bool IsDeleted { get; set; } = false;
     public byte[] RowVersion { get; set; }
+
+    public string FullName => $"{LastName}, {FirstName}";
 }

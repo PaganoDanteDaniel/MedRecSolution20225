@@ -1,4 +1,5 @@
-﻿using MedRec.Shared.Exceptions.SQLExceptions;
+﻿using MedRec.Shared.DTOs;
+using MedRec.Shared.Exceptions.SQLExceptions;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 
@@ -52,18 +53,27 @@ public class GuardDBContext
         }
     }
 
-    private static Dictionary<string, Dictionary<string, (object? Current, object? Original)>>
-        MapConcurrencyErrors(DbUpdateConcurrencyException ex)
+    private static IReadOnlyList<ConcurrencyConflictDto> MapConcurrencyErrors(DbUpdateConcurrencyException ex)
     {
-        return ex.Entries.ToDictionary(
-            e => e.Entity.GetType().Name,
-            e => e.Properties
-                .Where(p => p.IsModified)
-                .ToDictionary(
-                    p => p.Metadata.Name,
-                    p => (p.CurrentValue, p.OriginalValue)
-                )
-        );
+        var list = new List<ConcurrencyConflictDto>();
+
+        foreach (var entry in ex.Entries)
+        {
+            var entityName = entry.Entity.GetType().Name;
+
+            // Solo propiedades modificadas participan en la verificación de concurrencia
+            foreach (var p in entry.Properties.Where(p => p.IsModified))
+            {
+                list.Add(new ConcurrencyConflictDto(
+                    entityName,
+                    p.Metadata.Name,
+                    p.CurrentValue,
+                    p.OriginalValue
+                ));
+            }
+        }
+
+        return list;
     }
 
     private static IEnumerable<string> ExtractEntityNames(DbUpdateException ex)

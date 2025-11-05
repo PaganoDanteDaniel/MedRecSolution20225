@@ -56,6 +56,65 @@ namespace MedRec.DataContext.MySql.Migrations
                     b.ToTable("Cities");
                 });
 
+            modelBuilder.Entity("MedRec.Entity.POCOEntities.Doctor", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime>("HireDate")
+                        .HasColumnType("date");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("LicenseNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<DateTime?>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp(6)");
+
+                    b.Property<string>("Specialty")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("LicenseNumber")
+                        .IsUnique();
+
+                    b.ToTable("Doctors", (string)null);
+                });
+
             modelBuilder.Entity("MedRec.Entity.POCOEntities.HealthInsuranceCompany", b =>
                 {
                     b.Property<Guid>("Id")
@@ -108,6 +167,43 @@ namespace MedRec.DataContext.MySql.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("LaboratoryResultTypes");
+                });
+
+            modelBuilder.Entity("MedRec.Entity.POCOEntities.MedicalAppointment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("AppointmentDateTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("DoctorId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
+
+                    b.Property<Guid>("PatientId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<DateTime?>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("MedicalAppointments");
                 });
 
             modelBuilder.Entity("MedRec.Entity.POCOEntities.MedicalCondition", b =>
@@ -435,12 +531,60 @@ namespace MedRec.DataContext.MySql.Migrations
                     b.ToTable("Provinces");
                 });
 
+            modelBuilder.Entity("MedRec.MedicalVisit.BusinessObjects.EntityView.MedicalAppointmentView", b =>
+                {
+                    b.Property<DateTime>("AppointmentDateTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("DoctorFirstName")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("DoctorLastName")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("PatientFirstName")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("PatientLastName")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("PatientPhoneNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("medicalappointmentsview", (string)null);
+                });
+
             modelBuilder.Entity("MedRec.Entity.POCOEntities.City", b =>
                 {
                     b.HasOne("MedRec.Entity.POCOEntities.Province", null)
                         .WithMany()
                         .HasForeignKey("ProvinceId")
                         .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MedRec.Entity.POCOEntities.MedicalAppointment", b =>
+                {
+                    b.HasOne("MedRec.Entity.POCOEntities.Doctor", null)
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MedRec.Entity.POCOEntities.Patient", null)
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

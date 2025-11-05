@@ -4,6 +4,7 @@ using MedRec.Patients.Views.Resources;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
+using System.Linq.Expressions;
 
 namespace MedRec.Patients.Views.Components;
 public partial class CreatePatientComponent : IDisposable
@@ -22,6 +23,7 @@ public partial class CreatePatientComponent : IDisposable
 
 
     private CancellationTokenSource _cts;
+    private string _healthInsuranceCardDisplay = string.Empty;
     #endregion
 
     #region Inject Services
@@ -39,7 +41,18 @@ public partial class CreatePatientComponent : IDisposable
     private Action _onShowError;
     private Action _onShowConcurrencyError;
     #endregion
-
+    /// <summary>
+    /// Notifica al EditContext que un campo específico del formulario ha cambiado,
+    /// activando así su validación sin requerir interacción directa del usuario.
+    /// Útil cuando se modifican propiedades del modelo programáticamente.
+    /// </summary>
+    /// <typeparam name="T">El tipo de la propiedad que ha cambiado.</typeparam>
+    /// <param name="propertyExpression">Expresión lambda que identifica la propiedad modificada (ej: () => VM.Model.FirstName).</param>
+    private void OnFieldChanged<T>(Expression<Func<T>> propertyExpression)
+    {
+        var fieldIdentifier = FieldIdentifier.Create(propertyExpression);
+        _editContext?.NotifyFieldChanged(fieldIdentifier);
+    }
     protected override void OnInitialized()
     {
         _editContext = new EditContext(VM.Model);
@@ -110,6 +123,45 @@ public partial class CreatePatientComponent : IDisposable
     private void ExitForm(MouseEventArgs e)
     {
         Navigation.NavigateTo("/", true);
+    }
+
+    private void OnHealthInsuranceCardInput(ChangeEventArgs e)
+    {
+        var input = e.Value?.ToString() ?? string.Empty;
+
+        // Remover espacios para obtener solo caracteres válidos
+        var cleanValue = input.Replace(" ", "");
+
+        // Guardar en el modelo SIN espacios (para la DB)
+        VM.Model.HealthInsuranceCard = cleanValue;
+
+        // Formatear para visualización con espacios cada 4 caracteres
+        _healthInsuranceCardDisplay = FormatCardNumberLinq(cleanValue);
+
+        // Notificar cambio para validación
+        OnFieldChanged(() => VM.Model.HealthInsuranceCard);
+    }
+
+    private string FormatCardNumberLinq(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        return string.Concat(
+            value.Select((c, i) => i > 0 && i % 4 == 0 ? $" {c}" : c.ToString())
+        );
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (!string.IsNullOrEmpty(VM.Model.HealthInsuranceCard))
+        {
+            _healthInsuranceCardDisplay = FormatCardNumberLinq(
+                VM.Model.HealthInsuranceCard.Replace(" ", "")
+            );
+        }
+
+        base.OnParametersSet();
     }
 
     public void Dispose()

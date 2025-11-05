@@ -3,31 +3,34 @@
     display: none;
     position: fixed;
     z-index: 1050;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    /*overflow-y: auto;*/
+    inset: 0; /* equivale a left:0; top:0; width:100%; height:100% */
     background-color: rgba(0, 0, 0, 0.5); /* solo el fondo general es semitransparente */
+    /* Centrado */
+    align-items: center;
+    justify-content: center;
+    padding: 1.75rem;
+    box-sizing: border-box;
+    overflow: auto; /* si el contenido excede el viewport, permite scroll */
 }
 
     .my-modal.show {
-        display: block;
+        display: flex; /* flex para centrar */
         animation: fadeIn 0.3s ease-in-out;
     }
 
 /* --- Tamaño por defecto (mensajes) --- */
 .my-modal-dialog {
-    margin: 1.75rem auto;
-    max-width: 600px;
+    margin: 0; /* sin margen vertical; el overlay centra */
+    max-width: 80%;
+    width: 100%; /* ocupa el ancho disponible hasta el max */
 }
 
     /* --- Tamaño grande (tablas, ABM, formularios) --- */
     .my-modal-dialog.my-modal-lg {
         max-width: 80%;
         width: 80%;
-        height: 80%;
-        margin: 2rem auto;
+        height: 85vh;
+        margin: 0; /* sin margen; el overlay centra */
     }
 
         .my-modal-dialog.my-modal-lg .my-modal-content {
@@ -42,11 +45,13 @@
 
 /* --- Contenido del modal --- */
 .my-modal-content {
-    background-color: var(--modal-background) !important; 
+    background-color: var(--modal-background) !important;
     border: 1px solid var(--modal-border);
     border-radius: 1rem;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 3.5rem); /* sigue siendo válido */
 }
 
 /* --- Header --- */
@@ -60,14 +65,23 @@
     align-items: center;
     justify-content: space-between;
 }
-.my-modal-title{
+
+.my-modal-title {
     font-size: 1.2rem;
 }
 /* --- Body --- */
 .my-modal-body {
     padding: var(--space-sm);
     color: var(--modal-body-text);
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0; /* evita que se expanda más de lo debido */
 }
+.my-modal-body {
+    padding: var(--space-sm);
+    color: var(--modal-body-text);
+}
+
     .my-modal-body.centered-text {
         text-align: center;
     }
@@ -75,17 +89,18 @@
 /* --- Footer --- */
 .my-modal-footer {
     padding: 0.75rem 1.25rem;
-    background-color: var(--modal-footer-background); /* ya correcto */
-    border-top: 1px solid var(--modal-border); /* corregido (no existe --modal-footer-border) */
+    background-color: var(--modal-footer-background);
+    border-top: 1px solid var(--modal-border);
     text-align: right;
+    flex-shrink: 0; /* evita que se contraiga si hay poco espacio */
 }
 
-/* --- Variantes según estado --- */
+/* --- Variantes segun estado --- */
 .my-modal-success .my-modal-content {
     background-color: var(--modal-success-background);
     border-color: var(--modal-success-border);
-    
 }
+
 .my-modal-success .my-modal-body,
 .my-modal-success .my-modal-title {
     color: var(--modal-success-text) !important;
@@ -95,6 +110,7 @@
     background-color: var(--modal-error-background);
     border-color: var(--modal-error-border);
 }
+
 .my-modal-error .my-modal-body,
 .my-modal-error .my-modal-title {
     color: var(--modal-error-text) !important;
@@ -104,6 +120,7 @@
     background-color: var(--modal-warning-background) !important;
     border-color: var(--modal-warning-border) !important;
 }
+
 .my-modal-warning .my-modal-body,
 .my-modal-warning .my-modal-title {
     color: var(--modal-warning-text) !important;
@@ -111,8 +128,9 @@
 
 .my-modal-info .my-modal-content {
     background: var(--modal-info-background) !important;
-    border-color: var(--modal-info-border) !important;    
+    border-color: var(--modal-info-border) !important;
 }
+
 .my-modal-info .my-modal-body,
 .my-modal-info .my-modal-title {
     color: var(--modal-info-text) !important;
@@ -147,8 +165,8 @@
 }
 
 /* --- Botones --- */
-/* --- Botón Aceptar en modal --- */
-/* --- Botón Aceptar --- */
+/* --- Boton Aceptar en modal --- */
+/* --- Boton Aceptar --- */
 .my-modal-footer .btn-accept {
     background-color: var(--modal-button-accept-background) !important;
     border: 1px solid var(--modal-button-accept-border) !important;
@@ -172,7 +190,7 @@
         color: white !important;
     }
 
-/* --- Botón Cancelar --- */
+/* --- Boton Cancelar --- */
 .my-modal-footer .btn-cancel {
     background-color: var(--modal-button-cancel-background) !important;
     border: 1px solid var(--modal-button-cancel-border) !important;
@@ -209,7 +227,14 @@
     }
 }
 @media (max-height: 600px) {
+    .my-modal-content {
+        max-height: 90vh; /* un poco más flexible */
+    }
+
     .my-modal-body {
-        overflow: auto;
+        overflow-y: auto;
+        flex: 1;
+        min-height: 0;
     }
 }
+

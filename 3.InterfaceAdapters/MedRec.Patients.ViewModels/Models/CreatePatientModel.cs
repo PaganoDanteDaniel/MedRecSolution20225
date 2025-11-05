@@ -24,16 +24,16 @@ namespace MedRec.Patients.ViewModels.Models
             if (model == null) return null;
 
             return new CreatePatientDto(
-                firstName: model.FirstName?.ToUpper(),
-                lastName: model.LastName?.ToUpper(),
+                firstName: model.FirstName?.ToUpperInvariant(),
+                lastName: model.LastName?.ToUpperInvariant(),
                 documentNumber: model.DocumentNumber,
                 phoneNumber: model.PhoneNumber,
                 dateOfBirth: model.DateOfBirth,
                 email: model.Email,
                 healthInsuranceId: model.HealthInsuranceCompanyId,
-                healthInsuranceMemberNumber: model.HealthInsuranceMemberNumber?.ToUpper(),
-                healthInsuranceCard: model.HealthInsuranceCard?.ToUpper(),
-                healthInsurancePlan: model.HealthInsurancePlan?.ToUpper()
+                healthInsuranceMemberNumber: model.HealthInsuranceMemberNumber?.ToUpperInvariant(),
+                healthInsuranceCard: model.HealthInsuranceCard?.ToUpperInvariant(),
+                healthInsurancePlan: model.HealthInsurancePlan?.ToUpperInvariant()
             );
         }
         #endregion
