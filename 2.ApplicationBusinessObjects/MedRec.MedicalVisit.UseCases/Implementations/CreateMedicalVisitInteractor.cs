@@ -7,35 +7,34 @@ using MedRec.Validator.Interfaces;
 
 namespace MedRec.MedicalVisit.UseCases.Implementations;
 internal class CreateMedicalVisitInteractor(
-    ICreateMedicalVisitOutputPort _outputPort,
-    IMedicalVisitCommandRepository _commandRepository,
-    IMedicalVisitQueriesRepository _queryRepository,
-    IModelValidatorHub<CreateMedicalVisitDto> _validatorHub) : ICreateMedicalVisitInputPort
+    ICreateMedicalVisitOutputPort outputPort,
+    IMedicalVisitCommandRepository commandRepository,
+    IModelValidatorHub<MedicalVisitDto> validatorHub) : ICreateMedicalVisitInputPort
 {
-    public async Task Handle(CreateMedicalVisitDto dto, CancellationToken cts = default)
+    public async Task Handle(MedicalVisitDto dto, CancellationToken cts = default)
     {
         cts.ThrowIfCancellationRequested();
 
-        bool isValid = await _validatorHub.Validate(dto,
+        bool isValid = await validatorHub.Validate(dto,
             v => CreateMedicalVisitValidator.Validate(v));
 
         if (!isValid)
         {
-            await _outputPort.ValidationErrorsAsync(_validatorHub.Errors);
+            await outputPort.ValidationErrorsAsync(validatorHub.Errors);
             return;
         }
 
         var medicalVisit = (PatientMedicalVisit)dto;
 
-        var result = await _commandRepository.Create(medicalVisit, cts);
+        var result = await commandRepository.Create(medicalVisit, cts);
 
         if (!result.IsSuccess)
         {
-            await _outputPort.ErrorAsync(result.Error);
+            await outputPort.ErrorAsync(result.Error);
             return;
         }
 
-        await _outputPort.ErrorAsync(null);
-        await _outputPort.Handle();
+        await outputPort.ErrorAsync(null);
+        await outputPort.Handle();
     }
 }

@@ -2,8 +2,8 @@
 @using MedRec.CommonComponents.Views.Helpers
 @using Microsoft.AspNetCore.Components.Forms
 @using MedRec.Patients.BusinessObjects.DTOs
-
-<div class="container">
+@inherits Microsoft.AspNetCore.Components.OwningComponentBase<MedRec.Patients.ViewModels.VM.PatientsListVM>
+<div class="container@(WithHeight ? " with-height" : "")">
     <div class="search-section">
         <SearchAndAddComponent LabelText="@ListPatientsMessages.FilterLabel"
                            Placeholder="@ListPatientsMessages.PlaceholderFilterInput"
@@ -15,7 +15,8 @@
 
     <div class="table-container">
         <TableComponent TItem="PatientSummaryDto"
-                        Items="pagedPatients.ToList()"                        
+                        Items="pagedPatients.ToList()"
+                        OnRowClick="SelectPatient"
                         OnEdit="OnEditPatient"
                         OnDelete="OnDeletePatient">
                         <ColGroup>

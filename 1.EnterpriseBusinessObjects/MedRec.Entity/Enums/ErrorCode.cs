@@ -2,6 +2,7 @@
 public enum ErrorCode
 {
     None = 0,
+    Cancelled,
     DuplicateKey,
     ConcurrencyError,
     ValidationError,

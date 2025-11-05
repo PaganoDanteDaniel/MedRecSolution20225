@@ -47,8 +47,7 @@ internal class PatientCommandDataContextMySql(DataBaseContextMySql context)
         context.Entry(existingPatient).CurrentValues.SetValues(editPatient);
 
         // Indicar el valor original de RowVersion para concurrencia
-        context.Entry(existingPatient).OriginalValues["RowVersion"] = editPatient.RowVersion;
-
+        context.Entry(existingPatient).Property("RowVersion").OriginalValue = existingPatient.RowVersion;
     }
 
     public async Task SoftDeletePatientAsync(Patient patient, CancellationToken cancellationToken = default)

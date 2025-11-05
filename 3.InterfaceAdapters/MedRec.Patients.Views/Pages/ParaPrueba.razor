@@ -1,0 +1,15 @@
+﻿
+
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+<WeekDatePicker OnWeekSelected="OnWeekChanged" />
+
+@code {
+    private void OnWeekChanged((DateTime Start, DateTime End) week)
+    {
+        Console.WriteLine($"Semana seleccionada: {week.Start:dd/MM} - {week.End:dd/MM}");
+        // Aquí cargas los turnos médicos
+    }
+}

@@ -1,4 +1,5 @@
 ﻿using MedRec.HealthInsurance.ViewModels.VM;
+using MedRec.MedicalAppointments.ViewModels.VM;
 using MedRec.MedicalVisit.ViewModels.VM;
 using MedRec.Patients.ViewModels.VM;
 
@@ -8,13 +9,14 @@ public static class DependencyContainer
     public static IServiceCollection AddAppServices(this IServiceCollection services)
     {
         services.AddDataContextServices();
+        services.AddRepositoriesServices();
 
-        services.AddPatientDataContextMySqlServices();  // Primero el DbContext
-        services.AddPatientRepositoriesServices();      // Luego repositorios específicos
-        services.AddPatientUseCasesServices();          // Luego casos de uso
-        services.AddPatientPresentersServices();        // Luego presentadores
+        services.AddPatientDataContextMySqlServices();
+        services.AddPatientRepositoriesServices();
+        services.AddPatientUseCasesServices();
+        services.AddPatientPresentersServices();
 
-        services.AddTransient<CreatePatientVM>();       // Al final, ViewModels
+        services.AddTransient<CreatePatientVM>();
         services.AddTransient<PatientsListVM>();
         services.AddTransient<UpdatePatientVM>();
 
@@ -25,15 +27,23 @@ public static class DependencyContainer
 
         services.AddTransient<HealthInsuranceCatalogVM>();
 
-        services.AddMedicalVisitDataContextServices();
-        services.AddMedicalVisitRepositoriesServices();
-        services.AddMedicalVisitUseCasesServices();
-        services.AddMedicalVisitPresenterServices();
+        services.AddMedicalVisitDataContextServices()
+                .AddMedicalVisitRepositoriesServices()
+                .AddMedicalVisitUseCasesServices()
+                .AddMedicalVisitPresenterServices();
 
         services.AddTransient<CreateMedicalVisitVM>();
         services.AddTransient<MedicalVisitVM>();
 
+        services.AddMedicalAppointmentDataContextServices()
+                .AddMedicalAppointmentRepositoriesServices()
+                .AddMedicalAppointmentUseCasesServices()
+                .AddMedicalAppointmentPresentersServices();
+
+        services.AddTransient<WeeklyScheduleViewModel>();
+
         services.AddValidatorServices();
+
         return services;
     }
 }

@@ -29,11 +29,12 @@ internal class PatientQueriesDataContextMySql(DataBaseContextMySql context)
             query = query.Where(p => p.IsDeleted == includeDeleted);
         }
 
-        return await query
+        var result = await query
             .OrderBy(p => p.LastName)
             .Skip((paginationDTO.CurrentPage - 1) * paginationDTO.PageSize)
             .Take(paginationDTO.PageSize)
             .ToListAsync();
+        return result;
     }
 
     public async Task<Patient> GetPatientByIdAsync(Guid patientId, CancellationToken ct = default, bool includeDeleted = false)
@@ -73,8 +74,8 @@ internal class PatientQueriesDataContextMySql(DataBaseContextMySql context)
         {
             query = query.Where(p => p.IsDeleted == includeDeleted); // Asegúrate de no incluir pacientes eliminados
         }
-
-        return await query.CountAsync();
+        var result = await query.CountAsync();
+        return result;
     }
 
     public async Task<bool> ExistsAsync(Guid patientId, CancellationToken ct = default, bool includeDeleted = false)

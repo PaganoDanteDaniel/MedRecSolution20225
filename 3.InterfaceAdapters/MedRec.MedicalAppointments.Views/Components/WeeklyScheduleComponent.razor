@@ -1,0 +1,227 @@
+﻿@* @page "/agenda" *@
+
+@using MedRec.CommonComponents.Views
+@using MedRec.CommonComponents.Views.Components
+@using MedRec.Patients.Views.Components
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Globalization
+
+<style>
+    .agenda-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;            /* ocupa todo el ancho disponible */
+        max-width: 100%;        /* no más que el viewport/padre */
+        box-sizing: border-box; /* incluye padding/borde en el ancho */
+        margin: auto;
+        background: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        padding: 1rem;
+        overflow-x: auto;       /* permite scroll horizontal si la tabla es más ancha */
+    }
+
+    .agenda-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
+
+    .agenda-header h2 {
+        margin: 0;
+        font-size: var(--font-size-header);
+    }
+
+    .calendar-selector {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .agenda-container .calendar-selector label{
+        font-size: var(--font-size-label);
+    }
+
+    .agenda-container .calendar-selector  input,
+    .agenda-container .calendar-selector button {
+        padding: var(--space-xs) var(--space-md);
+        font-size: var(--font-size-base);        
+    }
+    .agenda-container .calendar-selector button{
+        /* width: 7rem; */
+        border-radius:6px;
+        background: var(--button-background);
+        border: 1px var(--button-border) solid;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        table-layout: fixed; /* columnas más previsibles al reducir ancho */
+    }
+
+    thead {
+        background-color: #eaeaea;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 0.5rem;
+        text-align: center;
+        vertical-align: top;
+        /* Antes: min-width: 140px; 
+           Ahora: permite reducir en pantallas pequeñas hasta ~96px */
+        min-width: clamp(96px, 12vw, 140px);
+        cursor: pointer;
+        word-wrap: break-word;   /* evita desbordes de texto largos */
+        overflow-wrap: anywhere; /* rompe palabras largas si hace falta */
+    }
+
+    td.asignado {
+        background-color: #dff0d8;
+    }
+
+    td.pasado {
+        background-color: #eee;
+        cursor: not-allowed;
+    }
+
+    td.modo-mover {
+        background-color: #e0f7ff;
+        border: 2px dashed blue;
+    }
+
+    /* Usamos Razor para controlar el display del modal */
+    .modal {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: @(mostrarModal ? "flex" : "none");
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        width: 300px;
+    }
+
+    .modal-content input {
+        width: 100%;
+        margin-bottom: 0.5rem;
+        padding: 0.4rem;
+    }
+
+    .modal-content button {
+        margin-right: 0.5rem;
+        margin-top: 0.3rem;
+    }
+</style>
+
+<div class="agenda-container">
+    <div class="agenda-header">
+        <h2>@Leyenda</h2>
+        <div class="calendar-selector">
+            <label>SEMANA:</label>
+            <WeekDatePicker OnWeekSelected="OnWeekSelected"/>
+            @* Para intercambiar horarios de mañana o tarde. *@
+            @* <button @onclick="AlternarTurno">@BotonTurnoTexto</button> *@
+            @if (modoMoverActivo)
+            {
+                <button @onclick="CancelarModoMover">Cancelar mover</button>
+            }
+        </div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Horario</th>
+                @foreach (var dia in diasSemana)
+                {
+                    <th>@Capitalizar(dia.ToString("dddd", CultureInfo.CreateSpecificCulture("es-ES"))) @dia.Day</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var hora in horarios)
+            {
+                <tr>
+                    <td>@hora</td>
+                    @foreach (var dia in diasSemana)
+                    {
+                        // Lógica de cálculo y estado en C#
+                        var clave = $"{dia:yyyy-MM-dd} {hora}";
+                        var ahora = DateTime.Now;
+                        var fechaHora = DateTime.Parse($"{dia:yyyy-MM-dd} {hora}");
+                        var esPasado = fechaHora < ahora;
+                        var tieneTurno = agendaData.TryGetValue(clave, out var turnoAsignado);
+                        var clase = "";
+
+                        if (esPasado)
+                        {
+                            clase = "pasado";
+                        }
+                        else if (modoMoverActivo && clave != claveOrigen)
+                        {
+                            clase = "modo-mover";
+                        }
+                        else if (tieneTurno)
+                        {
+                            clase = "asignado";
+                        }
+
+                        <td class="@clase"
+                            @onclick="() => CeldaClic(clave, esPasado, tieneTurno)">
+                            @if (esPasado)
+                            {
+                                @* <text>Turno vencido</text> *@
+                            }
+                            else if (tieneTurno)
+                            {
+                                <strong>@turnoAsignado.Paciente.ToUpperInvariant()</strong><br />@turnoAsignado.Motivo.ToUpperInvariant()
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<ModalComponent Title="SELECTOR DE PACIENTE"
+                Show="@mostrarModalPatient"
+                Type="ModalType.LargeContent"
+                ShowChanged="(value) => mostrarModalPatient = value">
+    <ListPatientsComponent MaxPageButton="3" WithHeight="false" OnPatientSelected="@OnPatientSelected" />
+</ModalComponent>
+
+<div class="modal" @onclick="CerrarModalExterior">
+    <div class="modal-content" @onclick:stopPropagation="true">
+        @if (modalTipo == ModalTipo.Asignar)
+        {
+            <h3>Asignar turno</h3>
+            <InputText @bind-Value="pacienteTemp" placeholder="Paciente" class="form-control" />
+            <InputText @bind-Value="motivoTemp" placeholder="Motivo" class="form-control" />
+            <button @onclick="() => GuardarTurno(claveModal)">Guardar</button>
+            <button @onclick="CerrarModal">Cancelar</button>
+        }
+        else if (modalTipo == ModalTipo.Gestion && agendaData.TryGetValue(claveModal, out var turnoGestion))
+        {
+            <h3>Turno asignado</h3>
+            <p><strong>@turnoGestion.Paciente</strong><br />@turnoGestion.Motivo</p>
+            <button @onclick="() => CancelarTurno(claveModal)">Cancelar turno</button>
+            <button @onclick="() => AbrirModalAsignar(claveModal)">Reasignar paciente</button>
+            <button @onclick="() => ActivarModoMover(claveModal)">Mover a otra fecha</button>
+            <button @onclick="CerrarModal">Cerrar</button>
+        }
+    </div>
+</div>
+
+

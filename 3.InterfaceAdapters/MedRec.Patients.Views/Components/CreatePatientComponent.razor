@@ -47,8 +47,8 @@
                 <InputText id="documentNumber"
                            @bind-value="VM.Model.DocumentNumber"
                            class="uppercase-input"
-                           style="width: 40%;" 
-                        />
+                           style="width: 40%"
+                           maxlength="8" />
                 <ValidationMessage For="() => VM.Model.DocumentNumber" class="validation-message" />
             </div>
             <div class="new-patient-col">
@@ -79,6 +79,7 @@
             <div class="new-patient-col">
                 <label for="phoneNumber">@CreatePatientMessages.PhoneNumberLabel</label>
                 <InputText id="phoneNumber"
+                           maxlength="13"
                            @bind-value="VM.Model.PhoneNumber"
                            autocomplete="new-phoneNumber"
                            readonly
@@ -111,10 +112,14 @@
             </ModalComponent>
             <div class="new-patient-col">
                 <label for="insuranceHealthCard">@CreatePatientMessages.InsuranceHealthCardLabel</label>
-                <InputText id="insuranceHealthCard"
-                           @bind-value="VM.Model.HealthInsuranceCard"
-                           class="uppercase-input"
-                           style="width: 65%;" />
+                <input type="text"
+                       id="insuranceHealthCard"
+                       maxlength="19"
+                       value="@_healthInsuranceCardDisplay"
+                       @oninput="OnHealthInsuranceCardInput"
+                       class="uppercase-input"
+                       style="width: 65%;"
+                       autocomplete="off" />
                 <ValidationMessage For="() => VM.Model.HealthInsuranceCard" class="validation-message" />
             </div>
         </div>

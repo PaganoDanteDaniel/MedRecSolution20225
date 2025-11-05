@@ -19,6 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.MedicalAppointment.BusinessObjects\MedRec.MedicalAppointments.BusinessObjects.csproj" />
+    <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.MedicalVisit.BusinessObjects\MedRec.MedicalVisit.BusinessObjects.csproj" />
     <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.Patients.BusinessObjects\MedRec.Patients.BusinessObjects.csproj" />
   </ItemGroup>
 

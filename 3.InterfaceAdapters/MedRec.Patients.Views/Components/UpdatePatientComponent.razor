@@ -48,6 +48,7 @@
             <div class="update-patient-col">
                 <label for="documentNumber">@UpdatePatientMessages.DocumentNumberLabel</label>
                 <input id="documentNumber" 
+                           maxlength="8"
                            @bind="VM.Model.DocumentNumber"
                            @bind:after="() => OnFieldChanged(() => VM.Model.DocumentNumber)"
                            autocomplete="new-documentNumber"
@@ -75,6 +76,7 @@
             <div class="update-patient-col">
                 <label for="phoneNumber">@UpdatePatientMessages.PhoneNumberLabel</label>
                 <input id="phoneNumber" 
+                   maxlength="13"
                    @bind="VM.Model.PhoneNumber"
                    @bind:after="() => OnFieldChanged(() => VM.Model.PhoneNumber)"
                    autocomplete="new-phoneNumber"
@@ -149,9 +151,11 @@
             </div>
             <div class="update-patient-col">
                 <label for="HealthInsuranceCard">@UpdatePatientMessages.HealthInsuranceCardLabel</label>
-                <input id="HealthInsuranceCard"
-                       @bind="VM.Model.HealthInsuranceCard"
-                       @bind:after="() => OnFieldChanged(() => VM.Model.HealthInsuranceCard)"
+                <input type="text"
+                       id="insuranceHealthCard"
+                       maxlength="19"
+                       value="@_healthInsuranceCardDisplay"
+                       @oninput="OnHealthInsuranceCardInput"
                        class="uppercase-input"
                        style="width: 65%;"
                        autocomplete="off" />

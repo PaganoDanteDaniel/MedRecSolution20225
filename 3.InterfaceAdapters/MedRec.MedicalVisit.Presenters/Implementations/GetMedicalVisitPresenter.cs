@@ -33,7 +33,8 @@ internal class GetMedicalVisitPresenter : IGetMedicalVisitOutputPort
             DiastolicPressure = medicalVisit.DiastolicPressure,
             PulsePerMinute = medicalVisit.PulsePerMinute,
             Temperature = medicalVisit.Temperature,
-            Notes = medicalVisit.Notes
+            Notes = medicalVisit.Notes,
+            RowVersion = medicalVisit.RowVersion
         };
         return Task.CompletedTask;
     }
