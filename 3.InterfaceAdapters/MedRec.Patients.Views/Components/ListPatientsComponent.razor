@@ -2,7 +2,10 @@
 @using MedRec.CommonComponents.Views.Helpers
 @using Microsoft.AspNetCore.Components.Forms
 @using MedRec.Patients.BusinessObjects.DTOs
-@inherits Microsoft.AspNetCore.Components.OwningComponentBase<MedRec.Patients.ViewModels.VM.PatientsListVM>
+@using Microsoft.AspNetCore.Components
+
+@inherits OwningComponentBase<PatientsListVM>
+
 <div class="container@(WithHeight ? " with-height" : "")">
     <div class="search-section">
         <SearchAndAddComponent LabelText="@ListPatientsMessages.FilterLabel"
