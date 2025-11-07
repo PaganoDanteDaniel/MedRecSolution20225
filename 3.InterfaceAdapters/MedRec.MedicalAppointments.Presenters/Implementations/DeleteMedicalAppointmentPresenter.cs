@@ -6,17 +6,15 @@ namespace MedRec.MedicalAppointments.Presenters.Implementations;
 
 internal class DeleteMedicalAppointmentPresenter : IDeleteMedicalAppointmentOutputPort
 {
-    private bool? _deleted;
+    private bool _deleted;
     private IReadOnlyList<ValidationError> _validationErrors = Array.Empty<ValidationError>();
     private ErrorInfo? _error;
 
-    public bool IsDeleted =>
-        _deleted ?? throw new InvalidOperationException("El resultado aún no está disponible. Aún no se ejecutó Handle().");
+    public bool IsDeleted => _deleted;
 
     public IEnumerable<ValidationError> ValidationErrors => _validationErrors;
 
-    public ErrorInfo ErrorMessage =>
-        _error ?? throw new InvalidOperationException("No hay error disponible. Aún no se ejecutó ErrorAsync().");
+    public ErrorInfo ErrorMessage => _error;
 
     public Task Handle(bool deleted, CancellationToken ct)
     {

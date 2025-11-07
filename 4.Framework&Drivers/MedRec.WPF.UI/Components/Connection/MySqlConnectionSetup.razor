@@ -1,0 +1,237 @@
+@page "/mysql-setup"
+@using MedRec.WPF.UI.Services
+@using Microsoft.AspNetCore.Components.Forms
+@inject MySqlConnectionConfigService ConfigService
+@namespace MedRec.WPF.UI.Components.Connection
+
+@if (_saved)
+{
+    <div class="connection-success-message">Conexión guardada correctamente. Cierre la ventana.</div>
+}
+else
+{
+    <div class="mysql-connection-container">
+        <h2 style="text-align:center;">Configuración de conexión MySQL</h2>
+
+        <EditForm Model="@_model" OnValidSubmit="@OnValidSubmit" class="connection-form">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-grid">
+                <!-- Fila 1 -->
+                <div class="form-row">
+                    <label>Servidor:</label>
+                    <InputText @bind-Value="_model.Server" class="form-input" />
+                </div>
+
+                <div class="form-row">
+                    <label>Puerto:</label>
+                    <InputNumber @bind-Value="_model.Port" class="form-input" />
+                </div>
+
+                <!-- Fila 2 -->
+                <div class="form-row">
+                    <label>Base de datos:</label>
+                    <InputText @bind-Value="_model.Database" class="form-input" />
+                </div>
+
+                <div class="form-row">
+                    <label>Usuario:</label>
+                    <InputText @bind-Value="_model.User" class="form-input" />
+                </div>
+
+                <!-- Fila 3 -->
+                <div class="form-row">
+                    <label>Contraseña:</label>
+                    <InputText @bind-Value="_model.Password" type="password" class="form-input" />
+                </div>
+
+                <div class="form-row">
+                    <label>Permitir recuperación de clave pública:</label>
+                    <InputCheckbox @bind-Value="_model.AllowPublicKeyRetrieval" class="form-checkbox" />
+                </div>
+
+                <!-- Fila 4 -->
+                <div class="form-row full-width">
+                    <label>SslMode:</label>
+                    <InputSelect @bind-Value="_model.SslMode" class="form-select">
+                        <option value="none">none</option>
+                        <option value="Preferred">Preferred</option>
+                        <option value="Required">Required</option>
+                    </InputSelect>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Guardar</button>
+            </div>
+        </EditForm>
+    </div>
+}
+
+
+<style>
+    /* Asegurar que el cuerpo ocupe toda la altura disponible */
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: var(--font-family-base);
+    }
+
+    /* Contenedor raíz del Blazor app */
+    #app {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Centrado vertical */
+        align-items: center; /* Centrado horizontal */
+        padding: var(--space-xl-fluid) var(--space-md-fluid);
+        box-sizing: border-box;
+    }
+
+    /* Contenedor principal */
+    .mysql-connection-container {
+        background-color: var(--modal-background);
+        border: 1px solid var(--modal-border);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        padding: var(--space-lg-fluid) var(--space-md-fluid);
+        max-width: 560px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+
+        .mysql-connection-container h2 {
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-title);
+            color: var(--modal-title-text);
+            margin-top: 0;
+            margin-bottom: var(--space-md-fluid);
+            font-weight: 700;
+            text-align: left;
+            padding-bottom: var(--space-sm-fluid);
+            border-bottom: 2px solid var(--modal-border);
+        }
+
+    /* Formulario */
+    .connection-form {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md-fluid);
+    }
+
+    /* Grid de filas */
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: var(--space-sm-fluid) var(--space-md-fluid);
+        align-items: center;
+    }
+
+    .form-row {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm-fluid);
+    }
+
+        .form-row label {
+            font-size: var(--font-size-label);
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+            text-align: right;
+            padding-right: var(--space-xs-fluid);
+        }
+
+        .form-row .form-input,
+        .form-row .form-select {
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        .form-row.full-width {
+            grid-column: 1 / -1;
+        }
+
+    /* Inputs */
+    .form-input,
+    .form-select {
+        width: 100%;
+        padding: var(--space-xs-fluid) var(--space-sm-fluid);
+        font-family: var(--font-family-base);
+        font-size: var(--font-size-base);
+        background-color: var(--input-background);
+        border: 1px solid var(--input-border);
+        border-radius: 4px;
+        color: var(--input-text);
+        box-sizing: border-box;
+    }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            background-color: var(--input-focus-background);
+            border-color: var(--input-focus-border);
+            color: var(--input-focus-text);
+        }
+
+    /* Checkbox */
+    .form-checkbox {
+        width: auto;
+        height: 1.2em;
+        margin: 0;
+        accent-color: var(--checkbox-checked-background);
+        background-color: var(--checkbox-background);
+        border: 1px solid var(--checkbox-border);
+        border-radius: 3px;
+    }
+
+        .form-checkbox:focus {
+            outline: 2px solid var(--input-focus-border);
+            outline-offset: 2px;
+        }
+
+    /* Botón */
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: var(--space-sm-fluid);
+    }
+
+    .btn-primary {
+        font-family: var(--font-family-base);
+        font-size: var(--font-size-base);
+        padding: var(--space-xs-fluid) var(--space-md-fluid);
+        background-color: var(--modal-button-primary-background);
+        color: var(--modal-button-primary-text);
+        border: 1px solid var(--modal-button-primary-border);
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+        .btn-primary:hover {
+            background-color: var(--modal-button-primary-hover);
+        }
+
+        .btn-primary:active {
+            background-color: var(--modal-button-primary-active);
+            color: white;
+        }
+
+    /* Mensaje de éxito */
+    .connection-success-message {
+        color: var(--modal-success-text);
+        font-weight: bold;
+        font-size: var(--font-size-base);
+        background-color: var(--modal-success-background);
+        border: 1px solid var(--modal-success-border);
+        padding: var(--space-sm-fluid) var(--space-md-fluid);
+        border-radius: 4px;
+        margin-bottom: var(--space-md-fluid);
+        text-align: center;
+    }
+</style>

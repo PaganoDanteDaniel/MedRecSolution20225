@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\MedRec.CommonComponents.Views\MedRec.CommonComponents.Views.csproj" />
     <ProjectReference Include="..\MedRec.MedicalAppointmnts.ViewModels\MedRec.MedicalAppointments.ViewModels.csproj" />
     <ProjectReference Include="..\MedRec.Patients.Views\MedRec.Patients.Views.csproj" />
@@ -38,6 +34,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>WeeklyScheduleMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

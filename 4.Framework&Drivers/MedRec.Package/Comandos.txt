@@ -1,2 +1,0 @@
- Comando para crear la lista de componentes para el msi
-  dotnet "$env:USERPROFILE\.nuget\packages\wixtoolset.heat\6.0.2\tools\net6.0\heat.dll" dir "C:\medrec\publish" -cg MedRecFiles -dr INSTALLFOLDER -sfrag -srd -gg -g1 -out "C:\MedRecSolution2025\MedRecSolution20225\4.Framework&Drivers\MedRec.Package\MedRecFiles.wxs"
