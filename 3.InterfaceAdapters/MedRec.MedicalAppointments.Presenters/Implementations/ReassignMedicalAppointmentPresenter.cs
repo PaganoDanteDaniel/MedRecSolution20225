@@ -11,13 +11,11 @@ internal class ReassignMedicalAppointmentPresenter : IReassignMedicalAppointment
     private IReadOnlyList<ValidationError> _validationErrors = Array.Empty<ValidationError>();
     private ErrorInfo? _error;
 
-    public MedicalAppointmentDto ReassignedAppointmentDto =>
-        _dto ?? throw new InvalidOperationException("El resultado aún no está disponible. Aún no se ejecutó Handle().");
+    public MedicalAppointmentDto ReassignedAppointmentDto => _dto;
 
     public IEnumerable<ValidationError> ValidationErrors => _validationErrors;
 
-    public ErrorInfo ErrorMessage =>
-        _error ?? throw new InvalidOperationException("No hay error disponible. Aún no se ejecutó ErrorAsync().");
+    public ErrorInfo ErrorMessage => _error;
 
     public Task Handle(MedicalAppointmentView appointment, CancellationToken ct)
     {

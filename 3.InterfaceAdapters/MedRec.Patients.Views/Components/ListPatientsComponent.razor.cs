@@ -41,6 +41,8 @@ public partial class ListPatientsComponent
     #endregion
 
     #region Parameters
+
+    [Parameter] public bool ShowActionsColumn { get; set; } = true;
     [Parameter] public bool WithHeight { get; set; } = true;
     [Parameter] public int MaxPageButton { get; set; }
     [Parameter]

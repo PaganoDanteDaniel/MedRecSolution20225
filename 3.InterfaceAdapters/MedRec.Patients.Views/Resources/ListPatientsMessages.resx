@@ -154,7 +154,7 @@
     <value>{0}</value>
   </data>
   <data name="ModalTitleText" xml:space="preserve">
-    <value>POCESO DE ELIMINACION</value>
+    <value>POCESO DE ELIMINACIÓN</value>
   </data>
   <data name="PlaceholderFilterInput" xml:space="preserve">
     <value>INGRESE EL NOMBRE DEL PACIENTE O EL DNI SIN PUNTOS PARA FILTRAR</value>

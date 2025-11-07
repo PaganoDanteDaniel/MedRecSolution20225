@@ -21,13 +21,14 @@
                         Items="pagedPatients.ToList()"
                         OnRowClick="SelectPatient"
                         OnEdit="OnEditPatient"
-                        OnDelete="OnDeletePatient">
+                        OnDelete="OnDeletePatient"
+                        ShowActionsColumn="ShowActionsColumn">
                         <ColGroup>
                             <colgroup>
                                 <col style="width: 30%"> <!-- APELLIDO Y NOMBRE -->
                                 <col style="width: 10%"> <!-- DNI -->
                                 <col style="width: 15%"> <!-- TELÉFONO -->
-                                <col style="width: 25%"> <!-- ACCIONES -->
+                                @if (ShowActionsColumn) { <col style="width: 25%"> } <!-- ACCIONES -->
                             </colgroup>
                         </ColGroup>
                         <FullHeaderTemplate>
@@ -36,7 +37,7 @@
                                     <th scope="col">@ListPatientsMessages.HeadLastNameText y @ListPatientsMessages.HeadNameText</th>
                                     <th scope="col" class="header-center">@ListPatientsMessages.HeadDocumentNumberText</th>
                                     <th scope="col" class="header-center">@ListPatientsMessages.HeadPhoneText</th>
-                                    <th scope="col" class="actions">@ListPatientsMessages.HeadActionsText</th>
+                                    @if (ShowActionsColumn) {<th scope="col" class="actions">@ListPatientsMessages.HeadActionsText</th> }
                                 </tr>
                             </thead>
                         </FullHeaderTemplate>
