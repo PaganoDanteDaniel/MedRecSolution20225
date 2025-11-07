@@ -169,7 +169,7 @@ namespace MedRec.Patients.Views.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a POCESO DE ELIMINACION.
+        ///   Busca una cadena traducida similar a POCESO DE ELIMINACIÓN.
         /// </summary>
         internal static string ModalTitleText {
             get {

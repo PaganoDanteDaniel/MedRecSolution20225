@@ -30,6 +30,9 @@ internal class ReassignMedicalAppointmentInteractor(
                     {
                         Id = reassignAppointmentDto.Id,
                         DateTime = reassignAppointmentDto.DateTime,
+                        PatientId = reassignAppointmentDto.PatientId,
+                        DoctorId = reassignAppointmentDto.DoctorId,
+                        Reason = reassignAppointmentDto.Reason,
                         RowVersion = reassignAppointmentDto.RowVersion
                     };
 

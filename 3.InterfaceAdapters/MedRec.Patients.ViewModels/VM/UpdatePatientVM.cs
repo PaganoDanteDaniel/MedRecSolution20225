@@ -29,7 +29,7 @@ public class UpdatePatientVM(
         {
             InformationMessage = "";
             await _detailsInteractor.Handle(patientId, cts);
-            if (_presenter.ErrorMessage is not null)
+            if (_detailsPresenter.ErrorMessage is not null)
             {
                 var error = _detailsPresenter.ErrorMessage;
                 InformationMessage = error.Message;

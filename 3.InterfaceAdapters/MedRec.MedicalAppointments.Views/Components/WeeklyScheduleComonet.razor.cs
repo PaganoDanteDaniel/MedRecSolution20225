@@ -1,15 +1,18 @@
 using MedRec.MedicalAppointments.ViewModels.Models;
 using MedRec.MedicalAppointments.ViewModels.VM;
-using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using System.Globalization;
 
 namespace MedRec.MedicalAppointments.Views.Components;
-public partial class WeeklyScheduleComonet(WeeklyScheduleViewModel VM) : ComponentBase
+public partial class WeeklyScheduleComonet
 {
+    private IJSObjectReference? module;
+    private WeeklyScheduleViewModel VM => Service;
     // Estado
     private DateTime fechaBase = DateTime.Today;
     private string turno = "";
-    private bool modoMoverActivo = false;
+    private bool activeMoveMode = false;
+    private bool activeReassignMode = false;
 
     // Modelo de grilla
     private readonly List<ScheduleRow> _rows = new();
@@ -43,7 +46,22 @@ public partial class WeeklyScheduleComonet(WeeklyScheduleViewModel VM) : Compone
     private string Leyenda => $"AGENDA MES DE: {Capitalizar(fechaBase.ToString("MMMM", CultureInfo.CreateSpecificCulture("es-ES")))}";
 
     private string BotonTurnoTexto => turno == "MAÑANA" ? "TARDE" : "MAÑANA";
-
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Intentar sincronizar anchos
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("syncTableWidths");
+            }
+            catch (Exception ex)
+            {
+                // Opcional: log
+                Console.WriteLine($"Error al sincronizar: {ex.Message}");
+            }
+        }
+    }
     protected override async Task OnInitializedAsync()
     {
         // Opcional: precargar semana actual
@@ -110,16 +128,17 @@ public partial class WeeklyScheduleComonet(WeeklyScheduleViewModel VM) : Compone
     private string GetCssClass(ScheduleCell celda)
     {
         if (celda.IsPast) return "pasado";
-        if (modoMoverActivo && celdaOrigen is not null && celda.Key != celdaOrigen.Key && celda.Appointment is null) return "modo-mover";
+        if (activeMoveMode && celdaOrigen is not null && celda.Key != celdaOrigen.Key && celda.Appointment is null) return "modo-mover";
         if (celda.Appointment is not null) return "asignado";
         return "";
     }
 
     private void CeldaClic(ScheduleCell celda)
     {
+
         if (celda.IsPast) return;
 
-        if (modoMoverActivo)
+        if (activeMoveMode)
         {
             if (celdaOrigen is null)
             {
@@ -135,7 +154,7 @@ public partial class WeeklyScheduleComonet(WeeklyScheduleViewModel VM) : Compone
 
             if (celda.Appointment is null && celdaOrigen.Appointment is not null)
             {
-                // Mover turno
+                // Mover shift
                 var appt = celdaOrigen.Appointment;
                 celdaOrigen.Appointment = null;
                 appt.DateTime = celda.DateTime;
@@ -164,7 +183,8 @@ public partial class WeeklyScheduleComonet(WeeklyScheduleViewModel VM) : Compone
     {
         pacienteTemp = "";
         motivoTemp = "";
-        modalTipo = ModalTipo.Asignar;
+        activeReassignMode = true;
+        //modalType = ModalType.Asignar;
         mostrarModalPatient = true; // Primero selector de paciente
     }
 
@@ -177,14 +197,14 @@ public partial class WeeklyScheduleComonet(WeeklyScheduleViewModel VM) : Compone
     private void ActivarModoMover()
     {
         if (celdaSeleccionada?.Appointment is null) return;
-        modoMoverActivo = true;
+        activeMoveMode = true;
         celdaOrigen = celdaSeleccionada;
         CerrarModal();
     }
 
     private void CancelarModoMover()
     {
-        modoMoverActivo = false;
+        activeMoveMode = false;
         celdaOrigen = null;
     }
 
@@ -267,12 +287,24 @@ public partial class WeeklyScheduleComonet(WeeklyScheduleViewModel VM) : Compone
         appt.Phone = selectedPatient.phoneSelectedPatient;
         appt.Reason = selectedPatient.phoneSelectedPatient; // Se mantiene compat: teléfono como motivo si no hay otro campo
 
+        // detectar si es reasignar o nuevo.
         celdaSeleccionada.Appointment = appt;
-        await VM.SaveChange(appt);
+        if (activeReassignMode)
+        {
+            mostrarModal = false;
+            activeReassignMode = false;
+            await VM.ReassignAsync(appt);
+        }
+        else
+        {
+            await VM.SaveChange(appt);
+        }
+
+
 
         // Si se quiere además abrir el modal para editar motivo, descomentar:
-        // modalTipo = ModalTipo.Asignar;
-        // mostrarModal = true;
+        // modalType = ModalType.Asignar;
+        // showModal = true;
 
         StateHasChanged();
     }

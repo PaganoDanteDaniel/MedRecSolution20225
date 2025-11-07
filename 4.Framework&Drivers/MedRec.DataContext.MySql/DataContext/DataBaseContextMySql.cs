@@ -2,7 +2,10 @@
 using MedRec.Entity.POCOEntities;
 using MedRec.MedicalAppointments.BusinessObjects.EntityView;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace MedRec.DataContext.MySql.DataContext;
@@ -26,12 +29,21 @@ public class DataBaseContextMySql(IOptions<DBOptionsMySql> dbOptions) : DbContex
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseMySql(
-            dbOptions.Value.ConnectionString,
-            ServerVersion.AutoDetect(dbOptions.Value.ConnectionString));
+        optionsBuilder
+            .UseMySql(
+                dbOptions.Value.ConnectionString,
+                ServerVersion.AutoDetect(dbOptions.Value.ConnectionString))
+
+            .EnableDetailedErrors()
+            .EnableSensitiveDataLogging() // cuidado: muestra valores (PII) en logs, usar solo en dev
+            .LogTo(
+                message => Debug.WriteLine(message),
+                new[] { DbLoggerCategory.Database.Command.Name, DbLoggerCategory.Update.Name },
+                LogLevel.Information,
+                DbContextLoggerOptions.SingleLine | DbContextLoggerOptions.UtcTime | DbContextLoggerOptions.Level
+            );
     }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-    }
+        => modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 }

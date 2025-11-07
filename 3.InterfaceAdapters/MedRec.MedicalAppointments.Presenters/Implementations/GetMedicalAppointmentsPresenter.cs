@@ -12,13 +12,11 @@ internal class GetMedicalAppointmentsPresenter : IGetMedicalAppointmentsOutputPo
     private IReadOnlyList<ValidationError> _validationErrors = Array.Empty<ValidationError>();
     private ErrorInfo? _error;
 
-    public IEnumerable<MedicalAppointmentDto> AppointmentsDto =>
-        _appointments ?? throw new InvalidOperationException("El resultado aún no está disponible. Aún no se ejecutó Handle().");
+    public IEnumerable<MedicalAppointmentDto> AppointmentsDto => _appointments;
 
     public IEnumerable<ValidationError> ValidationErrors => _validationErrors;
 
-    public ErrorInfo ErrorMessage =>
-        _error ?? throw new InvalidOperationException("No hay error disponible. Aún no se ejecutó ErrorAsync().");
+    public ErrorInfo ErrorMessage => _error;
 
     public Task Handle(IEnumerable<MedicalAppointmentView> appointments, CancellationToken ct)
     {

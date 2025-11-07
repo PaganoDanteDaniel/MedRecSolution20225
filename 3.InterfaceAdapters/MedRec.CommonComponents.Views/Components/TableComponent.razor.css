@@ -80,3 +80,6 @@
         display: block;
         max-width: 100%;
     }
+    .ptbl-table ::deep .header-center{
+        text-align: right;
+    }

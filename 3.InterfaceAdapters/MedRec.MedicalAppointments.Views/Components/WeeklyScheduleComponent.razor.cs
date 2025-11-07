@@ -35,17 +35,17 @@ public partial class WeeklyScheduleComponent(WeeklyScheduleViewModel VM) : Compo
         })
         .ToList();
 
-    // Genera horarios pos separados para la mañana y la tarde.
-    //private List<string> horarios => turno == "MAÑANA"
+    // Genera timeSlots pos separados para la mañana y la tarde.
+    //private List<string> timeSlots => shift == "MAÑANA"
     //    ? GenerarIntervalos("09:30", "12:30")
     //    : GenerarIntervalos("17:30", "20:30");
 
-    // Genera todos los horarios del día.
+    // Genera todos los timeSlots del día.
     private List<string> horarios =>
         GenerarIntervalosDia("09:30", "12:30", "17:30", "20:30");
 
     private string Leyenda => $"AGENDA MES DE: {Capitalizar(fechaBase.ToString("MMMM", CultureInfo.CreateSpecificCulture("es-ES")))}";
-    // agregar al final de la línea anterior si se desea separar agende de mañana y tarde "- {Capitalizar(turno)}";
+    // agregar al final de la línea anterior si se desea separar agende de mañana y tarde "- {Capitalizar(shift)}";
 
     private string BotonTurnoTexto => turno == "MAÑANA" ? "TARDE" : "MAÑANA";
 
@@ -59,7 +59,7 @@ public partial class WeeklyScheduleComponent(WeeklyScheduleViewModel VM) : Compo
     {
         turno = turno == "MAÑANA" ? "TARDE" : "MAÑANA";
 
-        // modoMoverActivo = false;
+        // activeMoveMode = false;
         // claveOrigen = null;
     }
 
@@ -77,7 +77,7 @@ public partial class WeeklyScheduleComponent(WeeklyScheduleViewModel VM) : Compo
             {
                 if (!tieneTurno)
                 {
-                    // Mover turno
+                    // Mover shift
                     if (agendaData.TryGetValue(claveOrigen!, out var turnoOrigen))
                     {
                         agendaData[clave] = turnoOrigen;
@@ -160,7 +160,7 @@ public partial class WeeklyScheduleComponent(WeeklyScheduleViewModel VM) : Compo
         }
     }
 
-    // Genera intervalos de horarios según turno Mañana o Tarde.
+    // Genera intervalos de timeSlots según shift Mañana o Tarde.
     private List<string> GenerarIntervalos(string inicio, string fin)
     {
         var resultado = new List<string>();
@@ -206,7 +206,7 @@ public partial class WeeklyScheduleComponent(WeeklyScheduleViewModel VM) : Compo
         return CultureInfo.CurrentCulture.TextInfo.ToUpper(texto);
     }
 
-    // Clase de modelo para los datos del turno
+    // Clase de modelo para los datos del shift
     public class Turno
     {
         public string Paciente { get; set; } = "";

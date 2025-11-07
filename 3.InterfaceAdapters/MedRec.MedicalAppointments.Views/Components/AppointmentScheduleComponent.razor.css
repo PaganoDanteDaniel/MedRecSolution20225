@@ -1,0 +1,454 @@
+/* 
+    -------------------------------------------------------------------
+           ESTILOS ESPECÍFICOS DEL COMPONENTE WeeklyScheduleComponet
+    ------------------------------------------------------------------- 
+    */
+
+/* Contenedor principal: define la estructura del componente */
+.schedule-wrapper {
+    background-color: var(--form-secction-background);
+    border: 1px solid var(--form-border);
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.625rem rgba(0,0,0,0.15);
+    color: var(--form-text);
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    height: 100%;
+    margin: 0 auto;
+    max-height: 90vh;
+    padding: var(--space-lg);
+    width: 75vw;
+}
+
+.agenda-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+    .agenda-header h2 {
+        margin: 0;
+        font-size: var(--font-size-header);
+    }
+
+.calendar-selector {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.agenda-container ::deep .calendar-selector label {
+    font-size: var(--font-size-label);
+}
+
+.agenda-container ::deep .calendar-selector input {
+    padding: var(--space-xs) var(--space-md);
+    font-size: var(--font-size-base);
+}
+/* Controles superiores */
+.schedule-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm-fluid) var(--space-md-fluid);
+    background-color: var(--menu-background); /* Usando un color base de tu paleta */
+    border-bottom: 1px solid var(--menu-border);
+}
+
+.schedule-legend h3 {
+    font-size: var(--font-size-title);
+    color: var(--menu-text);
+    margin: 0;
+}
+
+.btn-turno, .btn-cancel {
+    font-size: var(--font-size-label);
+    padding: var(--space-xs-fluid) var(--space-sm-fluid);
+    border-radius: 4px;
+    border: 1px solid var(--button-border);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-turno {
+    background-color: var(--button-background);
+    color: var(--button-text);
+}
+
+    .btn-turno:hover {
+        background-color: var(--button-hover-background);
+    }
+
+.btn-cancel {
+    background-color: var(--modal-button-cancel-background);
+    color: var(--modal-button-cancel-text);
+}
+
+
+/* 
+    -------------------------------------------------------------------
+            ESTRUCTURA DE LA TABLA (HEADER FIJO + SCROLL BODY)
+    ------------------------------------------------------------------- 
+    */
+.schedule-table-container {
+    /* Altura máxima para habilitar el scroll vertical en el cuerpo */
+    max-height: 70vh;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    /* CLAVE: Quitamos el overflow-x: auto, ya que no debe haber scroll horizontal */
+    overflow: hidden;
+    border: 1px solid var(--table-border);
+    background-color: var(--table-background);
+}
+
+/* Encabezado: Fijo y sin scroll */
+.schedule-header {
+    flex-shrink: 0;
+    z-index: 10;
+    background-color: var(--table-header-background);
+    color: var(--table-header-text);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sutil sombra para destacar */
+    padding-right: 15px;
+}
+
+/* Cuerpo: Con scroll vertical */
+.schedule-body {
+    flex-grow: 1;
+    overflow-y: auto; /* Habilita el scroll vertical solo aquí */
+    /* Permite el scroll horizontal en caso de que la grilla sea más ancha que el contenedor */
+    overflow-x: auto;
+}
+
+/* 
+    -------------------------------------------------------------------
+           GRID: EL SECRETO DE LA SINCRONIZACIÓN DE ANCHOS
+    ------------------------------------------------------------------- 
+*/
+
+.schedule-row {
+    display: grid;
+    /*
+             * 1. Columna Horario: Ancho fijo pero pequeño (Ej. 100px)
+             * 2. Días (5 columnas): Usan 'minmax(0, 1fr)' para encogerse si es necesario.
+             * El '1fr' asegura que todas las columnas de días ocupen el mismo espacio.
+             */
+    grid-template-columns: 100px repeat(5, minmax(0, 1fr));
+    /* Eliminamos el min-width para que la tabla se adapte al 75vw */
+    min-width: 0;
+}
+/*
+    -----------------------------------------------
+           ESTILOS DE CELDAS Y CONTENIDO
+    ----------------------------------------------- 
+*/
+
+.schedule-cell {
+    padding: var(--space-xs-fluid);
+    border-right: 1px solid var(--table-border);
+    border-bottom: 1px solid var(--table-border);
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s;
+    height: 70px; /* Altura fija para celdas de horario de 15 min */
+    line-height: 1.2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+    /* Estilos de encabezado */
+    .schedule-cell.header-cell {
+        font-size: var(--font-size-label);
+        font-weight: bold;
+        color: var(--table-header-text);
+        text-shadow: 0 0 2px rgba(0,0,0,0.3);
+        border-right: 1px solid rgba(255, 255, 255, 0.3); /* Borde más claro para encabezado */
+    }
+
+.day-date {
+    font-size: calc(var(--font-size-label) * 0.8);
+    font-weight: normal;
+}
+
+/* Columna de horario (Primera columna) */
+.time-col {
+    background-color: var(--table-background);
+    font-weight: bold;
+    color: var(--table-cell-text);
+    position: sticky; /* Fija la columna de horario al hacer scroll horizontal */
+    left: 0;
+    z-index: 5;
+    box-shadow: 2px 0 3px rgba(0,0,0,0.05); /* Sombra para destacarla del cuerpo */
+}
+
+.header-row .time-col {
+    background-color: var(--table-header-background);
+    z-index: 15; /* Asegura que esté sobre el scroll y el resto del encabezado */
+}
+
+
+/* Estilos de Filas del cuerpo */
+.schedule-row.body-row:nth-child(odd) {
+    background-color: var(--table-row-odd-background);
+}
+
+.schedule-row.body-row:nth-child(even) {
+    background-color: var(--table-row-even-background);
+}
+
+/* 
+    -------------------------------------------------------------------
+                ESTADOS DE CELDAS Y CITAS (LÓGICA C#)
+    ------------------------------------------------------------------- 
+    */
+
+/* Celda Asignada (Con cita) */
+.schedule-cell.asignado {
+    background-color: var(--modal-info-background); /* Fondo de cita */
+    border-color: var(--modal-info-border);
+    color: var(--modal-info-text);
+    font-weight: bold;
+}
+
+.schedule-cell:hover {
+    background-color: var(--table-row-hover-background);
+}
+
+.schedule-cell.asignado:hover {
+    background-color: var(--modal-info-header-footer);
+}
+
+/* Celda Pasada (Tiempo Transcurrido) */
+.schedule-cell.pasado {
+    background-color: #f0f0f0; /* Gris claro */
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+/* Celda en Modo Mover (Destino potencial) */
+.schedule-cell.modo-mover {
+    background-color: var(--form-detail-background); /* Verde suave para destino */
+    border: 2px dashed var(--form-detail-border);
+    transform: scale(0.98);
+    opacity: 0.8;
+}
+
+/* Contenido de la cita */
+.appointment-info {
+    font-size: var(--font-size-base);
+    white-space: normal; /* Permite que el texto de la cita se envuelva */
+    overflow: hidden;
+    max-height: 100%;
+}
+
+.patient-name {
+    font-weight: bold;
+    margin: 0;
+    line-height: 1;
+    font-size: calc(var(--font-size-base) * 0.9);
+}
+
+.appointment-reason {
+    font-size: calc(var(--font-size-label) * 0.8);
+    margin-top: var(--space-xs-fluid);
+    line-height: 1;
+    color: #666; /* Un color más suave para el motivo */
+}
+
+.empty-cell-label {
+    font-size: calc(var(--font-size-label) * 0.8);
+    color: #ccc;
+    font-style: italic;
+    opacity: 0.5;
+}
+
+.schedule-cell:not(.asignado):hover .empty-cell-label {
+    opacity: 1;
+    color: var(--button-text);
+}
+
+/*
+        -----------------------------------------------
+                    ESTILOS DE MODAL
+        -----------------------------------------------
+    */
+/*.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;*/ /* el DOM se renderiza sólo cuando showModal == true */
+    /*justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    width: 300px;
+}
+
+    .modal-content input {
+        width: 100%;
+        margin-bottom: 0.5rem;
+        padding: 0.4rem;
+    }
+
+    .modal-content button {
+        margin-right: 0.5rem;
+        margin-top: 0.3rem;
+    }*/
+/* Estilos para el fondo oscuro del modal (overlay) */
+/* Estilos para el fondo oscuro del modal (overlay) */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Contenido del modal */
+.modal-content {
+    background-color: var(--modal-background);
+    border: 2px solid var(--modal-border);
+    border-radius: 8px;
+    padding: var(--space-md-fluid);
+    max-width: clamp(300px, 90vw, 500px);
+    width: 100%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    font-family: var(--font-family-base);
+    color: var(--modal-body-text);
+    /* --- Centrado vertical y horizontal con Flexbox --- */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centra verticalmente */
+    align-items: center; /* Centra horizontalmente (título, inputs, botones) */
+    min-height: 300px; /* Altura mínima para asegurar espacio de centrado */
+    box-sizing: border-box;
+}
+
+    /* Títulos dentro del modal */
+    .modal-content h3 {
+        font-size: var(--font-size-title);
+        margin-bottom: var(--space-md-fluid);
+        color: var(--modal-title-text);
+        text-align: center;
+    }
+
+    /* Estilos para inputs del formulario */
+    .modal-content .form-control {
+        width: 100%;
+        padding: var(--space-sm-fluid);
+        margin-bottom: var(--space-md-fluid);
+        border: 1px solid var(--input-border);
+        border-radius: 4px;
+        background-color: var(--input-background);
+        color: var(--input-text);
+        font-size: var(--font-size-base);
+        box-sizing: border-box;
+        transition: border-color 0.2s, background-color 0.2s;
+    }
+
+        .modal-content .form-control:focus {
+            outline: none;
+            border-color: var(--input-focus-border);
+            background-color: var(--input-focus-background);
+            color: var(--input-focus-text);
+        }
+
+    /* Botones dentro del modal */
+    /* Estilos base para todos los botones del modal */
+    .modal-content .btn {
+        width: 10rem;
+        padding: var(--space-sm-fluid);
+        margin-bottom: var(--space-sm-fluid);
+        font-family: var(--font-family-base);
+        font-size: var(--font-size-base);
+        border: 1px solid;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+        box-sizing: border-box;
+    }
+
+    /* Botón Primario */
+    .modal-content .btn-primary {
+        background-color: var(--modal-button-primary-background);
+        border-color: var(--modal-button-primary-border);
+        color: var(--modal-button-primary-text);
+    }
+
+        .modal-content .btn-primary:hover {
+            background-color: var(--modal-button-primary-hover);
+        }
+
+        .modal-content .btn-primary:active {
+            background-color: var(--modal-button-primary-active);
+        }
+
+    /* Botón Secundario */
+    .modal-content .btn-secondary {
+        background-color: var(--modal-button-secondary-background);
+        border-color: var(--modal-button-secondary-border);
+        color: var(--modal-button-secondary-text);
+    }
+
+        .modal-content .btn-secondary:hover {
+            background-color: var(--modal-button-secondary-hover);
+        }
+
+        .modal-content .btn-secondary:active {
+            background-color: var(--modal-button-secondary-active);
+        }
+
+    /* Botón Destructivo */
+    .modal-content .btn-destructive {
+        background-color: var(--modal-button-destructive-background);
+        border-color: var(--modal-button-destructive-border);
+        color: var(--modal-button-destructive-text);
+    }
+
+        .modal-content .btn-destructive:hover {
+            background-color: var(--modal-button-destructive-hover);
+        }
+
+        .modal-content .btn-destructive:active {
+            background-color: var(--modal-button-destructive-active);
+        }
+
+    /* Botón Neutro */
+    .modal-content .btn-neutral {
+        background-color: var(--modal-button-neutral-background);
+        border-color: var(--modal-button-neutral-border);
+        color: var(--modal-button-neutral-text);
+    }
+
+        .modal-content .btn-neutral:hover {
+            background-color: var(--modal-button-neutral-hover);
+        }
+
+        .modal-content .btn-neutral:active {
+            background-color: var(--modal-button-neutral-active);
+        }
+
+    /* Último botón (sin margen inferior) */
+    .modal-content .btn:last-child {
+        margin-bottom: 0;
+    }

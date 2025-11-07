@@ -2,11 +2,14 @@
 
 @using MedRec.CommonComponents.Views
 @using MedRec.CommonComponents.Views.Components
+@using MedRec.MedicalAppointments.ViewModels.VM
 @using MedRec.Patients.Views.Components
 @using Microsoft.AspNetCore.Components.Forms
 @using System.Globalization
 @using MedRec.MedicalAppointments.ViewModels.Models
-
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+@inherits OwningComponentBase<WeeklyScheduleViewModel>
 <style>
     .agenda-container {
         display: flex;
@@ -80,6 +83,13 @@
         overflow-wrap: anywhere;
     }
 
+    .truncate-22 {
+        width: 22ch; /* ancho aproximado de 22 caracteres */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block; /* o block según necesites */
+    }
         td.asignado {
             background-color: #dff0d8;
         }
@@ -124,6 +134,37 @@
             margin-right: 0.5rem;
             margin-top: 0.3rem;
         }
+    /* --- Scroll sólo en el cuerpo de la agenda --- */
+    .agenda-container table {
+        border-collapse: collapse;
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    /* Contenedor de scroll en el cuerpo */
+    .agenda-container tbody {
+        display: block;
+        max-height: 65vh; /* altura visible del cuerpo, ajustala a gusto */
+        overflow-y: auto; /* activa scroll vertical */
+        width: 100%;
+    }
+
+    /* Alinea columnas de encabezado y cuerpo */
+    .agenda-container thead,
+    .agenda-container tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    /* Mantiene el encabezado visible */
+    .agenda-container thead {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background-color: #eaeaea; /* color de fondo del header */
+    }
+
 </style>
 
 <div class="agenda-container">
@@ -133,7 +174,7 @@
             <label>SEMANA:</label>
             <WeekDatePicker OnWeekSelected="OnWeekSelected" />
             @* <button @onclick="AlternarTurno">@BotonTurnoTexto</button> *@
-            @if (modoMoverActivo)
+            @if (activeMoveMode)
             {
                 <button @onclick="CancelarModoMover">Cancelar mover</button>
             }
@@ -161,13 +202,16 @@
 
                         <td class="@clase"
                             @onclick="() => CeldaClic(celda)">
-                            @if (celda.IsPast)
+                            @if (celda.IsPast && celda.Appointment is not null)
                             {
-                                @* Turno vencido visualmente vacío *@
+                                <strong class=" truncate-22">@celda.Appointment.PatientName?.ToUpperInvariant()</strong>
+                    
+                                <br />
+                                @celda.Appointment.Reason?.ToUpperInvariant()
                             }
                             else if (celda.Appointment is not null)
                             {
-                                <strong>@celda.Appointment.PatientName?.ToUpperInvariant()</strong>
+                                <strong class=" truncate-22">@celda.Appointment.PatientName?.ToUpperInvariant()</strong>
                     
                                 <br />
                                 @celda.Appointment.Reason?.ToUpperInvariant()
