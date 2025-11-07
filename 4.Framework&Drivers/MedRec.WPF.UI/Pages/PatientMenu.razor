@@ -1,0 +1,114 @@
+﻿@page "/patient-menu"
+<div class="patient-menu-container">
+    <h1 class="menu-title">Gestión de Pacientes</h1>
+    <nav class="menu-grid">
+        <a href="/create-patient" class="menu-link">
+            <span class="menu-icon">🩺</span>
+            <span class="menu-text">Dar de alta un paciente</span>
+        </a>
+        <a href="/" class="menu-link">
+            <span class="menu-icon">📋</span>
+            <span class="menu-text">Listado de pacientes</span>
+        </a>
+        <a href="/medical-visit/list" class="menu-link">
+            <span class="menu-icon">📚</span>
+            <span class="menu-text">Historia clínica</span>
+        </a>
+        <a href="/pacientes/consulta" class="menu-link">
+            <span class="menu-icon">➕</span>
+            <span class="menu-text">Agregar consulta</span>
+        </a>
+    </nav>
+</div>
+
+<style scoped>
+    .patient-menu-container {
+        max-width: 100%;
+        margin: var(--space-xl-fluid) auto;
+        padding: var(--space-lg-fluid);
+        background-color: var(--menu-background);
+        border: 1px solid var(--menu-border);
+        border-radius: 8px;
+        font-family: var(--font-family-base);
+    }
+
+    .menu-title {
+        font-size: var(--font-size-title);
+        color: var(--menu-text);
+        text-align: center;
+        margin-bottom: var(--space-lg-fluid);
+        font-weight: 600;
+    }
+
+    .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: var(--space-md-fluid);
+    }
+
+    .menu-link {
+        display: flex;
+        align-items: center;
+        padding: var(--space-md-fluid);
+        background-color: var(--link-background);
+        border: 1px solid var(--link-border);
+        border-radius: 6px;
+        text-decoration: none;
+        color: var(--link-text);
+        transition: all 0.2s ease;
+        font-size: var(--font-size-base);
+        font-weight: 500;
+    }
+
+        .menu-link:hover {
+            background-color: var(--link-hover-background);
+            border-color: var(--link-hover-border);
+            color: var(--link-hover-text);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(156, 39, 176, 0.1);
+        }
+
+        .menu-link:active {
+            background-color: var(--link-active-background);
+            border-color: var(--link-active-border);
+            color: var(--link-active-text);
+        }
+
+    .menu-icon {
+        font-size: 1.5em;
+        margin-right: var(--space-sm-fluid);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 1.6em;
+    }
+
+    .menu-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    @@media (max-width: 600px) {
+        .menu-text
+
+    {
+        white-space: normal;
+        text-align: center;
+    }
+
+    .menu-icon {
+        margin-right: var(--space-xs-fluid);
+    }
+
+    .menu-link {
+        flex-direction: column;
+        text-align: center;
+        padding: var(--space-md-fluid) var(--space-sm-fluid);
+    }
+
+    }
+</style>
+@code {
+
+}
