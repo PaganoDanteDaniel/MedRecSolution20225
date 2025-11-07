@@ -12,7 +12,50 @@ public static class Startup
 {
     public static IServiceProvider? Services { get; private set; }
 
-    public static void Init()
+    public static string GetAppSettingsPath()
+    {
+        string appDataPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "MedRec");
+        Directory.CreateDirectory(appDataPath);
+        string appSettingsPath = Path.Combine(appDataPath, "appsettings.json");
+        string sourcePath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
+        if (!File.Exists(appSettingsPath))
+            File.Copy(sourcePath, appSettingsPath, overwrite: false);
+        return appSettingsPath;
+    }
+
+    // Devuelve true si tras el proceso existe cadena válida.
+    public static bool EnsureConnectionSettings(string appSettingsPath)
+    {
+        bool TieneConexion(string path)
+        {
+            try
+            {
+                dynamic? cfg = Newtonsoft.Json.JsonConvert.DeserializeObject(File.ReadAllText(path));
+                return cfg != null &&
+                       cfg.DBOptionsMySql != null &&
+                       cfg.DBOptionsMySql.ConnectionString != null &&
+                       !string.IsNullOrWhiteSpace((string)cfg.DBOptionsMySql.ConnectionString);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        if (TieneConexion(appSettingsPath))
+            return true;
+
+        // Mostrar formulario para capturar datos
+        var window = new ConnectionSettingsWindow(appSettingsPath);
+        window.ShowDialog();
+
+        // Revalidar luego de cerrar
+        return TieneConexion(appSettingsPath);
+    }
+
+    public static void BuildHost(string appSettingsPath)
     {
         var culture = new CultureInfo("es-ES");
         CultureInfo.DefaultThreadCurrentCulture = culture;
@@ -22,24 +65,22 @@ public static class Startup
             .ConfigureAppConfiguration((context, config) =>
             {
                 config.Sources.Clear();
-                config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                config.AddJsonFile(appSettingsPath, optional: false, reloadOnChange: true);
                 config.AddEnvironmentVariables();
             })
             .ConfigureServices((context, services) =>
             {
-                WireupServices(services, context.Configuration);
+                WireupServices(services, context.Configuration, appSettingsPath);
             })
             .Build();
 
         Services = host.Services;
     }
 
-    private static void WireupServices(IServiceCollection services, IConfiguration configuration)
+    private static void WireupServices(IServiceCollection services, IConfiguration configuration, string appSettingsPath)
     {
-        // 1. Crear instancia de DBOptionsMySql y bindear desde configuración
         var dbOptionsMySql = new DBOptionsMySql();
         var jwtKey = new Jwt();
-
         configuration.GetSection(DBOptionsMySql.SectionKey).Bind(dbOptionsMySql);
         configuration.GetSection(Jwt.SectionKey).Bind(jwtKey);
 
@@ -47,40 +88,34 @@ public static class Startup
         {
             if (!EncryptionHelper.IsEncrypted(dbOptionsMySql.ConnectionString))
             {
-                // Primera ejecución: encriptar y guardar en appsettings.json
                 dbOptionsMySql.ConnectionString = EncryptionHelper.Encrypt(dbOptionsMySql.ConnectionString);
-
-                // Reescribir el appsettings.json con la cadena encriptada
-                var json = File.ReadAllText("appsettings.json");
-                dynamic config = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-                config.DBOptionsMySql.ConnectionString = dbOptionsMySql.ConnectionString;
-                File.WriteAllText("appsettings.json",
-                    Newtonsoft.Json.JsonConvert.SerializeObject(config, Newtonsoft.Json.Formatting.Indented));
+                var json = File.ReadAllText(appSettingsPath);
+                dynamic configFile = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+                if (configFile.DBOptionsMySql == null)
+                    configFile.DBOptionsMySql = new Newtonsoft.Json.Linq.JObject();
+                configFile.DBOptionsMySql.ConnectionString = dbOptionsMySql.ConnectionString;
+                File.WriteAllText(appSettingsPath,
+                    Newtonsoft.Json.JsonConvert.SerializeObject(configFile, Newtonsoft.Json.Formatting.Indented));
             }
-
-            // Ya estaba encriptada, desencriptar para usar
             dbOptionsMySql.ConnectionString = EncryptionHelper.Decrypt(dbOptionsMySql.ConnectionString);
         }
 
-        if (!EncryptionHelper.IsEncrypted(jwtKey.Key))
+        if (!string.IsNullOrEmpty(jwtKey.Key) && !EncryptionHelper.IsEncrypted(jwtKey.Key))
         {
             jwtKey.Key = EncryptionHelper.Encrypt(jwtKey.Key);
-            var json = File.ReadAllText("appsettings.json");
-            dynamic config = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-            config.Jwt.Key = jwtKey.Key;
-            File.WriteAllText("appsettings.json",
-                Newtonsoft.Json.JsonConvert.SerializeObject(config, Newtonsoft.Json.Formatting.Indented));
+            var json = File.ReadAllText(appSettingsPath);
+            dynamic configFile = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+            if (configFile.Jwt == null)
+                configFile.Jwt = new Newtonsoft.Json.Linq.JObject();
+            configFile.Jwt.Key = jwtKey.Key;
+            File.WriteAllText(appSettingsPath,
+                Newtonsoft.Json.JsonConvert.SerializeObject(configFile, Newtonsoft.Json.Formatting.Indented));
         }
-
-        // 2. Registrar la instancia ya procesada como singleton
 
         services.AddSingleton(Options.Create(dbOptionsMySql));
         services.Configure<DBOptionsMySql>(configuration.GetSection(DBOptionsMySql.SectionKey));
-
-        // 3. Registrar otros servicios
         services.AddWpfBlazorWebView();
         services.AddAppServices();
-
 #if DEBUG
         services.AddBlazorWebViewDeveloperTools();
 #endif

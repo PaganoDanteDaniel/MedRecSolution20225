@@ -1,8 +1,0 @@
-﻿<Project Sdk="WixToolset.Sdk/6.0.2">
-  <ItemGroup>
-    <Content Include="Comandos.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="WixToolset.Heat" Version="6.0.2" />
-  </ItemGroup>
-</Project>
