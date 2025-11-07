@@ -7,6 +7,8 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using System.Globalization
 @using MedRec.MedicalAppointments.ViewModels.Models
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
 @inherits OwningComponentBase<WeeklyScheduleViewModel>
 <style>
     .agenda-container {

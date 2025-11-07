@@ -49,6 +49,33 @@
     --button-active-background: #673ab7; /* Morado oscuro */
     --button-active-border: #ce93d8; /* Rosa más oscuro */
     --button-active-text: #ffffff; /* Blanco */
+    /*-----------------------------------------*/
+    /* --- Botones en modales (nueva estructura semántica) --- */
+    /* Acción Primaria (Confirmar, Guardar, Cancelar turno - si es la acción principal) */
+    --modal-button-primary-background: #c8e6c9;
+    --modal-button-primary-border: #81c784;
+    --modal-button-primary-text: #388e3c;
+    --modal-button-primary-hover: #a5d6a7;
+    --modal-button-primary-active: #66bb6a;
+    /* Acción Secundaria (Reasignar, Mover) */
+    --modal-button-secondary-background: #f3e5f5;
+    --modal-button-secondary-border: #ce93d8;
+    --modal-button-secondary-text: #673ab7;
+    --modal-button-secondary-hover: #e1bee7;
+    --modal-button-secondary-active: #9c27b0;
+    /* Acción Destructiva (Cancelar turno, Eliminar) */
+    --modal-button-destructive-background: #ffcdd2; /* Rosa claro */
+    --modal-button-destructive-border: #f44336; /* Rojo intenso */
+    --modal-button-destructive-text: #b71c1c; /* Rojo oscuro */
+    --modal-button-destructive-hover: #ff7043;
+    --modal-button-destructive-active: #e64a19;
+    /* Botón Neutro (Cerrar, Cancelar - cuando no es destructivo) */
+    --modal-button-neutral-background: #ffffff;
+    --modal-button-neutral-border: #e1bee7;
+    --modal-button-neutral-text: #9c27b0;
+    --modal-button-neutral-hover: #f3e5f5;
+    --modal-button-neutral-active: #ce93d8;
+    /*-------------------------------------------*/
     /* Colores de inputs */
     --input-background: #ffffff; /* Blanco */
     --input-border: #e1bee7; /* Rosa pastel suave */

@@ -26,6 +26,9 @@
         overflow-y: auto;
         padding: 1rem;
         box-sizing: border-box;
+        display: flex;
+        justify-content: center; /* centrado horizontal */
+        align-items: center; /* centrado vertical */
     }
 
     /* footer fijo al fondo */
@@ -41,10 +44,10 @@
     <TitleComponent Title="AGENDA DE TURNOS" />
 
     <!-- Zona desplazable class="scrollable-section"-->
-    <div >
+    <div class="scrollable-section">
         <ErrorBoundary @ref=ErrorBoundaryRef>
             <ChildContent>
-                <WeeklyScheduleComonet />
+                <AppointmentScheduleComponent />
             </ChildContent>
             <ErrorContent>
                 <ExceptionDisplayComponent Exception="context" />

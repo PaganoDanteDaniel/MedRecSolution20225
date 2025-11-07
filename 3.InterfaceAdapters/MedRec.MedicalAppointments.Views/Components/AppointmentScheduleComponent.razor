@@ -1,0 +1,150 @@
+﻿@using MedRec.CommonComponents.Views
+@using MedRec.CommonComponents.Views.Components
+@using MedRec.MedicalAppointments.ViewModels.VM
+@using MedRec.Patients.Views.Components
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Globalization
+@using MedRec.MedicalAppointments.ViewModels.Models
+
+
+@inherits OwningComponentBase<WeeklyScheduleViewModel>
+
+
+<div class="schedule-wrapper">
+    @* Barra de herramientas superior (Controles de fecha, turno, etc.) *@ 
+    <div class="agenda-header">
+        <h2>@Legend</h2>
+        <div class="calendar-selector">
+            <label>SEMANA:</label>
+            <WeekDatePicker OnWeekSelected="OnWeekSelected" />
+            @if (activeMoveMode)
+            {
+                <button @onclick="CancelMoveMode">Cancelar mover</button>
+            }
+        </div>
+    </div>
+
+    @* Contenedor de la tabla: Define la altura máxima y gestiona el scroll *@
+    <div class="schedule-table-container">
+
+        @* 1. Encabezado de la tabla (Fijo) *@
+        <div class="schedule-header">
+            <div class="schedule-row header-row">
+                <div class="schedule-cell header-cell time-col">Horario</div>
+                @foreach (var day in VM.WeekDays)
+                {
+                    <div class="schedule-cell header-cell day-col">
+                        @day.ToString("ddd", new CultureInfo("es-ES")).ToUpper() @* Ej: LUN *@
+                        <br />
+                        <span class="day-date">@day.ToString("dd/MM")</span> @* Ej: 05/11 *@
+                    </div>
+                }
+            </div>
+        </div>
+
+        @* 2. Cuerpo de la tabla (con Scroll) *@
+        <div class="schedule-body">
+            @if (!VM.Rows.Any())
+            {
+                <div class="no-data-message">Cargando horario o No hay datos de horario para la semana seleccionada.</div>
+            }
+            else
+            {
+                @foreach (var row in VM.Rows)
+                {
+                    <div class="schedule-row body-row">
+                        @* Columna de Horario (Fija) *@
+                        <div class="schedule-cell body-cell time-col time-slot-label">@row.Time</div>
+
+                        @* Celdas de Citas (Días) *@
+                        @foreach (var cell in row.Cells.Where(c => VM.TimeSlots.Contains(c.DateTime.ToString("HH:mm"))))
+                        {
+                            <div class="schedule-cell body-cell day-col @GetCssClass(cell)"
+                                 @onclick="() => CeldaClic(cell)">
+                                @if (cell.Appointment is not null)
+                                {
+                                    <div class="appointment-info">
+                                        <p class="patient-name">@cell.Appointment.PatientName</p>
+                                        <p class="appointment-reason">@cell.Appointment.Phone</p>
+                                        <p class="appointment-reason">@cell.Appointment.Reason</p>
+                                    </div>
+                                }
+                                else
+                                {
+                                    if (cell.IsPast)
+                                    {
+                                        <span class="empty-cell-label"><i class="bi bi-x-lg"></i></span>
+                                    }
+                                    else
+                                    {
+                                        <span class="empty-cell-label"><i class="bi bi-pen"></i></span>
+                                    }
+                                    
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<ModalComponent Title="SELECTOR DE PACIENTE"
+                Show="@showPatientModal"
+                Type="CommonComponents.Views.ModalType.LargeContent"
+                ShowChanged="(value) => showPatientModal = value">
+
+    @if (showPatientModal)
+    {
+        <ListPatientsComponent MaxPageButton="3"
+                               WithHeight="false"
+                               OnPatientSelected="@OnPatientSelected"
+                               ShowActionsColumn ="false"/>
+    }
+</ModalComponent>
+
+@* Render condicional del modal en lugar de intentar ocultarlo desde CSS *@
+@if (showModal)
+{
+    <div class="modal" @onclick="CloseOuterModal">
+        <div class="modal-content" @onclick:stopPropagation="true">
+            @if (modalType == Modal_Type.Asignar)
+            {
+                <h3>Asignar turno</h3>
+                <InputText @bind-Value="tempAppointment.PatientName" placeholder="Paciente" class="form-control" readonly />
+                <InputText @bind-Value="tempAppointment.Phone" placeholder="Teléfono" class="form-control" readonly />
+                <input @ref="patientReasonInputRef"
+                       @bind="tempAppointment.Reason"
+                       placeholder="Motivo de la visita"
+                       class="form-control uppercase-input"
+                       type="text" />
+                <button @onclick="SaveAppointmentFromModal" class="btn btn-primary">Guardar</button>
+                <button @onclick="CloseModal" class="btn btn-neutral">Cancelar</button>
+            }
+            else if (modalType == Modal_Type.Gestion && selectedCell?.Appointment is not null)
+            {
+                <h3>Turno asignado</h3>
+                <p style="text-align: center;">
+                    <strong>@selectedCell.Appointment.PatientName</strong>
+                    <br />@selectedCell.Appointment.Phone
+                    <br />@selectedCell.Appointment.Reason
+                </p>
+                <button @onclick="CancelAppointment" class="btn btn-destructive">Cancelar turno</button>
+                <button @onclick="OpenReassignAssignModal" class="btn btn-secondary">Reasignar paciente</button>
+                <button @onclick="ActivateMoveMode" class="btn btn-secondary">Mover a otra fecha</button>
+                <button @onclick="CloseModal" class="btn btn-neutral">Cerrar</button>
+            }
+        </div>
+    </div>
+}
+<ModalComponent Show="@_showModal"
+                ShowChanged="@((bool val) => _showModal = val)"
+                Title="@_modalTitle"
+                Type="@_modalType"
+                CenterText="true"
+                ShowAcceptButton="true"
+                OnAccept="@CloseModal"
+                ShowCancelButton="false">
+    @((MarkupString)VM.InformationMessage)
+</ModalComponent>
