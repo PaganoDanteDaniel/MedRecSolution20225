@@ -1,26 +1,43 @@
-﻿using MedRec.HealthInsurance.BusinessObjects.Interfaces.Ports;
+﻿using MedRec.Entity.DTOs;
+using MedRec.Entity.Enums;
+using MedRec.HealthInsurance.BusinessObjects.Interfaces.Ports;
 using MedRec.HealthInsurance.BusinessObjects.Interfaces.Repositories;
+using MedRec.Shared.Exceptions;
 
 namespace MedRec.HealthInsurance.UseCases.Implementation;
 internal class TotalHealthInsuranceCountInteractor(
-    ITotalHealthInsuranceCountOutputPort outputPort,
+    ITotalHealthInsuranceCountOutputPort presenter,
     IHealthInsuranceQueriesRepository queriesRepository) : ITotalHealthInsuranceCountInputPort
 {
-    private readonly IHealthInsuranceQueriesRepository _queriesRepository = queriesRepository;
-    private readonly ITotalHealthInsuranceCountOutputPort _outputPort = outputPort;
+
     public async Task Handle(string filter = null, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        await _outputPort.ErrorAsync(null);
-
-        var result = await _queriesRepository.GetCount(filter, cancellationToken);
-        if (!result.IsSuccess)
+        try
         {
-            await _outputPort.ErrorAsync(result.Error);
+            var count = await queriesRepository.GetCount(filter, cancellationToken);
+            await presenter.Handle(count);
+
         }
-
-        await _outputPort.ErrorAsync(null);
-        await _outputPort.Handle(result.Value);
-
+        catch (BusinessException bx)
+        {
+            await presenter.ErrorAsync(bx.Error);
+        }
+        catch (OperationCanceledException)
+        {
+            await presenter.ErrorAsync(new ErrorInfo(
+                "Operación cancelada por el usuario.",
+                ErrorCode.Cancelled,
+                null,
+                499));
+        }
+        catch (Exception ex)
+        {
+            await presenter.ErrorAsync(new ErrorInfo(
+                "Ocurrió un error inesperado al obtener los datos.",
+                ErrorCode.Unknown,
+                new { Exception = ex.Message },
+                500));
+        }
     }
 }

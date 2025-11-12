@@ -81,7 +81,7 @@ internal class PatientDetailsInteractor(
             if (patientResult.Value.HealthInsuranceId is Guid id)
             {
                 var healthResult = await healthInsuranceQueries.GetById(id, cts);
-                await outputPort.Handle(patientResult.Value!, healthResult.Value);
+                await outputPort.Handle(patientResult.Value!, healthResult);
             }
         }
         catch (Exception)

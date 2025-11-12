@@ -1,0 +1,60 @@
+﻿@using MedRec.CommonComponents.Views
+@using MedRec.CommonComponents.Views.Validators
+@using MedRec.HealthInsurance.BusinessObjects.DTOs
+@using MedRec.HealthInsurance.BusinessObjects.Validators
+@using MedRec.HealthInsurance.ViewModels.Models
+@using MedRec.Validator.Interfaces
+
+@inherits OwningComponentBase<CreateHealthInsuranceVM>
+@inject IModelValidatorHub<CreateHealthInsuranceModel> addHealthInsuranceValidator
+
+<div class="add-health-company-form">
+    <EditForm EditContext="EditContext" OnValidSubmit="@AddHealthCompany">
+        <DataAnnotationsValidator />
+
+        <ModelValidator T="CreateHealthInsuranceModel"
+                        Validator="addHealthInsuranceValidator"
+                        ValidationRules="vm =>CreateHealthInsuranceValidator.Validate((CreateHealthInsuranceDto)vm)" />
+
+        <div>
+            <label for="name">@AddHealthInsuranceMessages.NameLabelText</label>
+            <InputText class="uppercase-input" id="name" @bind-Value="VM.Model.Name"
+                       placeholder=@AddHealthInsuranceMessages.PlaceholderNameInput
+                       name="patients-input" />
+            <ValidationMessage For="@(() => VM.Model.Name)" class="validation-message" />
+        </div>
+
+        <div>
+            <label for="acronym">@AddHealthInsuranceMessages.AcronymLabelText</label>
+            <InputText class="uppercase-input" id="acronym" @bind-Value="VM.Model.Acronym"
+                       placeholder=@AddHealthInsuranceMessages.PlaceholderAcronymInput
+                       name="patients-input" />
+            <ValidationMessage For="@(() => VM.Model.Acronym)" class="validation-message" />
+        </div>
+
+        <div class="button-group">
+            <button type="button" @onclick="@CancelAdd">
+                <i class="fa-solid fa-right-from-bracket"></i>@AddHealthInsuranceMessages.CancelButton
+            </button>
+
+            <button type="button" @onclick="@ClearForm">
+                <i class="bi bi-eraser-fill"></i>@AddHealthInsuranceMessages.ClearButton
+            </button>
+            <button type="submit">
+                <i class="fa-solid fa-floppy-disk"></i>@AddHealthInsuranceMessages.SubmitButton
+            </button>
+        </div>
+    </EditForm>
+</div>
+
+
+<ModalComponent Title="Éxito" Show="@_showModal" OnExit="@((value) => _showModal = value)"
+                Closing="Dispose" 
+                Type="ModalType.MessageSuccess" 
+                ShowAcceptButton="true"
+                CenterText="true"
+                OnAccept="OnAccept">
+    <div style="color: green;">
+        @AddHealthInsuranceMessages.SuccessfulAddedMessage
+    </div>
+</ModalComponent>

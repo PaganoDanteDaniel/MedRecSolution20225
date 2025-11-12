@@ -9,14 +9,14 @@ namespace MedRec.MedicalVisit.UseCases.Implementations;
 internal class UpdateMedicalVisitInteractor(
     IUpdateMedicalVisitOutputPort outputPort,
     IMedicalVisitCommandRepository commandRepository,
-    IModelValidatorHub<MedicalVisitDto> _validatorHub) : IUpdateMedicalVisitInputPort
+    IModelValidatorHub<UpdateMedicalVisitDto> _validatorHub) : IUpdateMedicalVisitInputPort
 {
-    public async Task Handle(MedicalVisitDto dto, CancellationToken cts = default)
+    public async Task Handle(UpdateMedicalVisitDto dto, CancellationToken cts = default)
     {
         cts.ThrowIfCancellationRequested();
 
         bool isValid = await _validatorHub.Validate(dto,
-            v => CreateMedicalVisitValidator.Validate(v));
+            v => UpdateMedicalVisitValidator.Validate(v));
         if (!isValid)
         {
             await outputPort.ValidationErrorsAsync(_validatorHub.Errors);

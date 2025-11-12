@@ -5,9 +5,9 @@ using global::MedRec.Validator.ValueObjects;
 using MedRec.MedicalVisit.BusinessObjects.Resources;
 using MedRec.Shared.Gruards;
 
-public static class CreateMedicalVisitValidator
+public static class UpdateMedicalVisitValidator
 {
-    public static IReadOnlyList<ValidationError> Validate(MedicalVisitDto visit, int? patientAge = null)
+    public static IReadOnlyList<ValidationError> Validate(UpdateMedicalVisitDto visit, int? patientAge = null)
     {
         if (visit == null)
             throw new ArgumentNullException(nameof(visit));

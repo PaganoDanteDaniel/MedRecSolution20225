@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Components.Web;
 namespace MedRec.HealthInsurance.Views.Pages;
 public partial class HealthInsurancePage
 {
-    [Inject] public HealthInsuranceCatalogVM Model { get; set; }
     [Parameter] public EventCallback<(Guid Id, string Name)> OnHealthCompanySelected { get; set; }
     [Parameter] public int MaxPageButton { get; set; } = 9;
     private string footerMessage;

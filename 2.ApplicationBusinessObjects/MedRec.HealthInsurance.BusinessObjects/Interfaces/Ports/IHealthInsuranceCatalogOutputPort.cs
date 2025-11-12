@@ -6,7 +6,7 @@ namespace MedRec.HealthInsurance.BusinessObjects.Interfaces.Ports;
 public interface IHealthInsuranceCatalogOutputPort : ICommonOutputPort
 {
     int TotalRecords { get; }
-    List<HealthInsuranceCatalogDto> HealthInsuranceCatalog { get; }
+    List<GetHealthInsuranceSummaryDto> HealthInsuranceCatalog { get; }
     Task Handle(IEnumerable<HealthInsuranceCompany> HealthInsuranceCatalog, int totalRecords, CancellationToken cts = default);
 
 }

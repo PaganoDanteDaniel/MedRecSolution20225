@@ -25,11 +25,11 @@ public class CreateMedicalVisitModel
     public string Notes { get; set; }
     public byte[] RowVersion { get; set; }
 
-    public static explicit operator MedicalVisitDto(CreateMedicalVisitModel model)
+    public static explicit operator CreateMedicalVisitDto(CreateMedicalVisitModel model)
     {
-        return new MedicalVisitDto
+        return new CreateMedicalVisitDto
         {
-            Id = model.Id,
+            //Id = model.Id,
             MedicalHistoryId = model.MedicalHistoryId,
             VisitDate = model.VisitDate,
             Reason = (model.Reason ?? string.Empty).ToUpperInvariant(),
@@ -47,7 +47,6 @@ public class CreateMedicalVisitModel
     {
         return new CreateMedicalVisitModel
         {
-            Id = this.Id,
             MedicalHistoryId = this.MedicalHistoryId,
             Reason = this.Reason?.ToUpperInvariant(),
             Diagnosis = this.Diagnosis?.ToUpperInvariant(),

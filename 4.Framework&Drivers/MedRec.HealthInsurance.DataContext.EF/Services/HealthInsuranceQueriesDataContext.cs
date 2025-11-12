@@ -10,6 +10,11 @@ namespace MedRec.HealthInsurance.DataContext.EF.Services;
 internal class HealthInsuranceQueriesDataContext(IOptions<DBOptionsMySql> options) :
     DataBaseContextMySql(options), IHealthInsuranceQueriesDataContext
 {
+    public Task<bool> ExistAsync(Guid id, CancellationToken ct) =>
+        HealthInsuranceCompanies
+            .AsNoTracking()
+            .AnyAsync(h => h.Id == id && !h.IsDeleted, ct);
+
     public async Task<IEnumerable<HealthInsuranceCompany>> GetAllAsync(PaginationDto paginationDto, CancellationToken cancellationToken)
     {
         var query = HealthInsuranceCompanies

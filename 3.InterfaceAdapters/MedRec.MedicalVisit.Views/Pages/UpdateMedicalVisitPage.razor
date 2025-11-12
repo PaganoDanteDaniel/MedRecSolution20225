@@ -1,0 +1,131 @@
+﻿@page "/medical-visit/detail/{patientId:guid}/{visitId:guid}"
+@using MedRec.CommonComponents.Views.Components
+@using MedRec.CommonComponents.Views.Exceptions
+@using MedRec.Entity.Extensions
+@using MedRec.MedicalVisit.ViewModels.VM
+@using MedRec.MedicalVisit.Views.Components
+@using MedRec.MedicalVisit.Views.Resources
+
+@inject NavigationManager Navigation
+
+<div class="body-content">
+    <TitleComponent Title="@Title" />
+
+    <!-- Zona desplazable -->
+    <div class="scrollable-section">
+        <ErrorBoundary @ref=ErrorBoundaryRef>
+            <ChildContent>
+                <UpdateMedicalVisitComponent
+                    PatientId="@PatientId" 
+                    VM="@VM" 
+                    IsReadOnly="@IsReadOnly"
+                    IsEditMode="@IsEditMode"
+                    VisitId="@VisitId"
+                    CloneNow="_cloneNow"/>
+            </ChildContent>
+            <ErrorContent>
+                <ExceptionDisplayComponent Exception="context" />
+                <button class="btn btn-danger" @onclick=Recover>OK</button>
+            </ErrorContent>
+        </ErrorBoundary>
+    </div>
+
+    <!-- Footer fijo -->
+    <div class="me-footer">
+        <FooterComponent Message="@footerMessage" />
+    </div>
+</div>
+
+@code{
+    [Inject] public UpdateMedicalVisitVM VM { get; set; }
+
+    [Parameter] public Guid? VisitId { get; set; }
+    [Parameter] public Guid PatientId { get; set; }
+
+    private string footerMessage;
+    private bool IsEditMode => VisitId.HasValue;
+    private bool IsReadOnly { get; set; }
+    private string Title { get; set; }
+    private bool _cloneNow = false;
+    CancellationTokenSource ct = new CancellationTokenSource();
+    protected override async Task OnInitializedAsync()
+    {
+        ct?.Dispose();
+        ct = new CancellationTokenSource();
+
+        await VM.LoadDataPatient(PatientId, ct.Token);
+        if (IsEditMode && VisitId.HasValue)
+        {
+            // Modo Vista: Cargar datos de la visita existente
+            await VM.LoadVisitAsync(VisitId.Value);
+            _cloneNow = true;
+        }
+        base.OnInitialized();
+    }
+
+    // Función auxiliar para leer los valores de la Query String
+
+    protected override async Task OnParametersSetAsync()
+    {
+
+        await Task.Yield();
+
+        if (IsEditMode && VisitId.HasValue)
+        {
+            IsReadOnly = true;
+            Title = $"{VM.Model.FullName} | EDAD {VM.Model.DateOfBirth.CalculateAge()} AÑOS | Fecha de visita {VM.Model.VisitDate:dd/MM/yyyy}";
+
+        }
+        else
+        {
+            Title = string.Format(MedicalVisitMessages.CreateMedicalVisitTitleTemplate, VM.Model.FullName, VM.Model.DateOfBirth.CalculateAge());
+        }
+    }
+    private void OnMessageFooterChange(string title)
+    {
+        footerMessage = title;
+    }
+    ErrorBoundary ErrorBoundaryRef;
+
+    void Recover()
+    {
+        ErrorBoundaryRef?.Recover();
+    }
+}
+
+
+<style>
+    :host {
+        display: flex;
+        flex-direction: column;
+        height: 100vh; /* ocupa toda la altura visible de la ventana */
+        overflow: hidden; /* evita scroll global */
+    }
+
+    /* contenedor principal */
+    .body-content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 100vh;
+        overflow: hidden; /* para que el scroll solo sea interno */
+        background-color: var(--page-background, #f8f9fa);
+    }
+
+    /* sección que scrollea */
+    .scrollable-section {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        box-sizing: border-box;
+    }
+
+    /* footer fijo al fondo */
+    .me-footer {
+        flex-shrink: 0;
+        border-top: 1px solid #ddd;
+        padding: 0.75rem 1rem;
+        background-color: #f9f9f9;
+        text-align: center;
+    }
+</style>

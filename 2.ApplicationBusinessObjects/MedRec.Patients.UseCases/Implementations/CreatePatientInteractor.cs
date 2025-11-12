@@ -8,35 +8,36 @@ using MedRec.Validator.Interfaces;
 namespace MedRec.Patients.UseCases.Implementations;
 
 internal class CreatePatientInteractor(
-    ICreatePatientOutputPort _outputPort,
-    IPatientCommandsRepository _repository,
-    IModelValidatorHub<CreatePatientDto> _validatorHub) : ICreatePatientInputPort
+    ICreatePatientOutputPort presenter,
+    IPatientCommandsRepository commandRepository,
+    IModelValidatorHub<CreatePatientDto> validatorHub) : ICreatePatientInputPort
 {
     public async Task HandleAsync(CreatePatientDto dto, CancellationToken cts)
     {
         cts.ThrowIfCancellationRequested();
 
         // Validación del paciente
-        bool esValido = await _validatorHub.Validate(dto,
+        bool isValid = await validatorHub.Validate(dto,
             p => CreatePatientValidator.Validate(p));
 
-        if (!esValido)
+        if (!isValid)
         {
-            await _outputPort.ValidationErrorsAsync(_validatorHub.Errors);
+            await presenter.ValidationErrorsAsync(validatorHub.Errors);
             return;
         }
 
         var patient = (Patient)dto;
+
         // Crear paciente
-        var result = await _repository.Create(patient, cts);
+        var result = await commandRepository.Create(patient, cts);
 
         if (!result.IsSuccess)
         {
-            await _outputPort.ErrorAsync(result.Error);
+            await presenter.ErrorAsync(result.Error);
             return;
         }
 
-        await _outputPort.ErrorAsync(null);
-        await _outputPort.Handle();
+        await presenter.ErrorAsync(null);
+        await presenter.Handle();
     }
 }

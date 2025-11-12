@@ -13,8 +13,12 @@ public class MedicalVisitVM
 
     public bool IsLoading { get; private set; }
     public ErrorInfo? LastError { get; private set; }
+    public string InformationMessage { get; set; }
 
-
+    public event Action OnShowMessage;
+    public event Action OnShowWarning;
+    public event Action OnShowError;
+    public event Action OnShowConcurrencyError;
     public MedicalVisitVM(
         IMedicalVisitSummaryListInputPort inputPort,
         IMedicalVisitSummaryListOutputPort outputPort)
@@ -55,6 +59,26 @@ public class MedicalVisitVM
         finally
         {
             IsLoading = false;
+        }
+    }
+    private void HandleErrors(ErrorInfo error)
+    {
+        InformationMessage = error.Message;
+
+        switch (error.Code)
+        {
+            case ErrorCode.DuplicateKey:
+                OnShowWarning?.Invoke();
+                break;
+            case ErrorCode.ConcurrencyError:
+                OnShowConcurrencyError?.Invoke();
+                break;
+            case ErrorCode.DatabaseError:
+                OnShowError?.Invoke();
+                break;
+            default:
+                OnShowMessage?.Invoke();
+                break;
         }
     }
 }

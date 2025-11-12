@@ -7,4 +7,9 @@ public interface IMedicalVisitCommandDataContext : IDataContextUnitOfWork
     Task CreateAsync(PatientMedicalVisit medicalVisit, CancellationToken cts = default);
     Task UpdateAsync(PatientMedicalVisit medicalVisit, CancellationToken cts = default);
     Task CreateMedicalHistoryAsync(PatientMedicalHistory medHist, CancellationToken cts = default);
+
+
+    // NUEVOS métodos para soportar la lógica de creación segura
+    Task<bool> HasMedicalHistoryAsync(Guid patientId, CancellationToken ct = default);
+    Task<Guid> GetMedicalHistoryIdByPatientIdAsync(Guid patientId, CancellationToken ct = default);
 }
