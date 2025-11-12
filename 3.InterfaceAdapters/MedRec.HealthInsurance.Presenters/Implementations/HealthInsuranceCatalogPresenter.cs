@@ -9,7 +9,7 @@ internal class HealthInsuranceCatalogPresenter : IHealthInsuranceCatalogOutputPo
 {
     public int TotalRecords { get; private set; }
 
-    public List<HealthInsuranceCatalogDto> HealthInsuranceCatalog { get; private set; } = [];
+    public List<GetHealthInsuranceSummaryDto> HealthInsuranceCatalog { get; private set; } = [];
 
     public IEnumerable<ValidationError> ValidationErrors { get; private set; } = [];
 
@@ -25,7 +25,7 @@ internal class HealthInsuranceCatalogPresenter : IHealthInsuranceCatalogOutputPo
     {
         ErrorAsync(null);
 
-        HealthInsuranceCatalog = healthInsuranceCatalog.Select(x => new HealthInsuranceCatalogDto(
+        HealthInsuranceCatalog = healthInsuranceCatalog.Select(x => new GetHealthInsuranceSummaryDto(
             id: x.Id,
             name: x.Name,
             acronym: x.Acronym)).ToList();

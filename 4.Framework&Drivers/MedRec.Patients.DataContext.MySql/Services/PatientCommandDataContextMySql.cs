@@ -38,6 +38,14 @@ internal class PatientCommandDataContextMySql(DataBaseContextMySql context)
 
     public async Task UpdatePatientAsync(Patient editPatient, CancellationToken cancellationToken = default)
     {
+        var trackedEntry = context.ChangeTracker.Entries<Patient>()
+            .FirstOrDefault(e => e.Entity.Id == editPatient.Id);
+
+        if (trackedEntry != null)
+        {
+            trackedEntry.State = EntityState.Detached;
+        }
+
         var existingPatient = await context.Patients
             .FirstOrDefaultAsync(p => p.Id == editPatient.Id, cancellationToken);
 
@@ -56,6 +64,13 @@ internal class PatientCommandDataContextMySql(DataBaseContextMySql context)
     }
     public async Task HardDeletePatientAsync(Guid patientId, CancellationToken cancellationToken = default)
     {
+        var trackedEntry = context.ChangeTracker.Entries<Patient>()
+            .FirstOrDefault(e => e.Entity.Id == patientId);
+
+        if (trackedEntry != null)
+            trackedEntry.State = EntityState.Detached;
+
+
         var value = await context.Patients.FirstOrDefaultAsync(p => p.Id == patientId, cancellationToken);
         if (value != null) { context.Patients.Remove(value); }
     }

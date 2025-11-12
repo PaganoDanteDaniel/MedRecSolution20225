@@ -1,6 +1,7 @@
 ﻿using MedRec.DataContext.MySql.DataContext;
 using MedRec.DataContext.MySql.Guard;
 using MedRec.Entity.Interfaces;
+using MedRec.Shared.Exceptions.SQLExceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using MySqlConnector;
@@ -90,12 +91,12 @@ internal class DataContextUnitOfWork(DataBaseContextMySql context) : IDataContex
     private static bool IsTransient(Exception ex)
     {
         // No reintentar conflictos de concurrencia: requieren intervención de la capa superior.
-        if (ex is DbUpdateConcurrencyException)
+        if (ex is ConcurrencyException ||
+            ex is DuplicateKeyException ||
+            ex is DbUpdateConcurrencyException)
+        {
             return false;
-
-        // Timeout general (no específico de DB)
-        if (ex is TimeoutException)
-            return true;
+        }
 
         // Recorrer toda la cadena de excepciones
         for (var inner = ex; inner is not null; inner = inner.InnerException)

@@ -8,6 +8,8 @@ public static class DependencyContainer
     {
         services.AddScoped<IMedicalVisitCommandRepository, MedicalVisitCommandRepository>();
         services.AddScoped<IMedicalVisitQueriesRepository, MedicalVisitQueriesRepository>();
+        services.AddScoped<IMedicalVisitCommandRepositoryUoW, MedicalVisitCommandRepositoryUoW>();
+        services.AddScoped<IMedicalVisitQueriesRepositoryUoW, MedicalVisitQueriesRepositoryUoW>();
 
         return services;
     }

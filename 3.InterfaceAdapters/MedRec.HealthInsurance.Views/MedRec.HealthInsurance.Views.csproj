@@ -20,17 +20,35 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Resources\AddHealthInsuranceMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AddHealthInsuranceMessages.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\HealthInsuranceMessages.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>HealthInsuranceMessages.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\UpdateHealthInsuranceMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UpdateHealthInsuranceMessages.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Resources\AddHealthInsuranceMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AddHealthInsuranceMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\HealthInsuranceMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>HealthInsuranceMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\UpdateHealthInsuranceMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UpdateHealthInsuranceMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

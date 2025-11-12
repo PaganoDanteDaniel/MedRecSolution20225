@@ -42,6 +42,22 @@
         .my-modal-dialog.my-modal-lg .my-modal-body {
             flex: 1;
         }
+    /* --- Tamaño grande (tablas, ABM, formularios) --- */
+    .my-modal-dialog.my-modal-normal {
+        max-width: 80%;
+        width: 80%;
+        margin: 0; /* sin margen; el overlay centra */
+    }
+
+        .my-modal-dialog.my-modal-normal .my-modal-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .my-modal-dialog.my-modal-normal .my-modal-body {
+            flex: 1;
+        }
 
 /* --- Contenido del modal --- */
 .my-modal-content {
@@ -191,8 +207,7 @@
         color: white !important;
     }
 
-/* --- Boton Cancelar --- */
-.my-modal-footer .btn-cancel {
+.my-modal-footer .btn-dangerous {
     background-color: var(--modal-button-cancel-background) !important;
     border: 1px solid var(--modal-button-cancel-border) !important;
     color: var(--modal-button-cancel-text) !important;
@@ -203,16 +218,39 @@
     margin-left: 0.5rem;
 }
 
-    .my-modal-footer .btn-cancel:hover {
+    .my-modal-footer .btn-dangerous:hover {
         background-color: var(--modal-button-cancel-hover) !important;
         border-color: var(--modal-button-cancel-border) !important;
         color: white !important;
     }
 
-    .my-modal-footer .btn-cancel:active {
+    .my-modal-footer .btn-dangerous:active {
         background-color: var(--modal-button-cancel-active) !important;
         border-color: var(--modal-button-cancel-border) !important;
         color: white !important;
+    }
+/* --- Boton Cancelar --- */
+.my-modal-footer .btn-cancel {
+    background-color: var(--modal-button-neutral-background) !important;
+    border: 1px solid var(--modal-button-neutral-border) !important;
+    color: var(--modal-button-neutral-text) !important;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    margin-left: 0.5rem;
+}
+
+    .my-modal-footer .btn-cancel:hover {
+        background-color: var(--modal-button-neutral-hover) !important;
+        border: 1px solid var(--modal-button-neutral-border) !important;
+        color: var(--modal-button-neutral-text) !important;
+    }
+
+    .my-modal-footer .btn-cancel:active {
+        background-color: var(--modal-button-neutral-active) !important;
+        border: 1px solid var(--modal-button-neutral-border) !important;
+        color: var(--modal-button-neutral-text) !important;
     }
 
 

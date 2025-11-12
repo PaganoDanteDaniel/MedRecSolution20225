@@ -8,6 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using MedRec.CommonComponents.Views;
 using MedRec.Entity.DTOs;
 using MedRec.HealthInsurance.ViewModels.Models;
 using MedRec.HealthInsurance.ViewModels.VM;
@@ -22,8 +23,7 @@ public partial class HealthInsuranceComponent
     private CancellationTokenSource _cts;
     private CancellationTokenSource _debounceCts;
     [Inject] public NavigationManager NavigationManager { get; set; }
-    [Parameter] public HealthInsuranceCatalogVM Model { get; set; }
-    [Inject] public HealthInsuranceCatalogVM DefaultModel { get; set; }
+    private HealthInsuranceCatalogVM VM => Service;
     [Parameter] public EventCallback<(Guid Id, string Name)> OnHealthCompanySelected { get; set; }
     [Parameter] public EventCallback<string> FooterMessageParameterChanged { get; set; }
     [Parameter] public int MaxPageButton { get; set; }
@@ -58,23 +58,92 @@ public partial class HealthInsuranceComponent
     private PaginationDto _paginationDto = new(1, 10);
     private int _totalPages = 1;
 
-    private string _footerMessage = "";
-    private bool showHealthCompanyAdd;
-    private bool showHealthCompanyDelete;
-    private bool showHealthCompanyUpdate;
+    // Estado de navegación
+    private bool _navigateAfterClose = false;
+    private string _navigationUrl = "/";
+
+    // Visibilidad y contenido del modal
+    private bool _showModal;
+    private string _modalTitle = "MENSAJE DEL SISTEMA";
+    private string _footerMessage = string.Empty;
+    private EventCallback _onAcceptCallback;
+
+    // Comportamiento y estilo del modal
+    private ModalType _modalType = ModalType.MessageInfo;
+    private bool _centerText;
+    private bool _actionDangerous;
+
+    // Configuración de botones
+    private bool _showAcceptButton;
+    private bool _showCancelButton;
+    private string _buttonAcceptText;
+    private string _buttonCancelText;
+
     private Guid healthCompanyId;
+    private bool _addAction;
+    private bool _deleteAction;
+    private bool _updateAction;
 
     protected override async Task OnInitializedAsync()
     {
-        if (Model == null)
-        {
-            Model = DefaultModel;
-        }
+        VM.OnShowMessage += () => ShowModalMessage(title: "Información", 
+                                                   type: ModalType.MessageInfo, 
+                                                   onAccept: default, 
+                                                   showAcceptButton: false, 
+                                                   buttonCancelTex: "SALIR");
+
+        VM.OnShowWarning += () => ShowModalMessage(title: "Advertencia", 
+                                                   type: ModalType.MessageWarning, 
+                                                   onAccept: default,
+                                                   showAcceptButton: false,
+                                                   buttonCancelTex: "SALIR");
+
+        VM.OnShowError += () => ShowModalMessage(title: "Error",
+                                                 type: ModalType.MessageError, 
+                                                 onAccept: default,
+                                                 showAcceptButton:false,
+                                                 buttonCancelTex:"SALIR");
+
+        VM.OnShowConcurrencyError += () => ShowModalMessage(title: "Conflicto de concurrencia",     
+                                                            type: ModalType.MessageError, 
+                                                            onAccept: default,
+                                                            showAcceptButton: false,
+                                                            buttonCancelTex: "SALIR");
+        VM.OnHealthInsuranceDeleted += StateHasChanged;
+
         await LoadHealthCompanies();
     }
     protected override void OnAfterRender(bool firstRender)
     {
         base.OnAfterRender(firstRender);
+    }
+    private void ShowModalMessageAndNavigate(string title, ModalType type, string navigationUrl)
+    {
+        _modalTitle = title;
+        _modalType = type;
+        _showModal = true;
+        _navigateAfterClose = true;
+        _navigationUrl = navigationUrl;
+        InvokeAsync(StateHasChanged);
+    }
+    private void ShowModalMessage(string title,
+        ModalType type, EventCallback onAccept, bool centerText = true,
+        bool actionDangerous = false, bool showAcceptButton = true,
+        bool showCancelButton = true, string buttonAcceptText = "ACEPTAR",
+        string buttonCancelTex = "CANCELAR")
+    {
+        _modalTitle = title;
+        _modalType = type;
+        _onAcceptCallback = onAccept;
+        _centerText = centerText;
+        _actionDangerous = actionDangerous;
+        _showAcceptButton = showAcceptButton;
+        _showCancelButton = showCancelButton;
+        _buttonAcceptText = buttonAcceptText;
+        _buttonCancelText = buttonCancelTex;
+        _showModal = true;
+        _navigateAfterClose = false;
+        InvokeAsync(StateHasChanged);
     }
     private async Task OnSearchTermChanged(string searchTerm)
     {
@@ -107,8 +176,8 @@ public partial class HealthInsuranceComponent
         _cts?.Dispose();
         _cts = new CancellationTokenSource();
 
-        await Model.LoadHealthCompaniesAsync(_paginationDto, _cts.Token);
-        var total = Model.TotalRecords;
+        await VM.GetHealthInsuranceAsync(_paginationDto, _cts.Token);
+        var total = VM.TotalRecords;
         FooterMessage = string.Format(HealthInsuranceMessages.TotalRegistryTemplate, total);
         _totalPages = (int)Math.Ceiling((double)total / _paginationDto.PageSize);
         StateHasChanged();  // Forzar la actualización del componente
@@ -119,54 +188,82 @@ public partial class HealthInsuranceComponent
         await LoadHealthCompanies();
     }
     //{healthCompanyId}
+
+    private void OnAddHealthInsurance()
+    {
+        _addAction = true;
+        ShowModalMessage(
+            title: AddHealthInsuranceMessages.TitleText,
+            type: ModalType.NormalContent,
+            onAccept: EventCallback.Factory.Create(this, OnAddedCompany),
+            centerText: false,
+            showAcceptButton: false);
+    }
     private void OnUpdateHealthInsurance(HealthInsuranceModel healthCompany)
     {
-        showHealthCompanyUpdate = true;
+        _updateAction = true;
+        ShowModalMessage(
+            title:UpdateHealthInsuranceMessages.TitleText,
+            type: ModalType.NormalContent,
+            onAccept: EventCallback.Factory.Create(this, OnHealthCompanyUpdated), 
+            centerText: false,
+            showAcceptButton: false,
+            showCancelButton: false);
         this.healthCompanyId = healthCompany.Id;
     }
     private void OnDeleteHealthInsurance(HealthInsuranceModel healthCompany)
     {
-        showHealthCompanyDelete = true;
+        _deleteAction = true;
+
+        VM.InformationMessage = HealthInsuranceMessages.ModalMessageText;
+        ShowModalMessage(HealthInsuranceMessages.ModalTitleText,
+            ModalType.MessageWarning,
+            onAccept: EventCallback.Factory.Create(this, OnAcceptDelete),
+            true, true, true, true, "SI", "NO");
         this.healthCompanyId = healthCompany.Id;
     }
     private async Task OnAcceptDelete()
-    {
-        // await Model.DeleteHealthCompanyAsync(healthCompanyId);
-        showHealthCompanyDelete = false;
+    {   
+        _showModal = false;
+        await VM.DeleteHealthInsuranceAsync(healthCompanyId);       
         await LoadHealthCompanies();
     }
-    private void OnAddHealthCompany()
-    {
-        showHealthCompanyAdd = true;
-    }
 
-    private void OnCloseHealthCompanyUpdate(bool state)
-    {
-        showHealthCompanyUpdate = state;
-    }
-    private void OnCloseHealthCompanyAdd(bool state)
-    {
-        showHealthCompanyAdd = state;
 
-    }
-
-    private void OnCloseHealthCompanyDelete(bool state)
+    public void OnCloseModal(bool state)
     {
-        showHealthCompanyDelete = state;
+        _addAction = false;
+        _updateAction = false;
+        _deleteAction = false;
+        _showModal = state;
     }
 
     private async Task OnAddedCompany()
     {
-        await OnCancelAdder();
-    }
-    private async Task OnCancelAdder()
-    {
+        _addAction = false;
         await LoadHealthCompanies();
-        showHealthCompanyAdd = false;
+        _showModal = false;
+
     }
     private async Task OnHealthCompanyUpdated()
     {
+        _updateAction = false;
         await LoadHealthCompanies();
-        showHealthCompanyUpdate = false;
+        _showModal = false;
+    }
+    private void OnCancelAdder()
+    { _showModal = false; }
+
+    public void Dispose()
+    {
+        if (VM is not null)
+        {
+            VM.OnShowMessage -= () => ShowModalMessage("Información", ModalType.MessageInfo, default);
+            VM.OnShowWarning -= () => ShowModalMessage("Advertencia", ModalType.MessageWarning, default);
+            VM.OnShowError -= () => ShowModalMessage("Error", ModalType.MessageError, default);
+            VM.OnShowConcurrencyError -= () => ShowModalMessage("Conflicto de concurrencia", ModalType.MessageError, default);
+            VM.OnHealthInsuranceDeleted -= StateHasChanged;
+        }
+        _cts?.Dispose();
     }
 }

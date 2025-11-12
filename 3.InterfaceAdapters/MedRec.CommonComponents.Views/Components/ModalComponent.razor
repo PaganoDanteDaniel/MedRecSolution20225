@@ -1,5 +1,6 @@
-﻿<div class="my-modal @(Show ? "show" : "d-none") @GetModalClass()">
-    <div class="my-modal-dialog @(IsLargeModal ? "my-modal-lg" : "")">
+﻿<div
+    class="my-modal @(Show ? "show" : "d-none") @GetModalClass()">
+    <div class="my-modal-dialog @(IsLargeModal ? "my-modal-lg" : "") @(IsNormalModal ? "my-modal-normal" : "")">
         <div class="my-modal-content">
             <div class="my-modal-header">
                 <div class="my-modal-title">
@@ -15,14 +16,14 @@
             <div class="my-modal-footer">
                 @if (ShowAcceptButton)
                 {
-                    <button type="button" class="btn-accept" @onclick="OnAccept">
-                        <i class="bi bi-check-lg"></i> Aceptar
+                    <button type="button" class="@(ActionDangerous? "btn-dangerous" : "btn-accept")" @onclick="OnAccept">
+                        <i class="bi bi-check-lg"></i> @ButtonAcceptText
                     </button>
                 }
                 @if (ShowCancelButton)
                 {
                     <button type="button" class="btn-cancel" @onclick="Close">
-                        <i class="bi bi-x-lg"></i> Cerrar
+                        <i class="bi bi-x-lg"></i> @ButtonCancelText
                     </button>
                 }
             </div>

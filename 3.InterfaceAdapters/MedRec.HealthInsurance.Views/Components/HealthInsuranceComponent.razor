@@ -1,21 +1,25 @@
-﻿@using MedRec.CommonComponents.Views.Components
+﻿@using MedRec.CommonComponents.Views
+@using MedRec.CommonComponents.Views.Components
 @using MedRec.Entity.DTOs
 @using MedRec.HealthInsurance.ViewModels.VM
 @using MedRec.HealthInsurance.ViewModels.Models
 @using MedRec.HealthInsurance.Views.Resources
 @using Microsoft.AspNetCore.Components.Forms
+
+@inherits OwningComponentBase<HealthInsuranceCatalogVM>
+
 <div class="container">
     <div class="search-section">
         <SearchAndAddComponent LabelText="@HealthInsuranceMessages.FilterLabelText"
                                Placeholder="@HealthInsuranceMessages.PlaceholderFilterInput"
                                ButtonText="AGREGAR"
                                @bind-Value="Filter"
-                               OnButtonClick="OnAddHealthCompany"
+                               OnButtonClick="OnAddHealthInsurance"
                                ShowButton />
     </div>
     <div class="table-container">
         <TableComponent TItem="HealthInsuranceModel"
-                        Items="Model.HealthInsuranceCatalog.ToList()"
+                        Items="VM.HealthInsuranceCatalog.ToList()"
                         OnRowClick="SelectHealthInsurance"
                         OnEdit="OnUpdateHealthInsurance"
                         OnDelete="OnDeleteHealthInsurance">
@@ -42,26 +46,38 @@
     </div>
    
 </div>
-@if (showHealthCompanyDelete)
+@if (_showModal)
 {
-    <ModalComponent Title=@HealthInsuranceMessages.ModalTitleText
-                    Show="@showHealthCompanyDelete"
-                    ShowChanged="(value) => OnCloseHealthCompanyDelete(value)"
-                    ShowAcceptButton="true"
-                    OnAccept="OnAcceptDelete"
-                    IsSuccess="true">
+    <ModalComponent Title="@_modalTitle"
+                    Type="@_modalType"
+                    Show="@_showModal"
+                    ShowChanged="value => OnCloseModal(value)"
+                    CenterText="_centerText"
+                    ActionDangerous="_actionDangerous"
+                    ShowAcceptButton="_showAcceptButton"
+                    ShowCancelButton="_showCancelButton"
+                    ButtonAcceptText="@_buttonAcceptText"
+                    ButtonCancelText="@_buttonCancelText"
+                    OnAccept="@_onAcceptCallback" >
         <div>
-            @HealthInsuranceMessages.ModalMessageText
+            @if (_addAction)
+            {
+                <AddHealthInsuranceComponent CompanyName=""
+                                             CompanyAcronym=""
+                                             OnAddedCompany="@OnAddedCompany"
+                                             OnCancelAdd="@OnCancelAdder" />
+            }
+            else if (_updateAction)
+            {
+                <UpdateHealthInsuranceComponent HealthInsuranceId="@healthCompanyId"
+                                                OnHealthInsuranceUpdated="@OnHealthCompanyUpdated"
+                                                OnCancelAdd="@OnCancelAdder"/>
+            }
+            else
+            {
+                @((MarkupString)VM.InformationMessage)
+            }
+            
         </div>
     </ModalComponent>
 }
-@* @if (showHealthCompanyUpdate)
-{
-    <ModalComponent Title=@UpdateHealthCompanyMessages.TitleText
-                    Show="@showHealthCompanyUpdate"
-                    ShowChanged="(value) => OnCloseHealthCompanyUpdate(value)">
-        <UpdateHealthCompanyComponent InsuranceHealthCompanyId=@healthCompanyId
-                                      OnHealthCompanyUpdated="OnHealthCompanyUpdated" />
-    </ModalComponent>
-
-} *@

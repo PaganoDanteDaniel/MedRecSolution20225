@@ -26,6 +26,8 @@ public static class DependencyContainer
         services.AddHealthInsurancePresentersServices();
 
         services.AddTransient<HealthInsuranceCatalogVM>();
+        services.AddTransient<CreateHealthInsuranceVM>();
+        services.AddTransient<UpdateHealthInsuranceVM>();
 
         services.AddMedicalVisitDataContextServices()
                 .AddMedicalVisitRepositoriesServices()
@@ -33,6 +35,7 @@ public static class DependencyContainer
                 .AddMedicalVisitPresenterServices();
 
         services.AddTransient<CreateMedicalVisitVM>();
+        services.AddTransient<UpdateMedicalVisitVM>();
         services.AddTransient<MedicalVisitVM>();
 
         services.AddMedicalAppointmentDataContextServices()

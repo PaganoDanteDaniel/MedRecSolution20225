@@ -1,0 +1,64 @@
+.add-health-company-form {
+    background-color: var(--form-background);
+    border: 1px solid var(--form-border);
+    padding: 20px;
+    border-radius: 8px;
+    color: var(--form-text);
+    width: 60%; /* Ancho recalculado */
+    margin: 0 auto; /* Centrar el formulario */
+}
+
+    .add-health-company-form ::deep i {
+        margin-right: 5px; /* Espacio entre el ícono y el texto */
+    }
+
+    .add-health-company-form ::deep label {
+        color: var(--form-text);
+        margin-bottom: 5px; /* Espacio entre el label y el input */
+    }
+
+    .add-health-company-form ::deep input {
+        background-color: var(--input-background);
+        border: 1px solid var(--input-border);
+        color: var(--input-text);
+        padding: 8px;
+        border-radius: 4px;
+        width: 100%;
+        margin-bottom: 15px; /* Espacio entre los inputs */
+    }
+
+        .add-health-company-form ::deep input:focus {
+            background-color: var(--input-focus-background);
+            border-color: var(--input-focus-border);
+            color: var(--input-focus-text);
+        }
+
+    .add-health-company-form .validation-message {
+        color: red; /* Color destacado para mensajes de validación */
+    }
+    .add-health-company-form ::deep .button-group {
+        display: flex;
+        justify-content: flex-end; /* Alinear los botones a la derecha */
+    }
+
+    .add-health-company-form ::deep .button-group button {
+        background-color: var(--button-background);
+        border: 1px solid var(--button-border);
+        color: var(--button-text);
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+    }
+
+        .add-health-company-form ::deep .button-group button:hover {
+            background-color: var(--button-hover-background);
+            border-color: var(--button-hover-border);
+            color: var(--button-hover-text);
+        }
+
+
+    

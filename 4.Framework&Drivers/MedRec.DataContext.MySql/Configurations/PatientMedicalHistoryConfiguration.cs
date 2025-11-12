@@ -19,7 +19,7 @@ public class PatientMedicalHistoryConfiguration : IEntityTypeConfiguration<Patie
             .IsConcurrencyToken()
             .ValueGeneratedOnAddOrUpdate();
 
-        builder.HasIndex(e => e.PatientId);
+        builder.HasIndex(e => e.PatientId).IsUnique();
 
         builder.HasOne<PatientMedicalCondition>()
             .WithOne()

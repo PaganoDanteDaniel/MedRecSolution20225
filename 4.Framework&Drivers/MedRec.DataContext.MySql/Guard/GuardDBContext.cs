@@ -44,12 +44,9 @@ public class GuardDBContext
                 ExtractEntityNames(ex)
             );
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!(ex is ConcurrencyException || ex is DuplicateKeyException || ex is UpdateException))
         {
-            throw new UpdateException(
-                "Error inesperado en SaveChanges.",
-                ex
-            );
+            throw new UpdateException("Error inesperado en SaveChanges.", ex);
         }
     }
 
@@ -57,13 +54,19 @@ public class GuardDBContext
     {
         var list = new List<ConcurrencyConflictDto>();
 
+        if (ex?.Entries == null)
+            return list;
+
         foreach (var entry in ex.Entries)
         {
+            if (entry?.Entity == null || entry.Properties == null)
+                continue;
+
             var entityName = entry.Entity.GetType().Name;
 
-            // Solo propiedades modificadas participan en la verificación de concurrencia
-            foreach (var p in entry.Properties.Where(p => p.IsModified))
+            foreach (var p in entry.Properties.Where(p => p?.Metadata?.Name != null && p.IsModified))
             {
+                // Protege contra valores nulos
                 list.Add(new ConcurrencyConflictDto(
                     entityName,
                     p.Metadata.Name,
@@ -75,7 +78,6 @@ public class GuardDBContext
 
         return list;
     }
-
     private static IEnumerable<string> ExtractEntityNames(DbUpdateException ex)
     {
         return ex.Entries.Select(e => e.Entity.GetType().Name);

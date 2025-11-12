@@ -5,19 +5,31 @@ using MedRec.Validator.ValueObjects;
 namespace MedRec.MedicalVisit.Presenters.Implementations;
 internal class UpdateMedicalVisitPresenter : IUpdateMedicalVisitOutputPort
 {
-    public IEnumerable<ValidationError> ValidationErrors { get; private set; }
+    bool _updated;
+    private IEnumerable<ValidationError> _validationErrors;
+    private ErrorInfo _errorInfo;
+    public IEnumerable<ValidationError> ValidationErrors => _validationErrors;
 
-    public ErrorInfo ErrorMessage { get; private set; }
+    public ErrorInfo ErrorMessage => _errorInfo;
+
+    public bool IsUpdated => _updated;
 
     public Task ErrorAsync(ErrorInfo message)
     {
-        ErrorMessage = message;
+        _errorInfo = message;
+        return Task.CompletedTask;
+    }
+
+    public Task Handle(bool updated, CancellationToken cd)
+    {
+        if (updated)
+            _updated = true;
         return Task.CompletedTask;
     }
 
     public Task ValidationErrorsAsync(IEnumerable<ValidationError> errors)
     {
-        ValidationErrors = errors.ToList();
+        _validationErrors = errors.ToList();
         return Task.CompletedTask;
     }
 }

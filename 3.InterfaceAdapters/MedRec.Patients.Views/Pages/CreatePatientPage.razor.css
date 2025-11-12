@@ -40,12 +40,6 @@
     margin-bottom: 1rem;
 }
 
-/*@media (min-width: 801px) {
-    .scrollable-section {
-        align-items: center;
-    }
-}*/
-
 /* En móviles/tablets, alineado arriba */
 @media (max-width: 800px) {
     .scrollable-section {

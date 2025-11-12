@@ -1,9 +1,9 @@
 ﻿using MedRec.Entity.POCOEntities;
 
 namespace MedRec.HealthInsurance.BusinessObjects.DTOs;
-public class HealthInsuranceCatalogDto
+public class GetHealthInsuranceSummaryDto
 {
-    public HealthInsuranceCatalogDto(Guid id, string name, string acronym)
+    public GetHealthInsuranceSummaryDto(Guid id, string name, string acronym)
     {
         Id = id;
         Name = name;
@@ -14,9 +14,9 @@ public class HealthInsuranceCatalogDto
     public string Name { get; }
     public string Acronym { get; }
 
-    public static explicit operator HealthInsuranceCatalogDto(HealthInsuranceCompany entity)
+    public static explicit operator GetHealthInsuranceSummaryDto(HealthInsuranceCompany entity)
     {
-        return new HealthInsuranceCatalogDto(
+        return new GetHealthInsuranceSummaryDto(
             id: entity.Id,
             name: entity.Name,
             acronym: entity.Acronym);

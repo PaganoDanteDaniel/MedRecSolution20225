@@ -1,4 +1,5 @@
-﻿using MedRec.Entity.Interfaces;
+﻿using MedRec.DataContext.MySql.Guard;
+using MedRec.Entity.Interfaces;
 
 namespace MedRec.Repositories.Services;
 internal class RepositoryUnitOfWork(IDataContextUnitOfWork dataContextUnitOfWork) : IRepositoryUnitOfWork
@@ -13,7 +14,8 @@ internal class RepositoryUnitOfWork(IDataContextUnitOfWork dataContextUnitOfWork
         await dataContextUnitOfWork.RollbackTransactionAsync(ct);
 
     public Task<int> SaveChanges(CancellationToken ct = default) =>
-        dataContextUnitOfWork.SaveChangesAsync(ct);
+        GuardDBContext.AgainstSaveChangesErrorAsync(dataContextUnitOfWork.SaveChangesAsync, ct);
+    //dataContextUnitOfWork.SaveChangesAsync(ct);
 
     public Task ExecuteWithRetryAsync(Func<Task> operation, CancellationToken ct = default) =>
         dataContextUnitOfWork.ExecuteWithRetryAsync(operation, ct);
