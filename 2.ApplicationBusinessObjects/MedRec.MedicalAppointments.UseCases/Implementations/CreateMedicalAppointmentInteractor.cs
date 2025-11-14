@@ -46,6 +46,13 @@ internal class CreateMedicalAppointmentInteractor(
 
             await presenter.Handle(created, ct);
         }
+        catch (LostConnectionException lce)
+        {
+            await presenter.ErrorAsync(new ErrorInfo(
+                lce.Message,
+                ErrorCode.DatabaseError,
+                503));
+        }
         catch (ConcurrencyException cx)
         {
             // 409: incluir conflictos tipados (lista de ConcurrencyConflictDto)
@@ -80,11 +87,7 @@ internal class CreateMedicalAppointmentInteractor(
         }
         catch (OperationCanceledException)
         {
-            await presenter.ErrorAsync(new ErrorInfo(
-                "Operación cancelada por el usuario.",
-                ErrorCode.Cancelled,
-                null,
-                499));
+            throw;
         }
         catch (Exception ex)
         {

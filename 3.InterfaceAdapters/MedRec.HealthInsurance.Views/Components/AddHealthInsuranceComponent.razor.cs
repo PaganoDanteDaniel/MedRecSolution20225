@@ -19,7 +19,8 @@ public partial class AddHealthInsuranceComponent : IDisposable
     private CreateHealthInsuranceVM VM => Service;
     private EditContext EditContext;
     private bool _showModal;
-
+    private bool isLoading = false;
+ 
     [Parameter] public string CompanyName { set { VM.Model.Name = value; } }
     [Parameter] public string CompanyAcronym { set { VM.Model.Acronym = value; } }
     [Parameter] public EventCallback OnAddedCompany { get; set; }
@@ -37,7 +38,11 @@ public partial class AddHealthInsuranceComponent : IDisposable
         }
 
     }
-
+    private void SetLoading(bool loading)
+    {
+        isLoading = loading;
+        InvokeAsync(StateHasChanged);
+    }
     private void OnAccept()
     {
         _showModal = false;
@@ -56,9 +61,9 @@ public partial class AddHealthInsuranceComponent : IDisposable
 
     private async Task AddHealthCompany()
     {
-
+        SetLoading(true);
         await VM.AddHealthCompany();
-
+        SetLoading(false);
     }
     private void ClearForm()
     {

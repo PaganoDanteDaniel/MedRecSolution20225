@@ -7,7 +7,7 @@ using System.Globalization;
 namespace MedRec.MedicalAppointments.Views.Components;
 public partial class AppointmentScheduleComponent
 {
-    private WeeklyScheduleViewModel VM => Service;
+    private WeeklyScheduleViewModelOrchestrator VM => Service;
 
     private ElementReference patientReasonInputRef;
     private bool shouldFocus = false; // Bandera para controlar el foco
@@ -15,6 +15,7 @@ public partial class AppointmentScheduleComponent
     private string shift = "";
     private bool activeMoveMode = false;
     private bool activeReassignMode = false;
+    private bool isLoading = false;
 
     // Selecciones y estado de UI
     private (DateTime Start, DateTime End)? SelectedWeek;
@@ -35,6 +36,12 @@ public partial class AppointmentScheduleComponent
     private Modal_Type modalType = Modal_Type.Ninguno;
     private string Legend => $"AGENDA MES DE: {Capitalize(VM.DateBase.ToString("MMMM", CultureInfo.CreateSpecificCulture("es-ES")))}";
 
+
+    private void SetLoading(bool loading)
+    {
+        isLoading = loading;
+        InvokeAsync(StateHasChanged);
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -57,11 +64,12 @@ public partial class AppointmentScheduleComponent
         StateHasChanged();
         try
         {
-            await VM.LoadWeekAsync(start, end);
+            SetLoading(true);
+            await VM.LoadWeekAsync(start, end); // o la llamada concreta
         }
-        catch (Exception ex)
+        finally
         {
-            throw;
+            SetLoading(false);
         }
     }
 
@@ -97,7 +105,7 @@ public partial class AppointmentScheduleComponent
         if (celda.Appointment is not null) return "asignado";
         return "";
     }
-    private void CeldaClic(ScheduleCell celda)
+    private async Task CeldaClic(ScheduleCell celda)
     {
 
         if (celda.IsPast) return;
@@ -118,13 +126,27 @@ public partial class AppointmentScheduleComponent
 
             if (celda.Appointment is null && sourceCell.Appointment is not null)
             {
-                // Mover shift
+                // Intento de mover: no actualizamos visualmente hasta confirmar éxito
                 var appt = sourceCell.Appointment;
-                sourceCell.Appointment = null;
-                appt.DateTime = celda.DateTime;
-                celda.Appointment = appt;
+                var originalDateTime = appt.DateTime;
 
-                _ = VM.MoveAsync(appt); // Persistencia simple (Upsert futuro).
+                // Preparamos el modelo con la nueva fecha/hora
+                appt.DateTime = celda.DateTime;
+                SetLoading(true);
+                var movedOk = await VM.MoveAsync(appt);
+                SetLoading(false);
+                if (movedOk)
+                {
+                    // Actualizamos UI solo si se confirmó el movimiento
+                    sourceCell.Appointment = null;
+                    celda.Appointment = appt;
+                }
+                else
+                {
+                    // Revertimos el modelo si falló la operación
+                    appt.DateTime = originalDateTime;
+                }
+
                 CancelMoveMode();
                 StateHasChanged();
             }
@@ -173,7 +195,7 @@ public partial class AppointmentScheduleComponent
         if (selectedCell?.Appointment is null) return;
         activeMoveMode = true;
         sourceCell = selectedCell;
-        CloseModal();
+        CloseActionModal();
     }
 
     private void CancelMoveMode()
@@ -182,9 +204,17 @@ public partial class AppointmentScheduleComponent
         sourceCell = null;
     }
 
+    // Cierra ambos modales (mensaje + gestión)
     private void CloseModal()
     {
         _showModal = false;
+        showModal = false;
+        modalType = Modal_Type.Ninguno;
+    }
+
+    // Cierra solo el modal de gestión (no toca el modal de mensajes)
+    private void CloseActionModal()
+    {
         showModal = false;
         modalType = Modal_Type.Ninguno;
     }
@@ -193,7 +223,7 @@ public partial class AppointmentScheduleComponent
     {
         if (showModal)
         {
-            CloseModal();
+            CloseActionModal();
         }
     }
 
@@ -202,7 +232,7 @@ public partial class AppointmentScheduleComponent
     {
         if (selectedCell is null) return;
         if (string.IsNullOrWhiteSpace(tempAppointment.PatientName) || string.IsNullOrWhiteSpace(tempAppointment.Phone)) return;
-
+        Appointment? originalAppt = new();
         var appt = selectedCell.Appointment ?? new Appointment
         {
             //Id = Guid.NewGuid(),
@@ -211,6 +241,24 @@ public partial class AppointmentScheduleComponent
             IsDeleted = false
         };
 
+        if (appt.Id != Guid.Empty)
+        {
+            originalAppt = new Appointment()
+            {
+                Id = appt.Id,
+                DateTime = appt.DateTime,
+                PatientId = appt.PatientId,
+                DoctorId = appt.DoctorId,
+                PatientLastName = appt.PatientLastName,
+                PatientFirstName = appt.PatientFirstName,
+                PatientName = appt.PatientName,
+                Phone = appt.Phone,
+                Reason = appt.Reason,
+                IsDeleted = appt.IsDeleted,
+                RowVersion = appt.RowVersion
+            };
+        }
+
         appt.PatientId = tempAppointment.PatientId;
         appt.PatientName = tempAppointment.PatientName;
         appt.Phone = tempAppointment.Phone;
@@ -218,17 +266,38 @@ public partial class AppointmentScheduleComponent
 
         if (activeReassignMode)
         {
-            showModal = false;
+            CloseActionModal();
             activeReassignMode = false;
-            await VM.ReassignAsync(appt);
+            SetLoading(true);
+            if (!await VM.ReassignAsync(appt) && originalAppt != null)
+            {
+                appt.Id = originalAppt.Id;
+                appt.DateTime = originalAppt.DateTime;
+                appt.PatientId = originalAppt.PatientId;
+                appt.DoctorId = originalAppt.DoctorId;
+                appt.PatientLastName = originalAppt.PatientLastName;
+                appt.PatientFirstName = originalAppt.PatientFirstName;
+                appt.PatientName = originalAppt.PatientName;
+                appt.Phone = originalAppt.Phone;
+                appt.Reason = originalAppt.Reason;
+                appt.IsDeleted = originalAppt.IsDeleted;
+                appt.RowVersion = originalAppt.RowVersion;
+                SetLoading(false);
+            }
+            SetLoading(false);
+
+
         }
         else
         {
+            CloseActionModal();
+            SetLoading(true);
             await VM.SaveChange(appt);
+            SetLoading(false);
         }
 
-        var x = selectedCell.Appointment;
-        CloseModal();
+        // Cerrar solo el modal de gestión para no interferir con el de mensaje
+
         StateHasChanged();
     }
 
@@ -236,22 +305,35 @@ public partial class AppointmentScheduleComponent
     {
         if (selectedCell?.Appointment is null) return;
 
-        // Marcado simple como cancelado en UI; persistencia mínima
         var appt = selectedCell.Appointment;
-        appt.IsDeleted = true;
-        selectedCell.Appointment = null;
+        var originalIsDeleted = appt.IsDeleted;
 
-        await VM.DeleteAsync(appt); // En un futuro: VM.CancelAppointment(appt.Id)
-        CloseModal();
+        SetLoading(true);
+        var deleted = await VM.DeleteAsync(appt);
+        SetLoading(false);
+        if (deleted)
+        {
+            selectedCell.Appointment = null;
+            // Mostrar éxito ya lo maneja el VM con OnFinnishOperation
+            CloseActionModal();
+        }
+        else
+        {
+            appt.IsDeleted = originalIsDeleted;
+            // No cerrar el modal de mensaje. Solo cerrar el de gestión.
+            CloseActionModal();
+        }
+
         StateHasChanged();
     }
 
-    // Callback del selector de semanas
     private async Task OnWeekSelected((DateTime Start, DateTime End) week)
     {
         SelectedWeek = week;
         VM.DateBase = week.Start;
+        SetLoading(true);
         await VM.LoadWeekAsync(week.Start, week.End);
+        SetLoading(false);
         StateHasChanged();
     }
 
@@ -275,33 +357,6 @@ public partial class AppointmentScheduleComponent
 
         StateHasChanged();
     }
-
-    // Utilidades
-    //private List<string> GenerateDayIntervals(string inicioManana, string finManana, string inicioTarde, string finTarde)
-    //{
-    //    var resultado = new List<string>();
-
-    //    var hIniM = TimeSpan.Parse(inicioManana);
-    //    var hFinM = TimeSpan.Parse(finManana);
-    //    var hIniT = TimeSpan.Parse(inicioTarde);
-    //    var hFinT = TimeSpan.Parse(finTarde);
-
-    //    var actual = hIniM;
-    //    while (actual < hFinM)
-    //    {
-    //        resultado.Add(actual.ToString(@"hh\:mm"));
-    //        actual = actual.Add(TimeSpan.FromMinutes(15));
-    //    }
-
-    //    actual = hIniT;
-    //    while (actual < hFinT)
-    //    {
-    //        resultado.Add(actual.ToString(@"hh\:mm"));
-    //        actual = actual.Add(TimeSpan.FromMinutes(15));
-    //    }
-
-    //    return resultado;
-    //}
 
     private string Capitalize(string texto)
     {

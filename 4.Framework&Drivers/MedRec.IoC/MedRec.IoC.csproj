@@ -15,7 +15,7 @@
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.HealthInsurance.ViewModels\MedRec.HealthInsurance.ViewModels.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.MedicalAppointments.Presenters\MedRec.MedicalAppointments.Presenters.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.MedicalAppointments.Repositories\MedRec.MedicalAppointments.Repositories.csproj" />
-    <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.MedicalAppointmnts.ViewModels\MedRec.MedicalAppointments.ViewModels.csproj" />
+    <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.MedicalAppointments.ViewModels\MedRec.MedicalAppointments.ViewModels.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.MedicalVisit.Presenters\MedRec.MedicalVisit.Presenters.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.MedicalVisit.Repositories\MedRec.MedicalVisit.Repositories.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.MedicalVisit.ViewModels\MedRec.MedicalVisit.ViewModels.csproj" />

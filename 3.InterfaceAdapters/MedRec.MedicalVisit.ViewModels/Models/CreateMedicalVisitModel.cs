@@ -1,6 +1,4 @@
-﻿using MedRec.MedicalVisit.BusinessObjects.DTOs;
-
-namespace MedRec.MedicalVisit.ViewModels.Models;
+﻿namespace MedRec.MedicalVisit.ViewModels.Models;
 public class CreateMedicalVisitModel
 {
     public Guid PatientId { get; set; }
@@ -25,24 +23,24 @@ public class CreateMedicalVisitModel
     public string Notes { get; set; }
     public byte[] RowVersion { get; set; }
 
-    public static explicit operator CreateMedicalVisitDto(CreateMedicalVisitModel model)
-    {
-        return new CreateMedicalVisitDto
-        {
-            //Id = model.Id,
-            MedicalHistoryId = model.MedicalHistoryId,
-            VisitDate = model.VisitDate,
-            Reason = (model.Reason ?? string.Empty).ToUpperInvariant(),
-            Diagnosis = (model.Diagnosis ?? string.Empty).ToUpperInvariant(),
-            Treatment = (model.Treatment ?? string.Empty).ToUpperInvariant(),
-            SystolicPressure = model.SystolicPressure,
-            DiastolicPressure = model.DiastolicPressure,
-            PulsePerMinute = model.PulsePerMinute,
-            Temperature = model.Temperature,
-            Notes = (model.Notes ?? string.Empty).ToUpperInvariant(),
-            RowVersion = model.RowVersion
-        };
-    }
+    //public static explicit operator CreateMedicalVisitDto(CreateMedicalVisitModel model)
+    //{
+    //    return new CreateMedicalVisitDto
+    //    {
+    //        //Id = model.Id,
+    //        MedicalHistoryId = model.MedicalHistoryId,
+    //        VisitDate = model.VisitDate,
+    //        Reason = (model.Reason ?? string.Empty).ToUpperInvariant(),
+    //        Diagnosis = (model.Diagnosis ?? string.Empty).ToUpperInvariant(),
+    //        Treatment = (model.Treatment ?? string.Empty).ToUpperInvariant(),
+    //        SystolicPressure = model.SystolicPressure,
+    //        DiastolicPressure = model.DiastolicPressure,
+    //        PulsePerMinute = model.PulsePerMinute,
+    //        Temperature = model.Temperature,
+    //        Notes = (model.Notes ?? string.Empty).ToUpperInvariant(),
+    //        RowVersion = model.RowVersion
+    //    };
+    //}
     public CreateMedicalVisitModel Clone()
     {
         return new CreateMedicalVisitModel

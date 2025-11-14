@@ -29,19 +29,32 @@ public class CreateMedicalVisitInteractorUoW(
         {
             ct.ThrowIfCancellationRequested();
             // 2. Iniciar transacción
-            await unitOfWork.BeginTransaction(ct);
+            await unitOfWork.ExecuteWithRetryAsync(async () =>
+            {
+
+                await unitOfWork.BeginTransaction(ct);
 
 
-            // 3. Crear entidad desde DTO
-            var medicalVisit = (PatientMedicalVisit)dto;
+                // 3. Crear entidad desde DTO
+                var medicalVisit = (PatientMedicalVisit)dto;
 
-            // 4. Persistir
-            await commandRepository.Create(medicalVisit, ct);
-            await unitOfWork.SaveChanges(ct);
-            await unitOfWork.CommitTransaction(ct);
+                // 4. Persistir
+                await commandRepository.Create(medicalVisit, ct);
+                await unitOfWork.SaveChanges(ct);
+                await unitOfWork.CommitTransaction(ct);
 
-            // 5. Éxito
+                // 5. Éxito
+
+            }, ct);
+
             await outputPort.Handle();
+        }
+        catch (LostConnectionException lce)
+        {
+            await outputPort.ErrorAsync(new ErrorInfo(
+                lce.Message,
+                ErrorCode.DatabaseError,
+                503));
         }
         catch (DuplicateKeyException ex)
         {

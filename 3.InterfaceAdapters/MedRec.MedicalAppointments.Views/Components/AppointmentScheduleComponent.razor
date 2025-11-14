@@ -7,10 +7,19 @@
 @using MedRec.MedicalAppointments.ViewModels.Models
 
 
-@inherits OwningComponentBase<WeeklyScheduleViewModel>
+@inherits OwningComponentBase<WeeklyScheduleViewModelOrchestrator>
 
 
-<div class="schedule-wrapper">
+<div class="schedule-wrapper" style="position:relative">
+    @if (isLoading)
+    {
+        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.6); z-index:1000;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+        </div>
+    }
+
     @* Barra de herramientas superior (Controles de fecha, turno, etc.) *@ 
     <div class="agenda-header">
         <h2>@Legend</h2>
@@ -60,7 +69,7 @@
                         @foreach (var cell in row.Cells.Where(c => VM.TimeSlots.Contains(c.DateTime.ToString("HH:mm"))))
                         {
                             <div class="schedule-cell body-cell day-col @GetCssClass(cell)"
-                                 @onclick="() => CeldaClic(cell)">
+                                 @onclick="async () => await CeldaClic(cell)">
                                 @if (cell.Appointment is not null)
                                 {
                                     <div class="appointment-info">
@@ -90,21 +99,38 @@
     </div>
 </div>
 
-<ModalComponent Title="SELECTOR DE PACIENTE"
+@* ======== MODAL PARA MENSAJES DE ERROR =======*@
+@if (_showModal)
+{
+    <ModalComponent Show="@_showModal"
+                ShowChanged="@((bool val) => _showModal = val)"
+                Title="@_modalTitle"
+                Type="@_modalType"
+                CenterText="true"
+                ShowAcceptButton="true"
+                OnAccept="@CloseModal"
+                ShowCancelButton="false">
+                @((MarkupString)VM.InformationMessage)
+   </ModalComponent>
+}
+
+@* ======== MODAL PARA MOSTRAR LISTADO DE ALUMNOS DE ERROR =======*@
+@if (showPatientModal)
+{
+    <ModalComponent Title="SELECTOR DE PACIENTE"
                 Show="@showPatientModal"
                 Type="CommonComponents.Views.ModalType.LargeContent"
                 ShowChanged="(value) => showPatientModal = value">
 
-    @if (showPatientModal)
-    {
+
         <ListPatientsComponent MaxPageButton="3"
                                WithHeight="false"
                                OnPatientSelected="@OnPatientSelected"
                                ShowActionsColumn ="false"/>
-    }
-</ModalComponent>
+    </ModalComponent>
+}
 
-@* Render condicional del modal en lugar de intentar ocultarlo desde CSS *@
+@* ======== MODAL PARA CONTROL DE ACCIONES ======== *@
 @if (showModal)
 {
     <div class="modal" @onclick="CloseOuterModal">
@@ -120,7 +146,7 @@
                        class="form-control uppercase-input"
                        type="text" />
                 <button @onclick="SaveAppointmentFromModal" class="btn btn-primary">Guardar</button>
-                <button @onclick="CloseModal" class="btn btn-neutral">Cancelar</button>
+                <button @onclick="CloseActionModal" class="btn btn-neutral">Cancelar</button>
             }
             else if (modalType == Modal_Type.Gestion && selectedCell?.Appointment is not null)
             {
@@ -133,18 +159,8 @@
                 <button @onclick="CancelAppointment" class="btn btn-destructive">Cancelar turno</button>
                 <button @onclick="OpenReassignAssignModal" class="btn btn-secondary">Reasignar paciente</button>
                 <button @onclick="ActivateMoveMode" class="btn btn-secondary">Mover a otra fecha</button>
-                <button @onclick="CloseModal" class="btn btn-neutral">Cerrar</button>
+                <button @onclick="CloseActionModal" class="btn btn-neutral">Cerrar</button>
             }
         </div>
     </div>
 }
-<ModalComponent Show="@_showModal"
-                ShowChanged="@((bool val) => _showModal = val)"
-                Title="@_modalTitle"
-                Type="@_modalType"
-                CenterText="true"
-                ShowAcceptButton="true"
-                OnAccept="@CloseModal"
-                ShowCancelButton="false">
-    @((MarkupString)VM.InformationMessage)
-</ModalComponent>

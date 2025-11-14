@@ -4,6 +4,8 @@ using MedRec.MedicalVisit.BusinessObjects.DTOs;
 using MedRec.MedicalVisit.BusinessObjects.Interfaces.Ports;
 using MedRec.MedicalVisit.ViewModels.Models;
 using MedRec.Patients.BusinessObjects.Interfaces.Ports;
+using MedRec.Shared.Exceptions;
+using MedRec.Shared.Exceptions.SQLExceptions;
 
 namespace MedRec.MedicalVisit.ViewModels.VM;
 public class CreateMedicalVisitVM(
@@ -11,8 +13,6 @@ public class CreateMedicalVisitVM(
     ICreateMedicalVisitOutputPort createMedicalVisitOutputPort,
     IGetMedicalHistoryIdInputPort getMedicalHistoryIdInputPort,
     IGetMedicalHistoryIdOutputPort getMedicalHistoryIdOutputPort,
-    IGetMedicalVisitInputPort getMedicalVisitInputPort,
-    IGetMedicalVisitOutputPort getMedicalVisitOutputPort,
     IPatientForMedicalVisitInputPort patientForMedicalVisitInputPort,
     IPatientForMedicalVisitOutputPort patientForMedicalVisitOutputPort)
 {
@@ -111,10 +111,56 @@ public class CreateMedicalVisitVM(
                 OnMedicalVisitAdded?.Invoke();
             }
         }
+        catch (LostConnectionException lce)
+        {
+            await createMedicalVisitOutputPort.ErrorAsync(new ErrorInfo(
+                lce.Message,
+                ErrorCode.DatabaseError,
+                503));
+        }
+        catch (ConcurrencyException cx)
+        {
+            // 409: incluir conflictos tipados (lista de ConcurrencyConflictDto)
+            await createMedicalVisitOutputPort.ErrorAsync(new ErrorInfo(
+                "Conflicto de concurrencia al crear el turno.",
+                ErrorCode.ConcurrencyError,
+                cx.Conflicts,
+                409));
+        }
+        catch (DuplicateKeyException dx)
+        {
+            // 409: conflicto por clave duplicada (Details suele contener entidades implicadas)
+            await createMedicalVisitOutputPort.ErrorAsync(new ErrorInfo(
+                "Ya existe un registro que viola una restricción de unicidad.",
+                ErrorCode.DuplicateKey,
+                dx.Details,
+                409));
+        }
+        catch (UpdateException ux)
+        {
+            // 500: otros errores de persistencia
+            await createMedicalVisitOutputPort.ErrorAsync(new ErrorInfo(
+                "Error al persistir los cambios en la base de datos.",
+                ErrorCode.UpdateError,
+                ux.Details,
+                500));
+        }
+        catch (BusinessException bx)
+        {
+            // Mantener compatibilidad con BusinessException si aparece desde otras capas
+            await createMedicalVisitOutputPort.ErrorAsync(bx.Error);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
-
-            throw new InvalidOperationException("Error crítico al agregar paciente", ex);
+            await createMedicalVisitOutputPort.ErrorAsync(new ErrorInfo(
+                "Ocurrió un error inesperado al crear el turno.",
+                ErrorCode.Unknown,
+                new { Exception = ex.Message },
+                500));
         }
     }
     private void HandleErrors(ErrorInfo error)

@@ -88,7 +88,7 @@ public partial class UpdateMedicalVisitComponent
         // Esperamos la respuesta del usuario (CAMBIO)
         _saveConfirmationTcs = new TaskCompletionSource<bool>();
         bool confirmed = await _saveConfirmationTcs.Task;
-
+        _showModal = false;
         if (!confirmed)
             return;
 

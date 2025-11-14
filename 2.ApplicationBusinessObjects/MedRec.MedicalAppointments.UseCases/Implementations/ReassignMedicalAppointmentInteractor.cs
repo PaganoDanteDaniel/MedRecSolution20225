@@ -51,10 +51,17 @@ internal class ReassignMedicalAppointmentInteractor(
             var reassigned = await queriesRepository.GetById(reassignAppointmentDto.Id, ct);
             await presenter.Handle(reassigned, ct);
         }
+        catch (LostConnectionException lce)
+        {
+            await presenter.ErrorAsync(new ErrorInfo(
+                lce.Message,
+                ErrorCode.DatabaseError,
+                503));
+        }
         catch (ConcurrencyException cx)
         {
             await presenter.ErrorAsync(new ErrorInfo(
-                "Conflicto de concurrencia al mover el turno.",
+                "EL TURNO FUE MODIFICADO POR OTRO USUARIO",
                 ErrorCode.ConcurrencyError,
                 cx.Conflicts,
                 409));
@@ -62,7 +69,7 @@ internal class ReassignMedicalAppointmentInteractor(
         catch (DuplicateKeyException dx)
         {
             await presenter.ErrorAsync(new ErrorInfo(
-                "Conflicto por restricción de unicidad al mover el turno.",
+                "NO SE PUDO MOVER EL TURNO PORQUE YA EXISTE UNO",
                 ErrorCode.DuplicateKey,
                 dx.Details,
                 409));
@@ -70,7 +77,7 @@ internal class ReassignMedicalAppointmentInteractor(
         catch (UpdateException ux)
         {
             await presenter.ErrorAsync(new ErrorInfo(
-                "Error al persistir cambios al mover el turno.",
+                "ERROR AL INTENTAR GUARDAR EL TURNO",
                 ErrorCode.UpdateError,
                 ux.Details,
                 500));
@@ -81,16 +88,12 @@ internal class ReassignMedicalAppointmentInteractor(
         }
         catch (OperationCanceledException)
         {
-            await presenter.ErrorAsync(new ErrorInfo(
-                "Operación cancelada por el usuario.",
-                ErrorCode.Cancelled,
-                null,
-                499));
+            throw;
         }
         catch (Exception ex)
         {
             await presenter.ErrorAsync(new ErrorInfo(
-                "Ocurrió un error inesperado al mover el turno.",
+                "OCURRIO UN ERROR INESPERADO AL MOVER EL TURNO",
                 ErrorCode.Unknown,
                 new { Exception = ex.Message },
                 500));

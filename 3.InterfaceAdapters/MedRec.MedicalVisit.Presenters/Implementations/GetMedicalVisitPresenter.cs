@@ -7,21 +7,27 @@ using MedRec.Validator.ValueObjects;
 namespace MedRec.MedicalVisit.Presenters.Implementations;
 internal class GetMedicalVisitPresenter : IGetMedicalVisitOutputPort
 {
-    public GetMedicalVisitDto MedicalVisit { get; private set; }
+    private GetMedicalVisitDto _medicalVisit;
+    private ErrorInfo? _errorMessage;
+    private IReadOnlyList<ValidationError> _validationErrors = Array.Empty<ValidationError>();
 
-    public IEnumerable<ValidationError> ValidationErrors { get; private set; }
-
-    public ErrorInfo ErrorMessage { get; private set; }
+    public GetMedicalVisitDto MedicalVisit => _medicalVisit;
+    public IEnumerable<ValidationError> ValidationErrors => _validationErrors;
+    public ErrorInfo ErrorMessage => _errorMessage;
 
     public Task ErrorAsync(ErrorInfo message)
     {
-        ErrorMessage = message;
+        _errorMessage = message ?? new ErrorInfo("Error desconocido.");
         return Task.CompletedTask;
     }
-
+    public Task ValidationErrorsAsync(IEnumerable<ValidationError> errors)
+    {
+        _validationErrors = (errors ?? Enumerable.Empty<ValidationError>()).ToArray();
+        return Task.CompletedTask;
+    }
     public Task Handle(PatientMedicalVisit medicalVisit, CancellationToken cts = default)
     {
-        MedicalVisit = new GetMedicalVisitDto
+        _medicalVisit = new GetMedicalVisitDto
         {
             Id = medicalVisit.Id,
             MedicalHistoryId = medicalVisit.MedicalHistoryId,
@@ -36,12 +42,6 @@ internal class GetMedicalVisitPresenter : IGetMedicalVisitOutputPort
             Notes = medicalVisit.Notes,
             RowVersion = medicalVisit.RowVersion
         };
-        return Task.CompletedTask;
-    }
-
-    public Task ValidationErrorsAsync(IEnumerable<ValidationError> errors)
-    {
-        ValidationErrors = errors;
         return Task.CompletedTask;
     }
 }

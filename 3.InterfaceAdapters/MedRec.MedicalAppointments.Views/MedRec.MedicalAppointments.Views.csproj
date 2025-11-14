@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MedRec.CommonComponents.Views\MedRec.CommonComponents.Views.csproj" />
-    <ProjectReference Include="..\MedRec.MedicalAppointmnts.ViewModels\MedRec.MedicalAppointments.ViewModels.csproj" />
+    <ProjectReference Include="..\MedRec.MedicalAppointments.ViewModels\MedRec.MedicalAppointments.ViewModels.csproj" />
     <ProjectReference Include="..\MedRec.Patients.Views\MedRec.Patients.Views.csproj" />
   </ItemGroup>
 

@@ -7,8 +7,16 @@
 
 @inherits OwningComponentBase<CreateHealthInsuranceVM>
 @inject IModelValidatorHub<CreateHealthInsuranceModel> addHealthInsuranceValidator
-
+@if (isLoading)
+{
+    <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.6); z-index:1000;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+}
 <div class="add-health-company-form">
+   
     <EditForm EditContext="EditContext" OnValidSubmit="@AddHealthCompany">
         <DataAnnotationsValidator />
 

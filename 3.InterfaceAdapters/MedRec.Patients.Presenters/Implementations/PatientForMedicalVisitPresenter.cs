@@ -9,7 +9,7 @@ internal class PatientForMedicalVisitPresenter : IPatientForMedicalVisitOutputPo
 {
     public PatientForMedicalVisitDto DataPatient { get; private set; }
 
-    public IEnumerable<ValidationError> ValidationErrors { get; private set; }
+    public IEnumerable<ValidationError> ValidationErrors { get; private set; } = [];
 
     public ErrorInfo ErrorMessage { get; private set; }
 
