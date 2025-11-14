@@ -5,27 +5,28 @@ using MedRec.Validator.ValueObjects;
 namespace MedRec.MedicalVisit.Presenters.Implementations;
 internal class GetMedicalHistoryIdPresenter : IGetMedicalHistoryIdOutputPort
 {
-    public Guid HistoryId { get; private set; }
+    private Guid _historyId;
+    private ErrorInfo? _errorMessage;
+    private IReadOnlyList<ValidationError> _validationErrors = Array.Empty<ValidationError>();
+    public Guid HistoryId => _historyId;
 
-    public IEnumerable<ValidationError> ValidationErrors { get; private set; }
+    public IEnumerable<ValidationError> ValidationErrors => _validationErrors;
 
-    public ErrorInfo ErrorMessage { get; private set; }
+    public ErrorInfo ErrorMessage => _errorMessage;
 
     public Task ErrorAsync(ErrorInfo message)
     {
-        ErrorMessage = message;
+        _errorMessage = message ?? new ErrorInfo("Error desconocido.");
         return Task.CompletedTask;
     }
-
-    public Task Handle(Guid historyId, CancellationToken cts = default)
-    {
-        HistoryId = historyId;
-        return Task.CompletedTask;
-    }
-
     public Task ValidationErrorsAsync(IEnumerable<ValidationError> errors)
     {
-        ValidationErrors = errors;
+        _validationErrors = (errors ?? Enumerable.Empty<ValidationError>()).ToArray();
+        return Task.CompletedTask;
+    }
+    public Task Handle(Guid historyId, CancellationToken cts = default)
+    {
+        _historyId = historyId;
         return Task.CompletedTask;
     }
 }

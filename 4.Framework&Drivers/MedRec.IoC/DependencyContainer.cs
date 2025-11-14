@@ -1,5 +1,4 @@
 ﻿using MedRec.HealthInsurance.ViewModels.VM;
-using MedRec.MedicalAppointments.ViewModels.VM;
 using MedRec.MedicalVisit.ViewModels.VM;
 using MedRec.Patients.ViewModels.VM;
 
@@ -32,18 +31,20 @@ public static class DependencyContainer
         services.AddMedicalVisitDataContextServices()
                 .AddMedicalVisitRepositoriesServices()
                 .AddMedicalVisitUseCasesServices()
-                .AddMedicalVisitPresenterServices();
+                .AddMedicalVisitPresenterServices()
+                .AddMedicalVisitVMServices();
 
-        services.AddTransient<CreateMedicalVisitVM>();
+        //services.AddTransient<CreateMedicalVisitVM>();
         services.AddTransient<UpdateMedicalVisitVM>();
         services.AddTransient<MedicalVisitVM>();
 
         services.AddMedicalAppointmentDataContextServices()
                 .AddMedicalAppointmentRepositoriesServices()
                 .AddMedicalAppointmentUseCasesServices()
-                .AddMedicalAppointmentPresentersServices();
+                .AddMedicalAppointmentPresentersServices()
+                .AddMedicalAppointmentVMServices();
 
-        services.AddTransient<WeeklyScheduleViewModel>();
+        //services.AddTransient<WeeklyScheduleViewModel>();
 
         services.AddValidatorServices();
 

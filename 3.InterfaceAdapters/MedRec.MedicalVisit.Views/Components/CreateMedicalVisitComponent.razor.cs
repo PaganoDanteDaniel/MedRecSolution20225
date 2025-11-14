@@ -18,7 +18,7 @@ namespace MedRec.MedicalVisit.Views.Components;
 public partial class CreateMedicalVisitComponent
 {
     [Inject] private NavigationManager Navigation { get; set; }
-    [Parameter] public CreateMedicalVisitVM VM { get; set; }
+    [Parameter] public CreateVisitVMOrchestrator VM { get; set; }
     [Parameter] public Guid PatientId { get; set; }
     [Parameter] public Guid? VisitId { get; set; }
     [Parameter] public bool CloneNow { get; set; } = false;
@@ -31,6 +31,8 @@ public partial class CreateMedicalVisitComponent
     private bool _isConfirmationModal = false;
     private bool _showModal;
 
+    private bool isLoading = false;
+
     private CreateMedicalVisitModel _originalModel;
     private bool _navigateAfterClose = false;
     private string _navigationUrl = "/";
@@ -38,6 +40,11 @@ public partial class CreateMedicalVisitComponent
     private TaskCompletionSource<bool> _saveConfirmationTcs;
     private CancellationTokenSource _cts;
 
+    private void SetLoading(bool loading)
+    {
+        isLoading = loading;
+        InvokeAsync(StateHasChanged);
+    }
     // ----------------------------------------------------------------------
     // CAMBIO 1: Inicializamos el EditContext y suscribimos eventos del ViewModel.
     // Esto permite mantener el enlace de validación y responder a mensajes.
@@ -53,6 +60,25 @@ public partial class CreateMedicalVisitComponent
         VM.OnShowError += () => ShowModalMessage("Error", ModalType.MessageError);
         VM.OnShowConcurrencyError += () => ShowModalMessage("Conflicto de concurrencia", ModalType.MessageError);
         VM.OnMedicalVisitAdded += StateHasChanged;
+    }
+
+    // ----------------------------------------------------------------------
+    // NUEVO: Asegura que el EditContext refleje el VM.Model actual.
+    // Si VM.Model se reemplaza (por ejemplo al cargar datos) recreamos el EditContext
+    // para que la validación use el objeto correcto.
+    // ----------------------------------------------------------------------
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (VM is not null)
+        {
+            if (_editContext == null || !ReferenceEquals(_editContext.Model, VM.Model))
+            {
+                _editContext = new EditContext(VM.Model);
+                InvokeAsync(StateHasChanged);
+            }
+        }
     }
 
     // ----------------------------------------------------------------------
@@ -110,8 +136,9 @@ public partial class CreateMedicalVisitComponent
 
             try
             {
+                SetLoading(true);
                 await VM.AddMedicalVisitAsync(_cts.Token);
-
+                SetLoading(false);
                 if (string.IsNullOrEmpty(VM.InformationMessage))
                 {
                     VM.InformationMessage = "LOS DATOS FUERON GUARDADOS SATISFACTORIAMENTE";

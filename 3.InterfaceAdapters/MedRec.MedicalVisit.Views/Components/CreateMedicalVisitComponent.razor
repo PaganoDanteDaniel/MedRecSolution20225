@@ -5,6 +5,7 @@
 @using MedRec.MedicalVisit.BusinessObjects.DTOs
 @using MedRec.MedicalVisit.BusinessObjects.Validator
 @using MedRec.MedicalVisit.ViewModels.Models
+@using MedRec.MedicalVisit.ViewModels.Orchestration
 @using MedRec.MedicalVisit.ViewModels.VM
 @using MedRec.CommonComponents.Views.Components
 @using MedRec.MedicalVisit.Views.Resources
@@ -13,11 +14,19 @@
 
 @inject IModelValidatorHub<CreateMedicalVisitModel> visitValidator
 
+@if (isLoading)
+{
+    <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.6); z-index:1000;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+}
 <EditForm EditContext="_editContext" OnSubmit="SaveChanged" autocomplete="off">
 
     <ModelValidator T="CreateMedicalVisitModel"
                     Validator="visitValidator"
-                    ValidationRules="vm => CreateMedicalVisitValidator.Validate((CreateMedicalVisitDto)vm, VM.Model.DateOfBirth.CalculateAge())" />
+                    ValidationRules="vm => CreateMedicalVisitValidator.Validate(MedicalVisitMapper.ToCreateDto(vm), VM.Model.DateOfBirth.CalculateAge())" />
 
     @* ---------- Campos trampa para autofill ---------- *@
     <input autocomplete="username" style="position: absolute; left: -9999px; top: -9999px;" />

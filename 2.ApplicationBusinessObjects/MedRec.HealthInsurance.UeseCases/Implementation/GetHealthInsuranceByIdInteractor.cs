@@ -11,6 +11,15 @@ internal class GetHealthInsuranceByIdInteractor(
 {
     public async Task Handle(Guid id, CancellationToken ct = default)
     {
+        if (id == Guid.Empty)
+        {
+            await presenter.ErrorAsync(new ErrorInfo(
+                "El ID de la obra social es inválido.",
+                ErrorCode.ValidationError,
+                httpStatusCode: 400));
+            return;
+        }
+
         try
         {
             var entity = await queriesRepository.GetById(id, ct);
@@ -22,11 +31,7 @@ internal class GetHealthInsuranceByIdInteractor(
         }
         catch (OperationCanceledException)
         {
-            await presenter.ErrorAsync(new ErrorInfo(
-                "Operación cancelada por el usuario.",
-                ErrorCode.Cancelled,
-                null,
-                499));
+            throw;
         }
         catch (Exception ex)
         {
