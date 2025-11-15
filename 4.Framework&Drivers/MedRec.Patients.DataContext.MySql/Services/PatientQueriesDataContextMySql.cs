@@ -43,7 +43,8 @@ internal class PatientQueriesDataContextMySql(DataBaseContextMySql context)
 
         query = query.Where(p => p.IsDeleted == includeDeleted);
 
-        return await query.FirstOrDefaultAsync(p => p.Id == patientId);
+        var response = await query.FirstOrDefaultAsync(p => p.Id == patientId);
+        return response;
     }
 
     public async Task<Patient> GetPatientByDocNumAsync(string documentNumber, CancellationToken ct = default, bool includeDeleted = false)

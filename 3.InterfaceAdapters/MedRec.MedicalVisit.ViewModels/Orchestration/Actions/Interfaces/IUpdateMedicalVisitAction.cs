@@ -2,7 +2,7 @@
 using MedRec.MedicalVisit.ViewModels.Models;
 
 namespace MedRec.MedicalVisit.ViewModels.Orchestration.Actions.Interfaces;
-public interface IGetPatientAction
+public interface IUpdateMedicalVisitAction
 {
-    Task<OperationResult<PatientModel>> ExecuteAsync(Guid patientId, CancellationToken cts = default);
+    Task<OperationResult<bool>> ExecuteAsync(UpdateMedicalVisitModel model, CancellationToken ct = default);
 }

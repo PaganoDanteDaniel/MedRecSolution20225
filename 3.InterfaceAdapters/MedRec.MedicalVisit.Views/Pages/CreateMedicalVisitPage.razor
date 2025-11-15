@@ -8,7 +8,7 @@
 @using MedRec.MedicalVisit.Views.Resources
 
 @inject NavigationManager Navigation
-@inherits OwningComponentBase<CreateVisitVMOrchestrator>
+@inherits OwningComponentBase<CreateMedicalVisitVMOrchestrator>
 
 <div class="body-content">
     <TitleComponent Title="@Title" />
@@ -37,7 +37,7 @@
 </div>
 
 @code{
-    private CreateVisitVMOrchestrator VM => Service;
+    private CreateMedicalVisitVMOrchestrator VM => Service;
 
     [Parameter] public Guid? VisitId { get; set; }
     [Parameter] public Guid PatientId { get; set; }

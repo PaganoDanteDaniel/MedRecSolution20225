@@ -9,32 +9,31 @@ public class GetPatientAction(
     IPatientForMedicalVisitInputPort inPort,
     IPatientForMedicalVisitOutputPort outPort) : IGetPatientAction
 {
-    public async Task<OperationResult<CreateMedicalVisitModel>> ExecuteAsync(Guid patientId, CancellationToken ct = default)
+    public async Task<OperationResult<PatientModel>> ExecuteAsync(Guid patientId, CancellationToken ct = default)
     {
+        ct.ThrowIfCancellationRequested();
         try
         {
-            ct.ThrowIfCancellationRequested();
-
             await inPort.Handle(patientId, ct);
 
             if (outPort.ErrorMessage is not null || outPort.ValidationErrors.Any())
-                return OperationResult.Fail<CreateMedicalVisitModel>(outPort.ErrorMessage, outPort.ValidationErrors);
+                return OperationResult.Fail<PatientModel>(outPort.ErrorMessage, outPort.ValidationErrors);
 
             if (outPort.DataPatient is null)
-                return OperationResult.Unknown<CreateMedicalVisitModel>();
+                return OperationResult.Unknown<PatientModel>();
 
-            var model = MedicalVisitMapper.ToCreateModel(outPort.DataPatient);
+            var model = MedicalVisitMapper.ToPatientModel(outPort.DataPatient);
 
             return OperationResult.Ok(model);
 
         }
         catch (OperationCanceledException)
         {
-            return OperationResult.Cancelled<CreateMedicalVisitModel>();
+            return OperationResult.Cancelled<PatientModel>();
         }
         catch (Exception ex)
         {
-            return OperationResult.Fail<CreateMedicalVisitModel>(
+            return OperationResult.Fail<PatientModel>(
                 new ErrorInfo($"Error crítico al obtener la historia clínica del paciente: {ex.Message}"));
         }
     }

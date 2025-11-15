@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Compile Remove="VM\CreateMedicalVisitVM.cs" />
+    <Compile Remove="VM\UpdateMedicalVisitVM.cs" />
   </ItemGroup>
 
   <ItemGroup>
