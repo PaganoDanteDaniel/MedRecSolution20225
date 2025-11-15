@@ -18,15 +18,21 @@ internal class GetMedicalVisitPresenter : IGetMedicalVisitOutputPort
     public Task ErrorAsync(ErrorInfo message)
     {
         _errorMessage = message ?? new ErrorInfo("Error desconocido.");
+        _validationErrors = Array.Empty<ValidationError>();
+        _medicalVisit = null;
         return Task.CompletedTask;
     }
     public Task ValidationErrorsAsync(IEnumerable<ValidationError> errors)
     {
         _validationErrors = (errors ?? Enumerable.Empty<ValidationError>()).ToArray();
+        _errorMessage = null;
+        _medicalVisit = null;
         return Task.CompletedTask;
     }
     public Task Handle(PatientMedicalVisit medicalVisit, CancellationToken cts = default)
     {
+        _errorMessage = null;
+        _validationErrors = Array.Empty<ValidationError>();
         _medicalVisit = new GetMedicalVisitDto
         {
             Id = medicalVisit.Id,

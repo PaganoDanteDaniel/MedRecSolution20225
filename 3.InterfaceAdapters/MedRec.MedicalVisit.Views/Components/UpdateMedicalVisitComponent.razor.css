@@ -191,6 +191,12 @@
         text-align: right;
         padding: 0.45rem;
     }
+
+    .medical-visit-form ::deep .conflict-field {
+        border: 2px solid #d9534f !important; /* rojo bootstrap */
+        background-color: #f8d7da !important; /* rosado suave */
+    }
+
     /* Date input wrapper */
 
     .medical-visit-form .date-input-wrapper, .medical-visit-form .input-reason-wrapper {

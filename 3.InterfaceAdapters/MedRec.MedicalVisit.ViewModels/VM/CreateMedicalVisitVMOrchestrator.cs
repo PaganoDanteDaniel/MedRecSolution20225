@@ -1,13 +1,13 @@
 ﻿using MedRec.Entity.DTOs;
 using MedRec.Entity.Enums;
 using MedRec.MedicalVisit.ViewModels.Models;
-using MedRec.MedicalVisit.ViewModels.Orchestration;
+using MedRec.MedicalVisit.ViewModels.Orchestration.Interfaces;
 
 namespace MedRec.MedicalVisit.ViewModels.VM;
-public class CreateVisitVMOrchestrator(ICreateVisitOrchestrator orchestrator)
+public class CreateMedicalVisitVMOrchestrator(ICreateMedicalVisitOrchestrator orchestrator)
 {
 
-    public event Action OnMedicalVisitAdded;//cambiar por OnFinnishOperation si corresponde.
+
     public CreateMedicalVisitModel Model { get; set; } = new();
     public string InformationMessage { get; set; }
 
@@ -73,7 +73,7 @@ public class CreateVisitVMOrchestrator(ICreateVisitOrchestrator orchestrator)
             {
                 InformationMessage = "";
                 OnShowMessage?.Invoke();
-                OnMedicalVisitAdded?.Invoke();
+                OnFinnishOperation?.Invoke();
             }
         }
         catch (Exception ex)
@@ -83,7 +83,6 @@ public class CreateVisitVMOrchestrator(ICreateVisitOrchestrator orchestrator)
     }
     private void RaiseFromError(ErrorInfo? error)
     {
-
         if (error is null)
         {
             InformationMessage = "Error desconocido";

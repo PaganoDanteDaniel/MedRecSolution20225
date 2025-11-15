@@ -18,7 +18,7 @@ namespace MedRec.MedicalVisit.Views.Components;
 public partial class CreateMedicalVisitComponent
 {
     [Inject] private NavigationManager Navigation { get; set; }
-    [Parameter] public CreateVisitVMOrchestrator VM { get; set; }
+    [Parameter] public CreateMedicalVisitVMOrchestrator VM { get; set; }
     [Parameter] public Guid PatientId { get; set; }
     [Parameter] public Guid? VisitId { get; set; }
     [Parameter] public bool CloneNow { get; set; } = false;
@@ -59,7 +59,7 @@ public partial class CreateMedicalVisitComponent
         VM.OnShowWarning += () => ShowModalMessage("Advertencia", ModalType.MessageWarning);
         VM.OnShowError += () => ShowModalMessage("Error", ModalType.MessageError);
         VM.OnShowConcurrencyError += () => ShowModalMessage("Conflicto de concurrencia", ModalType.MessageError);
-        VM.OnMedicalVisitAdded += StateHasChanged;
+        VM.OnFinnishOperation += StateHasChanged;
     }
 
     // ----------------------------------------------------------------------
@@ -197,7 +197,7 @@ public partial class CreateMedicalVisitComponent
             VM.OnShowWarning -= () => ShowModalMessage("Advertencia", ModalType.MessageWarning);
             VM.OnShowError -= () => ShowModalMessage("Error", ModalType.MessageError);
             VM.OnShowConcurrencyError -= () => ShowModalMessage("Conflicto de concurrencia", ModalType.MessageError);
-            VM.OnMedicalVisitAdded -= StateHasChanged;
+            VM.OnFinnishOperation -= StateHasChanged;
         }
 
         // Liberar recursos del ViewModel si implementa IDisposable

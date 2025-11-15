@@ -17,15 +17,21 @@ internal class GetMedicalHistoryIdPresenter : IGetMedicalHistoryIdOutputPort
     public Task ErrorAsync(ErrorInfo message)
     {
         _errorMessage = message ?? new ErrorInfo("Error desconocido.");
+        _validationErrors = Array.Empty<ValidationError>();
+        _historyId = Guid.Empty;
         return Task.CompletedTask;
     }
     public Task ValidationErrorsAsync(IEnumerable<ValidationError> errors)
     {
         _validationErrors = (errors ?? Enumerable.Empty<ValidationError>()).ToArray();
+        _errorMessage = null;
+        _historyId = Guid.Empty;
         return Task.CompletedTask;
     }
     public Task Handle(Guid historyId, CancellationToken cts = default)
     {
+        _errorMessage = null;
+        _validationErrors = Array.Empty<ValidationError>();
         _historyId = historyId;
         return Task.CompletedTask;
     }

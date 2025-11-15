@@ -38,7 +38,7 @@ internal class HealthInsuranceCommandsDataContext(DataBaseContextMySql context) 
     {
         try
         {
-            // ✅ Paso 1: Asegurar que no haya una entidad rastreada con el mismo Id
+            // Paso 1: Asegurar que no haya una entidad rastreada con el mismo Id
             var trackedEntry = context.ChangeTracker.Entries<HealthInsuranceCompany>()
                 .FirstOrDefault(e => e.Entity.Id == entity.Id);
 

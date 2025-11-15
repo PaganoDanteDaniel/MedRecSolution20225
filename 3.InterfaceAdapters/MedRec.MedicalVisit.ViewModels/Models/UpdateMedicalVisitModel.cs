@@ -1,17 +1,6 @@
-﻿using MedRec.MedicalVisit.BusinessObjects.DTOs;
-
-namespace MedRec.MedicalVisit.ViewModels.Models;
-public class UpdateMedicalVisitModel
+﻿namespace MedRec.MedicalVisit.ViewModels.Models;
+public class UpdateMedicalVisitModel : PatientModel
 {
-    public Guid PatientId { get; set; }
-    public string FullName { get; set; }
-    public DateTime DateOfBirth { get; set; }
-    public string HealthInsuranceName { get; set; }
-    public string Acronym { get; set; }
-    public string HealthInsuranceMemberNumber { get; set; }
-    public string HealthInsuranceCard { get; set; }
-    public string HealthInsurancePlan { get; set; }
-
     public Guid Id { get; set; }
     public Guid MedicalHistoryId { get; set; }
     public DateTime VisitDate { get; set; } = DateTime.Now;
@@ -25,25 +14,6 @@ public class UpdateMedicalVisitModel
     public string Notes { get; set; }
     public byte[] RowVersion { get; set; }
 
-    public static explicit operator UpdateMedicalVisitDto(UpdateMedicalVisitModel model)
-    {
-        return new UpdateMedicalVisitDto
-        {
-
-            Id = model.Id,
-            MedicalHistoryId = model.MedicalHistoryId,
-            VisitDate = model.VisitDate,
-            Reason = (model.Reason ?? string.Empty).ToUpperInvariant(),
-            Diagnosis = (model.Diagnosis ?? string.Empty).ToUpperInvariant(),
-            Treatment = (model.Treatment ?? string.Empty).ToUpperInvariant(),
-            SystolicPressure = model.SystolicPressure,
-            DiastolicPressure = model.DiastolicPressure,
-            PulsePerMinute = model.PulsePerMinute,
-            Temperature = model.Temperature,
-            Notes = (model.Notes ?? string.Empty).ToUpperInvariant(),
-            RowVersion = model.RowVersion
-        };
-    }
     public UpdateMedicalVisitModel Clone()
     {
         return new UpdateMedicalVisitModel

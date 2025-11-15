@@ -11,6 +11,7 @@
 using MedRec.CommonComponents.Views;
 using MedRec.MedicalVisit.ViewModels.Models;
 using MedRec.MedicalVisit.ViewModels.VM;
+using MedRec.Shared.DTOs;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 
@@ -18,7 +19,7 @@ namespace MedRec.MedicalVisit.Views.Components;
 public partial class UpdateMedicalVisitComponent
 {
     [Inject] private NavigationManager Navigation { get; set; }
-    [Parameter] public UpdateMedicalVisitVM VM { get; set; }
+    [Parameter] public UpdateMedicalVisitVMOrchestrator VM { get; set; }
     [Parameter] public Guid PatientId { get; set; }
     [Parameter] public Guid? VisitId { get; set; }
     [Parameter] public bool IsReadOnly { get; set; }
@@ -29,6 +30,12 @@ public partial class UpdateMedicalVisitComponent
     private UpdateMedicalVisitModel _originalModel;
     private CancellationTokenSource _cts;
 
+    private Dictionary<string, bool> _conflictedFields = new();
+
+    private bool HasConflict(string propertyName)
+        => _conflictedFields.TryGetValue(propertyName, out bool val) && val;
+
+
     // Estado del modal
     private string _modalTitle = "Mensaje del sistema";
     private string _modalMessage = string.Empty;
@@ -37,7 +44,9 @@ public partial class UpdateMedicalVisitComponent
     private bool _isConfirmationModal = false;
     private bool _showAcceptButton = false;
     private bool _showCancelButton = false;
-
+    
+    private bool isLoading = false;
+    
     // Nueva variable para manejar navegación luego de cerrar modal (CAMBIO)
     private bool _navigateAfterClose = false;
     private string _navigationUrl = "/";
@@ -47,6 +56,12 @@ public partial class UpdateMedicalVisitComponent
 
     // Nueva propiedad calculada para detectar cambios (CAMBIO)
     private bool HasChanges => DeepEquals(_originalModel, VM.Model);
+
+    private void SetLoading(bool loading)
+    {
+        isLoading = loading;
+        InvokeAsync(StateHasChanged);
+    }
 
     protected override void OnInitialized()
     {
@@ -58,16 +73,20 @@ public partial class UpdateMedicalVisitComponent
         VM.OnShowWarning += () => ShowModalMessage("Advertencia", ModalType.MessageWarning);
         VM.OnShowError += () => ShowModalMessage("Error", ModalType.MessageError);
         VM.OnShowConcurrencyError += () => ShowModalMessage("Conflicto de concurrencia", ModalType.MessageError);
-        VM.OnMedicalVisitUpdated += StateHasChanged;
+        VM.OnFinnishOperation += StateHasChanged;
     }
-
-    protected override Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
-        // Clonamos el modelo original si se solicita (CAMBIO)
-        if (VM.Model != null && CloneNow)
-            _originalModel = VM.Model.Clone();
+        base.OnParametersSet();
 
-        return Task.CompletedTask;
+        if (VM is not null)
+        {
+            if (_editContext == null || !ReferenceEquals(_editContext.Model, VM.Model))
+            {
+                _editContext = new EditContext(VM.Model);
+                InvokeAsync(StateHasChanged);
+            }
+        }
     }
 
     private async Task SaveChanged()
@@ -79,7 +98,7 @@ public partial class UpdateMedicalVisitComponent
         _cts = new CancellationTokenSource();
 
         // Mostrar confirmación antes de guardar (CAMBIO)
-        VM.InformationMessage = "¿SEGURO DESEA ACTUALIZAR LOS DATOS DE LA VISITA?";
+        VM.InformationMessage = "¿SEGURO DESEA MODIFICAR LOS DATOS DE LA VISITA?";
         _isConfirmationModal = true;
         _showAcceptButton = true;
         _showCancelButton = true;
@@ -87,28 +106,64 @@ public partial class UpdateMedicalVisitComponent
 
         // Esperamos la respuesta del usuario (CAMBIO)
         _saveConfirmationTcs = new TaskCompletionSource<bool>();
+        
+        
         bool confirmed = await _saveConfirmationTcs.Task;
+       
+
         _showModal = false;
         if (!confirmed)
             return;
 
         await Task.Delay(50); // margen para evitar conflicto UI
+           
+        try
+        {
+            //_originalModel = VM.Model.Clone();
 
-        await VM.UpdateMedicalVisitAsync(_cts.Token);
+            SetLoading(true);
+            await VM.UpdateMedicalVisitAsync(_cts.Token);
+            SetLoading(false);
 
-        // Mostrar mensaje de éxito (CAMBIO)
-        VM.InformationMessage = "LOS DATOS FUERON ACTUALIZADOS SATISFACTORIAMENTE";
-        _isConfirmationModal = false;
-        _showAcceptButton = true;
-        _showCancelButton = false;
+            if (VM.ConcurrencyError?.Count > 0)
+            {
+                _conflictedFields.Clear();
 
-        var url = CreateUrl();
-        ShowModalMessageAndNavigate("confirmación DE ACTUALIZACION", ModalType.MessageSuccess, url);
+                foreach (var err in VM.ConcurrencyError)
+                    _conflictedFields[err.PropertyName] = true;
 
-        // Reinicializamos el modelo y contexto (CAMBIO)
-        VM.Model = new UpdateMedicalVisitModel();
-        _editContext = new EditContext(VM.Model);
-        _originalModel = VM.Model.Clone();
+                await InvokeAsync(StateHasChanged);
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(VM.InformationMessage))
+            {
+                _originalModel = VM.Model.Clone();
+                await InvokeAsync(StateHasChanged);
+            }
+            else 
+            { 
+                VM.InformationMessage = "LOS DATOS FUERON ACTUALIZADOS SATISFACTORIAMENTE";
+                _isConfirmationModal = false;
+                _showAcceptButton = true;
+                _showCancelButton = false;
+                
+                var url = CreateUrl();
+
+                ShowModalMessageAndNavigate("CONFIRMACIÓN DE ACTUALIZACION", ModalType.MessageSuccess, CreateUrl());
+
+                // Reiniciar modelo y EditContext para limpiar formulario
+                VM.Model = new UpdateMedicalVisitModel();
+                _editContext = new EditContext(VM.Model);
+
+            }
+        }
+        catch (InvalidOperationException ex)
+        {
+            VM.InformationMessage = ex.Message;
+            _isConfirmationModal = false;
+            ShowModalMessage("ERROR CRÍTICO", ModalType.MessageError);
+        }        
     }
 
     // Metodo seguro de comparación profunda de modelos (CAMBIO)
@@ -188,7 +243,7 @@ public partial class UpdateMedicalVisitComponent
             VM.OnShowWarning -= () => ShowModalMessage("Advertencia", ModalType.MessageWarning);
             VM.OnShowError -= () => ShowModalMessage("Error", ModalType.MessageError);
             VM.OnShowConcurrencyError -= () => ShowModalMessage("Conflicto de concurrencia", ModalType.MessageError);
-            VM.OnMedicalVisitUpdated -= StateHasChanged;
+            VM.OnFinnishOperation -= StateHasChanged;
         }
 
         // Si el VM implementa IDisposable lo liberamos (CAMBIO)

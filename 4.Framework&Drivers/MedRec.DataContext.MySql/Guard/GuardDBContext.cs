@@ -20,7 +20,7 @@ public class GuardDBContext
         {
             var details = MapConcurrencyErrors(ex);
             throw new ConcurrencyException(
-                "Conflicto de concurrencia detectado al guardar cambios.",
+                "Este registro fue actualizado por otro usuario. Se han cargado los datos más recientes. Revise y guarde nuevamente si es necesario.",
                 ex,
                 details
             );

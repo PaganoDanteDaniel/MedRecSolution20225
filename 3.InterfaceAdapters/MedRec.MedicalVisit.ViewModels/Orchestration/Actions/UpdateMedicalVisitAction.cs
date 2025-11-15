@@ -5,25 +5,24 @@ using MedRec.MedicalVisit.ViewModels.Models;
 using MedRec.MedicalVisit.ViewModels.Orchestration.Actions.Interfaces;
 
 namespace MedRec.MedicalVisit.ViewModels.Orchestration.Actions;
-public class CreateMedicalVisitAction(
-    ICreateMedicalVisitInputPort inPort,
-    ICreateMedicalVisitOutputPort outPort) :
-    ICreateMedicalVisitAction
+public class UpdateMedicalVisitAction(
+    IUpdateMedicalVisitInputPort inPort,
+    IUpdateMedicalVisitOutputPort outPort) : IUpdateMedicalVisitAction
 {
-    public async Task<OperationResult<bool>> ExecuteAsync(CreateMedicalVisitModel model, CancellationToken ct = default)
+    public async Task<OperationResult<bool>> ExecuteAsync(UpdateMedicalVisitModel model, CancellationToken ct = default)
     {
         ct.ThrowIfCancellationRequested();
         try
         {
-            var dto = MedicalVisitMapper.ToCreateDto(model);
+            var dto = MedicalVisitMapper.ToUpdateDto(model);
             await inPort.Handle(dto, ct);
             if (outPort.ErrorMessage is not null || outPort.ValidationErrors.Any())
                 return OperationResult.Fail<bool>(outPort.ErrorMessage, outPort.ValidationErrors);
 
-            if (!outPort.Created)
+            if (!outPort.IsUpdated)
                 return OperationResult.Unknown<bool>();
 
-            return OperationResult.Ok(outPort.Created);
+            return OperationResult.Ok(outPort.IsUpdated);
         }
         catch (OperationCanceledException)
         {
@@ -31,7 +30,7 @@ public class CreateMedicalVisitAction(
         }
         catch (Exception ex)
         {
-            return OperationResult.Fail<bool>(new ErrorInfo($"Error crítico al crear la visita: {ex.Message}"));
+            return OperationResult.Fail<bool>(new ErrorInfo($"Error crítico al actualizar la visita: {ex.Message}"));
         }
     }
 }

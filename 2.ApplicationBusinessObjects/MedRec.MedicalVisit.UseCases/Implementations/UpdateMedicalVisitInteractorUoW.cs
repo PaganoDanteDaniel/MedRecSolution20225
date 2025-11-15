@@ -6,6 +6,7 @@ using MedRec.MedicalVisit.BusinessObjects.DTOs;
 using MedRec.MedicalVisit.BusinessObjects.Interfaces.Ports;
 using MedRec.MedicalVisit.BusinessObjects.Interfaces.Repositories;
 using MedRec.MedicalVisit.BusinessObjects.Validator;
+using MedRec.Shared.DTOs;
 using MedRec.Shared.Exceptions.SQLExceptions;
 using MedRec.Validator.Interfaces;
 
@@ -13,6 +14,7 @@ namespace MedRec.MedicalVisit.UseCases.Implementations;
 public class UpdateMedicalVisitInteractorUoW(
     IUpdateMedicalVisitOutputPort outputPort,
     IMedicalVisitCommandRepositoryUoW commandRepository,
+    IMedicalVisitQueriesRepositoryUoW queriesRepository,
     IModelValidatorHub<UpdateMedicalVisitDto> validatorHub,
     IRepositoryUnitOfWork unitOfWork) : IUpdateMedicalVisitInputPort
 {
@@ -23,7 +25,6 @@ public class UpdateMedicalVisitInteractorUoW(
             await outputPort.ValidationErrorsAsync(validatorHub.Errors);
             return;
         }
-
 
         try
         {
@@ -56,13 +57,32 @@ public class UpdateMedicalVisitInteractorUoW(
         catch (ConcurrencyException ex)
         {
             await unitOfWork.RollbackTransaction(ct);
+
+            var data = await queriesRepository.GetMedicalVisit(dto.Id, ct);
+
+            var fixedConflicts = ex.Conflicts
+                .Select(conflict =>
+                {
+                    if (conflict.PropertyName == "RowVersion")
+                    {
+                        return new ConcurrencyConflictDto(
+                            conflict.EntityName,
+                            conflict.PropertyName,
+                            conflict.CurrentValue,
+                            originalValue: data.RowVersion
+                        );
+                    }
+                    return conflict;
+                })
+                .ToList();
+
             await outputPort.ErrorAsync(new ErrorInfo(
-                message: "Conflicto de concurrencia al crear la visita médica.",
+                message: "Este registro fue actualizado por otro usuario. <br />Se han cargado los datos más recientes. <br />Revise y guarde nuevamente si es necesario.",
                 code: ErrorCode.ConcurrencyError,
                 details: new
                 {
                     ExceptionType = nameof(ConcurrencyException),
-                    ex.Conflicts,
+                    Conflicts = fixedConflicts,
                     InnerMessage = ex.InnerException?.Message
                 },
                 httpStatusCode: 409

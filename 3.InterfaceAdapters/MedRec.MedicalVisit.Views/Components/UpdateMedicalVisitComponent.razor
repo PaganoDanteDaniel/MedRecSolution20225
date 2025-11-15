@@ -5,6 +5,7 @@
 @using MedRec.MedicalVisit.BusinessObjects.DTOs
 @using MedRec.MedicalVisit.BusinessObjects.Validator
 @using MedRec.MedicalVisit.ViewModels.Models
+@using MedRec.MedicalVisit.ViewModels.Orchestration
 @using MedRec.MedicalVisit.ViewModels.VM
 @using MedRec.CommonComponents.Views.Components
 @using MedRec.MedicalVisit.Views.Resources
@@ -13,11 +14,20 @@
 
 @inject IModelValidatorHub<UpdateMedicalVisitModel> visitValidator
 
+@if (isLoading)
+{
+    <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.6); z-index:1000;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+}
+
 <EditForm EditContext="_editContext" OnSubmit="SaveChanged" autocomplete="off">
 
     <ModelValidator T="UpdateMedicalVisitModel"
                     Validator="visitValidator"
-                    ValidationRules="vm => UpdateMedicalVisitValidator.Validate((UpdateMedicalVisitDto)vm, VM.Model.DateOfBirth.CalculateAge())" />
+                    ValidationRules="vm => UpdateMedicalVisitValidator.Validate(MedicalVisitMapper.ToUpdateDto(vm), VM.Model.DateOfBirth.CalculateAge())" />
 
     @* ---------- Campos trampa para autofill ---------- *@
     <input autocomplete="username" style="position: absolute; left: -9999px; top: -9999px;" />
@@ -74,7 +84,8 @@
                         <div class="input-reason-wrapper">
                             <label for="reason">@MedicalVisitMessages.LabelVisitReason</label>
                             <InputText id="reason"
-                                       @bind-value="VM.Model.Reason">
+                                       @bind-value="VM.Model.Reason"
+                                       class=@($"form-control {(HasConflict(nameof(VM.Model.Reason)) ? "conflict-field" : "")}") >
                             </InputText>
                         </div>
                         <ValidationMessage For="() => VM.Model.Reason" class="validation-message" />
@@ -92,7 +103,7 @@
                             <label for="systolic">@MedicalVisitMessages.LabelSystPress</label>
                             <InputNumber id="systolic"
                                          @bind-Value="VM.Model.SystolicPressure"
-                                         class="vital-input" />
+                                         class=@($"vital-input {(HasConflict(nameof(VM.Model.SystolicPressure)) ? "conflict-field" : "" )}") />
                         </div>
                         <ValidationMessage For="() => VM.Model.SystolicPressure" class="validation-message" />
 
@@ -100,7 +111,7 @@
                             <label for="diastolic">@MedicalVisitMessages.LabelDiastPress</label>
                             <InputNumber id="diastolic"
                                          @bind-Value="VM.Model.DiastolicPressure"
-                                         class="vital-input" />
+                                         class=@($"vital-input {(HasConflict(nameof(VM.Model.DiastolicPressure)) ? "conflict-field" : "")}") />
                         </div>
                         <ValidationMessage For="() => VM.Model.DiastolicPressure" class="validation-message" />
 
@@ -108,7 +119,7 @@
                             <label for="pulse">@MedicalVisitMessages.LabelPulsePerMinute</label>
                             <InputNumber id="pulse"
                                          @bind-Value="VM.Model.PulsePerMinute"
-                                         class="vital-input" />
+                                         class=@($"vital-input {(HasConflict(nameof(VM.Model.PulsePerMinute)) ? "conflict-field" : "")}") />
                         </div>
                         <ValidationMessage For="() => VM.Model.PulsePerMinute" class="validation-message" />
 
@@ -116,7 +127,7 @@
                             <label for="temperature">@MedicalVisitMessages.LabelTemperature</label>
                             <InputNumber id="temperature"
                                          @bind-Value="VM.Model.Temperature"
-                                         class="vital-input" />
+                                         class=@($"vital-input {(HasConflict(nameof(VM.Model.Temperature)) ? "conflict-field" : "")}") />
                         </div>
                         <ValidationMessage For="() => VM.Model.Temperature" class="validation-message" />
                     </div>
@@ -126,6 +137,7 @@
                         <label for="notes">@MedicalVisitMessages.LabelVisitNotes</label>
                         <InputTextArea id="notes"
                                        @bind-Value="VM.Model.Notes"
+                                       class=@($"{(HasConflict(nameof(VM.Model.Notes)) ? "conflict-field" : "")}")
                                        rows="7"/>
                         <ValidationMessage For="() => VM.Model.Notes" class="validation-message" />
                     </div>
