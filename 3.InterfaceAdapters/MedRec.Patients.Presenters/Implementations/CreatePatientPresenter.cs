@@ -1,31 +1,15 @@
-﻿using MedRec.Entity.DTOs;
+﻿using MedRec.BusinessObjects.Abstracts;
+using MedRec.BusinessObjects.Results;
 using MedRec.Patients.BusinessObjects.Interfaces.Ports;
-using MedRec.Validator.ValueObjects;
 
 namespace MedRec.Patients.Presenters.Implementations;
-internal class CreatePatientPresenter : ICreatePatientOutputPort
+internal class CreatePatientPresenter :
+    BaseOutputPort<bool>,
+    ICreatePatientOutputPort
 {
-    public bool Created { get; private set; }
-
-    public IEnumerable<ValidationError> ValidationErrors { get; private set; } = [];
-
-    public ErrorInfo ErrorMessage { get; private set; }
-
-    public Task ErrorAsync(ErrorInfo message)
+    public Task Handle(CancellationToken ct = default)
     {
-        ErrorMessage = message;
-        return Task.CompletedTask;
-    }
-
-    public Task Handle()
-    {
-        Created = true;
-        return Task.CompletedTask;
-    }
-
-    public Task ValidationErrorsAsync(IEnumerable<ValidationError> errors)
-    {
-        ValidationErrors = errors.ToList();
+        Result = OperationResult<bool>.Ok(true);
         return Task.CompletedTask;
     }
 }

@@ -5,7 +5,7 @@ using MedRec.MedicalVisit.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedRec.MedicalVisit.DataContext.MySql.Services;
-internal class MedicalVisitQueriesDataContextMySql(DataBaseContextMySql context) :
+internal class MedicalVisitQueriesDataContextMySql(MedRecContext context) :
     IMedicalVisitQueriesDataContext
 
 {

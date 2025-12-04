@@ -31,8 +31,6 @@ internal class CreateHealthInsuranceInteractor(
 
         try
         {
-
-
             if (healthCompany == null)
                 throw new ArgumentNullException(nameof(healthCompany));
 
@@ -51,7 +49,7 @@ internal class CreateHealthInsuranceInteractor(
                 Acronym = healthCompany.Acronym
             };
 
-            await unitOfWork.ExecuteWithRetryAsync(async () =>
+            await unitOfWork.ExecuteWithRetry(async () =>
             {
                 await unitOfWork.BeginTransaction(ct);
                 try

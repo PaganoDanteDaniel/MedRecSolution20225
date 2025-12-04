@@ -17,7 +17,7 @@
 }
 <div class="add-health-company-form">
    
-    <EditForm EditContext="EditContext" OnValidSubmit="@AddHealthCompany">
+    <EditForm EditContext="_editContext" >
         <DataAnnotationsValidator />
 
         <ModelValidator T="CreateHealthInsuranceModel"
@@ -39,30 +39,35 @@
                        name="patients-input" />
             <ValidationMessage For="@(() => VM.Model.Acronym)" class="validation-message" />
         </div>
-
-        <div class="button-group">
-            <button type="button" @onclick="@CancelAdd">
-                <i class="fa-solid fa-right-from-bracket"></i>@AddHealthInsuranceMessages.CancelButton
-            </button>
-
-            <button type="button" @onclick="@ClearForm">
-                <i class="bi bi-eraser-fill"></i>@AddHealthInsuranceMessages.ClearButton
-            </button>
-            <button type="submit">
-                <i class="fa-solid fa-floppy-disk"></i>@AddHealthInsuranceMessages.SubmitButton
-            </button>
-        </div>
     </EditForm>
 </div>
 
 
-<ModalComponent Title="Éxito" Show="@_showModal" OnExit="@((value) => _showModal = value)"
-                Closing="Dispose" 
-                Type="ModalType.MessageSuccess" 
-                ShowAcceptButton="true"
-                CenterText="true"
-                OnAccept="OnAccept">
-    <div style="color: green;">
-        @AddHealthInsuranceMessages.SuccessfulAddedMessage
-    </div>
-</ModalComponent>
+<MdMessageModal Visible="@ModalVisibleB"
+                VisibleChanged="@(v => ModalVisibleB = v)"
+                Type="@ModalType"
+                Title="@ModalTitle"
+                Message="@ModalMessage"
+                Body="@ModalBody"
+                CloseOnOverlayClick=CloseOnOverlayClick
+                ShowOk="@ShowOk"
+                ShowCancel="@ShowCancel"
+                ShowRetry="@ShowRetry"
+                ShowDelete="@ShowDelete"
+                OnOk="OnAccept" />
+
+@code{
+
+    bool CloseOnOverlayClick = true;
+    bool ModalVisibleB;
+    ModalType ModalType = ModalType.MessageInfo;
+    string ModalTitle = "";
+    string ModalMessage = "";
+    RenderFragment? ModalBody;
+
+    bool ShowOk = true;
+    bool ShowCancel = false;
+    bool ShowRetry = false;
+    bool ShowDelete = false;
+
+}

@@ -37,7 +37,8 @@ internal sealed class CreateAppointmentAction(
         }
         catch (Exception ex)
         {
-            return OperationResult.Fail<Appointment>(new ErrorInfo($"Error crítico al crear el turno: {ex.Message}"));
+            return OperationResult.Fail<Appointment>(
+                new ErrorInfo($"Error crítico al crear el turno: {ex.Message}"), null);
         }
     }
 }

@@ -12,8 +12,6 @@ public partial class CreatePatientComponent : IDisposable
     #region Fields
     private EditContext _editContext;
     private bool _showHealthCompanyList;
-    private bool _showErrorModal = false;
-    private bool _showWarning = false;
 
     private bool _navigateAfterClose = false;
     private string _navigationUrl = "/";
@@ -57,7 +55,7 @@ public partial class CreatePatientComponent : IDisposable
     {
         _editContext = new EditContext(VM.Model);
 
-        _onPatientAdded = () => ShowModalMessageAndNavigate("Registro exitos...", ModalType.MessageSuccess, "/");
+        _onPatientAdded = () => ShowModalMessageAndNavigate("Registro exitoso...", ModalType.MessageSuccess, "/");
         _onShowMessage = () => ShowModalMessage("Información", ModalType.MessageInfo);
         _onShowWarning = () => ShowModalMessage("Advertencia", ModalType.MessageWarning);
         _onShowError = () => ShowModalMessage("Error", ModalType.MessageError);
@@ -71,6 +69,7 @@ public partial class CreatePatientComponent : IDisposable
         VM.OnPatientAdded += _onPatientAdded;
         StateHasChanged();
     }
+
     private void ShowModalMessageAndNavigate(string title, ModalType type, string navigationUrl)
     {
         VM.InformationMessage = CreatePatientMessages.PatientAddedMessage;

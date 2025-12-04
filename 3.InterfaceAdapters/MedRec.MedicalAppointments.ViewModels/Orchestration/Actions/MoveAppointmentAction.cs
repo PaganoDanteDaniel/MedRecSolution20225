@@ -37,7 +37,7 @@ internal sealed class MoveAppointmentAction(
         }
         catch (Exception ex)
         {
-            return OperationResult.Fail<Appointment>(new ErrorInfo($"Error crítico al mover el turno: {ex.Message}"));
+            return OperationResult.Fail<Appointment>(new ErrorInfo($"Error crítico al mover el turno: {ex.Message}"), null);
         }
     }
 }

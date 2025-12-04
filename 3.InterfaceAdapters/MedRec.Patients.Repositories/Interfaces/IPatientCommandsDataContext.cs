@@ -1,8 +1,7 @@
-﻿using MedRec.Entity.Interfaces;
-using MedRec.Entity.POCOEntities;
+﻿using MedRec.Entity.POCOEntities;
 
 namespace MedRec.Patients.Repositories.Interfaces;
-public interface IPatientCommandsDataContext : IDataContextUnitOfWork
+public interface IPatientCommandsDataContext
 {
     Task CreatePatientAsync(Patient patient, CancellationToken cancellationToken = default);
     Task UpdatePatientAsync(Patient patient, CancellationToken cancellationToken = default);

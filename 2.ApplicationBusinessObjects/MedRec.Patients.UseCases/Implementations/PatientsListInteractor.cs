@@ -1,49 +1,81 @@
 ﻿using MedRec.Entity.DTOs;
 using MedRec.Entity.Enums;
+using MedRec.Entity.Interfaces;
+using MedRec.Entity.POCOEntities;
 using MedRec.Patients.BusinessObjects.Interfaces.Ports;
 using MedRec.Patients.BusinessObjects.Interfaces.Repositories;
 
 namespace MedRec.Patients.UseCases.Implementations;
+
 /// <summary>
 /// Interactor para listar pacientes.
+/// Mejora la confección de los ErrorInfo:
+/// - Validaciones => ErrorCode.ValidationError + HTTP 400
+/// - Cancelación => ErrorCode.Cancelled + HTTP 499
+/// - No encontrado (0 registros) ya no se trata como error: se retorna lista vacía
+/// - Lista nula => ErrorCode.DatabaseError + HTTP 500
+/// - Excepciones inesperadas => ErrorCode.DatabaseError + detalles + HTTP 500
 /// </summary>
-/// <param name="presenter">Puerto de salida para proveer la lista de pacientes.</param>
-/// <param name="queriesRepository">Unidad de trabajo para manejar las operaciones de pacientes.</param>
-internal class PatientsListInteractor
-    (IPatientsListOutputPort presenter,
-    IPatientQueriesRepository queriesRepository) : IPatientsListInputPort
+internal class PatientsListInteractor : IPatientsListInputPort
 {
-    public async Task Handle(PaginationDto paginationDto, CancellationToken cts = default)
+    private readonly IPatientsListOutputPort _presenter;
+    private readonly IPatientQueriesRepository _queriesRepository;
+    private readonly IRepositoryUnitOfWork _unitOfWork;
+
+    public PatientsListInteractor(
+        IPatientsListOutputPort presenter,
+        IPatientQueriesRepository queriesRepository,
+        IRepositoryUnitOfWork unitOfWork)
     {
+        _presenter = presenter;
+        _queriesRepository = queriesRepository;
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task Handle(PaginationDto paginationDto, CancellationToken ct = default)
+    {
+        // Validación de parámetros de paginación
         if (paginationDto.CurrentPage < 1 || paginationDto.PageSize < 1)
         {
-            await presenter.ErrorAsync(new ErrorInfo("La página y el tamaño deben ser mayores a cero.", ErrorCode.Unknown));
+            await _presenter.ErrorAsync(new ErrorInfo(
+                "La página y el tamaño deben ser mayores a cero.",
+                ErrorCode.ValidationError,
+                new { paginationDto.CurrentPage, paginationDto.PageSize },
+                400));
             return;
         }
 
-        cts.ThrowIfCancellationRequested();
-
-        var countResult = await queriesRepository.CountPatients(paginationDto.FilterOne, cts);
-
-        if (!countResult.IsSuccess)
+        await _unitOfWork.ExecuteWithRetry(async () =>
         {
-            var error = countResult.Error ?? new ErrorInfo("Error al obtener el total de pacientes", ErrorCode.Unknown);
-            await presenter.ErrorAsync(error);
-            return;
-        }
+            ct.ThrowIfCancellationRequested();
 
-        cts.ThrowIfCancellationRequested();
+            // Total de registros (cero ya no es error)
+            var totalRecords = await _queriesRepository.CountPatients(paginationDto.FilterOne, ct);
 
-        var listResult = await queriesRepository.GetPatientsList(paginationDto, cts);
+            // Si no hay registros, devolvemos lista vacía inmediatamente
+            if (totalRecords == 0)
+            {
+                await _presenter.Handle(Enumerable.Empty<Patient>(), 0, ct);
+                return;
+            }
 
-        if (!listResult.IsSuccess)
-        {
-            var error = listResult.Error ?? new ErrorInfo("Error al obtener la lista de pacientes", ErrorCode.Unknown);
-            await presenter.ErrorAsync(error);
-            return;
-        }
+            ct.ThrowIfCancellationRequested();
+            // Obtener la página solicitada
+            var patients = await _queriesRepository.GetPatientsList(paginationDto, ct);
 
-        await presenter.Handle(listResult.Value, countResult.Value);
+            if (patients is null)
+            {
+                await _presenter.ErrorAsync(new ErrorInfo(
+                    "Error al obtener la lista de pacientes.",
+                    ErrorCode.DatabaseError,
+                    new { paginationDto.CurrentPage, paginationDto.PageSize, paginationDto.FilterOne },
+                    500));
+                return;
+            }
+
+            await _presenter.ErrorAsync(null);
+            await _presenter.Handle(patients, totalRecords, ct);
+        }, ct);
     }
 }
 

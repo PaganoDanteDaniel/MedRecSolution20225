@@ -22,7 +22,7 @@
 .my-modal-dialog {
     margin: 0; /* sin margen vertical; el overlay centra */
     max-width: 80%;
-    width: 100%; /* ocupa el ancho disponible hasta el max */
+    /* width: 100%; ocupa el ancho disponible hasta el max */
 }
 
     /* --- Tamaño grande (tablas, ABM, formularios) --- */

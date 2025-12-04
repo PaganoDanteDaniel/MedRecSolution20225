@@ -28,7 +28,7 @@ internal sealed class GetAppointmentsAction(
         }
         catch (Exception ex)
         {
-            return OperationResult.Fail<IReadOnlyList<Appointment>>(new ErrorInfo($"Error crítico al obtener los turnos: {ex.Message}"));
+            return OperationResult.Fail<IReadOnlyList<Appointment>>(new ErrorInfo($"Error crítico al obtener los turnos: {ex.Message}"), null);
         }
     }
 }

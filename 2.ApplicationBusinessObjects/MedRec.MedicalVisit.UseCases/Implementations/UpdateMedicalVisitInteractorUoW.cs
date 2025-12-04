@@ -68,8 +68,8 @@ public class UpdateMedicalVisitInteractorUoW(
                         return new ConcurrencyConflictDto(
                             conflict.EntityName,
                             conflict.PropertyName,
-                            conflict.CurrentValue,
-                            originalValue: data.RowVersion
+                            conflict.DataBaseValue,
+                            userValue: data.RowVersion
                         );
                     }
                     return conflict;

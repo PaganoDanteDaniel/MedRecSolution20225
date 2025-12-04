@@ -1,0 +1,292 @@
+/* =============================================
+     :root — Variables organizadas por temática
+   ============================================= */
+
+:root {
+    /* === 1. Colores base del sistema (modo claro) === */
+    --background: #faf8fc;
+    --foreground: #2f2436; /* fallback para navegadores sin oklch */
+    --card: #ffffff;
+    --card-foreground: #2f2436; /* fallback */
+    --popover: #ffffff; /* fallback */
+    --popover-foreground: #2f2436; /* fallback */
+    --primary: #9b7eb5;
+    --primary-foreground: #ffffff;
+    --secondary: #e8d9f3;
+    --secondary-foreground: #5a3d73;
+    --muted: #f3eaf7;
+    --muted-foreground: #8b7896;
+    --accent: #d4b5e8;
+    --accent-foreground: #5a3d73;
+    --destructive: #d4183d;
+    --destructive-foreground: #ffffff;
+    --border: rgba(155, 126, 181, 0.2);
+    --input: transparent;
+    --input-background: #f8f3fc;
+    --switch-background: #d4b5e8;
+    --ring: #c7a8de;
+    --chart-1: #9b7eb5;
+    --chart-2: #c7a8de;
+    --chart-3: #e8d9f3;
+    --chart-4: #d4b5e8;
+    --chart-5: #b58fc9;
+    --sidebar: #fbf9fb; /* fallback */
+    --sidebar-foreground: #2f2436; /* fallback */
+    --sidebar-primary: #9b7eb5;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #f3eaf7;
+    --sidebar-accent-foreground: #5a3d73;
+    --sidebar-border: rgba(155, 126, 181, 0.2);
+    --sidebar-ring: #c7a8de;
+    /* === 2. Paleta de colores personalizados (por tono) === */
+    --lavender-50: #f8f5fc;
+    --lavender-100: #f3eaf7;
+    --purple-50: #f9f5ff;
+    --purple-100: #f3e8ff;
+    --purple-200: #e9d5ff;
+    --purple-300: #d8b4fe;
+    --purple-400: #c084fc;
+    --purple-500: #a855f7;
+    --purple-600: #9333ea;
+    --pink-50: #fdf4ff;
+    --pink-100: #fae8ff;
+    --pink-200: #f5d0fe;
+    --pink-300: #f0abfc;
+    --pink-400: #e879f9;
+    --pink-500: #d946ef;
+    --pink-600: #c5308e;
+    --pink-700: #a8277a;
+    --pink-800: #8e2167;
+    --pink-900: #721b54;
+    --blue-50: #eff6ff;
+    --blue-100: #dbeafe;
+    --blue-200: #bfdbfe;
+    --blue-300: #93c5fd;
+    --blue-400: #60a5fa;
+    --blue-500: #3b82f6;
+    --blue-600: #2563eb;
+    --teal-50: #f0fdfa;
+    --teal-100: #ccfbf1;
+    --teal-200: #99f6e4;
+    --teal-300: #5eead4;
+    --teal-400: #2dd4bf;
+    --teal-500: #14b8a6;
+    --teal-600: #0d9488;
+    --rose-50: #fff1f2;
+    --rose-100: #ffe4e6;
+    --rose-200: #fecdd3;
+    --rose-300: #fda4af;
+    --rose-400: #fb7185;
+    --rose-500: #f43f5e;
+    --rose-600: #e11d48;
+    --green-50: #f0fdf4;
+    --green-100: #dcfce7;
+    --green-200: #bbf7d0;
+    --green-300: #86efac;
+    --green-400: #4ade80;
+    --green-500: #22c55e;
+    --green-600: #16a34a;
+    --amber-50: #fffbeb;
+    --amber-100: #fef3c7;
+    --amber-200: #fde68a;
+    --amber-300: #fcd34d;
+    --amber-400: #fbbf24;
+    --amber-500: #f59e0b;
+    --amber-600: #d97706;
+    --white: #ffffff;
+    /* === 3. Colores adicionales (no incluidos en la paleta base) === */
+    --color-green-900: #14532d;
+    --color-blue-900: #1e3a8a;
+    --color-red-100: #fee2e2;
+    --color-red-200: #fecaca;
+    --color-red-600: #dc2626;
+    --color-red-900: #7f1d1d;
+    --color-gray-600: #4b5563;
+    /* === 4. Sistema de layout y espaciado fluido === */
+    --fluid-gap: clamp(0.5rem, min(0.9vw, 1.4vh), 1.5rem);
+    --container-max: clamp(56rem, min(80vw, 120vh), 80rem);
+    --card-padding-xs: clamp(0.5rem, min(1vw, 1.6vh), 1rem);
+    --card-min-width: clamp(9rem, min(22vw, 34vh), 14rem);
+    --card-min-height: clamp(8rem, min(12vw, 18vh), 11rem);
+    --text-sm-fluid: clamp(0.85rem, min(0.9vw, 1.4vh), 0.95rem);
+    --text-base-fluid: clamp(0.95rem, min(1.1vw, 1.7vh), 1rem);
+    /* === 5. Alias para compatibilidad con componentes existentes === */
+    --card-padding-sm: var(--card-padding-xs);
+    --card-padding-md: var(--card-padding-xs);
+    --card-min-width-sm: var(--card-min-width);
+    --card-min-width-md: var(--card-min-width);
+    --card-min-height-xs: var(--card-min-height);
+    --card-min-height-sm: var(--card-min-height);
+    --card-min-height-md: var(--card-min-height);
+    --page-gap: var(--fluid-gap);
+    /* === 6. Tipografía fluida === */
+    --fs-6xl: clamp(2.75rem, min(5.2vw, 8.3vh), 3.75rem);
+    --fs-5xl: clamp(2.25rem, min(4.0vw, 6.4vh), 3rem);
+    --fs-4xl: clamp(1.75rem, min(2.8vw, 4.5vh), 2.25rem);
+    --fs-3xl: clamp(1.5rem, min(2.2vw, 3.5vh), 1.875rem);
+    --fs-2xl: clamp(1.25rem, min(1.6vw, 2.6vh), 1.5rem);
+    --fs-xl: clamp(1.1rem, min(1.3vw, 2.1vh), 1.25rem);
+    --fs-lg: clamp(1rem, min(1.1vw, 1.8vh), 1.125rem);
+    --fs-base: clamp(0.95rem, min(1.0vw, 1.6vh), 1rem);
+    --fs-sm: clamp(0.85rem, min(0.9vw, 1.4vh), 0.875rem);
+    /* === 7. Utilidades de diseño (sombras, radios, espaciado fijo) === */
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --spacing-2: clamp(0.20rem, min(0.4vw, 0.6vh), 0.3rem); /*0.5rem;*/
+    --spacing-3: clamp(0.45rem, min(0.7vw, 1.1vh), 0.6rem); /*0.75rem;*/
+    --spacing-4: clamp(0.75rem, min(1.4vw, 2.2vh), 1.2rem); /*1rem;*/
+    --spacing-6: clamp(1.40rem, min(2.6vw, 4vh), 2.2rem); /*1.5rem;*/
+    --spacing-8: clamp(2.5rem, min(4.8vw, 7vh), 4.2rem); /*2rem;*/
+    --radius: 0.625rem;
+    --radius-2xl: 1.5rem;
+    /*--font-size-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);*/
+    --font-size-xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);
+    --font-size-2xl: clamp(1.5rem, 1.3rem + 1vw, 1.875rem);
+    /* === 8. Mapeo Material 3: variables semánticas con prefijo `color-` === */
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-input-background: var(--input-background);
+    --color-switch-background: var(--switch-background);
+    --color-ring: var(--ring);
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+    /* === 9. Mapeo de colores personalizados con prefijo `color-` === */
+    --color-lavender-50: var(--lavender-50);
+    --color-lavender-100: var(--lavender-100);
+    --color-purple-50: var(--purple-50);
+    --color-purple-100: var(--purple-100);
+    --color-purple-200: var(--purple-200);
+    --color-purple-300: var(--purple-300);
+    --color-purple-400: var(--purple-400);
+    --color-purple-500: var(--purple-500);
+    --color-purple-600: var(--purple-600);
+    --color-pink-50: var(--pink-50);
+    --color-pink-100: var(--pink-100);
+    --color-pink-200: var(--pink-200);
+    --color-pink-300: var(--pink-300);
+    --color-pink-400: var(--pink-400);
+    --color-pink-500: var(--pink-500);
+    --color-pink-600: var(--pink-600);
+    --color-pink-900: var(--pink-900);
+    --color-blue-50: var(--blue-50);
+    --color-blue-100: var(--blue-100);
+    --color-blue-200: var(--blue-200);
+    --color-blue-300: var(--blue-300);
+    --color-blue-400: var(--blue-400);
+    --color-blue-500: var(--blue-500);
+    --color-blue-600: var(--blue-600);
+    --color-teal-50: var(--teal-50);
+    --color-teal-100: var(--teal-100);
+    --color-teal-200: var(--teal-200);
+    --color-teal-300: var(--teal-300);
+    --color-teal-400: var(--teal-400);
+    --color-teal-500: var(--teal-500);
+    --color-teal-600: var(--teal-600);
+    --color-rose-50: var(--rose-50);
+    --color-rose-100: var(--rose-100);
+    --color-rose-200: var(--rose-200);
+    --color-rose-300: var(--rose-300);
+    --color-rose-400: var(--rose-400);
+    --color-rose-500: var(--rose-500);
+    --color-rose-600: var(--rose-600);
+    --color-green-50: var(--green-50);
+    --color-green-100: var(--green-100);
+    --color-green-200: var(--green-200);
+    --color-green-300: var(--green-300);
+    --color-green-400: var(--green-400);
+    --color-green-500: var(--green-500);
+    --color-green-600: var(--green-600);
+    --color-amber-50: var(--amber-50);
+    --color-amber-100: var(--amber-100);
+    --color-amber-200: var(--amber-200);
+    --color-amber-300: var(--amber-300);
+    --color-amber-400: var(--amber-400);
+    --color-amber-500: var(--amber-500);
+    --color-amber-600: var(--amber-600);
+    --color-white: var(--white);
+    /* === 10. Radios escalados (Material-style) === */
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+    /* === Nota: Todos los bloques originales representados; oklch aplicable vía @supports === */
+}
+
+/* =====================
+   Si el navegador soporta oklch, aplicar valores oklch (anulan los fallbacks)
+   ===================== */
+@supports (color: oklch(0 0 0)) {
+    :root {
+        --foreground: oklch(0.145 0 0);
+        --card-foreground: oklch(0.145 0 0);
+        --popover: oklch(1 0 0);
+        --popover-foreground: oklch(0.145 0 0);
+        --sidebar: oklch(0.985 0 0);
+        --sidebar-foreground: oklch(0.145 0 0);
+    }
+
+    .dark {
+        --background: oklch(0.145 0 0);
+        --foreground: oklch(0.985 0 0);
+        --card: oklch(0.145 0 0);
+        --card-foreground: oklch(0.985 0 0);
+        --popover: oklch(0.145 0 0);
+        --popover-foreground: oklch(0.985 0 0);
+        --primary: oklch(0.985 0 0);
+        --primary-foreground: oklch(0.205 0 0);
+        --secondary: oklch(0.269 0 0);
+        --secondary-foreground: oklch(0.985 0 0);
+        --muted: oklch(0.269 0 0);
+        --muted-foreground: oklch(0.708 0 0);
+        --accent: oklch(0.269 0 0);
+        --accent-foreground: oklch(0.985 0 0);
+        --destructive: oklch(0.396 0.141 25.723);
+        --destructive-foreground: oklch(0.637 0.237 25.331);
+        --border: oklch(0.269 0 0);
+        --input: oklch(0.269 0 0);
+        --ring: oklch(0.439 0 0);
+        --font-weight-medium: 500;
+        --font-weight-normal: 400;
+        --chart-1: oklch(0.488 0.243 264.376);
+        --chart-2: oklch(0.696 0.17 162.48);
+        --chart-3: oklch(0.769 0.188 70.08);
+        --chart-4: oklch(0.627 0.265 303.9);
+        --chart-5: oklch(0.645 0.246 16.439);
+        --sidebar: oklch(0.205 0 0);
+        --sidebar-foreground: oklch(0.985 0 0);
+        --sidebar-primary: oklch(0.488 0.243 264.376);
+        --sidebar-primary-foreground: oklch(0.985 0 0);
+        --sidebar-accent: oklch(0.269 0 0);
+        --sidebar-accent-foreground: oklch(0.985 0 0);
+        --sidebar-border: oklch(0.269 0 0);
+        --sidebar-ring: oklch(0.439 0 0);
+    }
+}

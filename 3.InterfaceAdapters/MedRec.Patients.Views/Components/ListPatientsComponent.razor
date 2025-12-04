@@ -85,6 +85,17 @@
         </div>
     </ModalComponent>
 
+<ModalComponent Show="@_showModal"
+                ShowChanged="@((bool val) => _showModal = val)"
+                Title="@_modalTitle"
+                Type="@_modalType"
+                CenterText="true"
+                ShowAcceptButton="true"
+                OnAccept="@CloseModal"
+                ShowCancelButton="false">
+    @((MarkupString)VM.InformationMessage)
+</ModalComponent>
+
 <script >
     // Inicializa los tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));

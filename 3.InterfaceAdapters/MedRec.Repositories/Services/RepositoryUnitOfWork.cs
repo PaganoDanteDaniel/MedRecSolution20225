@@ -17,8 +17,11 @@ internal class RepositoryUnitOfWork(IDataContextUnitOfWork dataContextUnitOfWork
         GuardDBContext.AgainstSaveChangesErrorAsync(dataContextUnitOfWork.SaveChangesAsync, ct);
     //dataContextUnitOfWork.SaveChangesAsync(ct);
 
-    public Task ExecuteWithRetryAsync(Func<Task> operation, CancellationToken ct = default) =>
+    public Task ExecuteWithRetry(Func<Task> operation, CancellationToken ct = default) =>
         dataContextUnitOfWork.ExecuteWithRetryAsync(operation, ct);
-
+    public Task ExecuteInTransactionWithRetry(Func<Task> work, CancellationToken ct = default) =>
+           dataContextUnitOfWork.ExecuteInTransactionWithRetryAsync(work, ct);
     public void Dispose() { }
+
+
 }

@@ -7,7 +7,7 @@ using MedRec.Shared.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedRec.MedicalAppointments.DataContext.MySql.Services;
-internal class MedicalAppointmentCommandsDataContext(DataBaseContextMySql context)
+internal class MedicalAppointmentCommandsDataContext(MedRecContext context)
     : IMedicalAppointmentCommandsDataContext
 {
     public async Task CreateAsync(MedicalAppointment entity, CancellationToken ct)

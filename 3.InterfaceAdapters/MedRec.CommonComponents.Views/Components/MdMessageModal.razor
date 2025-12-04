@@ -1,0 +1,169 @@
+﻿<style>
+    .md-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+        backdrop-filter: blur(2px);
+    }
+
+    .modal-container-lg {
+        max-width: 80vw;
+        width: 80vw;
+        height: 85vh;
+        margin: 0; /* sin margen; el overlay centra */
+    }
+
+    .modal-container {
+        max-width: 480px;
+        width: 100%;
+        animation: modalDrop .22s ease;
+        background: var(--surface, #fff);
+        border-radius: 12px;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.35);
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+    }
+
+    .modal-icon {
+        stroke: currentColor;
+        width: 2.5rem;
+        height: 2.5rem;
+        fill: none;
+        flex-shrink: 0;
+    }
+
+    .modal-title-wrapper {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        min-height: 2.5rem; /* Igual al ícono */
+    }
+
+        .modal-title-wrapper h2 {
+            margin: 0;
+            padding: 0;
+            line-height: 1.2; /* Controla la altura del texto */
+            font-weight: 500; /* Opcional: más fuerte como Material Design */
+        }
+
+    .modal-icon.info {
+        color: var(--color-primary);
+    }
+
+    .modal-icon.warning {
+        color: #ffa726;
+    }
+
+    .modal-icon.error {
+        color: #e53935;
+    }
+
+    .modal-icon.success {
+        color: #4caf50;
+    }
+
+    .modal-title-wrapper {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        min-height: 2.5rem; /* Igual al ícono para centrado perfecto */
+    }
+
+    .modal-body {
+        flex: 1; /* ocupa el espacio disponible */
+        overflow-y: auto; /* permite scroll interno si el contenido es largo */
+        padding: 1rem 1.5rem;
+        margin: 0;
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: .5rem;
+        padding: 1rem 1.5rem;
+    }
+
+    .modal-divider {
+        border-top: 1px solid rgba(0,0,0,0.1);
+        margin: 0;
+    }
+
+    @@keyframes modalDrop {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+@if (Visible)
+{
+    <div class="md-modal-overlay" @onclick="@(CloseOnOverlayClick? OnOverlayClick : null)">
+        <div class="md-dialog @(IsLargeModal ? "modal-container-lg" : "modal-container")" @onclick:stopPropagation>
+
+            <!-- HEADER -->
+            <div class="modal-header">
+                @IconSvg
+
+                <div class="modal-title-wrapper">
+                    <h2>@Title</h2>
+                </div>
+            </div>
+
+            <!-- DIVISOR ENTRE HEADER Y BODY -->
+            <div class="modal-divider"></div>
+
+            <!-- CONTENIDO -->
+            <div class="modal-body">
+                @if (Body != null)
+                {
+                    @Body
+                }
+                else
+                {
+                    <p>@Message</p>
+                }
+            </div>
+
+            <!-- DIVISOR ENTRE BODY Y FOOTER -->
+            <div class="modal-divider"></div>
+
+            <!-- FOOTER (botones dinámicos) -->
+            <div class="modal-footer">
+                @if (ShowCancel)
+                {
+                    <button type="button" class="md-btn-secondary" @onclick="ClickCancel">Cancelar</button>
+                }
+
+                @if (ShowRetry)
+                {
+                    <button type="button" class="md-btn-secondary" @onclick="ClickRetry">Reintentar</button>
+                }
+
+                @if (ShowDelete)
+                {
+                    <button type="button" class="md-btn-secondary" style="color:#c62828" @onclick="ClickDelete">Eliminar</button>
+                }
+
+                @if (ShowOk)
+                {
+                    <button type="button" class="md-btn-primary" @onclick="ClickOk">Aceptar</button>
+                }
+            </div>
+        </div>
+    </div>
+}

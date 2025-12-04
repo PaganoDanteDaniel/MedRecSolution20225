@@ -16,13 +16,13 @@ using System.Threading.Tasks;
 namespace MedRec.HealthInsurance.Views.Components;
 public partial class UpdateHealthInsuranceComponent
 {
+    public bool Validate() => _editContext.Validate();
     private UpdateHealthInsuranceVM VM => Service;
     private EditContext _editContext;
-    private bool showModal;
+    //private bool showModal;
     private CancellationTokenSource _ct;
     [Parameter] public EventCallback OnHealthInsuranceUpdated { get; set; }
     [Parameter] public Guid HealthInsuranceId { get; set; }
-    [Parameter] public EventCallback OnCancelAdd { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -34,41 +34,26 @@ public partial class UpdateHealthInsuranceComponent
         await VM.GetHealthInsuranceAsync(HealthInsuranceId, _ct.Token);
 
     }
-    public async Task UpdateHealthInsurance()
+
+    public async Task SaveAsync()
     {
-        if (_editContext.Validate() == true)
+        if (Validate())
         {
             _ct?.Dispose();
             _ct = new CancellationTokenSource();
             await VM.UpdateHealthCompany(_ct.Token);
+            // Notificamos que se actualizó
+            await OnHealthInsuranceUpdated.InvokeAsync();
         }
     }
-    private void CancelAdd()
-    {
-        CleanField();
 
-        OnCancelAdd.InvokeAsync();
-
-    }
-    private void OnAccept()
-    {
-        showModal = false;
-        Dispose();
-    }
-    public void Dispose()
-    {
-        OnHealthInsuranceUpdated.InvokeAsync();
-        VM.OnUpdateSuccess -= ShowSuccessModal;
-    }
-    private void ShowSuccessModal()
-    {
-        showModal = true;
-    }
-    private void CleanField()
+    public void CleanField()
     {
         VM.Model.Name = string.Empty;
         VM.Model.Acronym = string.Empty;
         VM.Model.InformationMessage = string.Empty;
-    }
 
+        // Opcional: resetea el estado de validación visual
+        _editContext?.MarkAsUnmodified();
+    }
 }

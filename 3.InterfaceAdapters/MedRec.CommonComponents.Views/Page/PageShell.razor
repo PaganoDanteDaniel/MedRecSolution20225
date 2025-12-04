@@ -1,0 +1,59 @@
+@using MedRec.CommonComponents.Views.Components
+@using MedRec.CommonComponents.Views.Exceptions
+@using Microsoft.AspNetCore.Components
+
+<div class="body-content">
+    <div class="page-header">
+        @if (HeaderContent is not null)
+        {
+            @HeaderContent
+        }
+        else if (!string.IsNullOrEmpty(Title))
+        {
+            <TitleComponent Title="@Title" />
+        }
+    </div>
+
+    <div class="scrollable-section @BodyClass @(CenterContent ? "centered-horizontal" : "")">
+        <ErrorBoundary @ref="_errorBoundary">
+            <ChildContent>
+                <div class="page-content-wrapper">
+                    @ChildContent
+                </div>
+            </ChildContent>
+            <ErrorContent>
+                @if (ErrorContent is not null)
+                {
+                    @ErrorContent(context)
+                }
+                else
+                {
+                    <ExceptionDisplayComponent Exception="context" />
+                    <button class="btn btn-danger" @onclick="Recover">OK</button>
+                }
+            </ErrorContent>
+        </ErrorBoundary>
+    </div>
+
+    <div class="me-footer">
+        <FooterComponent Message="@FooterMessage" />
+    </div>
+</div>
+
+@code {
+    private ErrorBoundary _errorBoundary;
+
+    [Parameter] public string Title { get; set; }
+    [Parameter] public RenderFragment HeaderContent { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public RenderFragment<Exception> ErrorContent { get; set; }
+    [Parameter] public string FooterMessage { get; set; }
+    [Parameter] public EventCallback<string> FooterMessageParameterChanged { get; set; }
+    [Parameter] public bool CenterContent { get; set; } = false;
+    [Parameter] public string BodyClass { get; set; } = "";
+    // Permite que la página padre llame a Recover()
+    public void Recover()
+    {
+        _errorBoundary?.Recover();
+    }
+}

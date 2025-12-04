@@ -12,7 +12,7 @@ public static class DependencyContainer
 
         services.AddPatientDataContextMySqlServices();
         services.AddPatientRepositoriesServices();
-        services.AddPatientUseCasesServices();
+        services.AddPatientUseCasesServicesWithProxy();
         services.AddPatientPresentersServices();
 
         services.AddTransient<CreatePatientVM>();

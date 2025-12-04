@@ -1,4 +1,5 @@
-﻿using MedRec.Entity.POCOEntities;
+﻿using MedRec.Entity.Interfaces;
+using MedRec.Entity.POCOEntities;
 using MedRec.Patients.BusinessObjects.DTOs;
 using MedRec.Patients.BusinessObjects.Interfaces.Ports;
 using MedRec.Patients.BusinessObjects.Interfaces.Repositories;
@@ -7,37 +8,46 @@ using MedRec.Validator.Interfaces;
 
 namespace MedRec.Patients.UseCases.Implementations;
 
-internal class CreatePatientInteractor(
-    ICreatePatientOutputPort presenter,
-    IPatientCommandsRepository commandRepository,
-    IModelValidatorHub<CreatePatientDto> validatorHub) : ICreatePatientInputPort
+internal class CreatePatientInteractor : ICreatePatientInputPort
 {
-    public async Task HandleAsync(CreatePatientDto dto, CancellationToken cts)
+    private readonly ICreatePatientOutputPort _presenter;
+    private readonly IPatientCommandsRepository _commandRepository;
+    private readonly IModelValidatorHub<CreatePatientDto> _validatorHub;
+    private readonly IRepositoryUnitOfWork _unitOfWork;
+
+    public CreatePatientInteractor(
+        ICreatePatientOutputPort presenter,
+        IPatientCommandsRepository commandRepository,
+        IModelValidatorHub<CreatePatientDto> validatorHub,
+        IRepositoryUnitOfWork unitOfWork)
     {
-        cts.ThrowIfCancellationRequested();
+        _presenter = presenter;
+        _commandRepository = commandRepository;
+        _validatorHub = validatorHub;
+        _unitOfWork = unitOfWork;
+    }
 
-        // Validación del paciente
-        bool isValid = await validatorHub.Validate(dto,
-            p => CreatePatientValidator.Validate(p));
+    public async Task HandleAsync(CreatePatientDto dto, CancellationToken ct)
+    {
+        ct.ThrowIfCancellationRequested();
 
+        var isValid = await _validatorHub.Validate(dto, p => CreatePatientValidator.Validate(p));
         if (!isValid)
         {
-            await presenter.ValidationErrorsAsync(validatorHub.Errors);
+            await _presenter.ValidationErrorsAsync(_validatorHub.Errors);
             return;
         }
 
         var patient = (Patient)dto;
 
-        // Crear paciente
-        var result = await commandRepository.Create(patient, cts);
-
-        if (!result.IsSuccess)
+        await _unitOfWork.ExecuteInTransactionWithRetry(async () =>
         {
-            await presenter.ErrorAsync(result.Error);
-            return;
-        }
+            await _commandRepository.Create(patient, ct);
+            await _unitOfWork.SaveChanges(ct);
+            await _presenter.ErrorAsync(null);
+        }, ct);
 
-        await presenter.ErrorAsync(null);
-        await presenter.Handle();
+        await _presenter.ErrorAsync(null);
+        await _presenter.Handle(ct);
     }
 }

@@ -47,7 +47,7 @@ public static class ConcurrencyHelper
                 try
                 {
                     // Convertir el valor actual al tipo de la propiedad antes de asignar
-                    var value = ConvertValue(conflict.OriginalValue, property.PropertyType);
+                    var value = ConvertValue(conflict.UserValue, property.PropertyType);
 
                     // Intentar asignar; puede lanzar si el setter es no público o la conversión es incompatible.
                     property.SetValue(model, value);

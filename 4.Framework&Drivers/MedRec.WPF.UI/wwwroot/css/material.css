@@ -1,0 +1,291 @@
+/* ============================
+   Botones
+   ============================ */
+.md-btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-primary-foreground);
+    border: none;
+    border-radius: 0.625rem; /* 10px */
+    padding: 0.5rem 1rem;
+    font-weight: var(--font-weight-medium, 500);
+    box-shadow: none;
+    transition: box-shadow 0.18s ease, transform 0.12s ease, background-color 0.12s ease;
+    font-size: var(--text-base-fluid); /* FLUIDO */
+}
+
+    .md-btn-primary:hover {
+        filter: brightness(0.96);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .md-btn-primary:active {
+        transform: translateY(1px);
+    }
+
+.md-btn-secondary {
+    background-color: var(--color-card);
+    color: var(--color-card-foreground);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    transition: background-color .12s ease, border-color .12s ease;
+    font-size: var(--text-base-fluid); /* FLUIDO */
+}
+
+    .md-btn-secondary:hover {
+        background-color: var(--color-secondary);
+    }
+
+/* ============================
+   Cards
+   ============================ */
+.md-card {
+    background-color: var(--color-card, #ffffff);
+    color: var(--color-card-foreground, #111);
+    border-radius: 1rem; /* 16px */
+    box-shadow: 0px 1px 2px rgba(0,0,0,0.08), 0px 1px 3px rgba(0,0,0,0.10);
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: var(--text-base-fluid); /* Coherencia tipográfica */
+}
+
+    .md-card:hover {
+        transform: translateY(-3px);
+        background-color: color-mix(in srgb, var(--color-card), black 4%);
+        box-shadow: 0 3px 6px rgba(0,0,0,0.12), 0 6px 12px rgba(0,0,0,0.10);
+    }
+
+    .md-card:active {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.10), 0 4px 8px rgba(0,0,0,0.08);
+    }
+
+    .md-card:focus-visible,
+    .md-card:focus {
+        outline: 3px solid color-mix(in srgb, var(--color-primary), black 80%);
+        outline-offset: 2px;
+    }
+
+    /* estadísticas: más compactas, selector específico */
+    .md-card.md-stat-card {
+        min-height: clamp(3.5rem, 6vh, 4.5rem);
+        padding: clamp(0.5rem, 1vw, 0.75rem);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-sizing: border-box;
+    }
+
+        .md-card.md-stat-card .md-card-header p,
+        .md-card.md-stat-card .md-card-header h3 {
+            margin: 0;
+            line-height: 1.2;
+            font-size: var(--text-sm-fluid);
+        }
+
+/* ============================
+   Inputs / TextFields
+   ============================ */
+.md-input {
+    background-color: var(--color-input-background, transparent);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    transition: box-shadow .12s ease, border-color .12s ease;
+    font-size: var(--text-base-fluid); /* FLUIDO */
+}
+
+    .md-input:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary), transparent 88%);
+        outline: none;
+    }
+
+/* ============================
+   Dialogs / Modals
+   ============================ */
+.md-dialog {
+    background-color: var(--color-surface, var(--color-card));
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+    color: var(--color-foreground);
+    display: flex;
+    flex-direction: column;
+    font-size: var(--text-base-fluid);
+    max-height: 85vh;
+    max-width: 80vw;
+    margin: auto;
+    padding: 1.5rem;
+}
+
+/* ============================
+   Sidebar / Navigation
+   ============================ */
+.md-sidebar {
+    background-color: var(--color-sidebar);
+    color: var(--color-sidebar-foreground);
+    width: 70px;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+    .md-sidebar .md-nav-item {
+        padding: 0.75rem 1rem;
+        border-radius: var(--radius-md);
+        transition: background-color 0.2s ease;
+        font-size: var(--text-base-fluid);
+    }
+
+        .md-sidebar .md-nav-item:hover {
+            background-color: var(--color-sidebar-accent);
+            color: var(--color-sidebar-accent-foreground);
+        }
+
+/* ============================
+   Elevación (Material 3)
+   ============================ */
+.md-elevation-0 {
+    box-shadow: none;
+}
+
+.md-elevation-1 {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.10);
+}
+
+.md-elevation-2 {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.10), 0 4px 8px rgba(0,0,0,0.10);
+}
+
+.md-elevation-3 {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.12), 0 6px 12px rgba(0,0,0,0.10);
+}
+
+/* ============================
+   Tipografía (Material 3 roles)
+   ============================ */
+.md-text-title {
+    font-size: var(--fs-xl);
+    font-weight: var(--font-weight-medium);
+}
+
+.md-text-body {
+    font-size: var(--text-base-fluid);
+    font-weight: var(--font-weight-normal);
+}
+
+/* ============================
+   Estilos para tarjetas de módulos — versión unificada y fluida
+   ============================ */
+.md-module-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--fluid-gap);
+    min-height: var(--card-min-height);
+    padding: var(--card-padding-xs);
+    border-radius: 1rem;
+    background-color: var(--color-card);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    box-sizing: border-box;
+    font-size: var(--text-base-fluid);
+}
+
+    .md-module-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 3px 6px rgba(0,0,0,0.12), 0 6px 12px rgba(0,0,0,0.10);
+    }
+
+    /* Icon container */
+    .md-module-card .md-icon-container {
+        width: 3.5rem;
+        height: 3.5rem;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Body text spacing */
+    .md-module-card .md-module-body h3 {
+        font-size: var(--text-base-fluid);
+        font-weight: var(--font-weight-semibold, 600);
+        margin: 0.25rem 0;
+        line-height: 1.3;
+    }
+
+    .md-module-card .md-module-body p {
+        font-size: var(--text-sm-fluid);
+        color: var(--color-muted-foreground);
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    /* Footer button full width */
+    .md-module-card .md-btn-full {
+        width: 100%;
+        border-radius: 0.5rem;
+        background-color: transparent;
+        border: 1px solid rgba(0,0,0,0.04);
+        margin-top: auto;
+    }
+
+    /* Light button variant (override) */
+    .md-module-card .md-btn-secondary {
+        background-color: rgba(0,0,0,0.02);
+        color: var(--color-card-foreground);
+    }
+
+        .md-module-card .md-btn-secondary:hover {
+            background-color: var(--color-secondary);
+            border-color: var(--color-primary);
+        }
+
+/* ============================
+   Grid global fluido — usando variables unificadas
+   ============================ */
+.md-grid {
+    display: grid;
+    gap: var(--fluid-gap);
+    grid-template-columns: 1fr;
+    align-items: start;
+    width: 100%;
+}
+
+/* Stats grid (más compacto) */
+.md-grid-stats {
+    display: grid;
+    gap: calc(var(--fluid-gap) * 0.8);
+    grid-template-columns: 1fr;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Breakpoints */
+@media (min-width: 640px) {
+    .md-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .md-grid-stats {
+        grid-template-columns: repeat(2, minmax(var(--card-min-width), 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .md-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .md-grid-stats {
+        grid-template-columns: repeat(3, minmax(var(--card-min-width), 1fr));
+    }
+}
+
+/* Accessibility: prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .md-card, .md-btn-primary, .md-btn-secondary {
+        transition: none;
+    }
+}

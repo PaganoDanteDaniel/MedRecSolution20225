@@ -104,7 +104,7 @@ public class CreateMedicalVisitVMOrchestrator(ICreateMedicalVisitOrchestrator or
                 OnShowError?.Invoke();
                 break;
             default:
-                OnShowMessage?.Invoke();
+                OnShowError?.Invoke();
                 break;
         }
     }

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\1.EnterpriseBusinessObjects\MedRec.Entity\MedRec.Entity.csproj" />
+    <ProjectReference Include="..\..\1.EnterpriseBusinessObjects\MedRec.Shared\MedRec.Shared.csproj" />
     <ProjectReference Include="..\..\1.EnterpriseBusinessObjects\MedRec.Validator\MedRec.Validator.csproj" />
   </ItemGroup>
 

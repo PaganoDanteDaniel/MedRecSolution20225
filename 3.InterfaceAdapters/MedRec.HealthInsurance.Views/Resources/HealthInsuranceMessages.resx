@@ -124,7 +124,7 @@
     <value>¿ESTA SEGURO DE ELIMINAR ESTE REGISTRO?</value>
   </data>
   <data name="ModalTitleText" xml:space="preserve">
-    <value>POCESO DE ELIMINACION</value>
+    <value>Proceso de eliminación</value>
   </data>
   <data name="PlaceholderFilterInput" xml:space="preserve">
     <value>INGRESE EL NOMBRE O SIGLA DE LA OBRA SOCIAL PARA FILTRAR</value>

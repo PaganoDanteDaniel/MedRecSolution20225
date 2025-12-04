@@ -1,0 +1,149 @@
+﻿@page "/md-style-preview"
+@using MedRec.CommonComponents.Views
+@using MedRec.CommonComponents.Views.Components
+
+@page "/md-modal-preview"
+
+<h3>Pruebas del componente MdMessageModal</h3>
+
+<div class="btn-grid">
+    <label>@message</label>
+    <button class="md-btn-primary" @onclick="ShowInfo">Info (Mensaje)</button>
+    <button class="md-btn-primary" @onclick="ShowWarning">Warning (Mensaje)</button>
+    <button class="md-btn-primary" @onclick="ShowError">Error (Mensaje)</button>
+
+    <button class="md-btn-secondary" @onclick="ShowCustomBody">
+        Modal con Body personalizado
+    </button>
+
+    <button class="md-btn-secondary" @onclick="ShowAllButtons">
+        Modal con todos los botones
+    </button>
+</div>
+
+<MdMessageModal Visible="@ModalVisible"
+                VisibleChanged="@(v => ModalVisible = v)"
+                Type="@ModalType"
+                Title="@ModalTitle"
+                Message="@ModalMessage"
+                Body="@ModalBody"
+                CloseOnOverlayClick=CloseOnOverlayClick
+                ShowOk="@ShowOk"
+                ShowCancel="@ShowCancel"
+                ShowRetry="@ShowRetry"
+                ShowDelete="@ShowDelete"
+                OnOk="HandleOk"
+                OnCancel="HandleCancel"
+                OnRetry="HandleRetry"
+                OnDelete="HandleDelete" />
+
+@code {
+    string message = "";
+    bool CloseOnOverlayClick = true;
+    bool ModalVisible;
+    ModalType ModalType = ModalType.MessageInfo;
+    string ModalTitle = "";
+    string ModalMessage = "";
+    RenderFragment? ModalBody;
+
+    bool ShowOk = true;
+    bool ShowCancel = false;
+    bool ShowRetry = false;
+    bool ShowDelete = false;
+
+    // ---------------------------
+    // Métodos para lanzar modales
+    // ---------------------------
+    void ShowInfo()
+    {
+        ResetButtons();
+        ModalType = ModalType.MessageInfo;
+        ModalTitle = "Información";
+        ModalMessage = "Este es un mensaje informativo.";
+        ModalVisible = true;
+    }
+
+    void ShowWarning()
+    {
+        ResetButtons();
+        ModalType = ModalType.MessageWarning;
+        ModalTitle = "Advertencia";
+        ModalMessage = "Cuidado con esta acción.";
+        ModalVisible = true;
+    }
+
+    void ShowError()
+    {
+        ResetButtons();
+        ModalType = ModalType.MessageError;
+        ModalTitle = "Ocurrió un error";
+        ModalMessage = "Algo salió mal.";
+        ModalVisible = true;
+    }
+
+    void ShowCustomBody()
+    {
+        ResetButtons();
+        ModalType = ModalType.NormalContent;
+        ModalTitle = "Contenido personalizado";
+
+        ModalBody = builder =>
+        {
+            builder.AddMarkupContent(0, @"
+                <div style='padding:8px; background:#f3f3f3; border-radius:6px;'>
+                    <strong>Este es un Body custom.</strong><br>
+                    Podes renderizar cualquier HTML aquí.
+                </div>");
+        };
+
+        ModalVisible = true;
+    }
+
+    void ShowAllButtons()
+    {
+        ShowOk = false;
+        ShowCancel = true;
+        ShowRetry = false;
+        ShowDelete = true;
+        CloseOnOverlayClick = false;
+
+        ModalType = ModalType.MessageDanger;
+        ModalTitle = "Prueba de botones";
+        ModalMessage = "Todos los botones activados.";
+        ModalBody = null;
+
+        ModalVisible = true;
+    }
+
+    // ---------------------------
+    // Eventos
+    // ---------------------------
+    void HandleOk() { message = "OK presionado"; }
+    void HandleCancel() { message = "Cancel presionado"; }
+    void HandleRetry() {message="Retry presionado";}
+    void HandleDelete() {message="Delete presionado";}
+
+    void Log(string message)
+    {
+        Console.WriteLine($"[MODAL] {message}");
+    }
+
+    void ResetButtons()
+    {
+        ShowOk = true;
+        ShowCancel = false;
+        ShowRetry = false;
+        ShowDelete = false;
+        ModalBody = null;
+    }
+}
+
+<style>
+    .btn-grid {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+    }
+</style>
+

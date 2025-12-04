@@ -1,28 +1,52 @@
-﻿@page "/"
+﻿@page "/list-patients"
 @using MedRec.CommonComponents.Views.Components
 @using MedRec.CommonComponents.Views.Exceptions
+@using MedRec.CommonComponents.Views.Page
 @using MedRec.Patients.Views.Components
 
 <div class="body-content">
-    <TitleComponent Title=@ListPatientsMessages.Title />
+<PageShell FooterMessage="@footerMessage" @ref="pageShellRef" CenterContent="true">
+    <HeaderContent>
+        <CustomHeader ButtonBackPress="OnBackPressed"
+                      ColorA50="--color-pink-50"
+                      ColorA100="--color-pink-100"
+                      ColorB100="--color-pink-200"
+                      ColorA600="--color-pink-600"
+                      ColorB600="--color-pink-600">
+            <HeaderContent>
+                <div class="header-icon">
+                    <svg class="icon-header" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 5H3" />
+                            <path d="M16 12H3" />
+                            <path d="M11 19H3" />
+                            <path d="m15 18 2 2 4-4" />
+                    </svg>
+                </div>
+                <h1 class="header-title">Listado de Pacientes</h1>
+            </HeaderContent>
+        </CustomHeader>
+    </HeaderContent>
 
-    <!-- Zona desplazable -->
-    <div class="scrollable-section">
-        <ErrorBoundary @ref=ErrorBoundaryRef>
-            <ChildContent>
-                <ListPatientsComponent MaxPageButton="MaxPageButton"
-                                       FooterMessageParameterChanged="OnMessageFooterChange"
-                                       OnPatientUpdate="PatientUpdate" />
-            </ChildContent>
-            <ErrorContent>
-                <ExceptionDisplayComponent Exception="context" />
-                <button class="btn btn-danger" @onclick=Recover>OK</button>
-            </ErrorContent>
-        </ErrorBoundary>
-    </div>
+    <ChildContent>
+            <ListPatientsComponent MaxPageButton="MaxPageButton"
+                                   FooterMessageParameterChanged="OnMessageFooterChange"
+                                   OnPatientUpdate="PatientUpdate" />
+    </ChildContent>
 
-    <!-- Footer fijo -->
-    <div class="me-footer">
-        <FooterComponent Message="@footerMessage" />
-    </div>
+    <ErrorContent Context="context">
+        <ExceptionDisplayComponent Exception="context" />
+        <button class="btn btn-danger" @onclick="(()=>pageShellRef.Recover())">OK</button>
+    </ErrorContent>
+</PageShell>
+
+  
 </div>
+
+@if (_isLoading)
+{
+    <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.6); z-index:1000;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+}

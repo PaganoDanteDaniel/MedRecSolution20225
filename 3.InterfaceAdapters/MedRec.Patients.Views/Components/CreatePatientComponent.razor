@@ -107,8 +107,12 @@
                             Show="@_showHealthCompanyList"
                             Type="ModalType.LargeContent"
                             ShowChanged="(value) => _showHealthCompanyList = value">
-                <HealthInsuranceComponent MaxPageButton="3"
-                    OnHealthCompanySelected="@OnHealthCompanySelected" />
+                @if (_showHealthCompanyList)
+                {
+                    <HealthInsuranceComponent MaxPageButton="3" 
+                        OnHealthCompanySelected="@OnHealthCompanySelected" />
+                }
+                
             </ModalComponent>
             <div class="new-patient-col">
                 <label for="insuranceHealthCard">@CreatePatientMessages.InsuranceHealthCardLabel</label>
@@ -156,6 +160,7 @@
   </div>  
     
 </EditForm>
+
 <ModalComponent Show="@_showModal"
                 ShowChanged="@((bool val) => _showModal = val)"
                 Title="@_modalTitle"

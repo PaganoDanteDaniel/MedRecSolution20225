@@ -1,5 +1,5 @@
 ﻿namespace MedRec.Shared.Exceptions.SQLExceptions;
-public class UpdateException : Exception
+public class UpdateException : PersistenceException
 {
     public IEnumerable<string> Entities { get; }
     public object Details { get; }

@@ -29,7 +29,7 @@ public class CreateMedicalVisitInteractorUoW(
         {
             ct.ThrowIfCancellationRequested();
             // 2. Iniciar transacción
-            await unitOfWork.ExecuteWithRetryAsync(async () =>
+            await unitOfWork.ExecuteWithRetry(async () =>
             {
 
                 await unitOfWork.BeginTransaction(ct);

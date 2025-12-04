@@ -1,61 +1,44 @@
 ﻿using MedRec.DataContext.MySql.DataContext;
-using MedRec.DataContext.MySql.Guard;
 using MedRec.Entity.POCOEntities;
 using MedRec.Patients.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedRec.Patients.DataContext.MySql.Services;
-internal class PatientCommandDataContextMySql(DataBaseContextMySql context)
+internal class PatientCommandDataContextMySql(MedRecContext context)
     : IPatientCommandsDataContext
 {
-    public async Task BeginTransactionAsync(CancellationToken cancellationToken = default) =>
-              await context.Database.BeginTransactionAsync(cancellationToken);
-
-    public async Task CommitTransactionAsync(CancellationToken cancellationToken = default) =>
-        await context.Database.CommitTransactionAsync(cancellationToken);
-
-    public Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
-    {
-        context.Database.RollbackTransaction();
-        return Task.CompletedTask;
-    }
-
-    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) =>
-        await GuardDBContext.AgainstSaveChangesErrorAsync(context.SaveChangesAsync, cancellationToken);
-
-    public async Task ExecuteWithRetryAsync(Func<Task> operation, CancellationToken cancellationToken = default)
-    {
-        var strategy = context.Database.CreateExecutionStrategy();
-        await strategy.ExecuteAsync(async () =>
-        {
-            await operation();
-        });
-    }
-
     public async Task CreatePatientAsync(Patient patient, CancellationToken cancellationToken = default) =>
         await context.Patients.AddAsync(patient, cancellationToken);
 
-
     public async Task UpdatePatientAsync(Patient editPatient, CancellationToken cancellationToken = default)
     {
-        var trackedEntry = context.ChangeTracker.Entries<Patient>()
-            .FirstOrDefault(e => e.Entity.Id == editPatient.Id);
+        cancellationToken.ThrowIfCancellationRequested();
 
-        if (trackedEntry != null)
+        // 1) Asegurar que no haya otra instancia del mismo agregado rastreada
+        var tracked = context.ChangeTracker.Entries<Patient>()
+            .FirstOrDefault(e => e.Entity.Id == editPatient.Id);
+        if (tracked is not null)
         {
-            trackedEntry.State = EntityState.Detached;
+            tracked.State = EntityState.Detached;
         }
 
-        var existingPatient = await context.Patients
-            .FirstOrDefaultAsync(p => p.Id == editPatient.Id, cancellationToken);
+        // 2) Crear/adjuntar un "stub" y aplicar los cambios del DTO
+        //    Usamos la instancia recibida (no-tracked) como base.
+        context.Attach(editPatient);
 
-        if (existingPatient == null)
-            throw new InvalidOperationException("Paciente no encontrado.");
+        var entry = context.Entry(editPatient);
 
-        context.Entry(existingPatient).CurrentValues.SetValues(editPatient);
+        // 3) Marcar como Modified para actualización completa (o setear por propiedad si necesitas parcial)
+        entry.State = EntityState.Modified;
 
-        // Indicar el valor original de RowVersion para concurrencia
-        context.Entry(existingPatient).Property("RowVersion").OriginalValue = existingPatient.RowVersion;
+        // 4) Establecer el valor ORIGINAL del token de concurrencia (RowVersion)
+        //    Debe ser el valor que llegó del cliente (editPatient.RowVersion),
+        //    no el de la BD. EF comparará UserValue vs BD en SaveChanges.
+        entry.Property(nameof(Patient.RowVersion)).OriginalValue = editPatient.RowVersion;
+
+        // NOTA: No llamamos SaveChanges aquí. El UoW lo hará y
+        // GuardDBContext interceptará y clasificará las excepciones (incluida la concurrencia).
+        await Task.CompletedTask;
     }
 
     public async Task SoftDeletePatientAsync(Patient patient, CancellationToken cancellationToken = default)

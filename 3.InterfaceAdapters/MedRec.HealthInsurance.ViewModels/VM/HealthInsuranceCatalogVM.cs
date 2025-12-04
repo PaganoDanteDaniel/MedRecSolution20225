@@ -101,12 +101,12 @@ public class HealthInsuranceCatalogVM(
                     InformationMessage += string.Join("<br />",
                         conflicts
                         .Where(x => x.PropertyName != "RowVersion")
-                        .Select(x => $"{x.PropertyName}: {x.OriginalValue}"));
+                        .Select(x => $"{x.PropertyName}: {x.DataBaseValue}"));
                     InformationMessage += "<br /> VALORES QUE USTED ENVÍA:<br />";
                     InformationMessage += string.Join("<br />",
                         conflicts
                         .Where(x => x.PropertyName != "RowVersion")
-                        .Select(x => $"{x.PropertyName}: {x.CurrentValue}"));
+                        .Select(x => $"{x.PropertyName}: {x.UserValue}"));
                 }
                 OnShowConcurrencyError?.Invoke();
                 break;

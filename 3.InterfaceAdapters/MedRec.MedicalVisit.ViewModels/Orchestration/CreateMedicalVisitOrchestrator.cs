@@ -21,7 +21,7 @@ internal class CreateMedicalVisitOrchestrator(
         if (!result.Success)
         {
             // Propagar error / validaciones recibidas
-            return OperationResult.Fail<CreateMedicalVisitModel>(result.Error!, result.ValidationErrors);
+            return OperationResult.Fail<CreateMedicalVisitModel>(result.Error!, null);
         }
 
         var patient = result.Value;

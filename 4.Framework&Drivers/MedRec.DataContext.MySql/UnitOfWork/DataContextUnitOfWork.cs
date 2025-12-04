@@ -5,111 +5,43 @@ using MedRec.Shared.Exceptions.SQLExceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using MySqlConnector;
+using System.Data; // <--- agregado para ConnectionState
 using System.Data.Common;
 
 namespace MedRec.DataContext.MySql.UnitOfWork;
 
 internal class DataContextUnitOfWork(
-    DataBaseContextMySql context,
+    MedRecContext context,
     IDbConnectionExceptionClassifier connectionClassifier) : IDataContextUnitOfWork
 {
     private IDbContextTransaction? _currentTransaction;
 
-    public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+    public async Task BeginTransactionAsync(CancellationToken ct = default)
     {
         if (_currentTransaction is not null)
             throw new InvalidOperationException("Ya existe una transacción activa para este contexto.");
 
-        _currentTransaction = await context.Database.BeginTransactionAsync(cancellationToken);
-    }
+        var connection = context.Database.GetDbConnection();
 
-    public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
-    {
-        if (_currentTransaction is null)
-            throw new InvalidOperationException("No hay transacción activa para confirmar.");
-
-        try
+        if (connection.State != ConnectionState.Open)
         {
-            await _currentTransaction.CommitAsync(cancellationToken);
-        }
-        finally
-        {
-            await _currentTransaction.DisposeAsync();
-            _currentTransaction = null;
-        }
-    }
-
-    public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
-    {
-        if (_currentTransaction is null)
-            throw new InvalidOperationException("No hay transacción activa para deshacer.");
-
-        try
-        {
-            await _currentTransaction.RollbackAsync(cancellationToken);
-        }
-        finally
-        {
-            await _currentTransaction.DisposeAsync();
-            _currentTransaction = null;
-        }
-    }
-
-    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        // Centraliza la traducción de errores (concurrencia, duplicados, otros) en GuardDBContext.
-        // No hace commit: solo persiste al contexto actual (dentro o fuera de una transacción abierta).
-        return GuardDBContext.AgainstSaveChangesErrorAsync(context.SaveChangesAsync, cancellationToken);
-    }
-
-    public async Task ExecuteWithRetryAsync(Func<Task> operation, CancellationToken cancellationToken = default)
-    {
-        const int maxRetries = 3;
-        TimeSpan delay = TimeSpan.FromMilliseconds(20);
-
-        for (int attempt = 1; ; attempt++)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
             try
             {
-                await operation();
-                return;
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (Exception ex) when (IsTransient(ex) && attempt <= maxRetries)
-            {
-                var jitter = TimeSpan.FromMilliseconds(Random.Shared.Next(50, 150));
-                await Task.Delay(delay + jitter, cancellationToken);
-                delay = TimeSpan.FromMilliseconds(delay.TotalMilliseconds * 2);
-                continue;
+                await connection.OpenAsync(ct);
             }
             catch (Exception ex)
             {
-                // No reclasificar excepciones ya mapeadas por GuardDBContext:
-                // si es una excepción de dominio relativa a concurrencia/duplicado/actualización,
-                // debe propagarse tal cual para que las capas superiores la manejen correctamente.
-                if (ex is ConcurrencyException
-                    || ex is DuplicateKeyException
-                    || ex is UpdateException
-                    || ex is DbUpdateConcurrencyException)
-                {
-                    throw;
-                }
-
+                // Intentar clasificar el error con tu clasificador
                 if (connectionClassifier.TryClassify(ex, out var reason, out var code))
                 {
                     var msg = reason switch
                     {
                         LostConnectionReason.UnableToConnect => "No fue posible establecer conexión con el servidor MySQL.",
-                        LostConnectionReason.ServerGoneAway => "La conexión con MySQL se perdió (server has gone away).",
-                        LostConnectionReason.ConnectionLostDuringQuery => "Se perdió la conexión con MySQL durante la consulta.",
+                        LostConnectionReason.ServerGoneAway => "La conexión con MySQL se perdió.",
+                        LostConnectionReason.ConnectionLostDuringQuery => "Se perdió la conexión con MySQL durante la operación.",
                         LostConnectionReason.TooManyConnections => "El servidor MySQL alcanzó el máximo de conexiones.",
                         LostConnectionReason.StatementInterrupted => "La operación fue interrumpida por MySQL.",
-                        LostConnectionReason.Timeout => "La operación excedió el tiempo de espera en MySQL.",
+                        LostConnectionReason.Timeout => "La operación excedió el tiempo de espera.",
                         _ => "Ocurrió un problema de conexión con MySQL."
                     };
 
@@ -121,8 +53,194 @@ internal class DataContextUnitOfWork(
                         innerException: ex);
                 }
 
+                // Si no se puede clasificar, lanza una excepción genérica de conexión
+                throw new LostConnectionException(
+                    "No se pudo abrir la conexión con MySQL.",
+                    LostConnectionReason.Unknown,
+                    mySqlErrorNumber: null,
+                    isTransient: IsTransient(ex),
+                    innerException: ex);
+            }
+        }
+
+        // Ahora la conexión está abierta: iniciar transacción
+        _currentTransaction = await context.Database.BeginTransactionAsync(ct);
+    }
+
+    public async Task CommitTransactionAsync(CancellationToken ct = default)
+    {
+        if (_currentTransaction is null)
+            throw new InvalidOperationException("No hay transacción activa para confirmar.");
+
+        try
+        {
+            await _currentTransaction.CommitAsync(ct);
+        }
+        finally
+        {
+            await _currentTransaction.DisposeAsync();
+            _currentTransaction = null;
+        }
+    }
+
+    public async Task RollbackTransactionAsync(CancellationToken ct = default)
+    {
+        if (_currentTransaction is null)
+            throw new InvalidOperationException("No hay transacción activa para deshacer.");
+
+        var connection = context.Database.GetDbConnection();
+        var state = connection.State;
+
+        try
+        {
+            // Solo intentar el rollback si la conexión está realmente abierta.
+            // Si está Closed o Broken, evitamos una InvalidOperationException secundaria
+            // que ocultaría la causa raíz (p.ej. pérdida de conexión).
+            if (state == ConnectionState.Open)
+            {
+                await _currentTransaction.RollbackAsync(ct);
+            }
+            else
+            {
+                // Opcional: logging para diagnóstico (Debug.WriteLine, logger, etc.)
+                // Debug.WriteLine($"Rollback omitido: estado de conexión = {state}");
+            }
+        }
+        finally
+        {
+            await _currentTransaction.DisposeAsync();
+            _currentTransaction = null;
+        }
+    }
+
+    public Task<int> SaveChangesAsync(CancellationToken ct = default)
+    {
+        // Centraliza la traducción de errores (concurrencia, duplicados, otros) en GuardDBContext.
+        // No hace commit: solo persiste al contexto actual (dentro o fuera de una transacción abierta).
+        return GuardDBContext.AgainstSaveChangesErrorAsync(
+            context.SaveChangesAsync,
+            ct,
+            connectionClassifier);
+    }
+
+    public async Task ExecuteWithRetryAsync(Func<Task> operation, CancellationToken ct = default)
+    {
+        ct.ThrowIfCancellationRequested();
+
+        var strategy = context.Database.CreateExecutionStrategy();
+
+        try
+        {
+            await strategy.ExecuteAsync(async () =>
+            {
+                ct.ThrowIfCancellationRequested();
+                await operation();
+            });
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            // Propagar excepciones ya traducidas por GuardDBContext u otras lógicas previas
+            if (ex is ConcurrencyException
+                || ex is DuplicateKeyException
+                || ex is UpdateException
+                || ex is DbUpdateConcurrencyException
+                || ex is LostConnectionException)
+            {
                 throw;
             }
+
+            // Clasificar pérdida de conexión si aplica
+            if (connectionClassifier.TryClassify(ex, out var reason, out var code))
+            {
+                var msg = reason switch
+                {
+                    LostConnectionReason.UnableToConnect => "No fue posible establecer conexión con el servidor MySQL.",
+                    LostConnectionReason.ServerGoneAway => "La conexión con MySQL se perdió.",
+                    LostConnectionReason.ConnectionLostDuringQuery => "Se perdió la conexión con MySQL durante la operación.",
+                    LostConnectionReason.TooManyConnections => "El servidor MySQL alcanzó el máximo de conexiones.",
+                    LostConnectionReason.StatementInterrupted => "La operación fue interrumpida por MySQL.",
+                    LostConnectionReason.Timeout => "La operación excedió el tiempo de espera.",
+                    _ => "Ocurrió un problema de conexión con MySQL."
+                };
+
+                throw new LostConnectionException(
+                    msg,
+                    reason,
+                    code,
+                    isTransient: IsTransient(ex),
+                    innerException: ex);
+            }
+
+            // Si no se pudo clasificar conservar la excepción original
+            throw;
+        }
+    }
+
+    // Sobrecarga opcional: ejecuta bloque transaccional completo bajo strategy (si quieres envolver todo atomicamente).
+    public async Task ExecuteInTransactionWithRetryAsync(Func<Task> operation, CancellationToken ct = default)
+    {
+        ct.ThrowIfCancellationRequested();
+        var strategy = context.Database.CreateExecutionStrategy();
+
+        try
+        {
+            await strategy.ExecuteAsync(async () =>
+            {
+                ct.ThrowIfCancellationRequested();
+                await BeginTransactionAsync(ct);
+                try
+                {
+                    await operation();
+                    await CommitTransactionAsync(ct);
+                }
+                catch
+                {
+                    await RollbackTransactionAsync(ct);
+                    throw;
+                }
+            });
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            if (ex is ConcurrencyException
+                || ex is DuplicateKeyException
+                || ex is UpdateException
+                || ex is DbUpdateConcurrencyException
+                || ex is LostConnectionException)
+            {
+                throw;
+            }
+
+            if (connectionClassifier.TryClassify(ex, out var reason, out var code))
+            {
+                var msg = reason switch
+                {
+                    LostConnectionReason.UnableToConnect => "No fue posible establecer conexión con el servidor MySQL.",
+                    LostConnectionReason.ServerGoneAway => "La conexión con MySQL se perdió.",
+                    LostConnectionReason.ConnectionLostDuringQuery => "Se perdió la conexión con MySQL durante la operación.",
+                    LostConnectionReason.TooManyConnections => "El servidor MySQL alcanzó el máximo de conexiones.",
+                    LostConnectionReason.StatementInterrupted => "La operación fue interrumpida por MySQL.",
+                    LostConnectionReason.Timeout => "La operación excedió el tiempo de espera.",
+                    _ => "Ocurrió un problema de conexión con MySQL."
+                };
+
+                throw new LostConnectionException(
+                    msg,
+                    reason,
+                    code,
+                    isTransient: IsTransient(ex),
+                    innerException: ex);
+            }
+
+            throw;
         }
     }
 

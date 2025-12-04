@@ -19,19 +19,35 @@ internal class CreateMedicalAppointmentInteractor(
 {
     public async Task Handle(CreateMedicalAppointmentDto createAppointmentDto, CancellationToken ct)
     {
-        ct.ThrowIfCancellationRequested();
+        if (ct.IsCancellationRequested)
+        {
+            await presenter.ErrorAsync(new ErrorInfo(
+                "Operación cancelada por el usuario.",
+                ErrorCode.Cancelled,
+                null,
+                499));
+            return;
+        }
+        if (createAppointmentDto == null)
+        {
+            await presenter.ErrorAsync(new ErrorInfo(
+                "No ha proporcionado los datos para la creación del turno.",
+                ErrorCode.ValidationError,
+                httpStatusCode: 400));
+            return;
+        }
 
         var entity = ToEntity(createAppointmentDto);
 
         try
         {
-            await unitOfWork.ExecuteWithRetryAsync(async () =>
+            await unitOfWork.ExecuteWithRetry(async () =>
             {
                 await unitOfWork.BeginTransaction(ct);
                 try
                 {
                     await commandRepository.Create(entity, ct);
-                    await unitOfWork.SaveChanges(ct); // GuardDBContext traduce excepciones SQL a las nuestras
+                    await unitOfWork.SaveChanges(ct);
                     await unitOfWork.CommitTransaction(ct);
                 }
                 catch
