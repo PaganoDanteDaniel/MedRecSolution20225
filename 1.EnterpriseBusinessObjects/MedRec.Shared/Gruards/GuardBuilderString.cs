@@ -10,6 +10,7 @@ public class GuardBuilderString : GuardBuilderBase<GuardBuilderString>
     public GuardBuilderString(string value, string paramName) : base(paramName)
     {
         _value = value;
+        _paramName = paramName;
     }
 
 

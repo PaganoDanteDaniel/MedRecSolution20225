@@ -156,6 +156,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedRec.MedicalVisit.UseCase
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedRec.MedicalAppointments.ViewModels", "3.InterfaceAdapters\MedRec.MedicalAppointments.ViewModels\MedRec.MedicalAppointments.ViewModels.csproj", "{5533F148-EAD4-DF54-573E-27402E7A9C1B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedRec.HomeComponent.Views", "3.InterfaceAdapters\MedRec.HomeComponent.Views\MedRec.HomeComponent.Views.csproj", "{E3554813-FDB4-5834-04FA-65255513DC53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -808,6 +810,22 @@ Global
 		{5533F148-EAD4-DF54-573E-27402E7A9C1B}.Release|x64.Build.0 = Release|Any CPU
 		{5533F148-EAD4-DF54-573E-27402E7A9C1B}.Release|x86.ActiveCfg = Release|Any CPU
 		{5533F148-EAD4-DF54-573E-27402E7A9C1B}.Release|x86.Build.0 = Release|Any CPU
+		{E3554813-FDB4-5834-04FA-65255513DC53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3554813-FDB4-5834-04FA-65255513DC53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3554813-FDB4-5834-04FA-65255513DC53}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{E3554813-FDB4-5834-04FA-65255513DC53}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{E3554813-FDB4-5834-04FA-65255513DC53}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E3554813-FDB4-5834-04FA-65255513DC53}.Debug|x64.Build.0 = Debug|Any CPU
+		{E3554813-FDB4-5834-04FA-65255513DC53}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E3554813-FDB4-5834-04FA-65255513DC53}.Debug|x86.Build.0 = Debug|Any CPU
+		{E3554813-FDB4-5834-04FA-65255513DC53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3554813-FDB4-5834-04FA-65255513DC53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3554813-FDB4-5834-04FA-65255513DC53}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{E3554813-FDB4-5834-04FA-65255513DC53}.Release|ARM64.Build.0 = Release|Any CPU
+		{E3554813-FDB4-5834-04FA-65255513DC53}.Release|x64.ActiveCfg = Release|Any CPU
+		{E3554813-FDB4-5834-04FA-65255513DC53}.Release|x64.Build.0 = Release|Any CPU
+		{E3554813-FDB4-5834-04FA-65255513DC53}.Release|x86.ActiveCfg = Release|Any CPU
+		{E3554813-FDB4-5834-04FA-65255513DC53}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -883,6 +901,7 @@ Global
 		{1F3B881B-4B80-44ED-AE1C-3DECF92AE8BF} = {63FEFB32-7D69-45CF-B1BF-B20D49A4C106}
 		{93134DFB-3E8F-47D7-8B84-C227A7734354} = {D00DC458-21DA-428A-A011-D01F33071CB5}
 		{5533F148-EAD4-DF54-573E-27402E7A9C1B} = {FCC562D2-C488-4379-AA4B-CF51458671EA}
+		{E3554813-FDB4-5834-04FA-65255513DC53} = {F667D523-744B-418A-AAEB-BD800F50097C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6700A9D3-DC96-480C-BBE0-4E04C5A4EA0A}

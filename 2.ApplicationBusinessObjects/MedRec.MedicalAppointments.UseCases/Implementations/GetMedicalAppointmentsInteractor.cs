@@ -35,7 +35,15 @@ internal class GetMedicalAppointmentsInteractor(
             return;
         }
 
-        ct.ThrowIfCancellationRequested();
+        if (ct.IsCancellationRequested)
+        {
+            await presenter.ErrorAsync(new ErrorInfo(
+                "Operación cancelada por el usuario.",
+                ErrorCode.Cancelled,
+                null,
+                499));
+            return;
+        }
 
         try
         {

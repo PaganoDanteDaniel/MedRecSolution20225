@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MedRec.MedicalAppointments.DataContext.MySql.Services;
 
-internal class MedicalAppointmentQueriesDataContext(DataBaseContextMySql context) : IMedicalAppointmentQueriesDataContext
+internal class MedicalAppointmentQueriesDataContext(MedRecContext context) : IMedicalAppointmentQueriesDataContext
 {
     public async Task<bool> ExistAsync(Guid id, CancellationToken ct)
     {

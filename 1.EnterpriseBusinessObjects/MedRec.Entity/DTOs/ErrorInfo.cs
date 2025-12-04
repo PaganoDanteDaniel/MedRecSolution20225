@@ -3,6 +3,14 @@
 namespace MedRec.Entity.DTOs;
 public class ErrorInfo
 {
+    public ErrorInfo()
+    {
+        Message = "";
+        Code = ErrorCode.None;
+        Details = "";
+        HttpStatusCode = 0;
+        Timestamp = DateTime.UtcNow;
+    }
     public ErrorInfo(
         string message,
         ErrorCode code = ErrorCode.None,

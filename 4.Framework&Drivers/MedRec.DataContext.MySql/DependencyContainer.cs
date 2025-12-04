@@ -9,7 +9,7 @@ public static class DependencyContainer
 {
     public static IServiceCollection AddDataContextServices(this IServiceCollection services)
     {
-        services.AddDbContext<DataBaseContextMySql>(ServiceLifetime.Scoped);
+        services.AddDbContext<MedRecContext>(ServiceLifetime.Scoped);
         services.AddScoped<IDataContextUnitOfWork, DataContextUnitOfWork>();
         services.AddSingleton<IDbConnectionExceptionClassifier, MySqlExceptionClassifier>();
 

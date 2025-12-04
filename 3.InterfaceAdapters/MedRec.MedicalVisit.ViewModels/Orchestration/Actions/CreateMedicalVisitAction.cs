@@ -31,7 +31,7 @@ public class CreateMedicalVisitAction(
         }
         catch (Exception ex)
         {
-            return OperationResult.Fail<bool>(new ErrorInfo($"Error crítico al crear la visita: {ex.Message}"));
+            return OperationResult.Fail<bool>(new ErrorInfo($"Error crítico al crear la visita: {ex.Message}"), null);
         }
     }
 }

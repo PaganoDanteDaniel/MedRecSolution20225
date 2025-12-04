@@ -1,23 +1,21 @@
 ﻿using MedRec.DataContext.MySql.DataContext;
-using MedRec.DataContext.MySql.Options;
 using MedRec.Entity.DTOs;
 using MedRec.Entity.POCOEntities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using MrdRec.HealthInsurance.Repositories.Interfaces;
 
 namespace MedRec.HealthInsurance.DataContext.EF.Services;
-internal class HealthInsuranceQueriesDataContext(IOptions<DBOptionsMySql> options) :
-    DataBaseContextMySql(options), IHealthInsuranceQueriesDataContext
+internal class HealthInsuranceQueriesDataContext(MedRecContext context) :
+    IHealthInsuranceQueriesDataContext
 {
     public Task<bool> ExistAsync(Guid id, CancellationToken ct) =>
-        HealthInsuranceCompanies
+        context.HealthInsuranceCompanies
             .AsNoTracking()
             .AnyAsync(h => h.Id == id && !h.IsDeleted, ct);
 
     public async Task<IEnumerable<HealthInsuranceCompany>> GetAllAsync(PaginationDto paginationDto, CancellationToken cancellationToken)
     {
-        var query = HealthInsuranceCompanies
+        var query = context.HealthInsuranceCompanies
             .AsNoTracking()
             .Where(h => !h.IsDeleted);
 
@@ -41,14 +39,14 @@ internal class HealthInsuranceQueriesDataContext(IOptions<DBOptionsMySql> option
 
     public async Task<HealthInsuranceCompany> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await HealthInsuranceCompanies
+        return await context.HealthInsuranceCompanies
             .AsNoTracking()
             .FirstOrDefaultAsync(h => h.Id == id && !h.IsDeleted, cancellationToken);
     }
 
     public async Task<int> GetTotalCountAsync(string filter = null, CancellationToken cancellationToken = default)
     {
-        var query = HealthInsuranceCompanies
+        var query = context.HealthInsuranceCompanies
             .AsNoTracking()
             .Where(h => !h.IsDeleted);
 

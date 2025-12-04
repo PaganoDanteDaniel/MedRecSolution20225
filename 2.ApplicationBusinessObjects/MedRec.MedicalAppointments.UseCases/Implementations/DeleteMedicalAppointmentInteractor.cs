@@ -20,7 +20,7 @@ internal class DeleteMedicalAppointmentInteractor(
 
         try
         {
-            await unitOfWork.ExecuteWithRetryAsync(async () =>
+            await unitOfWork.ExecuteWithRetry(async () =>
             {
                 await unitOfWork.BeginTransaction(ct);
                 try

@@ -20,7 +20,7 @@ internal class ReassignMedicalAppointmentInteractor(
         ct.ThrowIfCancellationRequested();
         try
         {
-            await unitOfWork.ExecuteWithRetryAsync(async () =>
+            await unitOfWork.ExecuteWithRetry(async () =>
             {
                 await unitOfWork.BeginTransaction(ct);
                 try

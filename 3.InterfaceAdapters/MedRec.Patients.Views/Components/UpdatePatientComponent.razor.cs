@@ -2,6 +2,7 @@
 using MedRec.Patients.ViewModels.Models;
 using MedRec.Patients.ViewModels.VM;
 using MedRec.Patients.Views.Resources;
+using MedRec.Shared.Enums;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
@@ -184,6 +185,44 @@ public partial class UpdatePatientComponent
     private void ExitForm()
     {
         Navigation.NavigateTo("/", true);
+    }
+
+    private string GetFriendlyLabel(string propertyName)
+    {
+        return propertyName switch
+        {
+            nameof(VM.Model.FirstName) => UpdatePatientMessages.FirstNameLabel,
+            nameof(VM.Model.LastName) => UpdatePatientMessages.LastNameLabel,
+            nameof(VM.Model.DocumentNumber) => UpdatePatientMessages.DocumentNumberLabel,
+            nameof(VM.Model.BiologicalSexId) => UpdatePatientMessages.BiologicalSexLabel,
+            nameof(VM.Model.DateOfBirth) => UpdatePatientMessages.DateOfBirthLabel,
+            nameof(VM.Model.PhoneNumber) => UpdatePatientMessages.PhoneNumberLabel,
+            nameof(VM.Model.Address) => UpdatePatientMessages.AddresLabel,
+            nameof(VM.Model.Email) => UpdatePatientMessages.EmailLabel,
+            nameof(VM.Model.HealthInsuranceMemberNumber) => UpdatePatientMessages.HealthInsuranceMemberNumberLabel,
+            nameof(VM.Model.HealthInsurancePlan) => UpdatePatientMessages.HealthInsurancePlanLabel,
+            _ => propertyName // fallback
+        };
+    }
+
+    private void OnResolutionChanged(ConflictFieldModel conflict, string? value)
+    {
+        if (Enum.TryParse<ResolutionChoice>(value, out var choice))
+        {
+            conflict.Resolution = choice;
+        }
+    }
+
+    private async Task RetryWithResolvedValues()
+    {
+        _cts?.Dispose();
+        _cts = new CancellationTokenSource();
+        await VM.RetryWithResolvedValues(_cts.Token);
+    }
+
+    private void DismissConcurrencyPanel()
+    {
+        VM.ConcurrencyConflicts.Clear();
     }
     #endregion
 

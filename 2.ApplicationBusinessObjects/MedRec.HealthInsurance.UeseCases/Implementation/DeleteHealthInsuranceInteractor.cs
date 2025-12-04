@@ -18,7 +18,7 @@ internal class DeleteHealthInsuranceInteractor(
         ct.ThrowIfCancellationRequested();
         try
         {
-            await unitOfWork.ExecuteWithRetryAsync(async () =>
+            await unitOfWork.ExecuteWithRetry(async () =>
             {
                 var entity = await queriesRepository.GetById(Id, ct);
                 if (entity != null)

@@ -46,6 +46,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.CommonComponents.Views\MedRec.CommonComponents.Views.csproj" />
+      <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.HomeComponent.Views\MedRec.HomeComponent.Views.csproj" />
       <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.MedicalAppointments.Views\MedRec.MedicalAppointments.Views.csproj" />
       <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.MedicalVisit.Views\MedRec.MedicalVisit.Views.csproj" />
       <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.Patients.Views\MedRec.Patients.Views.csproj" />

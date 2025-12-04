@@ -133,7 +133,7 @@ namespace MedRec.HealthInsurance.Views.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a AGREGAR NUEVA OBRA SOCIAL.
+        ///   Busca una cadena traducida similar a Nueva obra social.
         /// </summary>
         internal static string TitleText {
             get {

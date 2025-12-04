@@ -1,3 +1,4 @@
+using MedRec.CommonComponents.Views;
 using MedRec.Entity.DTOs;
 using MedRec.Patients.BusinessObjects.DTOs;
 using MedRec.Patients.ViewModels.VM;
@@ -18,9 +19,22 @@ public partial class ListPatientsComponent
     private bool _showDeleteConfirmation;
     private PatientSummaryDto _patientToDelete;
     private TaskCompletionSource<bool> _deleteConfirmationTcs;
+
+    private bool _navigateAfterClose = false;
+    private string _navigationUrl = "/";
+    private bool _showModal;
+    private string _modalTitle = "Mensaje del sistema";
+    private ModalType _modalType = ModalType.MessageInfo;
+
     private IEnumerable<PatientSummaryDto> pagedPatients = [];
     #endregion
-
+    #region Actions
+    private Action _onPatientDeleted;
+    private Action _onShowMessage;
+    private Action _onShowWarning;
+    private Action _onShowError;
+    private Action _onShowConcurrencyError;
+    #endregion
     #region Properties
     private string Filter
     {
@@ -68,7 +82,43 @@ public partial class ListPatientsComponent
     #endregion
 
     #region Methods
-    protected override async Task OnInitializedAsync() => await LoadPatients();
+    protected override async Task OnInitializedAsync()
+    {
+        _onPatientDeleted = async () => await PatientDeleted();
+        _onShowMessage = async () => await ShowModalMessage("Información", ModalType.MessageInfo);
+        _onShowWarning = async () => await ShowModalMessage("Advertencia", ModalType.MessageWarning);
+        _onShowError = async () => await ShowModalMessage("Error", ModalType.MessageError);
+        _onShowConcurrencyError = async () => await ShowModalMessage("Conflicto de concurrencia", ModalType.MessageError);
+
+        VM.OnShowMessage += _onShowMessage;
+        VM.OnShowWarning += _onShowWarning;
+        VM.OnShowError += _onShowError;
+        VM.OnShowConcurrencyError += _onShowConcurrencyError;
+
+        VM.OnPatientDeleted += _onPatientDeleted;
+
+        await LoadPatients();
+        StateHasChanged();
+    }
+    private void ShowModalMessageAndNavigate(string title, ModalType type, string navigationUrl)
+    {
+        _modalTitle = title;
+        _modalType = type;
+        _showModal = true;
+        _navigateAfterClose = true;
+        _navigationUrl = navigationUrl;
+        InvokeAsync(StateHasChanged);
+    }
+    private async Task ShowModalMessage(string title, ModalType type)
+    {
+        if (string.IsNullOrEmpty(VM.InformationMessage))
+            VM.InformationMessage = "PACIENTE ELIMINADO EXITOSAMENTE";
+        _modalTitle = title;
+        _modalType = type;
+        _showModal = true;
+        _navigateAfterClose = false;
+        await InvokeAsync(StateHasChanged);
+    }
 
     private async Task OnSearchTermChanged(string searchTerm)
     {
@@ -110,17 +160,21 @@ public partial class ListPatientsComponent
         StateHasChanged();
 
         bool confirmed = await _deleteConfirmationTcs.Task;
+        _showDeleteConfirmation = false;
         if (confirmed)
         {
             await VM.DeleteAsync(patient.Id);
-            await LoadPatients();
         }
 
         _patientToDelete = null;
-        _showDeleteConfirmation = false;
+
         StateHasChanged();
     }
-
+    private async Task PatientDeleted()
+    {
+        await ShowModalMessage("Eliminación exitosa...", ModalType.MessageSuccess);
+        await LoadPatients();
+    }
     private void OnAddMedicalVisit(PatientSummaryDto patient)
     {
         var nombreCodificado = System.Web.HttpUtility.UrlEncode($"{patient.LastName}, {patient.FirstName}");
@@ -144,6 +198,17 @@ public partial class ListPatientsComponent
     {
         _showDeleteConfirmation = value;
         _deleteConfirmationTcs?.SetResult(false);
+    }
+
+    private void CloseModal()
+    {
+        _showModal = false;
+        VM.InformationMessage = "";
+        if (_navigateAfterClose)
+        {
+            _navigateAfterClose = false;
+            Navigation.NavigateTo(_navigationUrl, true);
+        }
     }
     #endregion
 }

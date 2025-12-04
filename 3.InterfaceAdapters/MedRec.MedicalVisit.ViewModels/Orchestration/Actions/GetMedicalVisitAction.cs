@@ -33,7 +33,7 @@ internal class GetMedicalVisitAction(
         catch (Exception ex)
         {
             return OperationResult.Fail<UpdateMedicalVisitModel>(
-                new ErrorInfo($"Error crítico al actualizar la historia clínica del paciente: {ex.Message}"));
+                new ErrorInfo($"Error crítico al actualizar la historia clínica del paciente: {ex.Message}"), null);
         }
     }
 }

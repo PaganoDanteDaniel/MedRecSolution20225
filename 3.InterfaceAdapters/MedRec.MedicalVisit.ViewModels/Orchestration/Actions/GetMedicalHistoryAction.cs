@@ -32,7 +32,7 @@ internal class GetMedicalHistoryAction(
         catch (Exception ex)
         {
             return OperationResult.Fail<Guid>(
-                new ErrorInfo($"Error crítico al obtener la historia clínica del paciente: {ex.Message}"));
+                new ErrorInfo($"Error crítico al obtener la historia clínica del paciente: {ex.Message}"), null);
         }
     }
 }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MedRec.DataContext.MySql.Migrations
 {
-    [DbContext(typeof(MedRecContextMySql))]
+    [DbContext(typeof(MedRecContext))]
     partial class MedRecContextMySqlModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

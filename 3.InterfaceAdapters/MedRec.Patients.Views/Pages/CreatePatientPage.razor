@@ -1,26 +1,47 @@
 ﻿@page "/create-patient"
+@using MedRec.CommonComponents.Views.Page
 @using MedRec.CommonComponents.Views.Exceptions
 @using MedRec.Patients.ViewModels.VM
 @using MedRec.Patients.Views.Components
 
-<div class="body-content">
-    <TitleComponent Title="@CreatePatientMessages.AddPatientPageTitle" />
+@inherits OwningComponentBase<CreatePatientVM>
 
-    <!-- Zona desplazable -->
-    <div class="scrollable-section">
-        <ErrorBoundary @ref=ErrorBoundaryRef>
-            <ChildContent>
-                <CreatePatientComponent VM="VM" />
-            </ChildContent>
-            <ErrorContent>
-                <ExceptionDisplayComponent Exception="context" />
-                <button class="btn btn-danger" @onclick=Recover>OK</button>
-            </ErrorContent>
-        </ErrorBoundary>
-    </div>
+<PageShell FooterMessage="@footerMessage" @ref="pageShellRef" CenterContent="true">
+    <HeaderContent>
+        <CustomHeader ButtonBackPress="OnBackPressed"
+                      ColorA50="--color-green-50"
+                      ColorA100="--color-green-100"
+                      ColorB100="--color-green-200"
+                      ColorA600="--color-green-600"
+                      ColorB600="--color-green-600">
+            <HeaderContent>
+                <div class="header-icon">
+                    <svg class="icon-header" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="8.5" cy="7" r="4" />
+                        <line x1="20" y1="8" x2="20" y2="14" />
+                        <line x1="23" y1="11" x2="17" y2="11" />
+                    </svg>
+                </div>
+                <h1 class="header-title">Nuevo Paciente</h1>
+            </HeaderContent>
+        </CustomHeader>
+    </HeaderContent>
 
-    <!-- Footer fijo -->
-    <div class="me-footer">
-        <FooterComponent Message="@footerMessage" />
+    <ChildContent>
+        <CreatePatientComponent VM="VM" />
+    </ChildContent>
+
+    <ErrorContent Context="context">
+        <ExceptionDisplayComponent Exception="context" />
+        <button class="btn btn-danger" @onclick="(()=>pageShellRef.Recover())">OK</button>
+    </ErrorContent>
+</PageShell>
+@if (_isLoading)
+{
+    <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.6); z-index:1000;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
     </div>
-</div>
+}

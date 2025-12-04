@@ -37,7 +37,7 @@ internal sealed class ReassignAppointmentAction(
         }
         catch (Exception ex)
         {
-            return OperationResult.Fail<Appointment>(new ErrorInfo($"Error crítico al reasignar el turno: {ex.Message}"));
+            return OperationResult.Fail<Appointment>(new ErrorInfo($"Error crítico al reasignar el turno: {ex.Message}"), null);
         }
     }
 }

@@ -38,13 +38,14 @@ public class CreateHealthInsuranceVM(
     #endregion
 
     #region Method
-    public async Task AddHealthCompany()
+    public async Task AddHealthCompany(CancellationToken ct = default)
     {
         InformationMessage = "";
+        ct.ThrowIfCancellationRequested();
         try
         {
             var insuranceHealthCompany = (CreateHealthInsuranceDto)Model;
-            await createInputPort.Handle(insuranceHealthCompany);
+            await createInputPort.Handle(insuranceHealthCompany, ct);
             if (createPresenter.ErrorMessage is not null)
             {
                 HandleErrors(createPresenter.ErrorMessage);

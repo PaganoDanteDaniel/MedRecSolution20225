@@ -26,7 +26,7 @@ internal sealed class DeleteAppointmentAction(
         }
         catch (Exception ex)
         {
-            return OperationResult.Fail<bool>(new ErrorInfo($"Error crítico al eliminar el turno: {ex.Message}"));
+            return OperationResult.Fail<bool>(new ErrorInfo($"Error crítico al eliminar el turno: {ex.Message}"), null);
         }
     }
 }

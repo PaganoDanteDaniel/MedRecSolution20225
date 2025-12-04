@@ -1,29 +1,19 @@
-﻿using MedRec.Entity.DTOs;
+﻿using MedRec.BusinessObjects.Abstracts;
+using MedRec.BusinessObjects.Results;
 using MedRec.Entity.POCOEntities;
 using MedRec.Patients.BusinessObjects.DTOs;
 using MedRec.Patients.BusinessObjects.Interfaces.Ports;
-using MedRec.Validator.ValueObjects;
 
 namespace MedRec.Patients.Presenters.Implementations;
-internal class PatientsListPresenter : IPatientsListOutputPort
+internal class PatientsListPresenter :
+    BaseOutputPort<IEnumerable<PatientSummaryDto>>,
+    IPatientsListOutputPort
 {
-    public int TotalRecords { get; private set; }
-
-    public IEnumerable<PatientSummaryDto> Patients { get; private set; }
-
-    public IEnumerable<ValidationError> ValidationErrors { get; private set; }
-
-    public ErrorInfo ErrorMessage { get; private set; }
-
-    public Task ErrorAsync(ErrorInfo message)
-    {
-        ErrorMessage = message;
-        return Task.CompletedTask;
-    }
-
+    public OperationResult<int> TotalRecords { get; private set; } =
+        OperationResult.Ok<int>(default!);
     public Task Handle(IEnumerable<Patient> patientList, int totalRecord, CancellationToken cancellationToken = default)
     {
-        Patients = patientList.Select(p => (new PatientSummaryDto(
+        var patients = patientList.Select(p => (new PatientSummaryDto(
             p.Id,
             p.FirstName,
             p.LastName,
@@ -31,14 +21,11 @@ internal class PatientsListPresenter : IPatientsListOutputPort
             p.PhoneNumber,
             p.Email,
             p.DateOfBirth))).ToList();
-        TotalRecords = totalRecord;
 
-        return Task.CompletedTask;
-    }
+        TotalRecords = OperationResult<int>.Ok(totalRecord);
 
-    public Task ValidationErrorsAsync(IEnumerable<ValidationError> errors)
-    {
-        ValidationErrors = errors.ToList();
+        Result = OperationResult<IEnumerable<PatientSummaryDto>>.Ok(patients);
+
         return Task.CompletedTask;
     }
 }

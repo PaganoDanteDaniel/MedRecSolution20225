@@ -1,8 +1,7 @@
-﻿using MedRec.Entity.Interfaces;
-using MedRec.Entity.POCOEntities;
+﻿using MedRec.Entity.POCOEntities;
 
 namespace MedRec.HealthInsurance.BusinessObjects.Interfaces.Repositories;
-public interface IHealthInsuranceCommandRepository : IUnitOfWork
+public interface IHealthInsuranceCommandRepository
 {
     Task Create(HealthInsuranceCompany entity, CancellationToken cts);
     Task Update(HealthInsuranceCompany entity, CancellationToken cts);

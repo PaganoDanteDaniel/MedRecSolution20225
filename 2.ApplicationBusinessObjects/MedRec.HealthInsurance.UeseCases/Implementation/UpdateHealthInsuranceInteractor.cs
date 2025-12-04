@@ -37,7 +37,7 @@ internal class UpdateHealthInsuranceInteractor(
                 RowVersion = healthInsuranceDto.RowVersion
             };
 
-            await unitOfWork.ExecuteWithRetryAsync(async () =>
+            await unitOfWork.ExecuteWithRetry(async () =>
             {
                 await unitOfWork.BeginTransaction(ct);
                 try

@@ -1,4 +1,5 @@
 ﻿@using MedRec.CommonComponents.Views.Components
+@using MedRec.HomeComponent.Views.Pages
 @using MedRec.MedicalAppointments.Views.Components
 @using MedRec.MedicalVisit.Views.Pages
 @using MedRec.Patients.Views.Pages
@@ -7,7 +8,8 @@
 <Router AppAssembly="@typeof(MainLayout).Assembly"
 		AdditionalAssemblies="new[] {typeof(CreatePatientPage).Assembly, 
 									 typeof(CreateMedicalVisitPage).Assembly,
-                                     typeof(WeeklyScheduleComponent).Assembly}">
+                                     typeof(WeeklyScheduleComponent).Assembly,
+									 typeof(Home).Assembly}">
 
 	<Found Context="routeData">
 		<RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>

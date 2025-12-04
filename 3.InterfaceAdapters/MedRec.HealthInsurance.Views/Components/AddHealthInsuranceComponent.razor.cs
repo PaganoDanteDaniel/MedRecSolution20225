@@ -10,26 +10,29 @@
 
 using MedRec.CommonComponents.Views;
 using MedRec.HealthInsurance.ViewModels.VM;
+using MedRec.HealthInsurance.Views.Resources;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 
 namespace MedRec.HealthInsurance.Views.Components;
 public partial class AddHealthInsuranceComponent : IDisposable
 {
+    public bool Validate() => _editContext.Validate();
     private CreateHealthInsuranceVM VM => Service;
-    private EditContext EditContext;
+    private EditContext _editContext;
     private bool _showModal;
     private bool isLoading = false;
- 
+    private CancellationTokenSource _ct;
+
     [Parameter] public string CompanyName { set { VM.Model.Name = value; } }
     [Parameter] public string CompanyAcronym { set { VM.Model.Acronym = value; } }
-    [Parameter] public EventCallback OnAddedCompany { get; set; }
+    [Parameter] public EventCallback OnHealthInsuranceCreated { get; set; }
     [Parameter] public EventCallback OnCancelAdd { get; set; }
     protected override void OnInitialized()
     {
         try
         {
-            EditContext = new EditContext(VM.Model);
+            _editContext = new EditContext(VM.Model);
             VM.OnHealthInsuranceAdded += ShowSuccessModal;
         }
         catch (Exception)
@@ -38,44 +41,51 @@ public partial class AddHealthInsuranceComponent : IDisposable
         }
 
     }
-    private void SetLoading(bool loading)
-    {
-        isLoading = loading;
-        InvokeAsync(StateHasChanged);
-    }
     private void OnAccept()
     {
-        _showModal = false;
-        _ = Dispose();
+        ModalVisibleB = false;
+        OnHealthInsuranceCreated.InvokeAsync(); 
     }
-    public async Task Dispose()
+    public void Dispose()
     {
-        ClearForm();
-        await OnAddedCompany.InvokeAsync();
+        CleanField();
         VM.OnHealthInsuranceAdded -= ShowSuccessModal;
     }
     private void ShowSuccessModal()
     {
-        _showModal = true;
+        ModalType = ModalType.MessageSuccess;
+        ModalTitle = "Operación exitosa";
+
+        ModalMessage= AddHealthInsuranceMessages.SuccessfulAddedMessage;
+        ModalVisibleB = true;
     }
 
-    private async Task AddHealthCompany()
+    public async Task SaveAsync()
     {
-        SetLoading(true);
-        await VM.AddHealthCompany();
-        SetLoading(false);
+        if (Validate())
+        {
+            _ct?.Dispose();
+            _ct = new CancellationTokenSource();
+            await VM.AddHealthCompany(_ct.Token);
+            // Notificamos que se actualizó
+            //await OnHealthInsuranceCreated.InvokeAsync();
+        }
     }
-    private void ClearForm()
+    public void CleanField()
     {
-        CompanyName = string.Empty;
-        CompanyAcronym = string.Empty;
+        VM.Model.Name = string.Empty;
+        VM.Model.Acronym = string.Empty;
+        VM.Model.InformationMessage = string.Empty;
+
+        // Opcional: resetea el estado de validación visual
+        _editContext?.MarkAsUnmodified();
     }
-    private void CancelAdd()
-    {
-        ClearForm();
-        VM.InformationMessage = string.Empty;
-        VM.OnHealthInsuranceAdded -= ShowSuccessModal;
-        OnCancelAdd.InvokeAsync();
-    }
+    //private void CancelAdd()
+    //{
+    //    ClearForm();
+    //    VM.InformationMessage = string.Empty;
+    //    VM.OnHealthInsuranceAdded -= ShowSuccessModal;
+    //    OnCancelAdd.InvokeAsync();
+    //}
 
 }

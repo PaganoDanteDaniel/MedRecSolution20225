@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MedRec.DataContext.MySql.Migrations
 {
-    [DbContext(typeof(MedRecContextMySql))]
+    [DbContext(typeof(MedRecContext))]
     [Migration("20251101225830_AddMedicalAppointmentAndDoctors")]
     partial class AddMedicalAppointmentAndDoctors
     {

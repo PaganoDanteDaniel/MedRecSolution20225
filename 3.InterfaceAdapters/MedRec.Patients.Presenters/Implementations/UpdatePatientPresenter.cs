@@ -1,31 +1,16 @@
-﻿using MedRec.Entity.DTOs;
+﻿using MedRec.BusinessObjects.Abstracts;
+using MedRec.BusinessObjects.Results;
 using MedRec.Patients.BusinessObjects.Interfaces.Ports;
-using MedRec.Validator.ValueObjects;
 
 namespace MedRec.Patients.Presenters.Implementations;
-internal class UpdatePatientPresenter : IUpdatePatientOutputPort
+internal class UpdatePatientPresenter :
+    BaseOutputPort<bool>,
+    IUpdatePatientOutputPort
 {
-    public IEnumerable<ValidationError> ValidationErrors { get; private set; }
 
-    public ErrorInfo ErrorMessage { get; private set; }
-
-    public bool UpdatedSuccessfully { get; private set; }
-
-    public Task ErrorAsync(ErrorInfo message)
+    public Task Handle(CancellationToken cancellationToken = default)
     {
-        ErrorMessage = message;
-        return Task.CompletedTask;
-    }
-
-    public Task Handle(bool IsUpdated, CancellationToken cancellationToken = default)
-    {
-        UpdatedSuccessfully = IsUpdated;
-        return Task.CompletedTask;
-    }
-
-    public Task ValidationErrorsAsync(IEnumerable<ValidationError> errors)
-    {
-        ValidationErrors = errors;
+        Result = OperationResult.Ok(true);
         return Task.CompletedTask;
     }
 }

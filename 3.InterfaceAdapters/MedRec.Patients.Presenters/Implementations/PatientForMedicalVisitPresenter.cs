@@ -1,42 +1,38 @@
-﻿using MedRec.Entity.DTOs;
+﻿using MedRec.BusinessObjects.Abstracts;
+using MedRec.BusinessObjects.Results;
+using MedRec.Entity.DTOs;
+using MedRec.Entity.Enums;
 using MedRec.Entity.POCOEntities;
 using MedRec.Patients.BusinessObjects.DTOs;
 using MedRec.Patients.BusinessObjects.Interfaces.Ports;
-using MedRec.Validator.ValueObjects;
 
 namespace MedRec.Patients.Presenters.Implementations;
-internal class PatientForMedicalVisitPresenter : IPatientForMedicalVisitOutputPort
+internal class PatientForMedicalVisitPresenter :
+    BaseOutputPort<PatientForMedicalVisitDto>,
+    IPatientForMedicalVisitOutputPort
 {
-    public PatientForMedicalVisitDto DataPatient { get; private set; }
-
-    public IEnumerable<ValidationError> ValidationErrors { get; private set; } = [];
-
-    public ErrorInfo ErrorMessage { get; private set; }
-
-    public Task ErrorAsync(ErrorInfo message)
+    public Task Handle(Patient patient, HealthInsuranceCompany healthInsurance = null, CancellationToken ct = default)
     {
-        ErrorMessage = message;
-        return Task.CompletedTask;
-    }
-
-    public Task Handle(Patient dataPatient, HealthInsuranceCompany healthInsurance = null, CancellationToken ct = default)
-    {
-        DataPatient = new PatientForMedicalVisitDto
+        if (patient is null)
         {
-            FullName = $"{dataPatient.LastName}, {dataPatient.FirstName}",
-            DateOfBirth = dataPatient.DateOfBirth,
+            Result = OperationResult.Fail<PatientForMedicalVisitDto>(
+                new ErrorInfo($"Paciente no encontrado.", ErrorCode.NotFound, new { }, 404), null);
+            return Task.CompletedTask;
+        }
+
+        var dto = new PatientForMedicalVisitDto
+        {
+            FullName = $"{patient.LastName}, {patient.FirstName}",
+            DateOfBirth = patient.DateOfBirth,
             HealthInsuranceName = healthInsurance?.Name ?? string.Empty,
             Acronym = healthInsurance?.Acronym ?? string.Empty,
-            HealthInsuranceCard = dataPatient.HealthInsuranceCard ?? string.Empty,
-            HealthInsuranceMemberNumber = dataPatient.HealthInsuranceMemberNumber ?? string.Empty,
-            HealthInsurancePlan = dataPatient.HealthInsurancePlan ?? string.Empty
+            HealthInsuranceCard = patient.HealthInsuranceCard ?? string.Empty,
+            HealthInsuranceMemberNumber = patient.HealthInsuranceMemberNumber ?? string.Empty,
+            HealthInsurancePlan = patient.HealthInsurancePlan ?? string.Empty
         };
-        return Task.CompletedTask;
-    }
 
-    public Task ValidationErrorsAsync(IEnumerable<ValidationError> errors)
-    {
-        ValidationErrors = errors.ToList();
+        Result = OperationResult.Ok(dto);
+
         return Task.CompletedTask;
     }
 }

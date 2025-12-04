@@ -9,14 +9,14 @@
 
 @inject IModelValidatorHub<UpdateHealthInsuranceModel> updateHealthInsuranceValidator
 
-<EditForm EditContext="_editContext" OnValidSubmit="UpdateHealthInsurance" class="update-health-component-form">
+<EditForm EditContext="_editContext" >
             <DataAnnotationsValidator />
 
             <ModelValidator T="UpdateHealthInsuranceModel"
                     Validator="updateHealthInsuranceValidator"
                     ValidationRules="vm => UpdateHealthInsuranceValidator.Validate((UpdateHealthInsuranceDto)vm)" />
 
-     <div>
+    <div class="md-card">
         <label for="name">@UpdateHealthInsuranceMessages.NameLabelText</label>
         <InputText class="uppercase-input" id="name" @bind-Value="VM.Model.Name" name="patients-input"/>
         <ValidationMessage For="() => VM.Model.Name" class="validation-message" />
@@ -25,13 +25,10 @@
         <InputText class="uppercase-input" id="acronym" @bind-Value="VM.Model.Acronym" name="patients-input"/>
         <ValidationMessage For="() => VM.Model.Acronym" class="validation-message" />
     </div>
-    <ModalComponent Title="Éxito" Show="@showModal" OnExit="@((value) => showModal = value)"
-                    Closing="Dispose" Type="ModalType.NormalContent" ShowAcceptButton="true" OnAccept="OnAccept">
-        <div style="color: green;">
-            @UpdateHealthInsuranceMessages.SuccessfulUpdateMessage
-        </div>
-    </ModalComponent>
-    <div class="button-group">
+</EditForm>
+
+@*
+     <div class="button-group">
         <button type="button" @onclick="@CancelAdd">
             <i class="fa-solid fa-right-from-bracket"></i>@AddHealthInsuranceMessages.CancelButton
         </button>
@@ -42,8 +39,13 @@
             <i class="fa-solid fa-floppy-disk"></i>@UpdateHealthInsuranceMessages.SubmitButton
         </button>
     </div> 
-</EditForm>
-
+    <ModalComponent Title="Éxito" Show="@showModal" OnExit="@((value) => showModal = value)"
+                    Closing="Dispose" Type="ModalType.NormalContent" ShowAcceptButton="true" OnAccept="OnAccept">
+        <div style="color: green;">
+            @UpdateHealthInsuranceMessages.SuccessfulUpdateMessage
+        </div>
+    </ModalComponent>
+*@
 
 <style>
     .update-health-component-form {
