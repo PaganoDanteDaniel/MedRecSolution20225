@@ -93,7 +93,7 @@ public static class ConcurrencyHelper
                     return i;
                 if (targetType == typeof(decimal) && decimal.TryParse(stringValue, out var d))
                     return d;
-                // Aquí puedes añadir más parseos específicos según los tipos de tu dominio.
+                // Aquí se puede añadir más parseos específicos según los tipos del dominio.
             }
 
             // Fallback: intentar conversión estándar del framework.

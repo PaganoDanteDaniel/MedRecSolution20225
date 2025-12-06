@@ -1,0 +1,140 @@
+.md-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    backdrop-filter: blur(2px);
+}
+
+/* Nuevo: el diálogo se comporta como columna para que .modal-body pueda crecer (flex:1) */
+.md-dialog {
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh; /* evita overflow vertical en pantallas pequeñas */
+}
+
+.modal-container-lg {
+    max-width: 85%;
+    width: 85%;
+    height: 90vh;
+    margin: 0; /* sin margen; el overlay centra */
+}
+
+.modal-container {
+    max-width: 480px;
+    width: 100%;
+    animation: modalDrop .22s ease;
+    background: var(--surface, #fff);
+    border-radius: 12px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.35);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+}
+
+.modal-icon {
+    stroke: currentColor;
+    width: var(--fs-3xl);
+    height: var(--fs-3xl);
+    fill: none;
+    flex-shrink: 0;
+}
+
+.modal-title-wrapper {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    min-height: var(--fs-3xl); /* Igual al ícono */
+}
+
+    .modal-title-wrapper h2 {
+        margin: 0;
+        padding: 0;
+        line-height: var(--fs-xl);
+        font-weight: 500;
+        color: var(--modal-accent);
+    }
+
+::deep .modal-icon.info { color: var(--modal-accent); }
+
+::deep .modal-icon.warning { color: var(--modal-accent); }
+
+::deep .modal-icon.error { color: var(--modal-accent); }
+
+::deep .modal-icon.success { color: var(--modal-accent); }
+
+.modal-body {
+    flex: 1; /* ocupa el espacio disponible entre header y footer */
+    overflow-y: auto; /* scroll interno si el contenido es largo */
+    padding: 1rem 1.5rem;
+    margin: 0;
+}
+
+    /* Nuevo: centrar solo cuando mostramos Message (sin Body) */
+    .modal-body.message-mode {
+        display: flex;
+        align-items: center; /* centra vertical */
+        justify-content: center; /* centra horizontal */
+        text-align: center; /* centra el texto */
+    }
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: .5rem;
+    padding: 1rem 1.5rem;
+}
+
+.modal-divider {
+    border-top: 1px solid rgba(0,0,0,0.1);
+    margin: 0;
+}
+
+@keyframes modalDrop {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 1) Variables por tipo: color base y relleno aclarado */
+.md-dialog.info      { --modal-accent: var(--color-primary); --modal-accent-fill: color-mix(in srgb, var(--modal-accent) 70%, white); }
+.md-dialog.warning   { --modal-accent: #ffa726;              --modal-accent-fill: color-mix(in srgb, var(--modal-accent) 70%, white); }
+.md-dialog.error     { --modal-accent: #e53935;              --modal-accent-fill: color-mix(in srgb, var(--modal-accent) 70%, white); }
+.md-dialog.success   { --modal-accent: #4caf50;              --modal-accent-fill: color-mix(in srgb, var(--modal-accent) 70%, white); }
+
+/* 2) Aplica el color al título */
+.md-dialog .modal-title-wrapper h2 { color: var(--modal-accent); }
+
+/* 3) Contorno del icono usa currentColor = var(--modal-accent) */
+::deep .modal-icon { stroke: currentColor; fill: none; }
+
+/* 4) Color del icono por tipo (para stroke) */
+::deep .modal-icon.info    { color: var(--modal-accent); }
+::deep .modal-icon.warning { color: var(--modal-accent); }
+::deep .modal-icon.error   { color: var(--modal-accent); }
+::deep .modal-icon.success { color: var(--modal-accent); }
+
+/* 5) Si tu SVG tiene partes de relleno, puedes forzar un fill más claro */
+::deep .modal-icon.fill { fill: var(--modal-accent-fill); }
+
+/* Fallback si el navegador no soporta color-mix:
+   usa un tono aclarado simple con opacity en fill */
+@supports not (color-mix(in srgb, red 50%, white)) {
+    .md-dialog.info      { --modal-accent-fill: rgba( var(--color-primary-rgb, 33,150,243), .20 ); }
+    .md-dialog.warning   { --modal-accent-fill: rgba(255,167,38, .20); }
+    .md-dialog.error     { --modal-accent-fill: rgba(229,57,53, .20); }
+    .md-dialog.success   { --modal-accent-fill: rgba(76,175,80, .20); }
+}

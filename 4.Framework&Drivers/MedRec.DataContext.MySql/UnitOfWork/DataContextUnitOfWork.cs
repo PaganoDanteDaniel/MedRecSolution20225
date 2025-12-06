@@ -108,8 +108,23 @@ internal class DataContextUnitOfWork(
         }
         finally
         {
+            DetachAddedEntities();
             await _currentTransaction.DisposeAsync();
             _currentTransaction = null;
+        }
+    }
+
+    private void DetachAddedEntities()
+    {
+        // Des adjunta todas las entidades en estado Added; útil tras un SaveChanges fallido
+        var added = context.ChangeTracker
+            .Entries()
+            .Where(e => e.State == EntityState.Added)
+            .ToList();
+
+        foreach (var entry in added)
+        {
+            entry.State = EntityState.Detached;
         }
     }
 
@@ -127,10 +142,9 @@ internal class DataContextUnitOfWork(
     {
         ct.ThrowIfCancellationRequested();
 
-        var strategy = context.Database.CreateExecutionStrategy();
-
         try
         {
+            var strategy = context.Database.CreateExecutionStrategy();
             await strategy.ExecuteAsync(async () =>
             {
                 ct.ThrowIfCancellationRequested();
@@ -143,39 +157,7 @@ internal class DataContextUnitOfWork(
         }
         catch (Exception ex)
         {
-            // Propagar excepciones ya traducidas por GuardDBContext u otras lógicas previas
-            if (ex is ConcurrencyException
-                || ex is DuplicateKeyException
-                || ex is UpdateException
-                || ex is DbUpdateConcurrencyException
-                || ex is LostConnectionException)
-            {
-                throw;
-            }
-
-            // Clasificar pérdida de conexión si aplica
-            if (connectionClassifier.TryClassify(ex, out var reason, out var code))
-            {
-                var msg = reason switch
-                {
-                    LostConnectionReason.UnableToConnect => "No fue posible establecer conexión con el servidor MySQL.",
-                    LostConnectionReason.ServerGoneAway => "La conexión con MySQL se perdió.",
-                    LostConnectionReason.ConnectionLostDuringQuery => "Se perdió la conexión con MySQL durante la operación.",
-                    LostConnectionReason.TooManyConnections => "El servidor MySQL alcanzó el máximo de conexiones.",
-                    LostConnectionReason.StatementInterrupted => "La operación fue interrumpida por MySQL.",
-                    LostConnectionReason.Timeout => "La operación excedió el tiempo de espera.",
-                    _ => "Ocurrió un problema de conexión con MySQL."
-                };
-
-                throw new LostConnectionException(
-                    msg,
-                    reason,
-                    code,
-                    isTransient: IsTransient(ex),
-                    innerException: ex);
-            }
-
-            // Si no se pudo clasificar conservar la excepción original
+            HandleDatabaseException(ex);
             throw;
         }
     }
@@ -184,10 +166,11 @@ internal class DataContextUnitOfWork(
     public async Task ExecuteInTransactionWithRetryAsync(Func<Task> operation, CancellationToken ct = default)
     {
         ct.ThrowIfCancellationRequested();
-        var strategy = context.Database.CreateExecutionStrategy();
 
         try
         {
+            var strategy = context.Database.CreateExecutionStrategy();
+
             await strategy.ExecuteAsync(async () =>
             {
                 ct.ThrowIfCancellationRequested();
@@ -210,40 +193,45 @@ internal class DataContextUnitOfWork(
         }
         catch (Exception ex)
         {
-            if (ex is ConcurrencyException
+            HandleDatabaseException(ex);
+            throw;
+        }
+    }
+    private void HandleDatabaseException(Exception ex)
+    {
+        if (ex is ConcurrencyException
                 || ex is DuplicateKeyException
                 || ex is UpdateException
                 || ex is DbUpdateConcurrencyException
                 || ex is LostConnectionException)
-            {
-                throw;
-            }
-
-            if (connectionClassifier.TryClassify(ex, out var reason, out var code))
-            {
-                var msg = reason switch
-                {
-                    LostConnectionReason.UnableToConnect => "No fue posible establecer conexión con el servidor MySQL.",
-                    LostConnectionReason.ServerGoneAway => "La conexión con MySQL se perdió.",
-                    LostConnectionReason.ConnectionLostDuringQuery => "Se perdió la conexión con MySQL durante la operación.",
-                    LostConnectionReason.TooManyConnections => "El servidor MySQL alcanzó el máximo de conexiones.",
-                    LostConnectionReason.StatementInterrupted => "La operación fue interrumpida por MySQL.",
-                    LostConnectionReason.Timeout => "La operación excedió el tiempo de espera.",
-                    _ => "Ocurrió un problema de conexión con MySQL."
-                };
-
-                throw new LostConnectionException(
-                    msg,
-                    reason,
-                    code,
-                    isTransient: IsTransient(ex),
-                    innerException: ex);
-            }
-
-            throw;
+        {
+            throw ex;
         }
-    }
 
+        if (connectionClassifier.TryClassify(ex, out var reason, out var code))
+        {
+            var msg = reason switch
+            {
+                LostConnectionReason.UnableToConnect => "No fue posible establecer conexión con el servidor MySQL.",
+                LostConnectionReason.ServerGoneAway => "La conexión con MySQL se perdió.",
+                LostConnectionReason.ConnectionLostDuringQuery => "Se perdió la conexión con MySQL durante la operación.",
+                LostConnectionReason.TooManyConnections => "El servidor MySQL alcanzó el máximo de conexiones.",
+                LostConnectionReason.StatementInterrupted => "La operación fue interrumpida por MySQL.",
+                LostConnectionReason.Timeout => "La operación excedió el tiempo de espera.",
+                _ => "Ocurrió un problema de conexión con MySQL."
+            };
+
+            throw new LostConnectionException(
+                msg,
+                reason,
+                code,
+                isTransient: IsTransient(ex),
+                innerException: ex);
+        }
+
+        throw ex;
+
+    }
     private static bool IsTransient(Exception ex)
     {
         // No reintentar conflictos de concurrencia: requieren intervención de la capa superior.

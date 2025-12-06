@@ -1,9 +1,9 @@
 ﻿using MedRec.BusinessObjects.Interfaces;
-using MedRec.Entity.POCOEntities;
+using MedRec.BusinessObjects.Results;
 
 namespace MedRec.HealthInsurance.BusinessObjects.Interfaces.Ports;
-public interface ICreateHealthInsuranceOutputPort : ICommonOutputPort
+public interface ICreateHealthInsuranceOutputPort : IBaseOutputPort
 {
-    bool Created { get; }
-    Task Handle(HealthInsuranceCompany healthCompany, CancellationToken ct = default);
+    OperationResult<bool> Result { get; }
+    Task Handle(CancellationToken ct = default);
 }

@@ -20,46 +20,58 @@ public partial class AddHealthInsuranceComponent : IDisposable
     public bool Validate() => _editContext.Validate();
     private CreateHealthInsuranceVM VM => Service;
     private EditContext _editContext;
-    private bool _showModal;
-    private bool isLoading = false;
     private CancellationTokenSource _ct;
+    private EventCallback _onOkHandler;
 
     [Parameter] public string CompanyName { set { VM.Model.Name = value; } }
     [Parameter] public string CompanyAcronym { set { VM.Model.Acronym = value; } }
-    [Parameter] public EventCallback OnHealthInsuranceCreated { get; set; }
-    [Parameter] public EventCallback OnCancelAdd { get; set; }
+
+
+    [Parameter] public EventCallback OnSuccess { get; set; }
+    [Parameter] public EventCallback<string> OnError { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+    private Action _onAdded;
+    private Action _onError;
+    private Action _onWarning;
+    private Action _onMessage;
+
     protected override void OnInitialized()
     {
-        try
-        {
-            _editContext = new EditContext(VM.Model);
-            VM.OnHealthInsuranceAdded += ShowSuccessModal;
-        }
-        catch (Exception)
-        {
-            VM.OnHealthInsuranceAdded -= ShowSuccessModal;
-        }
+        _editContext = new EditContext(VM.Model);
 
-    }
-    private void OnAccept()
-    {
-        ModalVisibleB = false;
-        OnHealthInsuranceCreated.InvokeAsync(); 
-    }
-    public void Dispose()
-    {
-        CleanField();
-        VM.OnHealthInsuranceAdded -= ShowSuccessModal;
-    }
-    private void ShowSuccessModal()
-    {
-        ModalType = ModalType.MessageSuccess;
-        ModalTitle = "Operación exitosa";
+        _onError = () => ShowNotification("Error", 
+            VM.InformationMessage, 
+            ModalType.MessageError,
+            EventCallback.Factory.Create(this, OnCloseModal));
 
-        ModalMessage= AddHealthInsuranceMessages.SuccessfulAddedMessage;
-        ModalVisibleB = true;
-    }
+        _onWarning = () => ShowNotification("Advertencia", 
+            VM.InformationMessage, 
+            ModalType.MessageWarning,
+            EventCallback.Factory.Create(this, OnCloseModal));
 
+        _onMessage=()=> ShowNotification("Notificación",
+            VM.InformationMessage,
+            ModalType.MessageError,
+            EventCallback.Factory.Create(this, OnCloseModal));
+
+        //VM.OnShowConcurrencyError += () => _ = OnError.InvokeAsync(VM.InformationMessage);
+
+        VM.OnHealthInsuranceAdded += OnSaved;
+        VM.OnShowError += _onError;
+        VM.OnShowWarning += _onWarning;
+        VM.OnShowMessage += _onMessage;
+    }
+    private void ShowNotification(string title, string message, ModalType type, EventCallback onOkHandler)
+    {
+        ModalTitle = title;
+        ModalType = type;
+        ModalMessage = message;
+        ModalVisible = true;
+        _onOkHandler = onOkHandler;
+
+        StateHasChanged();
+    }
     public async Task SaveAsync()
     {
         if (Validate())
@@ -67,9 +79,21 @@ public partial class AddHealthInsuranceComponent : IDisposable
             _ct?.Dispose();
             _ct = new CancellationTokenSource();
             await VM.AddHealthCompany(_ct.Token);
-            // Notificamos que se actualizó
-            //await OnHealthInsuranceCreated.InvokeAsync();
         }
+    }
+    public void OnCancelSave()
+    {
+        _ = OnCancel.InvokeAsync();
+    }
+    public void OnSaved()
+    {
+        ShowNotification("Éxito", VM.InformationMessage, ModalType.MessageSuccess, EventCallback.Factory.Create(this, OnCloseModal));
+        _ = OnSuccess.InvokeAsync();
+    }
+    public void OnCloseModal()
+    {
+        ModalVisible = false;
+        StateHasChanged();
     }
     public void CleanField()
     {
@@ -80,12 +104,16 @@ public partial class AddHealthInsuranceComponent : IDisposable
         // Opcional: resetea el estado de validación visual
         _editContext?.MarkAsUnmodified();
     }
-    //private void CancelAdd()
-    //{
-    //    ClearForm();
-    //    VM.InformationMessage = string.Empty;
-    //    VM.OnHealthInsuranceAdded -= ShowSuccessModal;
-    //    OnCancelAdd.InvokeAsync();
-    //}
-
+    public void Dispose()
+    {
+        CleanField();
+        if (VM is not null)
+        {
+            VM.OnHealthInsuranceAdded -= OnSaved;
+            VM.OnShowError -= _onError;
+            VM.OnShowWarning -= _onWarning;
+            VM.OnShowMessage -= _onMessage;
+        }
+        _ct?.Dispose();
+    }
 }

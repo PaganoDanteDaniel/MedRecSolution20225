@@ -21,7 +21,7 @@ public static class DependencyContainer
 
         services.AddHealthInsuranceDataContextServices();
         services.AddHealthInsuranceRepositoriesServices();
-        services.AddHealthInsuranceUseCasesServices();
+        services.AddHealthInsuranceUseCasesServicesWithProxy();
         services.AddHealthInsurancePresentersServices();
 
         services.AddTransient<HealthInsuranceCatalogVM>();

@@ -30,8 +30,13 @@ public static class GuardDBContext
             // Intentar detectar duplicados de forma genérica
             if (IsDuplicateKeyError(ex))
             {
+                var dupValue = TryExtractDuplicateValue(ex);
+                var msg = dupValue is not null
+                    ? $"Ya existe un registro con el valor duplicado: <b>{dupValue}</b>."
+                    : "Ya existe un registro con un valor<br /> identico al que desea guardar.";
+
                 throw new DuplicateKeyException(
-                    "Ya existe un registro con un valor duplicado en una clave única.",
+                    msg,
                     ex,
                     ExtractEntityNames(ex));
             }
@@ -53,7 +58,6 @@ public static class GuardDBContext
                                     || ex is UpdateException
                                     || ex is LostConnectionException))
         {
-            // Último intento de clasificar conexión antes de generic UpdateException
             if (connectionClassifier != null &&
                 TryClassifyLostConnection(ex, connectionClassifier, out var lc))
             {
@@ -62,6 +66,60 @@ public static class GuardDBContext
 
             throw new UpdateException("Error inesperado en SaveChanges.", ex);
         }
+    }
+
+    private static string? TryExtractDuplicateValue(DbUpdateException ex)
+    {
+        for (var inner = ex.InnerException; inner is not null; inner = inner.InnerException)
+        {
+            if (inner is DbException dbEx)
+            {
+                var msg = dbEx.Message ?? string.Empty;
+
+                // MySQL: "Duplicate entry 'VALUE' for key '...'"
+                var mysqlMarker = "Duplicate entry '";
+                var i1 = msg.IndexOf(mysqlMarker, StringComparison.OrdinalIgnoreCase);
+                if (i1 >= 0)
+                {
+                    var start = i1 + mysqlMarker.Length;
+                    var end = msg.IndexOf('\'', start);
+                    if (end > start) return msg.Substring(start, end - start);
+                }
+
+                // SQL Server: SqlException.Number 2627 (PK) o 2601 (Unique)
+                // Mensaje típico: "Cannot insert duplicate key row in object 'dbo.Table' with unique index 'IX_...'. The duplicate key value is (VALUE)."
+                if (dbEx.GetType().Name.Contains("SqlException", StringComparison.OrdinalIgnoreCase))
+                {
+                    var marker2 = "The duplicate key value is (";
+                    var i2 = msg.IndexOf(marker2, StringComparison.OrdinalIgnoreCase);
+                    if (i2 >= 0)
+                    {
+                        var start = i2 + marker2.Length;
+                        var end = msg.IndexOf(')', start);
+                        if (end > start) return msg.Substring(start, end - start);
+                    }
+                }
+
+                // PostgreSQL: PostgresException.SqlState == "23505" (unique_violation)
+                // Mensaje típico: "duplicate key value violates unique constraint \"...\" Detail: Key (column)=(VALUE) already exists."
+                if (dbEx.GetType().Name.Contains("PostgresException", StringComparison.OrdinalIgnoreCase))
+                {
+                    var detailMarker = "Key ";
+                    var i3 = msg.IndexOf(detailMarker, StringComparison.OrdinalIgnoreCase);
+                    if (i3 >= 0)
+                    {
+                        // extraer entre =( y ) ya existe
+                        var eq = msg.IndexOf("=(", i3, StringComparison.OrdinalIgnoreCase);
+                        var close = msg.IndexOf(')', eq + 2);
+                        if (eq >= 0 && close > eq + 2) return msg.Substring(eq + 2, close - (eq + 2));
+                    }
+                }
+
+                // SQLite: "UNIQUE constraint failed: Table.Column"
+                // No aporta el valor duplicado en el mensaje estándar; en ese caso retorna null.
+            }
+        }
+        return null;
     }
 
     private static bool TryClassifyLostConnection(Exception ex,

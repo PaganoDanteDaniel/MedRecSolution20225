@@ -27,26 +27,18 @@
     </div>
 </EditForm>
 
-@*
-     <div class="button-group">
-        <button type="button" @onclick="@CancelAdd">
-            <i class="fa-solid fa-right-from-bracket"></i>@AddHealthInsuranceMessages.CancelButton
-        </button>
-        <button type="button" @onclick="CleanField">
-            <i class="bi bi-eraser-fill"></i>@UpdateHealthInsuranceMessages.ClearButton
-        </button>
-        <button type="submit">
-            <i class="fa-solid fa-floppy-disk"></i>@UpdateHealthInsuranceMessages.SubmitButton
-        </button>
-    </div> 
-    <ModalComponent Title="Éxito" Show="@showModal" OnExit="@((value) => showModal = value)"
-                    Closing="Dispose" Type="ModalType.NormalContent" ShowAcceptButton="true" OnAccept="OnAccept">
-        <div style="color: green;">
-            @UpdateHealthInsuranceMessages.SuccessfulUpdateMessage
-        </div>
-    </ModalComponent>
-*@
-
+<MdMessageModal Visible="@ModalVisible"
+                VisibleChanged="@(v => ModalVisible = v)"
+                Type="@ModalType"
+                Title="@ModalTitle"
+                Message="@ModalMessage"
+                Body="@ModalBody"
+                CloseOnOverlayClick=@CloseOnOverlayClick
+                ShowOk="@ShowOk"
+                ShowCancel="@ShowCancel"
+                ShowRetry="@ShowRetry"
+                ShowDelete="@ShowDelete"
+                OnOk="_onOkHandler" />
 <style>
     .update-health-component-form {
         background-color: var(--form-background);

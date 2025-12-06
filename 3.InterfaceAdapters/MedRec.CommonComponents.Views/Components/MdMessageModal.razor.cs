@@ -43,7 +43,7 @@ public partial class MdMessageModal
 
     private bool IsLargeModal => Type == ModalType.LargeContent;
     /* ===========================
-    ÍCONOS SVG LUCIDE
+       ÍCONOS SVG LUCIDE
     ============================ */
     private RenderFragment IconSvg => builder =>
     {
@@ -52,8 +52,10 @@ public partial class MdMessageModal
         if (Type == ModalType.MessageError)
         {
             builder.OpenElement(seq++, "svg");
-            builder.AddAttribute(seq++, "class", "modal-icon error");
+            builder.AddAttribute(seq++, "class", "modal-icon error fill");
             builder.AddAttribute(seq++, "viewBox", "0 0 24 24");
+            builder.AddAttribute(seq++, "stroke", "currentColor");
+            builder.AddAttribute(seq++, "fill", "currentColor");            // sin relleno
             builder.AddAttribute(seq++, "stroke-linecap", "round");
             builder.AddAttribute(seq++, "stroke-linejoin", "round");
             builder.AddAttribute(seq++, "stroke-width", "2");
@@ -62,14 +64,16 @@ public partial class MdMessageModal
             builder.AddMarkupContent(seq++,
             @"<circle cx='12' cy='12' r='10' />
                <path d='m15 9-6 6' />
-                <path d='m9 9 6 6' />");
+               <path d='m9 9 6 6' />");
             builder.CloseElement();
         }
         else if (Type == ModalType.MessageWarning)
         {
             builder.OpenElement(seq++, "svg");
-            builder.AddAttribute(seq++, "class", "modal-icon warning");
+            builder.AddAttribute(seq++, "class", "modal-icon warning fill");
             builder.AddAttribute(seq++, "viewBox", "0 0 24 24");
+            builder.AddAttribute(seq++, "stroke", "currentColor");
+            builder.AddAttribute(seq++, "fill", "currentColor");            // si quieres solo contorno
             builder.AddAttribute(seq++, "stroke-linecap", "round");
             builder.AddAttribute(seq++, "stroke-linejoin", "round");
             builder.AddAttribute(seq++, "stroke-width", "2");
@@ -84,8 +88,10 @@ public partial class MdMessageModal
         else if (Type == ModalType.MessageInfo)
         {
             builder.OpenElement(seq++, "svg");
-            builder.AddAttribute(seq++, "class", "modal-icon info");
+            builder.AddAttribute(seq++, "class", "modal-icon info fill");
             builder.AddAttribute(seq++, "viewBox", "0 0 24 24");
+            builder.AddAttribute(seq++, "stroke", "currentColor");
+            builder.AddAttribute(seq++, "fill", "currentColor");
             builder.AddAttribute(seq++, "stroke-linecap", "round");
             builder.AddAttribute(seq++, "stroke-linejoin", "round");
             builder.AddAttribute(seq++, "stroke-width", "2");
@@ -100,8 +106,10 @@ public partial class MdMessageModal
         else if (Type == ModalType.MessageDanger)
         {
             builder.OpenElement(seq++, "svg");
-            builder.AddAttribute(seq++, "class", "modal-icon error");
+            builder.AddAttribute(seq++, "class", "modal-icon error fill");
             builder.AddAttribute(seq++, "viewBox", "0 0 24 24");
+            builder.AddAttribute(seq++, "stroke", "currentColor");
+            builder.AddAttribute(seq++, "fill", "currentColor");
             builder.AddAttribute(seq++, "stroke-linecap", "round");
             builder.AddAttribute(seq++, "stroke-linejoin", "round");
             builder.AddAttribute(seq++, "stroke-width", "2");
@@ -117,15 +125,20 @@ public partial class MdMessageModal
         else if (Type == ModalType.MessageSuccess)
         {
             builder.OpenElement(seq++, "svg");
-            builder.AddAttribute(seq++, "class", "modal-icon success");
+            builder.AddAttribute(seq++, "class", "modal-icon success fill");
             builder.AddAttribute(seq++, "viewBox", "0 0 24 24");
+            builder.AddAttribute(seq++, "stroke", "currentColor");  // contorno
+            builder.AddAttribute(seq++, "fill", "currentColor");            // si necesitas relleno verde, usa fill='currentColor'
             builder.AddAttribute(seq++, "stroke-linecap", "round");
             builder.AddAttribute(seq++, "stroke-linejoin", "round");
             builder.AddAttribute(seq++, "stroke-width", "2");
             builder.AddAttribute(seq++, "width", "42");
             builder.AddAttribute(seq++, "height", "42");
             builder.AddMarkupContent(seq++,
-            @"<path d='m9 10 2 2 4-4'/><rect width='20' height='14' x='2' y='3' rx='2'/><path d='M12 17v4'/><path d='M8 21h8'/>");
+            @"<path d='m9 10 2 2 4-4'/>
+              <rect width='20' height='14' x='2' y='3' rx='2'/>
+              <path d='M12 17v4'/>
+              <path d='M8 21h8'/>");
             builder.CloseElement();
         }
         else if (Type == ModalType.LargeContent)
@@ -149,7 +162,7 @@ public partial class MdMessageModal
     {
         if (OnOk.HasDelegate)
             await OnOk.InvokeAsync(null);
-        await CloseModal();
+        //await CloseModal();
     }
 
     private async Task ClickCancel()

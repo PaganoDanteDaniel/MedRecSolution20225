@@ -5,103 +5,66 @@ using MedRec.Entity.POCOEntities;
 using MedRec.HealthInsurance.BusinessObjects.DTOs;
 using MedRec.HealthInsurance.BusinessObjects.Interfaces.Ports;
 using MedRec.HealthInsurance.BusinessObjects.Interfaces.Repositories;
-using MedRec.Shared.Exceptions;
-using MedRec.Shared.Exceptions.SQLExceptions;
+using MedRec.HealthInsurance.BusinessObjects.Validators;
+using MedRec.Validator.Interfaces;
 
 namespace MedRec.HealthInsurance.UseCases.Implementation;
-internal class UpdateHealthInsuranceInteractor(
-    IUpdateHealthInsuranceOutputPort presenter,
-    IHealthInsuranceCommandRepository commandRepository,
-    IRepositoryUnitOfWork unitOfWork) : IUpdateHealthInsuranceInputPort
+internal class UpdateHealthInsuranceInteractor : IUpdateHealthInsuranceInputPort
 {
+    private readonly IUpdateHealthInsuranceOutputPort _presenter;
+    private readonly IHealthInsuranceCommandRepository _commandRepository;
+    private readonly IRepositoryUnitOfWork _unitOfWork;
+    private readonly IModelValidatorHub<UpdateHealthInsuranceDto> _validatorHub;
+
+    public UpdateHealthInsuranceInteractor(
+        IUpdateHealthInsuranceOutputPort presenter,
+        IHealthInsuranceCommandRepository commandRepository,
+        IRepositoryUnitOfWork unitOfWork,
+        IModelValidatorHub<UpdateHealthInsuranceDto> validatorHub)
+    {
+        _presenter = presenter;
+        _commandRepository = commandRepository;
+        _unitOfWork = unitOfWork;
+        _validatorHub = validatorHub;
+    }
+
     public async Task Handle(UpdateHealthInsuranceDto healthInsuranceDto, CancellationToken ct = default)
     {
         if (ct.IsCancellationRequested)
         {
-            await presenter.ErrorAsync(new ErrorInfo(
+            await _presenter.ErrorAsync(new ErrorInfo(
                 "Operación cancelada por el usuario.",
                 ErrorCode.Cancelled,
                 null,
                 499));
             return;
         }
-        try
-        {
-            if (healthInsuranceDto == null)
-                throw new ArgumentNullException(nameof(healthInsuranceDto));
-            var entity = new HealthInsuranceCompany()
-            {
-                Id = healthInsuranceDto.Id,
-                Name = healthInsuranceDto.Name,
-                Acronym = healthInsuranceDto.Acronym,
-                RowVersion = healthInsuranceDto.RowVersion
-            };
 
-            await unitOfWork.ExecuteWithRetry(async () =>
-            {
-                await unitOfWork.BeginTransaction(ct);
-                try
-                {
-                    await commandRepository.Update(entity, ct);
-                    await unitOfWork.SaveChanges(ct);
-                    await unitOfWork.CommitTransaction(ct);
-                }
-                catch (Exception)
-                {
-                    await unitOfWork.RollbackTransaction(ct);
-                    throw;
-                }
-            }, ct);
+        bool isValid = await _validatorHub.Validate(healthInsuranceDto,
+            h => UpdateHealthInsuranceValidator.Validate(h));
 
-            await presenter.Handle(true, ct);
-        }
-        catch (ConcurrencyException cx)
+        if (!isValid)
         {
-            // 409: incluir conflictos tipados (lista de ConcurrencyConflictDto)
-            await presenter.ErrorAsync(new ErrorInfo(
-                "Conflicto de concurrencia al crear la Obra Social.",
-                ErrorCode.ConcurrencyError,
-                cx.Conflicts,
-                409));
+            await _presenter.ValidationErrorsAsync(_validatorHub.Errors);
+            return;
         }
-        catch (DuplicateKeyException dx)
+
+        var entity = new HealthInsuranceCompany()
         {
-            // 409: conflicto por clave duplicada (Details suele contener entidades implicadas)
-            await presenter.ErrorAsync(new ErrorInfo(
-                "Ya existe un registro que viola una restricción de unicidad.",
-                ErrorCode.DuplicateKey,
-                dx.Details,
-                409));
-        }
-        catch (UpdateException ux)
+            Id = healthInsuranceDto.Id,
+            Name = healthInsuranceDto.Name,
+            Acronym = healthInsuranceDto.Acronym,
+            RowVersion = healthInsuranceDto.RowVersion
+        };
+
+        await _unitOfWork.ExecuteInTransactionWithRetry(async () =>
         {
-            // 500: otros errores de persistencia
-            await presenter.ErrorAsync(new ErrorInfo(
-                "Error al persistir los cambios en la base de datos.",
-                ErrorCode.UpdateError,
-                ux.Details,
-                500));
-        }
-        catch (BusinessException bx)
-        {
-            // Mantener compatibilidad con BusinessException si aparece desde otras capas
-            await presenter.ErrorAsync(bx.Error);
-        }
-        catch (OperationCanceledException)
-        {
-            await presenter.ErrorAsync(new ErrorInfo(
-                "Operación cancelada por el usuario.",
-                ErrorCode.Cancelled,
-                null,
-                499));
-        }
-        catch (Exception ex)
-        {
-            await presenter.ErrorAsync(new ErrorInfo(
-                "Ocurrió un error inesperado al crear la Obra Social.",
-                ErrorCode.Unknown,
-                new { Exception = ex.Message },
-                500));
-        }
+            await _commandRepository.Update(entity, ct);
+            await _unitOfWork.SaveChanges(ct);
+            await _presenter.ErrorAsync(null);
+
+        }, ct);
+
+        await _presenter.Handle(ct);
     }
 }

@@ -1,4 +1,4 @@
-﻿using MedRec.Entity.DTOs;
+﻿using MedRec.BusinessObjects.Results;
 using MedRec.Entity.Enums;
 using MedRec.HealthInsurance.BusinessObjects.DTOs;
 using MedRec.HealthInsurance.BusinessObjects.Interfaces.Ports;
@@ -14,8 +14,6 @@ public class CreateHealthInsuranceVM(
 
     #region Events
     public event Action OnHealthInsuranceAdded;
-    public event Action OnHealthInsuranceUpdated;
-    public event Action OnHealthInsuranceDeleted;
     public event Action OnShowMessage;
     public event Action OnShowWarning;
     public event Action OnShowError;
@@ -46,40 +44,56 @@ public class CreateHealthInsuranceVM(
         {
             var insuranceHealthCompany = (CreateHealthInsuranceDto)Model;
             await createInputPort.Handle(insuranceHealthCompany, ct);
-            if (createPresenter.ErrorMessage is not null)
+            var result = createPresenter.Result;
+            if (result.HasValidationErrors)
             {
-                HandleErrors(createPresenter.ErrorMessage);
+                InformationMessage = string.Join("<br />", result.ValidationErrors.Select(e => e.ErrorMessage));
+                OnShowMessage?.Invoke();
+            }
+            else if (!result.Success)
+            {
+                HandleErrors(result);
             }
             else
             {
-                Model.Name = "";
-                Model.Acronym = "";
+                InformationMessage = "Obra Social registrada exitosamente";
+                Model = new CreateHealthInsuranceModel();
                 OnHealthInsuranceAdded?.Invoke();
             }
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            InformationMessage = ex.Message;
+            // Solo para fallos catastróficos (ej: proxy no atrapó la excepción)
+            //Logger?.LogError(ex, "Excepción no manejada en AddPatientAsync");
+            InformationMessage = "Error inesperado al crear la Obra Social.";
+            OnShowError?.Invoke();
+
+            // Opcional: no relanzar si manejo todo en UI
+            // Si usas ErrorBoundary y quieres que lo capture, des comentar:
+            // throw new InvalidOperationException("Error crítico al crear paciente.", ex);
         }
     }
 
-    private void HandleErrors(ErrorInfo error)
+    private void HandleErrors(OperationResult<bool> result)
     {
-        InformationMessage = error.Message;
+        InformationMessage = result.Error?.Message ?? "Error desconocido.";
 
-        switch (error.Code)
+        switch (result.MessageAction)
         {
-            case ErrorCode.DuplicateKey:
+            case UserMessageAction.ShowWarning:
                 OnShowWarning?.Invoke();
                 break;
-            case ErrorCode.ConcurrencyError:
+            case UserMessageAction.ShowConcurrencyMessage:
                 OnShowConcurrencyError?.Invoke();
                 break;
-            case ErrorCode.DatabaseError:
+            case UserMessageAction.ShowError:
                 OnShowError?.Invoke();
                 break;
-            default:
+            case UserMessageAction.ShowInfoMessage:
+                OnShowMessage?.Invoke();
+                break;
+            default: // None o desconocido
                 OnShowMessage?.Invoke();
                 break;
         }

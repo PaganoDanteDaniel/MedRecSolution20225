@@ -103,17 +103,7 @@
                     </button>
                 </div>
             </div>
-            <ModalComponent Title="SELECTOR DE OBRAS SOCIALES"
-                            Show="@_showHealthCompanyList"
-                            Type="ModalType.LargeContent"
-                            ShowChanged="(value) => _showHealthCompanyList = value">
-                @if (_showHealthCompanyList)
-                {
-                    <HealthInsuranceComponent MaxPageButton="3" 
-                        OnHealthCompanySelected="@OnHealthCompanySelected" />
-                }
-                
-            </ModalComponent>
+   
             <div class="new-patient-col">
                 <label for="insuranceHealthCard">@CreatePatientMessages.InsuranceHealthCardLabel</label>
                 <input type="text"
@@ -161,13 +151,59 @@
     
 </EditForm>
 
-<ModalComponent Show="@_showModal"
-                ShowChanged="@((bool val) => _showModal = val)"
-                Title="@_modalTitle"
-                Type="@_modalType"
-                CenterText="true"
-                ShowAcceptButton="true"
-                OnAccept="@CloseModal"
-                ShowCancelButton="false">
-    @((MarkupString)VM.InformationMessage)
-</ModalComponent>
+@if (_showHealthCompanyList)
+{
+    <!-- ===== MODAL B: Lista de Obras Sociales ===== -->
+    <MdMessageModal Visible="@_showHealthCompanyList"
+                VisibleChanged="@(v => _showHealthCompanyList = v)"
+                Type="ModalType.LargeContent"
+                Title="SELECTOR DE OBRAS SOCIALES"
+                Body="@HealthInsuranceModalBody"
+                CloseOnOverlayClick="false"
+                ShowOk="false"
+                ShowCancel="false"
+                OnCancel="() => _showHealthCompanyList = false" />
+}
+
+@if (_showAddHealthInsurance)
+{
+    <!-- ===== MODAL C: Alta de Nueva Obra Social ===== -->
+    <MdMessageModal Visible="@_showAddHealthInsurance"
+        VisibleChanged="@(v => _showAddHealthInsurance = v)"
+        Type="ModalType.NormalContent"
+        Title="Nueva Obra Social"
+        Body="@AddHealthInsuranceModalBody"
+        CloseOnOverlayClick="false"
+        ShowOk="true"
+        ShowCancel="true"
+        OnOk="() => _addHealthInsuranceRef?.SaveAsync()"
+        OnCancel="() => _addHealthInsuranceRef?.OnCancelSave()" />
+}
+
+@if (_showUpdateHealthInsurance)
+{
+    <!-- ===== MODAL D: Modificación Obra Social ===== -->
+    <MdMessageModal Visible="@_showUpdateHealthInsurance"
+        VisibleChanged="@(v => _showUpdateHealthInsurance = v)"
+        Type="ModalType.NormalContent"
+        Title="Modificar Obra Social"
+        Body="@UpdateHealthInsuranceModalBody"
+        CloseOnOverlayClick="false"
+        ShowOk="true"
+        ShowCancel="true"
+        OnOk="() => _updateHealthInsuranceRef?.SaveAsync()"
+        OnCancel="() => _updateHealthInsuranceRef?.OnCancelSave()" />
+}
+
+@if (_showPatientNotification)
+{
+    <!-- ===== MODAL: Notificaciones del paciente (éxito/error/navegación) ===== -->
+    <MdMessageModal Visible="@_showPatientNotification"
+                VisibleChanged="@(v => _showPatientNotification = v)"
+                Type="@_patientNotificationType"
+                Title="@_patientNotificationTitle"
+                Message="@VM.InformationMessage"
+                CloseOnOverlayClick="true"
+                ShowOk="true"
+                OnOk="OnPatientNotificationClosed" />
+}

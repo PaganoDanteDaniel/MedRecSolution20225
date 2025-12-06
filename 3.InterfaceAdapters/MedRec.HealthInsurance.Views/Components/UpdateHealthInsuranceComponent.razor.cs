@@ -8,6 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using MedRec.CommonComponents.Views;
 using MedRec.HealthInsurance.ViewModels.VM;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -16,25 +17,77 @@ using System.Threading.Tasks;
 namespace MedRec.HealthInsurance.Views.Components;
 public partial class UpdateHealthInsuranceComponent
 {
+    #region Campos para modal
+    bool CloseOnOverlayClick = true;
+    bool ModalVisible;
+    ModalType ModalType = ModalType.MessageInfo;
+    string ModalTitle = "";
+    string ModalMessage = "";
+    RenderFragment? ModalBody;
+
+    bool ShowOk = false;
+    bool ShowCancel = true;
+    bool ShowRetry = false;
+    bool ShowDelete = false;
+    #endregion
+
     public bool Validate() => _editContext.Validate();
     private UpdateHealthInsuranceVM VM => Service;
     private EditContext _editContext;
-    //private bool showModal;
     private CancellationTokenSource _ct;
+    private EventCallback _onOkHandler;
+
     [Parameter] public EventCallback OnHealthInsuranceUpdated { get; set; }
     [Parameter] public Guid HealthInsuranceId { get; set; }
 
+
+    [Parameter] public EventCallback OnSuccess { get; set; }
+    [Parameter] public EventCallback<string> OnError { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+    private Action _onUpdated;
+    private Action _onError;
+    private Action _onWarning;
+    private Action _onMessage;
     protected override async Task OnInitializedAsync()
     {
         _ct?.Dispose();
         _ct = new CancellationTokenSource();
-
         _editContext = new EditContext(VM.Model);
 
         await VM.GetHealthInsuranceAsync(HealthInsuranceId, _ct.Token);
 
-    }
+        _onError = () => ShowNotification("Error",
+            VM.InformationMessage,
+            ModalType.MessageError,
+            EventCallback.Factory.Create(this, OnCloseModal));
 
+        _onWarning = () => ShowNotification("Advertencia",
+            VM.InformationMessage,
+            ModalType.MessageWarning,
+            EventCallback.Factory.Create(this, OnCloseModal));
+
+        _onMessage = () => ShowNotification("Notificación",
+            VM.InformationMessage,
+            ModalType.MessageError,
+            EventCallback.Factory.Create(this, OnCloseModal));
+
+
+        VM.OnUpdateSuccess += OnSaved;
+        VM.OnShowError += _onError;
+        VM.OnShowWarning += _onWarning;
+        VM.OnShowMessage += _onMessage;
+    }
+    private void ShowNotification(string title, string message, ModalType type, EventCallback onOkHandler)
+    {
+        ModalTitle = title;
+        ModalType = type;
+        ModalMessage = message;
+        ModalVisible = true;
+        _onOkHandler = onOkHandler;
+
+        StateHasChanged();
+    }
     public async Task SaveAsync()
     {
         if (Validate())
@@ -42,11 +95,22 @@ public partial class UpdateHealthInsuranceComponent
             _ct?.Dispose();
             _ct = new CancellationTokenSource();
             await VM.UpdateHealthCompany(_ct.Token);
-            // Notificamos que se actualizó
-            await OnHealthInsuranceUpdated.InvokeAsync();
         }
     }
-
+    public void OnCancelSave()
+    {
+        _ = OnCancel.InvokeAsync();
+    }
+    public void OnSaved()
+    {
+        ShowNotification("Éxito", VM.InformationMessage, ModalType.MessageSuccess, EventCallback.Factory.Create(this, OnCloseModal));
+        _ = OnSuccess.InvokeAsync();
+    }
+    public void OnCloseModal()
+    {
+        ModalVisible = false;
+        StateHasChanged();
+    }
     public void CleanField()
     {
         VM.Model.Name = string.Empty;
@@ -55,5 +119,17 @@ public partial class UpdateHealthInsuranceComponent
 
         // Opcional: resetea el estado de validación visual
         _editContext?.MarkAsUnmodified();
+    }    
+    public void Dispose()
+    {
+        CleanField();
+        if (VM is not null)
+        {
+            VM.OnUpdateSuccess -= OnSaved;
+            VM.OnShowError -= _onError;
+            VM.OnShowWarning -= _onWarning;
+            VM.OnShowMessage -= _onMessage;
+        }
+        _ct?.Dispose();
     }
 }

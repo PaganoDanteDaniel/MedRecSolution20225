@@ -1,4 +1,6 @@
 ﻿using System.Windows;
+using StartupSvc = MedRec.WPF.UI.Startup;
+
 namespace MedRec.WPF.UI;
 /// <summary>
 /// Interaction logic for App.xaml
@@ -9,11 +11,10 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-        // Evita que cerrar la ventana de configuración cierre toda la app.
         Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
-        var path = MedRec.WPF.UI.Startup.GetAppSettingsPath();
-        bool ok = MedRec.WPF.UI.Startup.EnsureConnectionSettings(path);
+        var path = StartupSvc.GetAppSettingsPath();
+        bool ok = StartupSvc.EnsureConnectionSettings(path);
 
         if (!ok)
         {
@@ -23,7 +24,7 @@ public partial class App : Application
             return;
         }
 
-        MedRec.WPF.UI.Startup.BuildHost(path);
+        StartupSvc.BuildHost(path);
 
         var main = new MainWindow();
         MainWindow = main;
