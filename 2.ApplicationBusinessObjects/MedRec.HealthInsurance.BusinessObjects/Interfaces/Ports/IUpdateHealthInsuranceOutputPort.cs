@@ -1,8 +1,9 @@
 ﻿using MedRec.BusinessObjects.Interfaces;
+using MedRec.BusinessObjects.Results;
 
 namespace MedRec.HealthInsurance.BusinessObjects.Interfaces.Ports;
-public interface IUpdateHealthInsuranceOutputPort : ICommonOutputPort
+public interface IUpdateHealthInsuranceOutputPort : IBaseOutputPort
 {
-    bool IsUpdated { get; }
-    Task Handle(bool isUpdated, CancellationToken ct = default);
+    OperationResult<bool> Result { get; }
+    Task Handle(CancellationToken ct = default);
 }

@@ -1,56 +1,56 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
-    <PropertyGroup>
-        <TargetFramework>net9.0-windows7.0</TargetFramework>
-        <OutputType>WinExe</OutputType>
-        <UseWPF>true</UseWPF>
+  <PropertyGroup>
+    <TargetFramework>net9.0-windows7.0</TargetFramework>
+    <OutputType>WinExe</OutputType>
+    <UseWPF>true</UseWPF>
 
-        <!-- Project Options -->
-        <Nullable>enable</Nullable>
-        <LangVersion>latest</LangVersion>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <RootNamespace>MedRec.WPF.UI</RootNamespace>
-        <ApplicationIcon>MedRec.ico</ApplicationIcon>
-        <Version>1.0.1</Version>
-    </PropertyGroup>
+    <!-- Project Options -->
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>MedRec.WPF.UI</RootNamespace>
+    <ApplicationIcon>MedRec.ico</ApplicationIcon>
+    <Version>1.0.1</Version>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <Content Include="MedRec.ico">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MedRec.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Wpf" Version="9.*" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.*" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Wpf" Version="9.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.*" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <Content Update="wwwroot\css\bootstrap\bootstrap.min.css">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="wwwroot\index.html">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-    </ItemGroup>
+  <ItemGroup>
+    <Content Update="wwwroot\css\bootstrap\bootstrap.min.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Data\" />
-    </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.CommonComponents.Views\MedRec.CommonComponents.Views.csproj" />
-      <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.HomeComponent.Views\MedRec.HomeComponent.Views.csproj" />
-      <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.MedicalAppointments.Views\MedRec.MedicalAppointments.Views.csproj" />
-      <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.MedicalVisit.Views\MedRec.MedicalVisit.Views.csproj" />
-      <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.Patients.Views\MedRec.Patients.Views.csproj" />
-      <ProjectReference Include="..\MedRec.IoC\MedRec.IoC.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.CommonComponents.Views\MedRec.CommonComponents.Views.csproj" />
+    <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.HomeComponent.Views\MedRec.HomeComponent.Views.csproj" />
+    <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.MedicalAppointments.Views\MedRec.MedicalAppointments.Views.csproj" />
+    <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.MedicalVisit.Views\MedRec.MedicalVisit.Views.csproj" />
+    <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.Patients.Views\MedRec.Patients.Views.csproj" />
+    <ProjectReference Include="..\MedRec.IoC\MedRec.IoC.csproj" />
+  </ItemGroup>
 
 </Project>

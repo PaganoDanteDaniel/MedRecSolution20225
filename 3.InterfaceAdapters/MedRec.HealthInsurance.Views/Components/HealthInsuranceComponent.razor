@@ -65,12 +65,20 @@
                 OnRetry="_onRetryCallback" />
 
 @code {
+
     private UpdateHealthInsuranceComponent? _updateComponentRef;
-    private AddHealthInsuranceComponent? _addComponentRef;
+
     private CancellationTokenSource _cts;
     private CancellationTokenSource _debounceCts;
+
     [Inject] public NavigationManager NavigationManager { get; set; }
+
     private HealthInsuranceCatalogVM VM => Service;
+    
+    [Parameter] public EventCallback OnRequestAddHealthInsurance { get; set; }
+    [Parameter] public EventCallback<Guid> OnRequestUpdateHealthInsurance { get; set; }
+
+
     [Parameter] public EventCallback<(Guid Id, string Name)> OnHealthCompanySelected { get; set; }
     [Parameter] public EventCallback<string> FooterMessageParameterChanged { get; set; }
     [Parameter] public int MaxPageButton { get; set; }
@@ -186,51 +194,13 @@
 
     private void OnAddHealthInsurance()
     {
-        ResetButtons();
-        _addAction = true;
-        ModalTitle = AddHealthInsuranceMessages.TitleText;
-        ModalType = ModalType.NormalContent;
-        ModalBody = builder =>
-        {
-            builder.OpenComponent<AddHealthInsuranceComponent>(0);
-            builder.AddAttribute(1, nameof(AddHealthInsuranceComponent.CompanyName), "");
-            builder.AddAttribute(2, nameof(AddHealthInsuranceComponent.CompanyAcronym), "");
-            builder.AddAttribute(3, nameof(AddHealthInsuranceComponent.OnHealthInsuranceCreated),
-                EventCallback.Factory.Create(this, OnHealthCompanyAdded));
-            builder.AddComponentReferenceCapture(4, inst => _addComponentRef = (AddHealthInsuranceComponent?)inst);
-            builder.CloseComponent();
-        };
-        ShowOk = true;
-        ShowCancel = true;
-        CloseOnOverlayClick = false;
-        _onOkCallback = EventCallback.Factory.Create(this, HandleCreateOk);
-        ModalVisible = true;
+        // Emitir evento para que el padre abra Modal
+        _ = OnRequestAddHealthInsurance.InvokeAsync();
     }
 
     private void OnUpdateHealthInsurance(HealthInsuranceModel healthCompany)
     {
-        ResetButtons();
-        _updateAction = true;
-        healthCompanyId = healthCompany.Id;
-        ModalTitle = UpdateHealthInsuranceMessages.TitleText;
-        ModalType = ModalType.NormalContent;
-
-        ModalBody = builder =>
-        {
-            builder.OpenComponent<UpdateHealthInsuranceComponent>(0);
-            builder.AddAttribute(1, nameof(UpdateHealthInsuranceComponent.HealthInsuranceId), healthCompanyId);
-            builder.AddAttribute(2, nameof(UpdateHealthInsuranceComponent.OnHealthInsuranceUpdated),
-                EventCallback.Factory.Create(this, OnHealthCompanyUpdated));
-            builder.AddComponentReferenceCapture(3, inst => _updateComponentRef = (UpdateHealthInsuranceComponent?)inst);
-            builder.CloseComponent();
-        };
-
-        ShowOk = true;
-        ShowCancel = true;
-        CloseOnOverlayClick = false;
-        _onOkCallback = EventCallback.Factory.Create(this, HandleUpdateOk);
-        _onCancelCallback = EventCallback.Factory.Create(this, HandleUpdateCancel);
-        ModalVisible = true;
+        _ = OnRequestUpdateHealthInsurance.InvokeAsync(healthCompany.Id);
     }
 
     private void OnDeleteHealthInsurance(HealthInsuranceModel healthCompany)
@@ -259,25 +229,10 @@
             await VM.DeleteHealthInsuranceAsync(healthCompanyId);
             await LoadHealthCompanies();
         }
-        // catch (ConcurrencyException)
-        // {
-        //     VM.OnShowConcurrencyError?.Invoke();
-        // }
-        // catch (Exception ex)
-        // {
-        //     VM.OnShowError?.Invoke();
-        // }
         finally
         {
             _deleteAction = false;
             ModalVisible = false;
-        }
-    }
-    private async Task HandleCreateOk()
-    {
-        if(_addComponentRef is not null)
-        {
-            await _addComponentRef.SaveAsync();
         }
     }
 
@@ -339,6 +294,9 @@
         ModalMessage = message;
         ShowOk = true;
         CloseOnOverlayClick = true;
+
+        _onOkCallback = EventCallback.Factory.Create(this, OnCloseModal);
+
         ModalVisible = true;
     }
 
@@ -349,6 +307,9 @@
         ModalMessage = message;
         ShowOk = true;
         CloseOnOverlayClick = true;
+
+        _onOkCallback = EventCallback.Factory.Create(this, OnCloseModal);
+
         ModalVisible = true;
     }
 
@@ -359,6 +320,9 @@
         ModalMessage = message;
         ShowOk = true;
         CloseOnOverlayClick = true;
+
+        _onOkCallback = EventCallback.Factory.Create(this, OnCloseModal);
+
         ModalVisible = true;
     }
 

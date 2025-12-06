@@ -36,29 +36,28 @@ public class HealthInsuranceCatalogVM(
     public async Task GetHealthInsuranceAsync(PaginationDto paginationDto, CancellationToken ct = default)
     {
         await getInputPort.Handle(paginationDto, ct);
+        var result = getOutputPort.Result;
 
-
-        if (getOutputPort.ValidationErrors?.Any() == true)
+        if (result.HasValidationErrors)
         {
 
-            InformationMessage = string.Join("<br />", getOutputPort.ValidationErrors.Select(e => e.ErrorMessage));
+            InformationMessage = string.Join("<br />", result.ValidationErrors.Select(e => e.ErrorMessage));
             OnShowMessage?.Invoke();
         }
-        else if (getOutputPort.ErrorMessage is not null)
+        else if (!result.Success)
         {
-            InformationMessage = getOutputPort.ErrorMessage.Message;
-            OnShowMessage?.Invoke();
+            HandleErrors(result.Error, result.MessageAction);
         }
         else
         {
-            HealthInsuranceCatalog = getOutputPort.HealthInsuranceCatalog.Select(dto => new HealthInsuranceModel()
+            HealthInsuranceCatalog = result.Value.healthInsurancesCatalog.Select(dto => new HealthInsuranceModel()
             {
                 Id = dto.Id,
                 Name = dto.Name,
                 Acronym = dto.Acronym
             }).ToList();
 
-            TotalRecords = getOutputPort.TotalRecords;
+            TotalRecords = result.Value.totalRecords;
 
             OnCatalogLoaded?.Invoke();
         }
@@ -69,10 +68,10 @@ public class HealthInsuranceCatalogVM(
         try
         {
             await deleteInputPort.Handle(healthCompanyId, ct);
-
-            if (deleteOutputPort.ErrorMessage is not null)
+            var result = deleteOutputPort.Result;
+            if (!result.Success)
             {
-                HandleErrors(deleteOutputPort.ErrorMessage);
+                HandleErrors(result.Error, result.MessageAction);
             }
             else
             {
@@ -85,16 +84,16 @@ public class HealthInsuranceCatalogVM(
         }
 
     }
-    private void HandleErrors(ErrorInfo error)
+    private void HandleErrors(ErrorInfo error, UserMessageAction action)
     {
-        InformationMessage = error.Message;
+        InformationMessage = error?.Message ?? "Error desconocido.";
 
-        switch (error.Code)
+        switch (action)
         {
-            case ErrorCode.DuplicateKey:
+            case UserMessageAction.ShowWarning:
                 OnShowWarning?.Invoke();
                 break;
-            case ErrorCode.ConcurrencyError:
+            case UserMessageAction.ShowConcurrencyMessage:
                 InformationMessage += " VALORES EN LA BASE DE DATOS:<br />";
                 if (error.Details is IReadOnlyList<ConcurrencyConflictDto> conflicts)
                 {
@@ -110,10 +109,13 @@ public class HealthInsuranceCatalogVM(
                 }
                 OnShowConcurrencyError?.Invoke();
                 break;
-            case ErrorCode.DatabaseError:
+            case UserMessageAction.ShowError:
                 OnShowError?.Invoke();
                 break;
-            default:
+            case UserMessageAction.ShowInfoMessage:
+                OnShowMessage?.Invoke();
+                break;
+            default: // None o desconocido
                 OnShowMessage?.Invoke();
                 break;
         }

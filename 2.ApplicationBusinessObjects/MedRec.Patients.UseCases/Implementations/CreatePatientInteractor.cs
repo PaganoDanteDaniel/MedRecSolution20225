@@ -47,7 +47,7 @@ internal class CreatePatientInteractor : ICreatePatientInputPort
             await _presenter.ErrorAsync(null);
         }, ct);
 
-        await _presenter.ErrorAsync(null);
+
         await _presenter.Handle(ct);
     }
 }

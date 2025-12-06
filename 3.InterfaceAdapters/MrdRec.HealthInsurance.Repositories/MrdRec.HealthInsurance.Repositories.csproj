@@ -17,7 +17,6 @@
     <ProjectReference Include="..\..\1.EnterpriseBusinessObjects\MedRec.Shared\MedRec.Shared.csproj" />
     <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.BusinessObjects\MedRec.BusinessObjects.csproj" />
     <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.HealthInsurance.BusinessObjects\MedRec.HealthInsurance.BusinessObjects.csproj" />
-    <ProjectReference Include="..\MedRec.Common.Repositories\MedRec.Common.Repositories.csproj" />
   </ItemGroup>
 
 </Project>

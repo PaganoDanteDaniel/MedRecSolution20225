@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 
 namespace MedRec.WPF.UI;
+
 public static class Startup
 {
     public static IServiceProvider? Services { get; private set; }
