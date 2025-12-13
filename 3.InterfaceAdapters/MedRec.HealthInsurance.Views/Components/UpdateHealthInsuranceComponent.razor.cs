@@ -103,12 +103,17 @@ public partial class UpdateHealthInsuranceComponent
     }
     public void OnSaved()
     {
+        ShowOk = true;
+        ShowCancel = false;
         ShowNotification("Éxito", VM.InformationMessage, ModalType.MessageSuccess, EventCallback.Factory.Create(this, OnCloseModal));
-        _ = OnSuccess.InvokeAsync();
+       
     }
     public void OnCloseModal()
     {
+        ShowOk = false;
+        ShowCancel = true;
         ModalVisible = false;
+        _ = OnSuccess.InvokeAsync();
         StateHasChanged();
     }
     public void CleanField()

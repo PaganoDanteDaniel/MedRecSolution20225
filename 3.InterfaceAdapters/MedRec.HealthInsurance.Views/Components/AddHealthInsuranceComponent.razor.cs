@@ -17,6 +17,17 @@ using Microsoft.AspNetCore.Components.Forms;
 namespace MedRec.HealthInsurance.Views.Components;
 public partial class AddHealthInsuranceComponent : IDisposable
 {
+    bool CloseOnOverlayClick = true;
+    bool ModalVisible;
+    ModalType ModalType = ModalType.MessageInfo;
+    string ModalTitle = "";
+    string ModalMessage = "";
+    RenderFragment? ModalBody;
+
+    bool ShowOk = false;
+    bool ShowCancel = true;
+    bool ShowRetry = false;
+    bool ShowDelete = false;
     public bool Validate() => _editContext.Validate();
     private CreateHealthInsuranceVM VM => Service;
     private EditContext _editContext;
@@ -87,12 +98,17 @@ public partial class AddHealthInsuranceComponent : IDisposable
     }
     public void OnSaved()
     {
+        ShowOk = true;
+        ShowCancel = false;
         ShowNotification("Éxito", VM.InformationMessage, ModalType.MessageSuccess, EventCallback.Factory.Create(this, OnCloseModal));
-        _ = OnSuccess.InvokeAsync();
+
     }
     public void OnCloseModal()
     {
+        ShowOk = false;
+        ShowCancel = true;
         ModalVisible = false;
+        _ = OnSuccess.InvokeAsync();
         StateHasChanged();
     }
     public void CleanField()

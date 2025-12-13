@@ -14,18 +14,21 @@
     display: flex;
     flex-direction: column;
     max-height: 90vh; /* evita overflow vertical en pantallas pequeñas */
+    min-height: 200px;
+    height: fit-content;
 }
 
 .modal-container-lg {
     max-width: 85%;
     width: 85%;
-    height: 90vh;
-    margin: 0; /* sin margen; el overlay centra */
+    max-height: 90vh;
+    margin: 0; 
+    flex-direction: column;
 }
 
 .modal-container {
-    max-width: 480px;
-    width: 100%;
+    min-width: 480px;
+    width: fit-content;
     animation: modalDrop .22s ease;
     background: var(--surface, #fff);
     border-radius: 12px;
@@ -71,19 +74,31 @@
 ::deep .modal-icon.success { color: var(--modal-accent); }
 
 .modal-body {
-    flex: 1; /* ocupa el espacio disponible entre header y footer */
-    overflow-y: auto; /* scroll interno si el contenido es largo */
-    padding: 1rem 1.5rem;
-    margin: 0;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: normal;
 }
-
+    .modal-body:not(.message-mode) {
+        padding: 1rem 1.5rem;
+    }
     /* Nuevo: centrar solo cuando mostramos Message (sin Body) */
     .modal-body.message-mode {
+        padding-top: 0;
+        padding-bottom: 0;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
         display: flex;
-        align-items: center; /* centra vertical */
-        justify-content: center; /* centra horizontal */
-        text-align: center; /* centra el texto */
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        flex: 1;
+        min-height: 0;
     }
+        .modal-body.message-mode > p {
+            margin: 1rem 0; /* margen solo visual */
+        }
 
 .modal-footer {
     display: flex;

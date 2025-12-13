@@ -1,3 +1,4 @@
+using MedRec.DataContext.MySql.DataContext;
 using MedRec.DataContext.MySql.Options;
 using MedRec.Shared.Security;
 using Microsoft.Extensions.Configuration;
@@ -74,6 +75,22 @@ public static class Startup
                 WireupServices(services, context.Configuration, appSettingsPath);
             })
             .Build();
+
+        // PRECALENTAMIENTO DE ENTITY FRAMEWORK
+        try
+        {
+            using var scope = host.Services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<MedRecContext>();
+            _ = dbContext.Model;
+        }
+        catch (Exception ex)
+        {
+            // Opcional: loguear el error (por si la conexión falla al inicio)
+            // Podés usar System.Diagnostics.Debug.WriteLine o un logger si lo tenés
+            System.Diagnostics.Debug.WriteLine($"Error al precargar EF Core: {ex}");
+            // Nota: si la conexión no está lista aún (ej. usuario no ingresó credenciales),
+            // este paso fallará, pero no es crítico: la primera carga en UI será lenta, pero funcional.
+        }
 
         Services = host.Services;
     }

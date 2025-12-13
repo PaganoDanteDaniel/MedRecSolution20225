@@ -47,7 +47,7 @@ internal class DeletePatientInteractor : IDeletePatientInputPort
             return;
         }
 
-        await _unitOfWork.ExecuteInTransactionWithRetry(async () =>
+        await _unitOfWork.ExecuteWithRetry(async () =>
         {
             var entity = await _queriesRepository.GetPatientById(id, ct);
             if (entity is null)

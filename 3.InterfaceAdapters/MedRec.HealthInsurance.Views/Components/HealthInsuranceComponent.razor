@@ -10,6 +10,14 @@
 @inherits OwningComponentBase<HealthInsuranceCatalogVM>
 
 <div class="container">
+    @if (isLoading)
+    {
+        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.6); z-index:1000;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+        </div>
+    }
     <div class="search-section">
         <SearchAndAddComponent LabelText="@HealthInsuranceMessages.FilterLabelText"
                                Placeholder="@HealthInsuranceMessages.PlaceholderFilterInput"
@@ -65,7 +73,7 @@
                 OnRetry="_onRetryCallback" />
 
 @code {
-
+    private bool isLoading = false;
     private UpdateHealthInsuranceComponent? _updateComponentRef;
 
     private CancellationTokenSource _cts;
@@ -74,7 +82,7 @@
     [Inject] public NavigationManager NavigationManager { get; set; }
 
     private HealthInsuranceCatalogVM VM => Service;
-    
+
     [Parameter] public EventCallback OnRequestAddHealthInsurance { get; set; }
     [Parameter] public EventCallback<Guid> OnRequestUpdateHealthInsurance { get; set; }
 
@@ -131,6 +139,8 @@
     private EventCallback _onDeleteCallback = default;
     private EventCallback _onRetryCallback = default;
 
+    [Parameter] public EventCallback OnLoadingCompleted { get; set; }
+
     // Estado de acciones
     private Guid healthCompanyId;
     private bool _addAction;
@@ -140,6 +150,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        isLoading = true;
         // Suscribir eventos del VM al nuevo sistema de modales
         VM.OnShowMessage += () => ShowInfoModal("Información", VM.InformationMessage);
         VM.OnShowWarning += () => ShowWarningModal("Advertencia", VM.InformationMessage);
@@ -174,14 +185,23 @@
 
     private async Task LoadHealthCompanies()
     {
-        _cts?.Dispose();
-        _cts = new CancellationTokenSource();
+        try
+        {
+            _cts?.Dispose();
+            _cts = new CancellationTokenSource();
 
-        await VM.GetHealthInsuranceAsync(_paginationDto, _cts.Token);
-        var total = VM.TotalRecords;
-        FooterMessage = string.Format(HealthInsuranceMessages.TotalRegistryTemplate, total);
-        _totalPages = (int)Math.Ceiling((double)total / _paginationDto.PageSize);
-        StateHasChanged();
+            await VM.GetHealthInsuranceAsync(_paginationDto, _cts.Token);
+            var total = VM.TotalRecords;
+            FooterMessage = string.Format(HealthInsuranceMessages.TotalRegistryTemplate, total);
+            _totalPages = (int)Math.Ceiling((double)total / _paginationDto.PageSize);
+        }
+        finally
+        {
+            isLoading = false;
+            if (OnLoadingCompleted.HasDelegate)
+                await OnLoadingCompleted.InvokeAsync();
+            StateHasChanged();
+        }
     }
 
     private async Task HandlePageChanged(int newPage)

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using MySqlConnector;
 using System.Data; // <--- agregado para ConnectionState
 using System.Data.Common;
+using System.Net.Sockets;
 
 namespace MedRec.DataContext.MySql.UnitOfWork;
 
@@ -242,43 +243,64 @@ internal class DataContextUnitOfWork(
             return false;
         }
 
-        // Recorrer toda la cadena de excepciones
         for (var inner = ex; inner is not null; inner = inner.InnerException)
         {
-            // Manejo específico para errores de MySQL mediante MySqlConnector
+            // 1. Errores específicos de MySQL
             if (inner is MySqlException mySqlEx)
             {
                 return mySqlEx.Number switch
                 {
-                    1213 => true, // Deadlock found when trying to get lock
-                    1205 => true, // Lock wait timeout exceeded
+                    1213 => true, // Deadlock
+                    1205 => true, // Lock wait timeout
                     1040 => true, // Too many connections
-                    1042 => true, // Unable to connect to any of the specified MySQL hosts.
-                    2002 => true, // Can't connect to local MySQL server
-                    2003 => true, // Can't connect to MySQL server on host:port
-                    2006 => true, // MySQL server has gone away
-                    2013 => true, // Lost connection to MySQL server during query
-                    3571 => true, // Statement was interrupted (timeout en algunos contextos)
+                    1042 or 2002 or 2003 => true, // Unable to connect
+                    2006 => true, // Server gone away
+                    2013 => true, // Lost connection during query
+                    3571 => true, // Statement interrupted
                     _ => false
                 };
             }
 
-            // Fallback opcional: análisis de mensaje (por si algún error raro no es MySqlException)
-            // Solo si no es MySqlException, pero sí DbException genérica
-            if (inner is DbException dbEx)
+            // 2. IOException con SocketException (errores de red/transmisión)
+            if (inner is IOException ioEx)
             {
-                var msg = (dbEx.Message ?? string.Empty).ToUpperInvariant();
-                if (msg.Contains("DEADLOCK") ||
-                    msg.Contains("LOCK WAIT TIMEOUT") ||
-                    msg.Contains("TOO MANY CONNECTIONS") ||
-                    msg.Contains("CONNECT") ||
-                    msg.Contains("CONNECTION") ||
-                    msg.Contains("TIMEOUT"))
+                if (ioEx.InnerException is SocketException socketEx)
+                {
+                    return socketEx.ErrorCode is 10053 or 10054 or 10060 or 10061; // ConnectionAborted, Reset, Timeout, Refused
+                }
+
+                // Fallback: detección por mensaje (útil en Linux/macOS o distintos idiomas)
+                var msg = ioEx.Message;
+                if (msg.Contains("anulado una conexión establecida", StringComparison.OrdinalIgnoreCase) ||
+                    msg.Contains("established connection was aborted", StringComparison.OrdinalIgnoreCase) ||
+                    msg.Contains("connection was forcibly closed", StringComparison.OrdinalIgnoreCase) ||
+                    msg.Contains("connection reset", StringComparison.OrdinalIgnoreCase) ||
+                    msg.Contains("timeout", StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
             }
+
+            // 3. Timeout directo
+            if (inner is TimeoutException)
+            {
+                return true;
+            }
+
+            // 4. DbException genérica (fallback por mensaje)
+            if (inner is DbException dbEx)
+            {
+                var msg = (dbEx.Message ?? string.Empty).ToUpperInvariant();
+                return msg.Contains("DEADLOCK") ||
+                       msg.Contains("LOCK WAIT TIMEOUT") ||
+                       msg.Contains("TOO MANY CONNECTIONS") ||
+                       msg.Contains("UNABLE TO CONNECT") ||
+                       msg.Contains("LOST CONNECTION") ||
+                       msg.Contains("SERVER HAS GONE AWAY") ||
+                       msg.Contains("TIMEOUT");
+            }
         }
+
         return false;
     }
 }

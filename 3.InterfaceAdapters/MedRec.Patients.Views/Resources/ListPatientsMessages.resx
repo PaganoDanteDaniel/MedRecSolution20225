@@ -148,7 +148,7 @@
     <value>TELÉFONO</value>
   </data>
   <data name="ModalMessageText" xml:space="preserve">
-    <value>¿ESTA SEGURO DE ELIMINAR AL PACIENTE?</value>
+    <value>¿ESTA SEGURO DE ELIMINAR AL PACIENTE?&lt;br /&gt;{0}</value>
   </data>
   <data name="ModalMessageTextTemplate" xml:space="preserve">
     <value>{0}</value>

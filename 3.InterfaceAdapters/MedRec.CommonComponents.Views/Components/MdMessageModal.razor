@@ -1,4 +1,5 @@
-﻿@if (Visible)
+﻿
+@if (Visible)
 {
     <div class="md-modal-overlay" @onclick="@(CloseOnOverlayClick? OnOverlayClick : null)">
         <div class="md-dialog @(IsLargeModal ? "modal-container-lg" : "modal-container") @(Type switch { 
@@ -24,6 +25,7 @@
             <div class="@($"modal-body {(Body is null ? "message-mode" : string.Empty)}")">
                 @if (Body is not null)
                 {
+
                     @Body
                 }
                 else

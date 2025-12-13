@@ -1,6 +1,7 @@
 ﻿using MedRec.Shared.Exceptions.SQLExceptions;
 using MySqlConnector;
 using System.Data.Common;
+using System.Net.Sockets;
 
 namespace MedRec.DataContext.MySql.Infrastructure;
 
@@ -53,6 +54,46 @@ internal sealed class MySqlExceptionClassifier : IDbConnectionExceptionClassifie
                 {
                     reason = LostConnectionReason.Timeout; return true;
                 }
+            }
+
+            if (inner is IOException ioEx)
+            {
+                // Caso: SocketException interna (más preciso)
+                if (ioEx.InnerException is SocketException socketEx)
+                {
+                    // Códigos comunes de socket en Windows:
+                    // - 10053: WSAECONNABORTED → "An established connection was aborted by the software in your host machine"
+                    // - 10054: WSAECONNRESET → "Connection reset by peer"
+                    // - 10060: WSAETIMEDOUT  → "Connection timed out"
+                    switch (socketEx.ErrorCode)
+                    {
+                        case 10053: // ConnectionAborted
+                        case 10054: // ConnectionReset
+                        case 10060: // Timeout
+                        case 10061: // ConnectionRefused (aunque esto suele ser al conectar)
+                            reason = LostConnectionReason.ConnectionLostDuringQuery;
+                            return true;
+                    }
+                }
+
+                // Caso: detección por mensaje (para compatibilidad multiplataforma o .NET en Linux/macOS)
+                var ioMsg = ioEx.Message;
+                if (ioMsg.Contains("anulado una conexión establecida", StringComparison.OrdinalIgnoreCase) ||      // es-ES
+                    ioMsg.Contains("established connection was aborted", StringComparison.OrdinalIgnoreCase) ||  // en-US
+                    ioMsg.Contains("connection was forcibly closed", StringComparison.OrdinalIgnoreCase) ||
+                    ioMsg.Contains("connection reset", StringComparison.OrdinalIgnoreCase) ||
+                    ioMsg.Contains("timeout", StringComparison.OrdinalIgnoreCase))
+                {
+                    reason = LostConnectionReason.ConnectionLostDuringQuery;
+                    return true;
+                }
+            }
+
+            // 4. TimeoutException (por si se lanza directamente)
+            if (inner is TimeoutException)
+            {
+                reason = LostConnectionReason.Timeout;
+                return true;
             }
         }
 
