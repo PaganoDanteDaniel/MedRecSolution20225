@@ -59,8 +59,8 @@ public class UpdateHealthInsuranceVM(
             }
             else
             {
-                Model.Name = "";
-                Model.Acronym = "";
+                InformationMessage = "Obra Social actualizada exitosamente";
+                Model = new UpdateHealthInsuranceModel();
                 OnUpdateSuccess?.Invoke();
             }
         }

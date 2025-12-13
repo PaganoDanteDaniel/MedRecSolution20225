@@ -11,7 +11,8 @@
     <ModelValidator T = "CreatePatientModel"
                     Validator = "patientValidator"
                     ValidationRules = "vm => CreatePatientValidator.Validate((CreatePatientDto)vm)" />
-    <div class="new-patient-form">
+
+  <div class="new-patient-form">
     @* ---------- Campos trampa para capturar autofill de Chromium ---------- *@
     <input autocomplete="username" style="position: absolute; left: -9999px; top: -9999px;" />
     <input autocomplete="current-password" type="password" style="position: absolute; left: -9999px; top: -9999px;" />
@@ -92,13 +93,14 @@
         </div>
         <div class="new-patient-row">
             <div class="new-patient-col">
-                <label for="insuranceHealthCompanyId">@CreatePatientMessages.InsuranceHealthCompanyLabel</label>
+                <label for="healthCompany">@CreatePatientMessages.InsuranceHealthCompanyLabel</label>
                 <div class="inline-group">
                     <InputText id="healthCompany"
-                               @bind-value = "VM.Model.SelectedHealthCompanyName"
-                               readonly = "readonly"
-                               placeholder = "Seleccione una obra social" />
-                    <button type="button"  @onclick="OpenHealthCompanyList">
+                               @bind-value="VM.Model.SelectedHealthCompanyName"
+                               readonly="readonly"
+                               placeholder="Seleccione una obra social"
+                               style="width: 85%;" />
+                    <button type="button" @onclick="() => _healthInsuranceSelectorRef?.Open()">
                         <i class="bi bi-search"></i>
                     </button>
                 </div>
@@ -140,9 +142,6 @@
             <button type="submit">
                 <i class="fas fa-check"></i> @CreatePatientMessages.SubmitButton
             </button>
-            @*         <button type="button" @onclick="ClearForm">
-            <i class="fas fa-eraser"></i> Limpiar
-        </button> *@
             <button type="button" @onclick="ExitForm">
                 <i class="fas fa-times"></i> SALIR
             </button>
@@ -151,59 +150,30 @@
     
 </EditForm>
 
-@if (_showHealthCompanyList)
-{
-    <!-- ===== MODAL B: Lista de Obras Sociales ===== -->
-    <MdMessageModal Visible="@_showHealthCompanyList"
-                VisibleChanged="@(v => _showHealthCompanyList = v)"
-                Type="ModalType.LargeContent"
-                Title="SELECTOR DE OBRAS SOCIALES"
-                Body="@HealthInsuranceModalBody"
-                CloseOnOverlayClick="false"
-                ShowOk="false"
-                ShowCancel="false"
-                OnCancel="() => _showHealthCompanyList = false" />
-}
+  @if (isLoading)
+    {
+        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.6); z-index:1000;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+        </div>
+    }
 
-@if (_showAddHealthInsurance)
-{
-    <!-- ===== MODAL C: Alta de Nueva Obra Social ===== -->
-    <MdMessageModal Visible="@_showAddHealthInsurance"
-        VisibleChanged="@(v => _showAddHealthInsurance = v)"
-        Type="ModalType.NormalContent"
-        Title="Nueva Obra Social"
-        Body="@AddHealthInsuranceModalBody"
-        CloseOnOverlayClick="false"
-        ShowOk="true"
-        ShowCancel="true"
-        OnOk="() => _addHealthInsuranceRef?.SaveAsync()"
-        OnCancel="() => _addHealthInsuranceRef?.OnCancelSave()" />
-}
-
-@if (_showUpdateHealthInsurance)
-{
-    <!-- ===== MODAL D: Modificación Obra Social ===== -->
-    <MdMessageModal Visible="@_showUpdateHealthInsurance"
-        VisibleChanged="@(v => _showUpdateHealthInsurance = v)"
-        Type="ModalType.NormalContent"
-        Title="Modificar Obra Social"
-        Body="@UpdateHealthInsuranceModalBody"
-        CloseOnOverlayClick="false"
-        ShowOk="true"
-        ShowCancel="true"
-        OnOk="() => _updateHealthInsuranceRef?.SaveAsync()"
-        OnCancel="() => _updateHealthInsuranceRef?.OnCancelSave()" />
-}
-
-@if (_showPatientNotification)
+<HealthInsuranceSelector @ref="_healthInsuranceSelectorRef"
+                         OnSelected="OnHealthCompanySelected" />
+@if (_modalNotifier.IsVisible)
 {
     <!-- ===== MODAL: Notificaciones del paciente (éxito/error/navegación) ===== -->
-    <MdMessageModal Visible="@_showPatientNotification"
-                VisibleChanged="@(v => _showPatientNotification = v)"
-                Type="@_patientNotificationType"
-                Title="@_patientNotificationTitle"
-                Message="@VM.InformationMessage"
+    <MdMessageModal Visible="true"
+                VisibleChanged="@(v => _modalNotifier.Close())"
+                Type="@_modalNotifier.Type"
+                Title="@_modalNotifier.Title"
+                Message="@_modalNotifier.Message"
                 CloseOnOverlayClick="true"
                 ShowOk="true"
-                OnOk="OnPatientNotificationClosed" />
+                OnOk="() => {
+                    _modalNotifier.Close();
+                    if(_modalNotifier.ShouldNavigateAfterClose)
+                        Navigation.NavigateTo(_modalNotifier.NavigationUrl,true);
+                }" />
 }

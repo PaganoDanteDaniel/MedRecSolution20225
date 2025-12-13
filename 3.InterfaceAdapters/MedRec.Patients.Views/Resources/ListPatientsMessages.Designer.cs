@@ -151,7 +151,7 @@ namespace MedRec.Patients.Views.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a ¿ESTA SEGURO DE ELIMINAR AL PACIENTE?.
+        ///   Busca una cadena traducida similar a ¿ESTA SEGURO DE ELIMINAR AL PACIENTE?&lt;br /&gt;{0}.
         /// </summary>
         internal static string ModalMessageText {
             get {

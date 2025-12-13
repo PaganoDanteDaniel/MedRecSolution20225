@@ -104,7 +104,7 @@ public class PatientsListVM(
             }
             else
             {
-                InformationMessage = "";
+                InformationMessage = "Paciente eliminado exitosamente";
                 OnPatientDeleted?.Invoke();
             }
         }

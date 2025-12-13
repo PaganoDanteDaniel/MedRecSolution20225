@@ -106,6 +106,24 @@ namespace MedRec.HealthInsurance.Views.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a SIGLA DE LA OBRA SOCIAL.
+        /// </summary>
+        internal static string PlaceholderAcronymInput {
+            get {
+                return ResourceManager.GetString("PlaceholderAcronymInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a NOMBRE DE LA OBRA SOCIAL.
+        /// </summary>
+        internal static string PlaceholderNameInput {
+            get {
+                return ResourceManager.GetString("PlaceholderNameInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a ACEPTAR.
         /// </summary>
         internal static string RecoberButton {

@@ -9,24 +9,31 @@
 
 @inject IModelValidatorHub<UpdateHealthInsuranceModel> updateHealthInsuranceValidator
 
-<EditForm EditContext="_editContext" >
-            <DataAnnotationsValidator />
+<div class="update-health-component-form">
+    <EditForm EditContext="_editContext" >
+                <DataAnnotationsValidator />
 
-            <ModelValidator T="UpdateHealthInsuranceModel"
-                    Validator="updateHealthInsuranceValidator"
-                    ValidationRules="vm => UpdateHealthInsuranceValidator.Validate((UpdateHealthInsuranceDto)vm)" />
+                <ModelValidator T="UpdateHealthInsuranceModel"
+                        Validator="updateHealthInsuranceValidator"
+                        ValidationRules="vm => UpdateHealthInsuranceValidator.Validate((UpdateHealthInsuranceDto)vm)" />
+        <div>
+            <label for="name">@UpdateHealthInsuranceMessages.NameLabelText</label>
+            <InputText class="uppercase-input" id="name" @bind-Value="VM.Model.Name"
+                       placeholder=@UpdateHealthInsuranceMessages.PlaceholderNameInput
+                       name="patients-input" />
+            <ValidationMessage For="@(() => VM.Model.Name)" class="validation-message" />
+        </div>
 
-    <div class="md-card">
-        <label for="name">@UpdateHealthInsuranceMessages.NameLabelText</label>
-        <InputText class="uppercase-input" id="name" @bind-Value="VM.Model.Name" name="patients-input"/>
-        <ValidationMessage For="() => VM.Model.Name" class="validation-message" />
+        <div>
+            <label for="acronym">@UpdateHealthInsuranceMessages.AcronymLabelText</label>
+            <InputText class="uppercase-input" id="acronym" @bind-Value="VM.Model.Acronym"
+                       placeholder=@UpdateHealthInsuranceMessages.PlaceholderAcronymInput
+                       name="patients-input" />
+            <ValidationMessage For="@(() => VM.Model.Acronym)" class="validation-message" />
+        </div>
 
-       <label for="acronym">@UpdateHealthInsuranceMessages.AcronymLabelText</label>
-        <InputText class="uppercase-input" id="acronym" @bind-Value="VM.Model.Acronym" name="patients-input"/>
-        <ValidationMessage For="() => VM.Model.Acronym" class="validation-message" />
-    </div>
-</EditForm>
-
+    </EditForm>
+</div>
 <MdMessageModal Visible="@ModalVisible"
                 VisibleChanged="@(v => ModalVisible = v)"
                 Type="@ModalType"
@@ -46,7 +53,7 @@
         padding: 20px;
         border-radius: 8px;
         color: var(--form-text);
-        width: 60%; /* Ancho del formulario */
+        width: 55vw; /* Ancho del formulario */
         margin: 0 auto; /* Centrar el formulario */
     }
 
@@ -61,7 +68,7 @@
         }
 
         .update-health-component-form input {
-            width: 100%;
+            width: 50vw;
             padding: 8px;
             border: 1px solid var(--input-border);
             border-radius: 4px;

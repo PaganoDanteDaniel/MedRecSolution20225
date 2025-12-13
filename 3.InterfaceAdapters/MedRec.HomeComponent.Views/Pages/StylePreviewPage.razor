@@ -58,8 +58,8 @@
     {
         ResetButtons();
         ModalType = ModalType.MessageInfo;
-        ModalTitle = "Información";
-        ModalMessage = "Este es un mensaje informativo.";
+        ModalTitle = "Información para el usuario";
+        ModalMessage = "Este es un mensaje informativo para que el usuario <br /> decida una acción.";
         ModalVisible = true;
     }
 
@@ -118,7 +118,10 @@
     // ---------------------------
     // Eventos
     // ---------------------------
-    void HandleOk() { message = "OK presionado"; }
+    void HandleOk() { 
+        message = "OK presionado"; 
+        ModalVisible = false; 
+    }
     void HandleCancel() { message = "Cancel presionado"; }
     void HandleRetry() {message="Retry presionado";}
     void HandleDelete() {message="Delete presionado";}

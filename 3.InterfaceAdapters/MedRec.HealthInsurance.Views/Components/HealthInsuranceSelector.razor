@@ -1,0 +1,44 @@
+﻿@using MedRec.CommonComponents.Views
+@* Este componente no renderiza nada por sí mismo, solo gestiona modales *@
+@if (_showList)
+{
+    <MdMessageModal Visible="@_showList"
+                    VisibleChanged="@(v => _showList = v)"
+                    Type="ModalType.LargeContent"
+                    Title="SELECTOR DE OBRAS SOCIALES"
+                    Body="@ListModalBody"
+                    CloseOnOverlayClick="false"
+                    ShowOk="false"
+                    ShowCancel="false"
+                    OnCancel="CloseAll" />
+}
+
+@if (_showAdd)
+{
+    <MdMessageModal Visible="@_showAdd"
+                    VisibleChanged="@(v => _showAdd = v)"
+                    Type="ModalType.NormalContent"
+                    Title="Nueva Obra Social"
+                    Body="@AddModalBody"
+                    CloseOnOverlayClick="false"
+                    ShowOk="true"
+                    ShowCancel="true"
+                    OnOk="() => _addRef?.SaveAsync()"
+                    OnCancel="() => _addRef?.OnCancelSave()" />
+}
+
+@if (_showUpdate)
+{
+    <MdMessageModal Visible="@_showUpdate"
+                    VisibleChanged="@(v => _showUpdate = v)"
+                    Type="ModalType.NormalContent"
+                    Title="Modificar Obra Social"
+                    Body="@UpdateModalBody"
+                    CloseOnOverlayClick="false"
+                    ShowOk="true"
+                    ShowCancel="true"
+                    OnOk="() => _updateRef?.SaveAsync()"
+                    OnCancel="() => _updateRef?.OnCancelSave()" />
+}
+
+

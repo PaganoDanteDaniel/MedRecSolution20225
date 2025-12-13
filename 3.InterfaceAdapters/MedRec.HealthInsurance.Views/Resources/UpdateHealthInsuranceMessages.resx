@@ -132,6 +132,12 @@
   <data name="NameLabelText" xml:space="preserve">
     <value>NOMBRE</value>
   </data>
+  <data name="PlaceholderAcronymInput" xml:space="preserve">
+    <value>SIGLA DE LA OBRA SOCIAL</value>
+  </data>
+  <data name="PlaceholderNameInput" xml:space="preserve">
+    <value>NOMBRE DE LA OBRA SOCIAL</value>
+  </data>
   <data name="RecoberButton" xml:space="preserve">
     <value>ACEPTAR</value>
   </data>

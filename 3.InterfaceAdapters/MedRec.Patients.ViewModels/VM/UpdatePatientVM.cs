@@ -134,9 +134,10 @@ public class UpdatePatientVM(
             }
 
             // Éxito: limpiar modelo para evitar reenvíos accidentales
-            Model = new UpdatePatientModel();
+            InformationMessage = "Paciente actualizado exitosamente...";
             ConcurrencyConflicts.Clear();
             OnPatientUpdated?.Invoke();
+            Model = new();
         }
         catch (Exception)
         {
