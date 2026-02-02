@@ -133,7 +133,7 @@
     <value>VISITA MEDICA REGISTRADA SATISFACTORIAMENTE</value>
   </data>
   <data name="CreateMedicalVisitTitleTemplate" xml:space="preserve">
-    <value>PACIENTE {0}  -  EDAD {1} AÑOS</value>
+    <value>PACIENTE: {0}  -  edad {1} años</value>
   </data>
   <data name="HeaderLabResults" xml:space="preserve">
     <value>RESULTADOS DE LABORATORIO</value>

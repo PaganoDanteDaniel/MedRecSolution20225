@@ -99,36 +99,24 @@
     </div>
 </div>
 
-@* ======== MODAL PARA MENSAJES DE ERROR =======*@
-@if (_showModal)
-{
-    <ModalComponent Show="@_showModal"
-                ShowChanged="@((bool val) => _showModal = val)"
-                Title="@_modalTitle"
-                Type="@_modalType"
-                CenterText="true"
-                ShowAcceptButton="true"
-                OnAccept="@CloseModal"
-                ShowCancelButton="false">
-                @((MarkupString)VM.InformationMessage)
-   </ModalComponent>
-}
 
-@* ======== MODAL PARA MOSTRAR LISTADO DE ALUMNOS DE ERROR =======*@
-@if (showPatientModal)
-{
-    <ModalComponent Title="SELECTOR DE PACIENTE"
-                Show="@showPatientModal"
-                Type="CommonComponents.Views.ModalType.LargeContent"
-                ShowChanged="(value) => showPatientModal = value">
-
-
-        <ListPatientsComponent MaxPageButton="3"
-                               WithHeight="false"
-                               OnPatientSelected="@OnPatientSelected"
-                               ShowActionsColumn ="false"/>
-    </ModalComponent>
-}
+@* ======== MODAL PARA MOSTRAR LISTADO DE PACIENTES Y NOTIFICACIONES =======*@
+    <MdMessageModal Visible="_showModal"
+                    VisibleChanged="@(v => _showModal = v)"
+                    CloseOnOverlayClick="@CloseOnOverlayClick"
+                    Type="@ModalType"
+                    Title="@ModalTitle"
+                    Body="@ModalBody"                    
+                    Message="@ModalMessage"                    
+                    ShowOk="@ShowOk"
+                    ShowCancel="@ShowCancel"
+                    ShowDelete="@ShowDelete"
+                    ShowRetry="@ShowRetry"
+                    OnOk="_onOkCallback"
+                    OnCancel="_onCancelCallback"
+                    OnDelete="_onDeleteCallback"
+                    OnRetry="_onRetryCallback">
+    </MdMessageModal>    
 
 @* ======== MODAL PARA CONTROL DE ACCIONES ======== *@
 @if (showModal)

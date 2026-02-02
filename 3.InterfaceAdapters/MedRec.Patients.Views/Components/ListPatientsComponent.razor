@@ -30,7 +30,9 @@
                         OnRowClick="SelectPatient"
                         OnEdit="OnEditPatient"
                         OnDelete="OnDeletePatient"
-                        ShowActionsColumn="ShowActionsColumn">
+                        ShowActionsColumn="ShowActionsColumn"
+                        ShowEditActionsColumn="false"
+                        ShowDeleteActionsColumn="true">
                         <ColGroup>
                             <colgroup>
                                 <col style="width: 30%"> <!-- APELLIDO Y NOMBRE -->
@@ -39,16 +41,11 @@
                                 @if (ShowActionsColumn) { <col style="width: 25%"> } <!-- ACCIONES -->
                             </colgroup>
                         </ColGroup>
-                        <FullHeaderTemplate>
-                            <thead>
-                                <tr>
-                                    <th scope="col">@ListPatientsMessages.HeadLastNameText y @ListPatientsMessages.HeadNameText</th>
-                                    <th scope="col" class="header-center">@ListPatientsMessages.HeadDocumentNumberText</th>
-                                    <th scope="col" class="header-center">@ListPatientsMessages.HeadPhoneText</th>
-                                    @if (ShowActionsColumn) {<th scope="col" class="actions">@ListPatientsMessages.HeadActionsText</th> }
-                                </tr>
-                            </thead>
-                        </FullHeaderTemplate>
+                        <TableHeader>
+                            <th scope="col">@ListPatientsMessages.HeadLastNameText y @ListPatientsMessages.HeadNameText</th>
+                            <th scope="col" class="header-center">@ListPatientsMessages.HeadDocumentNumberText</th>
+                            <th scope="col" class="header-center">@ListPatientsMessages.HeadPhoneText</th>
+                        </TableHeader>
                         <RowTemplate Context="patient">
                             <td>@patient.LastName, @patient.FirstName</td>
                             <td class="number-type">@FormatStringAsNumber.WithDots(patient.DocumentNumber)</td>

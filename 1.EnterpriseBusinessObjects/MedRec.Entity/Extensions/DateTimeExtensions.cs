@@ -19,6 +19,7 @@ public static class DateTimeExtensions
 
         return age;
     }
+
     public static string CalculateFullAge(this DateTime dateOfBirth)
     {
         var today = DateTime.Today;
@@ -29,11 +30,23 @@ public static class DateTimeExtensions
         int month = today.Month - birthDate.Month;
         int day = today.Day - birthDate.Day;
 
-        // Ajuste si el día actual es menor que el d�a de nacimiento
+        // Ajuste si el día actual es menor que el día de nacimiento
         if (day < 0)
         {
             month--;
-            day += DateTime.DaysInMonth(today.Year, today.Month - 1);
+
+            // FIX: Calcular el mes anterior correctamente
+            // Si estamos en enero (month 1), el mes anterior es diciembre del año anterior
+            int previousMonth = today.Month - 1;
+            int yearForDaysInMonth = today.Year;
+
+            if (previousMonth == 0)
+            {
+                previousMonth = 12;
+                yearForDaysInMonth = today.Year - 1;
+            }
+
+            day += DateTime.DaysInMonth(yearForDaysInMonth, previousMonth);
         }
 
         // Ajuste si el mes actual es menor que el mes de nacimiento
@@ -42,6 +55,7 @@ public static class DateTimeExtensions
             year--;
             month += 12;
         }
-        return ($"{year.ToString()} AÑOS, {month.ToString()} MESES");
+
+        return $"{year} AÑOS, {month} MESES";
     }
 }

@@ -9,53 +9,74 @@
 //------------------------------------------------------------------------------
 
 using Microsoft.AspNetCore.Components;
+using System.Threading.Tasks;
 
 namespace MedRec.CommonComponents.Views.Components;
 public partial class MdMessageModal
 {
 
-    /* ===========================
-    PARAMETROS
-    ============================ */
+    #region === PARAMETROS ===
 
     [Parameter] public bool Visible { get; set; }
     [Parameter] public bool CloseOnOverlayClick { get; set; } = true;
     [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
 
-    /// Tipo del modal: "info", "warning", "error"
+    // === Tipo del modal: "info", "warning", "error" ===
     [Parameter] public ModalType Type { get; set; } = ModalType.MessageInfo;
 
     [Parameter] public string Title { get; set; } = "Mensaje";
     [Parameter] public string Message { get; set; }
     [Parameter] public RenderFragment Body { get; set; }
 
-    // Botones
+    // === Botones ===
     [Parameter] public bool ShowOk { get; set; } = true;
     [Parameter] public bool ShowCancel { get; set; } = false;
     [Parameter] public bool ShowRetry { get; set; } = false;
     [Parameter] public bool ShowDelete { get; set; } = false;
+    [Parameter] public bool ShowSaveChange { get; set; } = false;
+    [Parameter] public bool ShowExit { get; set; } = false;
 
-    // Eventos
+    // === Eventos ===
     [Parameter] public EventCallback OnOk { get; set; }
     [Parameter] public EventCallback OnCancel { get; set; }
     [Parameter] public EventCallback OnRetry { get; set; }
     [Parameter] public EventCallback OnDelete { get; set; }
+    [Parameter] public EventCallback OnSaveChange { get; set; }
+    [Parameter] public EventCallback OnExit { get; set; }
 
-    private bool IsLargeModal => Type == ModalType.LargeContent;
-    /* ===========================
-       ÍCONOS SVG LUCIDE
-    ============================ */
+
+    #endregion
+
+    #region === Estado interno (NO son [Parameter]) ===
+
+    private bool _isVisible;
+    private string _title = string.Empty;
+    private string _message = string.Empty;
+    private RenderFragment? _body = null;
+    private ModalType _type = ModalType.MessageInfo;
+
+    private bool _showOk = true;
+    private bool _showCancel = false;
+    private bool _showRetry = false;
+    private bool _showDelete = false;
+    private bool _showSaveChange = false;
+    private bool _showExit = false;
+
+    #endregion
+
+    private bool IsLargeModal => _type == ModalType.LargeContent;
+
+    #region === ÍCONOS SVG LUCIDE ===
     private RenderFragment IconSvg => builder =>
     {
         var seq = 0;
 
-        if (Type == ModalType.MessageError)
+        if (_type == ModalType.MessageError)
         {
             builder.OpenElement(seq++, "svg");
             builder.AddAttribute(seq++, "class", "modal-icon error");
             builder.AddAttribute(seq++, "viewBox", "0 0 24 24");
             builder.AddAttribute(seq++, "stroke", "currentColor");
-            //builder.AddAttribute(seq++, "fill", "currentColor");            // sin relleno
             builder.AddAttribute(seq++, "stroke-linecap", "round");
             builder.AddAttribute(seq++, "stroke-linejoin", "round");
             builder.AddAttribute(seq++, "stroke-width", "2");
@@ -67,13 +88,12 @@ public partial class MdMessageModal
                <path d='m9 9 6 6' />");
             builder.CloseElement();
         }
-        else if (Type == ModalType.MessageWarning)
+        else if (_type == ModalType.MessageWarning)
         {
             builder.OpenElement(seq++, "svg");
             builder.AddAttribute(seq++, "class", "modal-icon warning");
             builder.AddAttribute(seq++, "viewBox", "0 0 24 24");
             builder.AddAttribute(seq++, "stroke", "currentColor");
-            //builder.AddAttribute(seq++, "fill", "currentColor");            // si quieres solo contorno
             builder.AddAttribute(seq++, "stroke-linecap", "round");
             builder.AddAttribute(seq++, "stroke-linejoin", "round");
             builder.AddAttribute(seq++, "stroke-width", "2");
@@ -85,13 +105,12 @@ public partial class MdMessageModal
               <path d='M12 17h.01'/>");
             builder.CloseElement();
         }
-        else if (Type == ModalType.MessageInfo)
+        else if (_type == ModalType.MessageInfo)
         {
             builder.OpenElement(seq++, "svg");
             builder.AddAttribute(seq++, "class", "modal-icon info");
             builder.AddAttribute(seq++, "viewBox", "0 0 24 24");
             builder.AddAttribute(seq++, "stroke", "currentColor");
-            //builder.AddAttribute(seq++, "fill", "currentColor");
             builder.AddAttribute(seq++, "stroke-linecap", "round");
             builder.AddAttribute(seq++, "stroke-linejoin", "round");
             builder.AddAttribute(seq++, "stroke-width", "2");
@@ -103,13 +122,12 @@ public partial class MdMessageModal
               <path d='M12 8h.01'/>");
             builder.CloseElement();
         }
-        else if (Type == ModalType.MessageDanger)
+        else if (_type == ModalType.MessageDanger)
         {
             builder.OpenElement(seq++, "svg");
             builder.AddAttribute(seq++, "class", "modal-icon error");
             builder.AddAttribute(seq++, "viewBox", "0 0 24 24");
             builder.AddAttribute(seq++, "stroke", "currentColor");
-            //builder.AddAttribute(seq++, "fill", "currentColor");
             builder.AddAttribute(seq++, "stroke-linecap", "round");
             builder.AddAttribute(seq++, "stroke-linejoin", "round");
             builder.AddAttribute(seq++, "stroke-width", "2");
@@ -123,13 +141,13 @@ public partial class MdMessageModal
               <path d='M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'/>");
             builder.CloseElement();
         }
-        else if (Type == ModalType.MessageSuccess)
+        else if (_type == ModalType.MessageSuccess)
         {
             builder.OpenElement(seq++, "svg");
             builder.AddAttribute(seq++, "class", "modal-icon success");
             builder.AddAttribute(seq++, "viewBox", "0 0 24 24");
             builder.AddAttribute(seq++, "stroke", "currentColor");  // contorno
-            //builder.AddAttribute(seq++, "fill", "currentColor");            // si necesitas relleno verde, usa fill='currentColor'
+            //builder.AddAttribute(seq++, "fill", "currentColor");  // si necesito relleno de color mas claro, usa fill='currentColor'
             builder.AddAttribute(seq++, "stroke-linecap", "round");
             builder.AddAttribute(seq++, "stroke-linejoin", "round");
             builder.AddAttribute(seq++, "stroke-width", "2");
@@ -142,48 +160,121 @@ public partial class MdMessageModal
               <path d='M8 21h8'/>");
             builder.CloseElement();
         }
-        else if (Type == ModalType.LargeContent)
+        else if (_type == ModalType.LargeContent)
         {
 
         }
     };
 
-    /* ===========================
-       ACCIONES
-    ============================ */
-    private async Task CloseModal()
+    #endregion
+
+    #region === ACCIONES ===
+
+    protected override async Task OnParametersSetAsync()
     {
-        Visible = false;
-        await VisibleChanged.InvokeAsync(false);
+        // Solo sincronizamos el estado interno cuando el modal se abre
+        if (Visible && !_isVisible)
+        {
+            // Copiamos los valores del padre al estado interno
+            _isVisible = true;
+            _title = Title;
+            _message = Message;
+            _body = Body;
+            _type = Type;
+
+            _showOk = ShowOk;
+            _showCancel = ShowCancel;
+            _showRetry = ShowRetry;
+            _showDelete = ShowDelete;
+            _showSaveChange = ShowSaveChange;
+            _showExit = ShowExit;
+        }
+        else if (!Visible && _isVisible)
+        {
+            // Si el padre lo cierra externamente, cerramos también internamente
+            await CloseModalInternal();
+        }
     }
 
-    private Task OnOverlayClick() => CloseModal();
+    private async Task CloseModalInternal()
+    {
+        if (!_isVisible) return;
+
+        await VisibleChanged.InvokeAsync(false);
+
+        _isVisible = false;
+
+        // Limpieza interna (NO tocamos los [Parameter])
+        _body = null;
+        _title = string.Empty;
+        _message = string.Empty;
+        _type = ModalType.MessageInfo;
+
+        _showOk = true;
+        _showCancel = false;
+        _showRetry = false;
+        _showDelete = false;
+        _showSaveChange = false;
+        _showExit = false;
+    }
+
+    private Task OnOverlayClick() => CloseModalInternal();
 
     private async Task ClickOk()
     {
         if (OnOk.HasDelegate)
-            await OnOk.InvokeAsync(null);
-        //await CloseModal();
+            await OnOk.InvokeAsync();
+
+        _isVisible = false;
+
+        // Limpieza interna (NO tocamos los [Parameter])
+        _body = null;
+        _title = string.Empty;
+        _message = string.Empty;
+        _type = ModalType.MessageInfo;
+
+        _showOk = true;
+        _showCancel = false;
+        _showRetry = false;
+        _showDelete = false;
+        _showSaveChange = false;
+        _showExit=false;
     }
 
     private async Task ClickCancel()
     {
         if (OnCancel.HasDelegate)
             await OnCancel.InvokeAsync(null);
-        await CloseModal();
+        await CloseModalInternal();
+    }
+    private async Task ClickExit()
+    {
+        if (OnExit.HasDelegate)
+            await OnExit.InvokeAsync(null);
+        await CloseModalInternal();
     }
 
     private async Task ClickRetry()
     {
         if (OnRetry.HasDelegate)
             await OnRetry.InvokeAsync(null);
-        await CloseModal();
+        await CloseModalInternal();
     }
 
     private async Task ClickDelete()
     {
         if (OnDelete.HasDelegate)
             await OnDelete.InvokeAsync(null);
-        await CloseModal();
+        await CloseModalInternal();
     }
+
+    private async Task ClickSaveChange()
+    {
+        if (OnSaveChange.HasDelegate)
+            await OnSaveChange.InvokeAsync();
+
+        await CloseModalInternal();
+    }
+
+    #endregion
 }

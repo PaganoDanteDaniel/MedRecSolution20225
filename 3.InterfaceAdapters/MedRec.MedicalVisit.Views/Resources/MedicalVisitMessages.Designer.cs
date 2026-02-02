@@ -106,7 +106,7 @@ namespace MedRec.MedicalVisit.Views.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a PACIENTE {0}  -  EDAD {1} AÑOS.
+        ///   Busca una cadena traducida similar a PACIENTE: {0}  -  edad {1} años.
         /// </summary>
         internal static string CreateMedicalVisitTitleTemplate {
             get {

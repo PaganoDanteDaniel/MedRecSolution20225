@@ -1,4 +1,5 @@
-﻿using MedRec.Entity.POCOEntities;
+﻿using MedRec.Entity.Interfaces;
+using MedRec.Entity.POCOEntities;
 using MedRec.MedicalVisit.BusinessObjects.DTOs;
 using MedRec.MedicalVisit.BusinessObjects.Interfaces.Ports;
 using MedRec.MedicalVisit.BusinessObjects.Interfaces.Repositories;
@@ -6,35 +7,36 @@ using MedRec.MedicalVisit.BusinessObjects.Validator;
 using MedRec.Validator.Interfaces;
 
 namespace MedRec.MedicalVisit.UseCases.Implementations;
-internal class CreateMedicalVisitInteractor(
+public class CreateMedicalVisitInteractor(
     ICreateMedicalVisitOutputPort outputPort,
-    IMedicalVisitCommandRepository commandRepository,
-    IModelValidatorHub<CreateMedicalVisitDto> validatorHub) : ICreateMedicalVisitInputPort
+    IMedicalVisitCommandRepositoryUoW commandRepository,
+    IModelValidatorHub<CreateMedicalVisitDto> validatorHub,
+    IRepositoryUnitOfWork unitOfWork) : ICreateMedicalVisitInputPort
 {
-    public async Task Handle(CreateMedicalVisitDto dto, CancellationToken cts = default)
+    public async Task Handle(CreateMedicalVisitDto dto, CancellationToken ct = default)
     {
-        cts.ThrowIfCancellationRequested();
-
-        bool isValid = await validatorHub.Validate(dto,
-            v => CreateMedicalVisitValidator.Validate(v));
-
-        if (!isValid)
+        // 1. Validar el DTO
+        if (!await validatorHub.Validate(dto, v => CreateMedicalVisitValidator.Validate(v)))
         {
             await outputPort.ValidationErrorsAsync(validatorHub.Errors);
             return;
         }
 
-        var medicalVisit = (PatientMedicalVisit)dto;
 
-        var result = await commandRepository.Create(medicalVisit, cts);
-
-        if (!result.IsSuccess)
+        ct.ThrowIfCancellationRequested();
+        // 2. Iniciar transacción
+        await unitOfWork.ExecuteInTransactionWithRetry(async () =>
         {
-            await outputPort.ErrorAsync(result.Error);
-            return;
-        }
+            // 3. Crear entidad desde DTO
+            var medicalVisit = (PatientMedicalVisit)dto;
 
-        await outputPort.ErrorAsync(null);
-        await outputPort.Handle();
+            // 4. Persistir
+            await commandRepository.Create(medicalVisit, ct);
+            await unitOfWork.SaveChanges(ct);
+
+            // 5. Éxito
+            await outputPort.ErrorAsync(null);
+            await outputPort.Handle();
+        }, ct);
     }
 }

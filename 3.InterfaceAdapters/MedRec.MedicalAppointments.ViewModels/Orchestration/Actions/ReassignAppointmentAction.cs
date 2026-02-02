@@ -15,14 +15,12 @@ internal sealed class ReassignAppointmentAction(
         {
             var dto = AppointmentMapper.ToReassignDto(appointment);
             await inPort.Handle(dto, ct);
+            var result = outPort.Result;
 
-            if (outPort.ErrorMessage is not null)
-                return OperationResult.Fail<Appointment>(outPort.ErrorMessage, outPort.ValidationErrors);
+            if (!result.Success)
+                return OperationResult.Fail<Appointment>(result.Error, result.ValidationErrors);
 
-            if (outPort.ReassignedAppointmentDto is null)
-                return OperationResult.Unknown<Appointment>();
-
-            var model = AppointmentMapper.ToModel(outPort.ReassignedAppointmentDto);
+            var model = AppointmentMapper.ToModel(result.Value);
 
             appointment.DoctorId = model.DoctorId;
             appointment.RowVersion = model.RowVersion;

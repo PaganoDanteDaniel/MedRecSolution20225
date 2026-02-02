@@ -4,13 +4,27 @@ using MedRec.MedicalVisit.UseCases.Implementations;
 namespace Microsoft.Extensions.DependencyInjection;
 public static class DependencyContainer
 {
+    /// <summary>
+    /// Registro para Blazor Hybrid (hoy): implementaciones + proxies que capturan excepciones y generan ErrorInfo vía mapper/presenter.
+    /// </summary>
+    public static IServiceCollection AddMedicalVisitUseCasesServicesWithProxy(
+        this IServiceCollection services,
+        bool rethrow = false)
+    {
+        // Delegar completamente al método genérico
+        return services.AddUseCaseExceptionDecorators(
+            [
+            typeof(ICreateMedicalVisitInputPort).Assembly,
+            typeof(CreateMedicalVisitInteractor).Assembly
+            ], rethrow);
+    }
     public static IServiceCollection AddMedicalVisitUseCasesServices(this IServiceCollection services)
     {
-        services.AddScoped<ICreateMedicalVisitInputPort, CreateMedicalVisitInteractorUoW>()
-                .AddScoped<IMedicalVisitSummaryListInputPort, MedicalVisitSummaryListInteractorUoW>()
-                .AddScoped<IGetMedicalHistoryIdInputPort, GetMedicalHistoryIdInteractorUoW>()
-                .AddScoped<IGetMedicalVisitInputPort, GetMedicalVisitInteractorUoW>()
-                .AddScoped<IUpdateMedicalVisitInputPort, UpdateMedicalVisitInteractorUoW>();
+        services.AddScoped<ICreateMedicalVisitInputPort, CreateMedicalVisitInteractor>()
+                .AddScoped<IMedicalVisitSummaryListInputPort, MedicalVisitSummaryListInteractor>()
+                .AddScoped<IGetMedicalHistoryIdInputPort, GetMedicalHistoryIdInteractor>()
+                .AddScoped<IGetMedicalVisitInputPort, GetMedicalVisitInteractor>()
+                .AddScoped<IUpdateMedicalVisitInputPort, UpdateMedicalVisitInteractor>();
 
 
         return services;

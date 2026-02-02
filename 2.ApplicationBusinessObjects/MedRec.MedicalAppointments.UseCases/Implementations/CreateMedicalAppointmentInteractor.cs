@@ -1,124 +1,53 @@
-﻿using MedRec.Entity.DTOs;
-using MedRec.Entity.Enums;
-using MedRec.Entity.Interfaces;
+﻿using MedRec.Entity.Interfaces;
 using MedRec.Entity.POCOEntities;
 using MedRec.MedicalAppointments.BusinessObjects.DTOs;
 using MedRec.MedicalAppointments.BusinessObjects.Interfaces.Ports;
 using MedRec.MedicalAppointments.BusinessObjects.Interfaces.Repositories;
-using MedRec.Shared.Exceptions;
-using MedRec.Shared.Exceptions.SQLExceptions;
 
 namespace MedRec.MedicalAppointments.UseCases.Implementations;
 
-internal class CreateMedicalAppointmentInteractor(
-    ICreateMedicalAppointmentOutputPort presenter,
-    IRepositoryUnitOfWork unitOfWork,
-    IMedicalAppointmentCommandRepository commandRepository,
-    IMedicalAppointmentQueriesRepository queriesRepository)
+internal class CreateMedicalAppointmentInteractor
     : ICreateMedicalAppointmentInputPort
 {
+    private readonly ICreateMedicalAppointmentOutputPort _presenter;
+    private readonly IRepositoryUnitOfWork _unitOfWork;
+    private readonly IMedicalAppointmentCommandRepository _commandRepository;
+    private readonly IMedicalAppointmentQueriesRepository _queriesRepository;
+
+    public CreateMedicalAppointmentInteractor(
+        ICreateMedicalAppointmentOutputPort presenter,
+        IRepositoryUnitOfWork unitOfWork,
+        IMedicalAppointmentCommandRepository commandRepository,
+        IMedicalAppointmentQueriesRepository queriesRepository)
+    {
+        _presenter = presenter;
+        _unitOfWork = unitOfWork;
+        _commandRepository = commandRepository;
+        _queriesRepository = queriesRepository;
+    }
+
     public async Task Handle(CreateMedicalAppointmentDto createAppointmentDto, CancellationToken ct)
     {
-        if (ct.IsCancellationRequested)
-        {
-            await presenter.ErrorAsync(new ErrorInfo(
-                "Operación cancelada por el usuario.",
-                ErrorCode.Cancelled,
-                null,
-                499));
-            return;
-        }
-        if (createAppointmentDto == null)
-        {
-            await presenter.ErrorAsync(new ErrorInfo(
-                "No ha proporcionado los datos para la creación del turno.",
-                ErrorCode.ValidationError,
-                httpStatusCode: 400));
-            return;
-        }
+        ct.ThrowIfCancellationRequested();
 
         var entity = ToEntity(createAppointmentDto);
 
-        try
+
+        await _unitOfWork.ExecuteInTransactionWithRetry(async () =>
         {
-            await unitOfWork.ExecuteWithRetry(async () =>
-            {
-                await unitOfWork.BeginTransaction(ct);
-                try
-                {
-                    await commandRepository.Create(entity, ct);
-                    await unitOfWork.SaveChanges(ct);
-                    await unitOfWork.CommitTransaction(ct);
-                }
-                catch
-                {
-                    await unitOfWork.RollbackTransaction(ct);
-                    throw;
-                }
-            }, ct);
+            await _commandRepository.Create(entity, ct);
+            await _unitOfWork.SaveChanges(ct);
+            await _presenter.ErrorAsync(null);
 
             // Notificar resultado solo si la transacción se confirmó
-            var created = await queriesRepository.GetById(entity.Id, ct);
+            var created = await _queriesRepository.GetById(entity.Id, ct);
+            await _presenter.Handle(created, ct);
+        }, ct);
 
-            await presenter.Handle(created, ct);
-        }
-        catch (LostConnectionException lce)
-        {
-            await presenter.ErrorAsync(new ErrorInfo(
-                lce.Message,
-                ErrorCode.DatabaseError,
-                503));
-        }
-        catch (ConcurrencyException cx)
-        {
-            // 409: incluir conflictos tipados (lista de ConcurrencyConflictDto)
-            await presenter.ErrorAsync(new ErrorInfo(
-                "Conflicto de concurrencia al crear el turno.",
-                ErrorCode.ConcurrencyError,
-                cx.Conflicts,
-                409));
-        }
-        catch (DuplicateKeyException dx)
-        {
-            // 409: conflicto por clave duplicada (Details suele contener entidades implicadas)
-            await presenter.ErrorAsync(new ErrorInfo(
-                "Ya existe un registro que viola una restricción de unicidad.",
-                ErrorCode.DuplicateKey,
-                dx.Details,
-                409));
-        }
-        catch (UpdateException ux)
-        {
-            // 500: otros errores de persistencia
-            await presenter.ErrorAsync(new ErrorInfo(
-                "Error al persistir los cambios en la base de datos.",
-                ErrorCode.UpdateError,
-                ux.Details,
-                500));
-        }
-        catch (BusinessException bx)
-        {
-            // Mantener compatibilidad con BusinessException si aparece desde otras capas
-            await presenter.ErrorAsync(bx.Error);
-        }
-        catch (OperationCanceledException)
-        {
-            throw;
-        }
-        catch (Exception ex)
-        {
-            await presenter.ErrorAsync(new ErrorInfo(
-                "Ocurrió un error inesperado al crear el turno.",
-                ErrorCode.Unknown,
-                new { Exception = ex.Message },
-                500));
-        }
     }
-
     private static MedicalAppointment ToEntity(CreateMedicalAppointmentDto dto) =>
         new()
         {
-
             DateTime = dto.DateTime,
             PatientId = dto.PatientId,
             DoctorId = dto.DoctorId,

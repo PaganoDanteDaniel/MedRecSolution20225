@@ -13,6 +13,7 @@ using MedRec.HealthInsurance.ViewModels.VM;
 using MedRec.HealthInsurance.Views.Resources;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using System.Threading.Tasks;
 
 namespace MedRec.HealthInsurance.Views.Components;
 public partial class AddHealthInsuranceComponent : IDisposable
@@ -73,7 +74,7 @@ public partial class AddHealthInsuranceComponent : IDisposable
         VM.OnShowWarning += _onWarning;
         VM.OnShowMessage += _onMessage;
     }
-    private void ShowNotification(string title, string message, ModalType type, EventCallback onOkHandler)
+    private void ShowNotification(string title, string message, ModalType type, EventCallback   onOkHandler)
     {
         ModalTitle = title;
         ModalType = type;
@@ -103,13 +104,13 @@ public partial class AddHealthInsuranceComponent : IDisposable
         ShowNotification("Éxito", VM.InformationMessage, ModalType.MessageSuccess, EventCallback.Factory.Create(this, OnCloseModal));
 
     }
-    public void OnCloseModal()
+    public async Task OnCloseModal()
     {
-        ShowOk = false;
-        ShowCancel = true;
-        ModalVisible = false;
-        _ = OnSuccess.InvokeAsync();
-        StateHasChanged();
+        //ShowOk = false;
+        //ShowCancel = true;
+        //ModalVisible = false;
+        await OnSuccess.InvokeAsync();
+        //StateHasChanged();
     }
     public void CleanField()
     {

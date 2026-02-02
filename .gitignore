@@ -361,8 +361,3 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-# WiX Installer - exclude redistributables and build artifacts
-MedRec.Installer.Bundle/redist/
-MedRec.Installer.*/bin/
-MedRec.Installer.*/obj/
-**/*.wixpdb

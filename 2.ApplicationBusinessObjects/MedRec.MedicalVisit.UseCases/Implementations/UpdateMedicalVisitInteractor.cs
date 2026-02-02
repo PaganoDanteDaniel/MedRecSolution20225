@@ -1,4 +1,5 @@
-﻿using MedRec.Entity.POCOEntities;
+﻿using MedRec.Entity.Interfaces;
+using MedRec.Entity.POCOEntities;
 using MedRec.MedicalVisit.BusinessObjects.DTOs;
 using MedRec.MedicalVisit.BusinessObjects.Interfaces.Ports;
 using MedRec.MedicalVisit.BusinessObjects.Interfaces.Repositories;
@@ -6,33 +7,48 @@ using MedRec.MedicalVisit.BusinessObjects.Validator;
 using MedRec.Validator.Interfaces;
 
 namespace MedRec.MedicalVisit.UseCases.Implementations;
-internal class UpdateMedicalVisitInteractor(
-    IUpdateMedicalVisitOutputPort outputPort,
-    IMedicalVisitCommandRepository commandRepository,
-    IModelValidatorHub<UpdateMedicalVisitDto> _validatorHub) : IUpdateMedicalVisitInputPort
+public class UpdateMedicalVisitInteractor : IUpdateMedicalVisitInputPort
 {
-    public async Task Handle(UpdateMedicalVisitDto dto, CancellationToken cts = default)
+    private readonly IUpdateMedicalVisitOutputPort _outputPort;
+    private readonly IMedicalVisitCommandRepositoryUoW _commandRepository;
+    private readonly IMedicalVisitQueriesRepositoryUoW _queriesRepository;
+    private readonly IModelValidatorHub<UpdateMedicalVisitDto> _validatorHub;
+    private readonly IRepositoryUnitOfWork _unitOfWork;
+
+    public UpdateMedicalVisitInteractor(
+        IUpdateMedicalVisitOutputPort outputPort,
+        IMedicalVisitCommandRepositoryUoW commandRepository,
+        IMedicalVisitQueriesRepositoryUoW queriesRepository,
+        IModelValidatorHub<UpdateMedicalVisitDto> validatorHub,
+        IRepositoryUnitOfWork unitOfWork)
     {
-        cts.ThrowIfCancellationRequested();
+        _outputPort = outputPort;
+        _commandRepository = commandRepository;
+        _queriesRepository = queriesRepository;
+        _validatorHub = validatorHub;
+        _unitOfWork = unitOfWork;
+    }
 
-        bool isValid = await _validatorHub.Validate(dto,
-            v => UpdateMedicalVisitValidator.Validate(v));
-        if (!isValid)
+    public async Task Handle(UpdateMedicalVisitDto dto, CancellationToken ct = default)
+    {
+        if (!await _validatorHub.Validate(dto, v => UpdateMedicalVisitValidator.Validate(v)))
         {
-            await outputPort.ValidationErrorsAsync(_validatorHub.Errors);
-            return;
-        }
-        var medicalVisit = (PatientMedicalVisit)dto;
-
-        var result = await commandRepository.Update(medicalVisit, cts);
-
-        if (!result.IsSuccess)
-        {
-            await outputPort.ErrorAsync(result.Error);
+            await _outputPort.ValidationErrorsAsync(_validatorHub.Errors);
             return;
         }
 
-        await outputPort.ErrorAsync(null);
+        ct.ThrowIfCancellationRequested();
+
+        await _unitOfWork.ExecuteInTransactionWithRetry(async () =>
+        {
+            var updateMedicalVisit = (PatientMedicalVisit)dto;
+
+            await _commandRepository.Update(updateMedicalVisit, ct);
+            var response = await _unitOfWork.SaveChanges(ct);
+            await _outputPort.ErrorAsync(null);
+            await _outputPort.Handle(response > 0, ct);
+
+        }, ct);
 
     }
 }
