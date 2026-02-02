@@ -7,12 +7,7 @@
 <div class="body-content">
 <PageShell FooterMessage="@footerMessage" @ref="pageShellRef" CenterContent="true">
     <HeaderContent>
-        <CustomHeader ButtonBackPress="OnBackPressed"
-                      ColorA50="--color-pink-50"
-                      ColorA100="--color-pink-100"
-                      ColorB100="--color-pink-200"
-                      ColorA600="--color-pink-600"
-                      ColorB600="--color-pink-600">
+        <CustomHeader ButtonBackPress="OnBackPressed">
             <HeaderContent>
                 <div class="header-icon">
                     <svg class="icon-header" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -37,9 +32,7 @@
         <ExceptionDisplayComponent Exception="context" />
         <button class="btn btn-danger" @onclick="(()=>pageShellRef.Recover())">OK</button>
     </ErrorContent>
-</PageShell>
-
-  
+</PageShell>  
 </div>
 
 @if (_isLoading)

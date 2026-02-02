@@ -15,6 +15,10 @@
             <thead>
                 <tr>
                     @TableHeader
+                    @if (ShowActionsColumn)
+                    {
+                        <th class="actions" style="width: 12%;" scope="col">Acciones</th>
+                    }                    
                 </tr>
             </thead>
         }
@@ -28,13 +32,19 @@
                     @if(ShowActionsColumn)
                     {
                         <td class="actions " @onclick:stopPropagation>
-                            <a href="javascript:void(0);" @onclick='() => OnEdit.InvokeAsync(item)' title="Editar">
-                                <i class="bi bi-pencil-square" data-bs-toggle="tooltip" data-bs-placement="top"></i>
-                            </a>
+                            @if(ShowEditActionsColumn)
+                            {
+                                <a href="javascript:void(0);" @onclick='() => OnEdit.InvokeAsync(item)' title="Editar">
+                                    <i class="bi bi-pencil-square" data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                                </a>
+                            }
                             
-                            <a href="javascript:void(0);" @onclick='() => OnDelete.InvokeAsync(item)' title="Eliminar">
-                                <i class="bi bi-trash-fill" data-bs-toggle="tooltip" data-bs-placement="top"></i>
-                            </a>
+                            @if(ShowDeleteActionsColumn)
+                            {
+                                <a href="javascript:void(0);" @onclick='() => OnDelete.InvokeAsync(item)' title="Eliminar">
+                                    <i class="bi bi-trash-fill" data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                                </a>
+                            }
                             
                             @if (AdditionalAction is not null)
                             {
@@ -63,6 +73,8 @@
     [Parameter] public EventCallback<TItem> OnRowClick { get; set; }
     [Parameter] public EventCallback<TItem> OnEdit { get; set; }
     [Parameter] public EventCallback<TItem> OnDelete { get; set; }
+    [Parameter] public bool ShowEditActionsColumn { get; set; } = true;
+    [Parameter] public bool ShowDeleteActionsColumn { get; set; } = true;
     [Parameter] public bool ShowActionsColumn { get; set; } = true;
     [Parameter] public RenderFragment<TItem>? AdditionalAction { get; set; }
     int rowIndex = 0;

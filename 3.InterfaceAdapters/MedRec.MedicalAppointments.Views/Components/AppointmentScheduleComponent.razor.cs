@@ -1,6 +1,7 @@
 using MedRec.CommonComponents.Views;
 using MedRec.MedicalAppointments.ViewModels.Models;
 using MedRec.MedicalAppointments.ViewModels.VM;
+using MedRec.Patients.Views.Components;
 using Microsoft.AspNetCore.Components;
 using System.Globalization;
 
@@ -8,6 +9,30 @@ namespace MedRec.MedicalAppointments.Views.Components;
 public partial class AppointmentScheduleComponent
 {
     private WeeklyScheduleViewModelOrchestrator VM => Service;
+
+    #region === NUEVAS PROPIEDADES PARA EL NUEVO MODAL ===
+
+    private bool ModalVisible;
+    private ModalType ModalType = ModalType.MessageInfo;
+    private string ModalTitle = "Mensaje";
+    private string ModalMessage = "";
+    private RenderFragment? ModalBody;
+    private bool CloseOnOverlayClick = true;
+    private bool ShowOk = false;
+    private bool ShowCancel = false;
+    private bool ShowDelete = false;
+    private bool ShowRetry = false;
+
+    #endregion
+
+    #region === Callbacks para el nuevo modal ===
+
+    private EventCallback _onOkCallback = default;
+    private EventCallback _onCancelCallback = default;
+    private EventCallback _onDeleteCallback = default;
+    private EventCallback _onRetryCallback = default;
+
+    #endregion
 
     private ElementReference patientReasonInputRef;
     private bool shouldFocus = false; // Bandera para controlar el foco
@@ -60,7 +85,9 @@ public partial class AppointmentScheduleComponent
         VM.OnShowError += () => ShowModalMessage("Error", ModalType.MessageError);
         VM.OnShowConcurrencyError += () => ShowModalMessage("Conflicto de concurrencia", ModalType.MessageError);
 
-        VM.OnFinnishOperation += () => ShowModalMessageAndNavigate("Actualización exitosa...", ModalType.MessageSuccess, "/");
+        VM.OnFinnishOperation += () => ShowModalMessage("Actualización exitosa...", ModalType.MessageSuccess);
+        VM.OnReloadData += ReloadData;
+
         StateHasChanged();
         try
         {
@@ -72,31 +99,31 @@ public partial class AppointmentScheduleComponent
             SetLoading(false);
         }
     }
-
-    private void ShowModalMessageAndNavigate(string title, ModalType type, string navigationUrl)
+    private async Task ReloadData()
     {
-        VM.InformationMessage = "ACTUALIZACIÓN EXITOSA";
-        _modalTitle = title;
-        _modalType = type;
-        _showModal = true;
-        _navigateAfterClose = true;
-        _navigationUrl = navigationUrl;
-        InvokeAsync(StateHasChanged);
+        if (SelectedWeek is not null)
+        {
+            VM.DateBase = SelectedWeek.Value.Start;
+            SetLoading(true);
+            await VM.LoadWeekAsync(SelectedWeek.Value.Start, SelectedWeek.Value.End);
+            SetLoading(false);
+            StateHasChanged();
+        }
+
     }
     private void ShowModalMessage(string title, ModalType type)
     {
-        _modalTitle = title;
-        _modalType = type;
+        ShowOk = true;
+        CloseOnOverlayClick = true;
+        ModalTitle = title;
+        ModalType = type;
+        ModalBody = null;
+        ModalMessage = VM.InformationMessage;
+        _onOkCallback = EventCallback.Factory.Create(this, CloseModal);
         _showModal = true;
         _navigateAfterClose = false;
         InvokeAsync(StateHasChanged);
     }
-
-    private void ToggleShift()
-    {
-        shift = shift == "MAÑANA" ? "TARDE" : "MAÑANA";
-    }
-
     // CSS por estado de celda
     private string GetCssClass(ScheduleCell celda)
     {
@@ -167,13 +194,51 @@ public partial class AppointmentScheduleComponent
     private void OpenReassignAssignModal()
     {
         tempAppointment = new();
+        CloseOnOverlayClick = false;
+        ModalType = ModalType.NormalContent;
+        ModalTitle = "Selector de paciente";
+        ShowOk = false;
+        ShowCancel = false;
+        ShowDelete = false;
+        ShowRetry = false;
+        ModalBody = builder =>
+                {
+                    builder.OpenComponent<ListPatientsComponent>(0);
+                    builder.AddAttribute(1, nameof(ListPatientsComponent.MaxPageButton), 3);
+                    builder.AddAttribute(2, nameof(ListPatientsComponent.WithHeight), false);
+                    builder.AddAttribute(3, nameof(ListPatientsComponent.OnPatientSelected),
+                        EventCallback.Factory.Create<(Guid, string, string)>(this, OnPatientSelected));
+                    builder.AddAttribute(4, nameof(ListPatientsComponent.ShowActionsColumn), false);
+                    builder.CloseComponent();
+                };
+
+        CloseModal();
         activeReassignMode = true;
-        showPatientModal = true; // Primero selector de paciente
+
+        _showModal = true; // Primero selector de paciente
     }
     private void OpenAssignModal()
     {
         tempAppointment = new();
-        showPatientModal = true; // Primero selector de paciente
+        CloseOnOverlayClick = false;
+        ModalType = ModalType.NormalContent;
+        ModalTitle = "Selector de paciente";
+        ShowOk = false;
+        ShowCancel = false;
+        ShowDelete = false;
+        ShowRetry = false;
+        ModalBody = builder =>
+        {
+            builder.OpenComponent<ListPatientsComponent>(0);
+            builder.AddAttribute(1, nameof(ListPatientsComponent.MaxPageButton), 3);
+            builder.AddAttribute(2, nameof(ListPatientsComponent.WithHeight), false);
+            builder.AddAttribute(3, nameof(ListPatientsComponent.OnPatientSelected),
+                EventCallback.Factory.Create<(Guid, string, string)>(this, OnPatientSelected));
+            builder.AddAttribute(4, nameof(ListPatientsComponent.ShowActionsColumn), false);
+            builder.CloseComponent();
+        };
+
+        _showModal = true; // Primero selector de paciente
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -183,13 +248,11 @@ public partial class AppointmentScheduleComponent
             await patientReasonInputRef.FocusAsync();
         }
     }
-
     private void OpenManagementModal()
     {
         modalType = Modal_Type.Gestion;
         showModal = true;
     }
-
     private void ActivateMoveMode()
     {
         if (selectedCell?.Appointment is null) return;
@@ -197,13 +260,11 @@ public partial class AppointmentScheduleComponent
         sourceCell = selectedCell;
         CloseActionModal();
     }
-
     private void CancelMoveMode()
     {
         activeMoveMode = false;
         sourceCell = null;
     }
-
     // Cierra ambos modales (mensaje + gestión)
     private void CloseModal()
     {
@@ -231,8 +292,11 @@ public partial class AppointmentScheduleComponent
     private async Task SaveAppointmentFromModal()
     {
         if (selectedCell is null) return;
+
         if (string.IsNullOrWhiteSpace(tempAppointment.PatientName) || string.IsNullOrWhiteSpace(tempAppointment.Phone)) return;
+
         Appointment? originalAppt = new();
+
         var appt = selectedCell.Appointment ?? new Appointment
         {
             //Id = Guid.NewGuid(),
@@ -285,8 +349,6 @@ public partial class AppointmentScheduleComponent
                 SetLoading(false);
             }
             SetLoading(false);
-
-
         }
         else
         {
@@ -330,9 +392,9 @@ public partial class AppointmentScheduleComponent
     private async Task OnWeekSelected((DateTime Start, DateTime End) week)
     {
         SelectedWeek = week;
-        VM.DateBase = week.Start;
+        VM.DateBase = SelectedWeek.Value.Start;
         SetLoading(true);
-        await VM.LoadWeekAsync(week.Start, week.End);
+        await VM.LoadWeekAsync(SelectedWeek.Value.Start, SelectedWeek.Value.End);
         SetLoading(false);
         StateHasChanged();
     }
@@ -340,7 +402,7 @@ public partial class AppointmentScheduleComponent
     // Callback del selector de pacientes
     private void OnPatientSelected((Guid idSelectedPatient, string nameSelectedPatient, string phoneSelectedPatient) selectedPatient)
     {
-        showPatientModal = false;
+        _showModal = false;
 
         if (selectedCell is null) return;
 
@@ -357,7 +419,6 @@ public partial class AppointmentScheduleComponent
 
         StateHasChanged();
     }
-
     private string Capitalize(string texto)
     {
         if (string.IsNullOrEmpty(texto)) return texto;

@@ -1,28 +1,19 @@
-﻿using MedRec.Entity.DTOs;
+﻿using MedRec.BusinessObjects.Abstracts;
+using MedRec.BusinessObjects.Results;
 using MedRec.MedicalAppointments.BusinessObjects.DTOs;
 using MedRec.MedicalAppointments.BusinessObjects.EntityView;
 using MedRec.MedicalAppointments.BusinessObjects.Interfaces.Ports;
-using MedRec.Validator.ValueObjects;
 
 namespace MedRec.MedicalAppointments.Presenters.Implementations;
 
-internal class CreateMedicalAppointmentPresenter : ICreateMedicalAppointmentOutputPort
+internal class CreateMedicalAppointmentPresenter : BaseOutputPort<MedicalAppointmentDto>, ICreateMedicalAppointmentOutputPort
 {
-    private MedicalAppointmentDto? _appointmentDto;
-    private ErrorInfo? _errorMessage;
-    private IReadOnlyList<ValidationError> _validationErrors = Array.Empty<ValidationError>();
-
-    public MedicalAppointmentDto AppointmentDto => _appointmentDto;
-
-    public IEnumerable<ValidationError> ValidationErrors => _validationErrors;
-
-    public ErrorInfo ErrorMessage => _errorMessage;
 
     public Task Handle(MedicalAppointmentView appointment, CancellationToken ct)
     {
         ct.ThrowIfCancellationRequested();
 
-        _appointmentDto = new MedicalAppointmentDto(
+        var result = new MedicalAppointmentDto(
             appointment.Id,
             appointment.AppointmentDateTime,
             appointment.PatientId,
@@ -34,18 +25,8 @@ internal class CreateMedicalAppointmentPresenter : ICreateMedicalAppointmentOutp
             appointment.PatientLastName,
             appointment.PatientPhoneNumber);
 
-        return Task.CompletedTask;
-    }
+        Result = OperationResult<MedicalAppointmentDto>.Ok(result);
 
-    public Task ErrorAsync(ErrorInfo message)
-    {
-        _errorMessage = message ?? new ErrorInfo("Error desconocido.");
-        return Task.CompletedTask;
-    }
-
-    public Task ValidationErrorsAsync(IEnumerable<ValidationError> errors)
-    {
-        _validationErrors = (errors ?? Enumerable.Empty<ValidationError>()).ToArray();
         return Task.CompletedTask;
     }
 }

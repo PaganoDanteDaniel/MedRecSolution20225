@@ -13,12 +13,12 @@ internal sealed class DeleteAppointmentAction(
         try
         {
             await inPort.Handle(id, ct);
-
-            if (outPort.ErrorMessage is not null)
-                return OperationResult.Fail<bool>(outPort.ErrorMessage, outPort.ValidationErrors);
+            var result = outPort.Result;
+            if (!result.Success)
+                return OperationResult.Fail<bool>(result.Error, result.ValidationErrors);
 
             // Si IsDeleted false y no hay error => resultado válido igualmente
-            return OperationResult.Ok(outPort.IsDeleted);
+            return OperationResult.Ok(result.Value);
         }
         catch (OperationCanceledException)
         {

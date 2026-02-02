@@ -9,128 +9,426 @@
 //------------------------------------------------------------------------------
 
 using MedRec.CommonComponents.Views;
+using MedRec.CommonComponents.Views.Components;
 using MedRec.MedicalVisit.ViewModels.Models;
 using MedRec.MedicalVisit.ViewModels.VM;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using System.Web;
 
 namespace MedRec.MedicalVisit.Views.Components;
-public partial class CreateMedicalVisitComponent
+
+public partial class CreateMedicalVisitComponent : IDisposable
 {
     [Inject] private NavigationManager Navigation { get; set; }
     [Parameter] public CreateMedicalVisitVMOrchestrator VM { get; set; }
     [Parameter] public Guid PatientId { get; set; }
     [Parameter] public Guid? VisitId { get; set; }
-    [Parameter] public bool CloneNow { get; set; } = false;
+    [Parameter] public EventCallback OnDataReady { get; set; }
 
     private EditContext _editContext;
-    private string _modalTitle = "Mensaje del sistema";
-    private ModalType _modalType = ModalType.MessageInfo;
-    private bool _showAcceptButton = false;
-    private bool _showCancelButton = false;
-    private bool _isConfirmationModal = false;
-    private bool _showModal;
-
     private bool isLoading = false;
 
-    private CreateMedicalVisitModel _originalModel;
+    private CreateMedicalVisitModel _originalModel = new();
     private bool _navigateAfterClose = false;
     private string _navigationUrl = "/";
+    private TaskCompletionSource<bool>? _saveConfirmationTcs;
+    private CancellationTokenSource? _cts;
+
+    // -----------------------------------------------------------------
+    // CAMPOS PARA SUSCRIPCIONES DE EVENTOS (evitar fugas de memoria)
+    // -----------------------------------------------------------------
+    private Action? _onShowMessageHandler;
+    private Action? _onShowWarningHandler;
+    private Action? _onShowErrorHandler;
+    private Action? _onShowConcurrencyErrorHandler;
+    private Action? _onFinnishOperationHandler;
+
+    private bool _isModelInitialized = false;
+    private bool _hasUnsavedChanges = false;
+
+    // =================================================================
+    // ESTADO DEL MODAL (para MdMessageModal)
+    // =================================================================
+    private bool _showModal = false;
+    private ModalType _modalType = ModalType.MessageInfo;
+    private string _modalTitle = "Mensaje del sistema";
     private string _modalMessage = string.Empty;
-    private TaskCompletionSource<bool> _saveConfirmationTcs;
-    private CancellationTokenSource _cts;
+
+    // Botones del modal
+    private bool _showOkButton = true;
+    private bool _showCancelButton = false;
+    private bool _showExitButton = false;
+    private bool _showRetryButton = false;
+    private bool _showDeleteButton = false;
+    private bool _showSaveChangeButton = false;
+
+    // Flags de control
+    private bool _isConfirmationModal = false;
+    private bool _isSaveSuccessModal = false;
+
+    // =================================================================
+    // LIFECYCLE METHODS
+    // =================================================================
+
+    protected override void OnInitialized()
+    {
+        // Suscribirse a eventos del ViewModel
+        SubscribeToViewModelEvents();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        // Si el VM cambió, reconfigurar todo
+        if (VM is not null)
+        {
+            // Desuscribir del VM anterior si existe
+            UnsubscribeFromViewModelEvents();
+
+            // Suscribirse al nuevo VM
+            SubscribeToViewModelEvents();
+
+            // Inicializar modelo si es necesario
+            if (TryInitializeModel())
+            {
+                await InvokeAsync(StateHasChanged);
+            }
+
+            // Actualizar EditContext si el modelo cambió
+            UpdateEditContextIfNeeded();
+        }
+    }
+
+    // =================================================================
+    // MÉTODOS DE CONFIGURACIÓN
+    // =================================================================
+
+    private void SubscribeToViewModelEvents()
+    {
+        if (VM is null) return;
+
+        // Almacenar handlers en campos para poder desuscribirlos después
+        _onShowMessageHandler = () => ShowModal("Información", VM.InformationMessage, ModalType.MessageInfo);
+        _onShowWarningHandler = () => ShowModal("Advertencia", VM.InformationMessage, ModalType.MessageWarning);
+        _onShowErrorHandler = () => ShowModal("Error", VM.InformationMessage, ModalType.MessageError);
+        _onShowConcurrencyErrorHandler = () => ShowModal("Conflicto de concurrencia", VM.InformationMessage, ModalType.MessageError);
+        _onFinnishOperationHandler = StateHasChanged;
+
+        VM.OnShowMessage += _onShowMessageHandler;
+        VM.OnShowWarning += _onShowWarningHandler;
+        VM.OnShowError += _onShowErrorHandler;
+        VM.OnShowConcurrencyError += _onShowConcurrencyErrorHandler;
+        VM.OnFinnishOperation += _onFinnishOperationHandler;
+    }
+
+    private void UnsubscribeFromViewModelEvents()
+    {
+        if (VM is null) return;
+
+        // Desuscribir usando los handlers almacenados
+        if (_onShowMessageHandler != null)
+            VM.OnShowMessage -= _onShowMessageHandler;
+
+        if (_onShowWarningHandler != null)
+            VM.OnShowWarning -= _onShowWarningHandler;
+
+        if (_onShowErrorHandler != null)
+            VM.OnShowError -= _onShowErrorHandler;
+
+        if (_onShowConcurrencyErrorHandler != null)
+            VM.OnShowConcurrencyError -= _onShowConcurrencyErrorHandler;
+
+        if (_onFinnishOperationHandler != null)
+            VM.OnFinnishOperation -= _onFinnishOperationHandler;
+    }
+
+    private bool TryInitializeModel()
+    {
+        if (_isModelInitialized || VM?.Model == null)
+            return false;
+
+        if (VM.Model.PatientId != Guid.Empty && VM.Model.MedicalHistoryId != Guid.Empty)
+        {
+            _originalModel = VM.Model.Clone();
+            _isModelInitialized = true;
+            _hasUnsavedChanges = false;
+            return true;
+        }
+
+        return false;
+    }
+
+    private void UpdateEditContextIfNeeded()
+    {
+        if (_isModelInitialized &&
+            VM?.Model != null &&
+            (ReferenceEquals(_editContext?.Model, VM.Model) == false))
+        {
+            SetupEditContext(VM.Model);
+        }
+    }
+
+    private void SetupEditContext(CreateMedicalVisitModel model)
+    {
+        // Desuscribir del EditContext anterior
+        if (_editContext != null)
+        {
+            _editContext.OnFieldChanged -= OnFieldChanged;
+        }
+
+        // Crear nuevo EditContext
+        _editContext = new EditContext(model);
+        _editContext.OnFieldChanged += OnFieldChanged;
+
+        // Actualizar modelo original
+        _originalModel = model.Clone();
+        _hasUnsavedChanges = false;
+    }
+
+    // =================================================================
+    // EVENTOS Y VALIDACIÓN
+    // =================================================================
+
+    private void OnFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        if (_isModelInitialized)
+        {
+            _hasUnsavedChanges = !AreModelsEqual(_originalModel, VM.Model);
+        }
+    }
+
+    private bool HasUnsavedChanges()
+    {
+        if (!_isModelInitialized || _originalModel == null || VM?.Model == null)
+            return false;
+
+        return _hasUnsavedChanges;
+    }
+
+    private bool AreModelsEqual(CreateMedicalVisitModel original, CreateMedicalVisitModel current)
+    {
+        if (original == null || current == null)
+            return false;
+
+        return original.VisitDate == current.VisitDate &&
+               original.Reason == current.Reason &&
+               original.Diagnosis == current.Diagnosis &&
+               original.Treatment == current.Treatment &&
+               original.SystolicPressure == current.SystolicPressure &&
+               original.DiastolicPressure == current.DiastolicPressure &&
+               original.PulsePerMinute == current.PulsePerMinute &&
+               original.Temperature == current.Temperature &&
+               original.Notes == current.Notes;
+    }
+
+    // =================================================================
+    // MÉTODO GENÉRICO DE MODAL (centralizado y reutilizable)
+    // =================================================================
+
+    private void ShowModal(
+        string title,
+        string message,
+        ModalType type,
+        bool showOk = true,
+        bool showCancel = false,
+        bool showExit = false,
+        bool showRetry = false,
+        bool showDelete = false,
+        bool showSaveChange = false,
+        string? navigateUrl = null,
+        bool isConfirmation = false)
+    {
+        _modalTitle = title;
+        _modalMessage = message;
+        _modalType = type;
+        _showOkButton = showOk;
+        _showCancelButton = showCancel;
+        _showExitButton = showExit;
+        _showRetryButton = showRetry;
+        _showDeleteButton = showDelete;
+        _showSaveChangeButton = showSaveChange;
+        _isConfirmationModal = isConfirmation;
+        _isSaveSuccessModal = (type == ModalType.MessageSuccess && navigateUrl != null);
+        _navigateAfterClose = !string.IsNullOrEmpty(navigateUrl);
+        _navigationUrl = navigateUrl ?? "/";
+
+        _showModal = true;
+        InvokeAsync(StateHasChanged);
+    }
+
+    // =================================================================
+    // MÉTODOS HELPER PARA CASOS COMUNES (sin duplicar lógica)
+    // =================================================================
+
+    private void ShowInfoModal(string title, string message) =>
+        ShowModal(title, message, ModalType.MessageInfo);
+
+    private void ShowWarningModal(string title, string message) =>
+        ShowModal(title, message, ModalType.MessageWarning);
+
+    private void ShowErrorModal(string title, string message) =>
+        ShowModal(title, message, ModalType.MessageError);
+
+    private void ShowSuccessModalAndNavigate(string title, string message, string navigationUrl) =>
+        ShowModal(title, message, ModalType.MessageSuccess, navigateUrl: navigationUrl);
+
+    private async Task ShowUnsavedChangesConfirmation()
+    {
+        _saveConfirmationTcs = new TaskCompletionSource<bool>();
+
+        ShowModal(
+            title: "Cambios sin guardar",
+            message: "Tiene cambios sin guardar. ¿Desea guardar los cambios antes de salir?",
+            type: ModalType.MessageWarning,
+            showOk: false,
+            showCancel: false,
+            showExit: true,
+            showSaveChange: true,
+            isConfirmation: true);
+
+        bool shouldSave = await _saveConfirmationTcs.Task;
+
+        if (shouldSave)
+        {
+            await SaveChanged();
+        }
+        else
+        {
+            // Salir sin guardar
+            Navigation.NavigateTo(CreateUrl());
+        }
+    }
+
+    // =================================================================
+    // EVENTOS DEL MODAL (callbacks para MdMessageModal)
+    // =================================================================
+
+    private void OnModalOk()
+    {
+        // Si es modal de éxito con navegación pendiente
+        if (_isSaveSuccessModal && _navigateAfterClose)
+        {
+            Navigation.NavigateTo(_navigationUrl);
+        }
+
+        CloseModal();
+    }
+
+    private void OnModalCancel()
+    {
+        // Si es modal de confirmación y el TCS está pendiente, completarlo con false
+        if (_isConfirmationModal && _saveConfirmationTcs?.Task.IsCompleted == false)
+        {
+            _saveConfirmationTcs.SetResult(false);
+        }
+
+        CloseModal();
+    }
+
+    private void OnModalExit()
+    {
+        // Si es modal de confirmación y el TCS está pendiente, completarlo con false (salir sin guardar)
+        if (_isConfirmationModal && _saveConfirmationTcs?.Task.IsCompleted == false)
+        {
+            _saveConfirmationTcs.SetResult(false);
+        }
+
+        CloseModal();
+    }
+
+    private void OnModalRetry()
+    {
+        // Implementar lógica de reintento si es necesario
+        CloseModal();
+    }
+
+    private void OnModalDelete()
+    {
+        // Implementar lógica de eliminación si es necesario
+        CloseModal();
+    }
+
+    private void OnModalSaveChange()
+    {
+        // Si es modal de confirmación, completar TCS con true (guardar cambios)
+        if (_isConfirmationModal && _saveConfirmationTcs != null)
+        {
+            _saveConfirmationTcs.SetResult(true);
+        }
+
+        CloseModal();
+    }
+
+    private void OnModalVisibleChanged(bool visible)
+    {
+        _showModal = visible;
+
+        // Si el modal se cerró externamente y hay navegación pendiente
+        if (!visible && _navigateAfterClose && _isSaveSuccessModal)
+        {
+            _navigateAfterClose = false;
+            Navigation.NavigateTo(_navigationUrl);
+        }
+    }
+
+    private void CloseModal()
+    {
+        _showModal = false;
+
+        // Resetear flags del modal
+        _isConfirmationModal = false;
+        _isSaveSuccessModal = false;
+        _navigateAfterClose = false;
+
+        // Si es un modal de confirmación y el TCS está pendiente, completarlo
+        if (_saveConfirmationTcs?.Task.IsCompleted == false)
+        {
+            _saveConfirmationTcs.SetResult(false);
+        }
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    // =================================================================
+    // ACCIONES DEL USUARIO
+    // =================================================================
 
     private void SetLoading(bool loading)
     {
         isLoading = loading;
         InvokeAsync(StateHasChanged);
     }
-    // ----------------------------------------------------------------------
-    // CAMBIO 1: Inicializamos el EditContext y suscribimos eventos del ViewModel.
-    // Esto permite mantener el enlace de validación y responder a mensajes.
-    // ----------------------------------------------------------------------
-    protected override void OnInitialized()
+
+    private async Task HandleButtonClick()
     {
-        VM.Model.PatientId = PatientId;
-        _editContext = new EditContext(VM.Model);
-
-        // Suscripción a eventos del ViewModel
-        VM.OnShowMessage += () => ShowModalMessage("Información", ModalType.MessageInfo);
-        VM.OnShowWarning += () => ShowModalMessage("Advertencia", ModalType.MessageWarning);
-        VM.OnShowError += () => ShowModalMessage("Error", ModalType.MessageError);
-        VM.OnShowConcurrencyError += () => ShowModalMessage("Conflicto de concurrencia", ModalType.MessageError);
-        VM.OnFinnishOperation += StateHasChanged;
-    }
-
-    // ----------------------------------------------------------------------
-    // NUEVO: Asegura que el EditContext refleje el VM.Model actual.
-    // Si VM.Model se reemplaza (por ejemplo al cargar datos) recreamos el EditContext
-    // para que la validación use el objeto correcto.
-    // ----------------------------------------------------------------------
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-
-        if (VM is not null)
+        if (HasUnsavedChanges())
         {
-            if (_editContext == null || !ReferenceEquals(_editContext.Model, VM.Model))
-            {
-                _editContext = new EditContext(VM.Model);
-                InvokeAsync(StateHasChanged);
-            }
+            await ShowUnsavedChangesConfirmation();
         }
-    }
-
-    // ----------------------------------------------------------------------
-    // CAMBIO 2: Método que muestra un modal y luego navega al cerrar.
-    // Se usa cuando el guardado fue exitoso.
-    // ----------------------------------------------------------------------
-    private void ShowModalMessageAndNavigate(string title, ModalType type, string navigationUrl,
-        bool showAcceptButton = true, bool showCancelButton = false)
-    {
-        _modalTitle = title;
-        _modalType = type;
-        _showModal = true;
-        _navigateAfterClose = true;
-        _navigationUrl = navigationUrl;
-        _modalMessage = VM.InformationMessage;
-        InvokeAsync(StateHasChanged);
-    }
-
-    // ----------------------------------------------------------------------
-    // CAMBIO 3: Método para mostrar modal sin navegar.
-    // Se usa para errores o advertencias.
-    // ----------------------------------------------------------------------
-    private void ShowModalMessage(string title, ModalType type,
-        bool showAcceptButton = true, bool showCancelButton = false)
-    {
-        _modalTitle = title;
-        _modalType = type;
-        _showModal = true;
-        _showAcceptButton = showAcceptButton;
-        _showCancelButton = showCancelButton;
-        _navigateAfterClose = false;
-        _modalMessage = VM.InformationMessage;
-        InvokeAsync(StateHasChanged);
+        else
+        {
+            Navigation.NavigateTo(CreateUrl());
+        }
     }
 
     private string CreateUrl()
     {
-        var nombreCodificado = System.Web.HttpUtility.UrlEncode($"{VM.Model.FullName}");
+        var nombreCodificado = HttpUtility.UrlEncode($"{VM.Model.FullName}");
         var fechaCodificada = VM.Model.DateOfBirth.ToString("yyyy-MM-dd");
         return $"/medical-visit/list?id={PatientId}&nombre={nombreCodificado}&fechaNac={fechaCodificada}";
     }
 
-    private void HandleButtonClick() => Navigation.NavigateTo(CreateUrl(), true);
-
-    // ----------------------------------------------------------------------
-    // CAMBIO 4: SaveChanged con manejo seguro de tokens y modal de éxito.
-    // Se limpian correctamente recursos y se reinicia el modelo si fue guardado.
-    // ----------------------------------------------------------------------
     public async Task SaveChanged()
     {
-        if (_editContext.Validate() == true)
+        if (_editContext == null || VM?.Model == null)
+            return;
+
+        if (_editContext.Validate())
         {
+            // Cancelar operación anterior antes de comenzar una nueva
+            _cts?.Cancel();
             _cts?.Dispose();
             _cts = new CancellationTokenSource();
 
@@ -139,85 +437,67 @@ public partial class CreateMedicalVisitComponent
                 SetLoading(true);
                 await VM.AddMedicalVisitAsync(_cts.Token);
                 SetLoading(false);
-                if (string.IsNullOrEmpty(VM.InformationMessage))
-                {
-                    VM.InformationMessage = "LOS DATOS FUERON GUARDADOS SATISFACTORIAMENTE";
-                    _isConfirmationModal = false;
 
-                    ShowModalMessageAndNavigate("CONFIRMACIÓN DE GUARDADO", ModalType.MessageSuccess, CreateUrl());
+                string message = string.IsNullOrEmpty(VM.InformationMessage)
+                    ? "LOS DATOS FUERON GUARDADOS SATISFACTORIAMENTE"
+                    : VM.InformationMessage;
 
-                    // Reiniciar modelo y EditContext para limpiar formulario
-                    VM.Model = new CreateMedicalVisitModel();
-                    _editContext = new EditContext(VM.Model);
-                }
+                // Resetear estado después de guardar
+                _originalModel = VM.Model.Clone();
+                _hasUnsavedChanges = false;
+
+                // Mostrar modal de éxito y navegar después
+                ShowSuccessModalAndNavigate("CONFIRMACIÓN DE GUARDADO", message, CreateUrl());
+
+                // Reiniciar modelo para nuevo registro
+                VM.Model = new CreateMedicalVisitModel();
+                SetupEditContext(VM.Model);
+                _isModelInitialized = false;
             }
             catch (InvalidOperationException ex)
             {
                 VM.InformationMessage = ex.Message;
-                _isConfirmationModal = false;
-                ShowModalMessage("ERROR CRÍTICO", ModalType.MessageError);
+                ShowErrorModal("ERROR CRÍTICO", ex.Message);
             }
         }
     }
 
-    private void OnAcceptSave()
+    // =================================================================
+    // LIMPIEZA Y DISPOSICIÓN
+    // =================================================================
+
+    public void Dispose()
     {
-        if (_isConfirmationModal && _saveConfirmationTcs != null)
+        // Desuscribirse del EditContext
+        if (_editContext != null)
         {
-            _saveConfirmationTcs.SetResult(true);
-            _saveConfirmationTcs = null;
-            _isConfirmationModal = false;
-            _showModal = false;
-            return;
+            _editContext.OnFieldChanged -= OnFieldChanged;
         }
 
-        CloseModal();
-    }
+        // Desuscribirse de eventos del ViewModel
+        UnsubscribeFromViewModelEvents();
 
-    // ----------------------------------------------------------------------
-    // CAMBIO 5: CloseModal mejora la limpieza del componente.
-    //  - Cancela operaciones pendientes.
-    //  - Desuscribe los eventos del ViewModel.
-    //  - Libera recursos (Dispose).
-    //  - Navega si es necesario.
-    // ----------------------------------------------------------------------
-    private void CloseModal()
-    {
-        _showModal = false;
-
-        // Cancelar operaciones pendientes
+        // Cancelar y liberar CancellationToken
         _cts?.Cancel();
         _cts?.Dispose();
         _cts = null;
 
-        // Desuscribirse de eventos para liberar el ViewModel
-        if (VM is not null)
+        // Completar TCS si está pendiente para evitar bloqueos
+        if (_saveConfirmationTcs?.Task.IsCompleted == false)
         {
-            VM.OnShowMessage -= () => ShowModalMessage("Información", ModalType.MessageInfo);
-            VM.OnShowWarning -= () => ShowModalMessage("Advertencia", ModalType.MessageWarning);
-            VM.OnShowError -= () => ShowModalMessage("Error", ModalType.MessageError);
-            VM.OnShowConcurrencyError -= () => ShowModalMessage("Conflicto de concurrencia", ModalType.MessageError);
-            VM.OnFinnishOperation -= StateHasChanged;
-        }
-
-        // Liberar recursos del ViewModel si implementa IDisposable
-        if (VM is IDisposable disposableVM)
-            disposableVM.Dispose();
-
-        // Finalmente, navegar si corresponde
-        if (_navigateAfterClose)
-        {
-            _navigateAfterClose = false;
-            Navigation.NavigateTo(_navigationUrl, forceLoad: true); // Fuerza recarga completa
+            _saveConfirmationTcs.SetResult(false);
         }
     }
 
-    // ----------------------------------------------------------------------
-    // CAMBIO 6: Implementamos IDisposable para liberar recursos
-    // cuando el componente se destruye (por ejemplo, al navegar).
-    // ----------------------------------------------------------------------
-    public void Dispose()
+    // =================================================================
+    // MÉTODOS DE UTILIDAD (mantenidos por compatibilidad)
+    // =================================================================
+
+    public void NotifyDataReady()
     {
-        CloseModal(); // Reutilizamos la lógica existente para limpiar todo
+        if (TryInitializeModel())
+        {
+            InvokeAsync(StateHasChanged);
+        }
     }
 }

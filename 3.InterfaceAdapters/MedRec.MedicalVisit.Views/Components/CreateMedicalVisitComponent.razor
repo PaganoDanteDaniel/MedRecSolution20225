@@ -157,13 +157,20 @@
 </EditForm>
 
 <!-- Modal de mensajes -->
-<ModalComponent Show="@_showModal"
-                ShowChanged="@((bool val) => _showModal = val)"
-                Title="@_modalTitle"
+<MdMessageModal Visible="@_showModal"
+                VisibleChanged="OnModalVisibleChanged"
                 Type="@_modalType"
-                CenterText="true"
-                ShowAcceptButton="_showAcceptButton" 
-                ShowCancelButton="_showCancelButton"
-                OnAccept="@OnAcceptSave">
-    @((MarkupString)_modalMessage)
-</ModalComponent>
+                Title="@_modalTitle"
+                Message="@_modalMessage"
+                ShowOk="@_showOkButton"
+                ShowCancel="@_showCancelButton"
+                ShowExit="@_showExitButton"
+                ShowRetry="@_showRetryButton"
+                ShowDelete="@_showDeleteButton"
+                ShowSaveChange="@_showSaveChangeButton"
+                OnOk="OnModalOk"
+                OnCancel="OnModalCancel"
+                OnExit="OnModalExit"
+                OnRetry="OnModalRetry"
+                OnDelete="OnModalDelete"
+                OnSaveChange="OnModalSaveChange" />

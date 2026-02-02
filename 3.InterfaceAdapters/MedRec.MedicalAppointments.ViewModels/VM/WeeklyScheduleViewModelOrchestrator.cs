@@ -14,6 +14,8 @@ public class WeeklyScheduleViewModelOrchestrator(IAppointmentOrchestrator orches
     private DateTime _dateBase = DateTime.Today;
     private (DateTime Start, DateTime End)? _lastLoadedWeek;
 
+    public Func<Task>? OnReloadData { get; set; }
+
     public string InformationMessage { get; set; }
     public event Action OnFinnishOperation;
     public event Action OnShowMessage;
@@ -94,6 +96,7 @@ public class WeeklyScheduleViewModelOrchestrator(IAppointmentOrchestrator orches
     // Crear turno (entrada/salida en modelo de UI)
     public async Task SaveChange(Appointment appointment, CancellationToken ct = default)
     {
+        InformationMessage = "";
         try
         {
             var result = await orchestrator.CreateAsync(appointment, ct);
@@ -107,28 +110,15 @@ public class WeeklyScheduleViewModelOrchestrator(IAppointmentOrchestrator orches
                 }
                 else if (result.Error is not null)
                 {
-                    RaiseFromError(result.Error);
+                    await RaiseFromError(result.Error);
                 }
                 return;
             }
 
             if (result.Value is not null)
             {
-                var created = result.Value;
-
-                // Actualiza la misma instancia que usa la UI
-                appointment.Id = created.Id;
-                appointment.DateTime = created.DateTime;
-                appointment.RowVersion = created.RowVersion;
-                appointment.PatientId = created.PatientId;
-                appointment.DoctorId = created.DoctorId;
-                appointment.Reason = (created.Reason ?? string.Empty).ToUpperInvariant();
-                appointment.IsDeleted = created.IsDeleted;
-                appointment.PatientFirstName = created.PatientFirstName;
-                appointment.PatientLastName = created.PatientLastName;
-                appointment.Phone = created.Phone;
-
-                await UpsertLocal(created);
+                await UpsertLocal(appointment, result.Value);
+                InformationMessage = "El turno fue registrado correctamente...";
                 OnFinnishOperation?.Invoke();
 
             }
@@ -142,7 +132,8 @@ public class WeeklyScheduleViewModelOrchestrator(IAppointmentOrchestrator orches
     // Mover turno: requiere nueva fecha y RowVersion actual para concurrencia
     public async Task<bool> MoveAsync(Appointment appointment, CancellationToken ct = default)
     {
-        var success = false;
+        InformationMessage = "";
+
         try
         {
             var result = await orchestrator.MoveAsync(appointment, ct);
@@ -163,23 +154,13 @@ public class WeeklyScheduleViewModelOrchestrator(IAppointmentOrchestrator orches
 
             if (result.Value is not null)
             {
-                var moved = result.Value;
-
-                // Actualiza la misma instancia que usa la UI
-                appointment.DateTime = moved.DateTime;
-                appointment.RowVersion = moved.RowVersion;
-                appointment.PatientId = moved.PatientId;
-                appointment.DoctorId = moved.DoctorId;
-                appointment.Reason = (moved.Reason ?? string.Empty).ToUpperInvariant();
-                appointment.IsDeleted = moved.IsDeleted;
-                appointment.PatientFirstName = moved.PatientFirstName;
-                appointment.PatientLastName = moved.PatientLastName;
-                appointment.Phone = moved.Phone;
-
-                await UpsertLocal(moved);
+                await UpsertLocal(appointment, result.Value);
+                InformationMessage = "El turno fue movido correctamente...";
                 OnFinnishOperation?.Invoke();
-                success = true;
+                return true;
             }
+
+            return false;
         }
         catch (Exception ex)
         {
@@ -188,13 +169,13 @@ public class WeeklyScheduleViewModelOrchestrator(IAppointmentOrchestrator orches
             OnShowError?.Invoke();
             return false;
         }
-        return success;
     }
 
     // Reasignar médico
     public async Task<bool> ReassignAsync(Appointment appointment, CancellationToken ct = default)
     {
-        var success = false;
+        InformationMessage = "";
+
         try
         {
             var result = await orchestrator.ReassignAsync(appointment, ct);
@@ -215,23 +196,12 @@ public class WeeklyScheduleViewModelOrchestrator(IAppointmentOrchestrator orches
 
             if (result.Value is not null)
             {
-                var reassigned = result.Value;
-
-                // Actualiza la misma instancia que usa la UI
-                appointment.DateTime = reassigned.DateTime;
-                appointment.RowVersion = reassigned.RowVersion;
-                appointment.PatientId = reassigned.PatientId;
-                appointment.DoctorId = reassigned.DoctorId;
-                appointment.Reason = (reassigned.Reason ?? string.Empty).ToUpperInvariant();
-                appointment.IsDeleted = reassigned.IsDeleted;
-                appointment.PatientFirstName = reassigned.PatientFirstName;
-                appointment.PatientLastName = reassigned.PatientLastName;
-                appointment.Phone = reassigned.Phone;
-
-                await UpsertLocal(reassigned);
+                await UpsertLocal(appointment, result.Value);
+                InformationMessage = "El turno reasignado correctamente...";
                 OnFinnishOperation?.Invoke();
-                success = true;
+                return true;
             }
+            return false;
         }
         catch (Exception ex)
         {
@@ -239,12 +209,12 @@ public class WeeklyScheduleViewModelOrchestrator(IAppointmentOrchestrator orches
             OnShowError?.Invoke();
             return false;
         }
-        return success;
     }
 
     // Eliminar turno
     public async Task<bool> DeleteAsync(Appointment appointment, CancellationToken ct = default)
     {
+        InformationMessage = "";
         bool deleted = false;
         try
         {
@@ -263,6 +233,7 @@ public class WeeklyScheduleViewModelOrchestrator(IAppointmentOrchestrator orches
                 var idx = _appointments.FindIndex(a => a.Id == appointment.Id);
                 if (idx >= 0) _appointments.RemoveAt(idx);
 
+                InformationMessage = "El turno fue eliminado con éxito...";
                 OnFinnishOperation?.Invoke();
             }
         }
@@ -273,21 +244,33 @@ public class WeeklyScheduleViewModelOrchestrator(IAppointmentOrchestrator orches
         return deleted;
     }
 
-    private async Task UpsertLocal(Appointment appt)
+    private async Task UpsertLocal(Appointment appointment, Appointment appointmenDB)
     {
-        var idx = _appointments.FindIndex(a => a.Id == appt.Id);
+        appointment.DateTime = appointmenDB.DateTime;
+        appointment.RowVersion = appointmenDB.RowVersion;
+        appointment.PatientId = appointmenDB.PatientId;
+        appointment.DoctorId = appointmenDB.DoctorId;
+        appointment.Reason = (appointmenDB.Reason ?? string.Empty).ToUpperInvariant();
+        appointment.IsDeleted = appointmenDB.IsDeleted;
+        appointment.PatientFirstName = appointmenDB.PatientFirstName;
+        appointment.PatientLastName = appointmenDB.PatientLastName;
+        appointment.Phone = appointmenDB.Phone;
+        appointment.RowVersion = appointmenDB.RowVersion;
+
+        var idx = _appointments.FindIndex(a => a.Id == appointment.Id);
         if (idx >= 0)
         {
             var target = _appointments[idx];
-            target.DateTime = appt.DateTime;
-            target.PatientId = appt.PatientId;
-            target.DoctorId = appt.DoctorId;
-            target.Reason = (appt.Reason ?? string.Empty).ToUpperInvariant();
-            target.RowVersion = appt.RowVersion;
-            target.IsDeleted = appt.IsDeleted;
-            target.PatientFirstName = appt.PatientFirstName;
-            target.PatientLastName = appt.PatientLastName;
-            target.Phone = appt.Phone;
+            target.DateTime = appointment.DateTime;
+            target.PatientId = appointment.PatientId;
+            target.DoctorId = appointment.DoctorId;
+            target.Reason = (appointment.Reason ?? string.Empty).ToUpperInvariant();
+            target.RowVersion = appointment.RowVersion;
+            target.IsDeleted = appointment.IsDeleted;
+            target.PatientFirstName = appointment.PatientFirstName;
+            target.PatientLastName = appointment.PatientLastName;
+            target.Phone = appointment.Phone;
+            target.RowVersion = appointment.RowVersion;
 
             if (_lastLoadedWeek.HasValue)
             {
@@ -296,7 +279,7 @@ public class WeeklyScheduleViewModelOrchestrator(IAppointmentOrchestrator orches
         }
         else
         {
-            _appointments.Add(appt);
+            _appointments.Add(appointment);
 
             if (_lastLoadedWeek.HasValue)
             {
@@ -331,7 +314,7 @@ public class WeeklyScheduleViewModelOrchestrator(IAppointmentOrchestrator orches
         return resultado;
     }
 
-    private void RaiseFromError(ErrorInfo? error)
+    private async Task RaiseFromError(ErrorInfo? error)
     {
         if (error is null)
         {
@@ -345,10 +328,15 @@ public class WeeklyScheduleViewModelOrchestrator(IAppointmentOrchestrator orches
         switch (error.Code)
         {
             case ErrorCode.DuplicateKey:
+                InformationMessage = "Ya existe un turno asignado por otro usuario<br/>en la fecha que usted selecciono";
                 OnShowWarning?.Invoke();
+                if (OnReloadData is not null)
+                    await OnReloadData();
                 break;
             case ErrorCode.ConcurrencyError:
                 OnShowConcurrencyError?.Invoke();
+                if (OnReloadData is not null)
+                    await OnReloadData();
                 break;
             case ErrorCode.DatabaseError:
                 OnShowError?.Invoke();

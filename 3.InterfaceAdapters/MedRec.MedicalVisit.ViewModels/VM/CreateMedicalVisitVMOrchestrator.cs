@@ -43,6 +43,7 @@ public class CreateMedicalVisitVMOrchestrator(ICreateMedicalVisitOrchestrator or
             var result = await orchestrator.GetHistoryId(patientId, cts);
             if (!result.Success)
                 RaiseFromError(result.Error);
+            Model.PatientId = patientId;
             Model.MedicalHistoryId = result.Value;
         }
         catch (Exception ex)

@@ -18,6 +18,7 @@ public static class DependencyContainer
         services.AddTransient<CreatePatientVM>();
         services.AddTransient<PatientsListVM>();
         services.AddTransient<UpdatePatientVM>();
+        services.AddTransient<DeletePatientVM>();
 
         services.AddHealthInsuranceDataContextServices();
         services.AddHealthInsuranceRepositoriesServices();
@@ -30,7 +31,7 @@ public static class DependencyContainer
 
         services.AddMedicalVisitDataContextServices()
                 .AddMedicalVisitRepositoriesServices()
-                .AddMedicalVisitUseCasesServices()
+                .AddMedicalVisitUseCasesServicesWithProxy()
                 .AddMedicalVisitPresenterServices()
                 .AddMedicalVisitVMServices();
 
@@ -40,7 +41,7 @@ public static class DependencyContainer
 
         services.AddMedicalAppointmentDataContextServices()
                 .AddMedicalAppointmentRepositoriesServices()
-                .AddMedicalAppointmentUseCasesServices()
+                .AddMedicalAppointmentUseCasesServicesWithProxy()
                 .AddMedicalAppointmentPresentersServices()
                 .AddMedicalAppointmentVMServices();
 

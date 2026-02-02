@@ -21,7 +21,7 @@ public static class GuardDBContext
         {
             var details = MapConcurrencyErrors(ex);
             throw new ConcurrencyException(
-                "Este registro fue actualizado por otro usuario. Se han cargado los datos más recientes. Revise y guarde nuevamente si es necesario.",
+                "Este registro fue actualizado por otro usuario.<br />Se han cargado los datos más recientes.<br />Revise y guarde nuevamente si es necesario.",
                 ex,
                 details);
         }

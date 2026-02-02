@@ -1,5 +1,6 @@
 using MedRec.BusinessObjects.Results;
 using MedRec.Entity.DTOs;
+using MedRec.MedicalAppointments.BusinessObjects.DTOs;
 using MedRec.MedicalAppointments.BusinessObjects.Interfaces.Ports;
 using MedRec.MedicalAppointments.ViewModels.Models;
 using MedRec.MedicalAppointments.ViewModels.Orchestration.Actions.Interfaces;
@@ -15,11 +16,15 @@ internal sealed class GetAppointmentsAction(
         {
             await inPort.Handle((start, end), ct);
 
-            if (outPort.ErrorMessage is not null)
-                return OperationResult.Fail<IReadOnlyList<Appointment>>(outPort.ErrorMessage, outPort.ValidationErrors);
+            var result = outPort.Result;
 
-            var dtos = outPort.AppointmentsDto ?? Enumerable.Empty<MedRec.MedicalAppointments.BusinessObjects.DTOs.MedicalAppointmentDto>();
-            var list = dtos.Select(AppointmentMapper.ToModel).ToList().AsReadOnly();
+            if (!result.Success)
+                return OperationResult.Fail<IReadOnlyList<Appointment>>(result.Error, result.ValidationErrors);
+
+            var appointments = result.Value ?? Enumerable.Empty<MedicalAppointmentDto>();
+
+            var list = appointments.Select(AppointmentMapper.ToModel).ToList().AsReadOnly();
+
             return OperationResult.Ok<IReadOnlyList<Appointment>>(list);
         }
         catch (OperationCanceledException)

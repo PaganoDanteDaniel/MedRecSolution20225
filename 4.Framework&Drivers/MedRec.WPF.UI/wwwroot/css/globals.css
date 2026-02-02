@@ -5,11 +5,11 @@
 :root {
     /* === 1. Colores base del sistema (modo claro) === */
     --background: #faf8fc;
-    --foreground: #2f2436; /* fallback para navegadores sin oklch */
+    --foreground: #2f2436;
     --card: #ffffff;
-    --card-foreground: #2f2436; /* fallback */
-    --popover: #ffffff; /* fallback */
-    --popover-foreground: #2f2436; /* fallback */
+    --card-foreground: #2f2436;
+    --popover: #ffffff;
+    --popover-foreground: #2f2436;
     --primary: #9b7eb5;
     --primary-foreground: #ffffff;
     --secondary: #e8d9f3;
@@ -30,8 +30,8 @@
     --chart-3: #e8d9f3;
     --chart-4: #d4b5e8;
     --chart-5: #b58fc9;
-    --sidebar: #fbf9fb; /* fallback */
-    --sidebar-foreground: #2f2436; /* fallback */
+    --sidebar: #fbf9fb;
+    --sidebar-foreground: #2f2436;
     --sidebar-primary: #9b7eb5;
     --sidebar-primary-foreground: #ffffff;
     --sidebar-accent: #f3eaf7;
@@ -41,13 +41,16 @@
     /* === 2. Paleta de colores personalizados (por tono) === */
     --lavender-50: #f8f5fc;
     --lavender-100: #f3eaf7;
-    --purple-50: #f9f5ff;
-    --purple-100: #f3e8ff;
-    --purple-200: #e9d5ff;
-    --purple-300: #d8b4fe;
-    --purple-400: #c084fc;
-    --purple-500: #a855f7;
-    --purple-600: #9333ea;
+    --purple-50: #f3e5f5; /* Lavender muy claro */
+    --purple-100: #e1bee7;
+    --purple-200: #ce93d8;
+    --purple-300: #ba68c8;
+    --purple-400: #ab47bc;
+    --purple-500: #9c27b0; /* Violet base */
+    --purple-600: #8e24aa;
+    --purple-700: #7b1fa2;
+    --purple-800: #6a1b9a;
+    --purple-900: #4a148c;
     --pink-50: #fdf4ff;
     --pink-100: #fae8ff;
     --pink-200: #f5d0fe;
@@ -142,7 +145,7 @@
     --radius-2xl: 1.5rem;
     /*--font-size-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);*/
     --font-size-xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);
-    --font-size-2xl: clamp(1.5rem, 1.3rem + 1vw, 1.875rem);
+    --font-size-2xl: clamp(1.2rem, min(2.4vw, 3.4vh), 1.875rem);
     /* === 8. Mapeo Material 3: variables semánticas con prefijo `color-` === */
     --color-background: var(--background);
     --color-foreground: var(--foreground);

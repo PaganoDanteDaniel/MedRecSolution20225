@@ -9,7 +9,7 @@ public abstract class BaseOutputPort<T> : IBaseOutputPort
 {
     public OperationResult<T> Result { get; protected set; } = OperationResult.Ok<T>(default!);
 
-    public virtual Task ErrorAsync(ErrorInfo message)
+    public virtual Task ErrorAsync(ErrorInfo? message)
     {
         if (message is null)
         {

@@ -8,7 +8,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using MedRec.CommonComponents.Views.Page;
 using MedRec.Entity.Extensions;
+using MedRec.Entity.Helper;
 using MedRec.MedicalVisit.ViewModels.VM;
 using MedRec.MedicalVisit.Views.Resources;
 using Microsoft.AspNetCore.Components;
@@ -22,6 +24,7 @@ public partial class UpdateMedicalVisitPage
     [Parameter] public Guid? VisitId { get; set; }
     [Parameter] public Guid PatientId { get; set; }
 
+    private PageShell pageShellRef;
     private string footerMessage;
     private bool IsEditMode => VisitId.HasValue;
     private bool IsReadOnly { get; set; }
@@ -41,6 +44,11 @@ public partial class UpdateMedicalVisitPage
         base.OnInitialized();
     }
 
+    private Task OnBackPressed(int _)
+    {
+        Navigation.NavigateTo(CreateUrl());
+        return Task.CompletedTask;
+    }
     // Función auxiliar para leer los valores de la Query String
 
     protected override async Task OnParametersSetAsync()
@@ -51,18 +59,26 @@ public partial class UpdateMedicalVisitPage
         if (IsEditMode && VisitId.HasValue)
         {
             IsReadOnly = true;
-            Title = $"{VM.Model.FullName} | EDAD {VM.Model.DateOfBirth.CalculateAge()} AÑOS | Fecha de visita {VM.Model.VisitDate:dd/MM/yyyy}";
+            Title =StringUtils.TitleCase($"{VM.Model.FullName} | EDAD {VM.Model.DateOfBirth.CalculateAge()} AÑOS | Fecha de visita {VM.Model.VisitDate:dd/MM/yyyy}");
 
         }
         else
         {
-            Title = string.Format(MedicalVisitMessages.CreateMedicalVisitTitleTemplate, VM.Model.FullName, VM.Model.DateOfBirth.CalculateAge());
+            Title = StringUtils.TitleCase(string.Format(MedicalVisitMessages.CreateMedicalVisitTitleTemplate, VM.Model.FullName, VM.Model.DateOfBirth.CalculateAge()));
         }
     }
     private void OnMessageFooterChange(string title)
     {
         footerMessage = title;
     }
+
+    private string CreateUrl()
+    {
+        var nombreCodificado = System.Web.HttpUtility.UrlEncode($"{VM.Model.FullName}");
+        var fechaCodificada = VM.Model.DateOfBirth.ToString("yyyy-MM-dd");
+        return $"/medical-visit/list?id={PatientId}&nombre={nombreCodificado}&fechaNac={fechaCodificada}";
+    }
+
     ErrorBoundary ErrorBoundaryRef;
 
     void Recover()

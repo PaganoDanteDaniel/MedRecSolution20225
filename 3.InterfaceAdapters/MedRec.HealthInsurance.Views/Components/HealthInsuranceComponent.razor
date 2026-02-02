@@ -31,16 +31,14 @@
                         Items="VM.HealthInsuranceCatalog.ToList()"
                         OnRowClick="SelectHealthInsurance"
                         OnEdit="OnUpdateHealthInsurance"
-                        OnDelete="OnDeleteHealthInsurance">
-            <FullHeaderTemplate>
-                <thead>
-                    <tr>
+                        OnDelete="OnDeleteHealthInsurance"
+                        ShowActionsColumn="true"
+                        ShowEditActionsColumn="true"
+                        ShowDeleteActionsColumn="true">
+            <TableHeader>                
                         <th style="width: 12%;" scope="col">Sigla</th>
                         <th scope="col">Nombre</th>
-                        <th class="actions" style="width: 12%;" scope="col">Acciones</th>
-                    </tr>
-                </thead>
-            </FullHeaderTemplate>
+            </TableHeader>
             <RowTemplate Context="healthInsurance">
                 <td style="width:12%;"><span class="truncate">@healthInsurance.Acronym</span></td>
                 <td style="width: 100%;"><span class="truncate">@healthInsurance.Name</span></td>

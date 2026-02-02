@@ -42,6 +42,10 @@
                 {
                     <button type="button" class="md-btn-secondary" @onclick="ClickCancel">Cancelar</button>
                 }
+                @if (ShowExit)
+                {
+                    <button type="button" class="md-btn-secondary" @onclick="ClickExit">Salir</button>
+                }
                 @if (ShowRetry)
                 {
                     <button type="button" class="md-btn-secondary" @onclick="ClickRetry">Reintentar</button>
@@ -49,6 +53,10 @@
                 @if (ShowDelete)
                 {
                     <button type="button" class="md-btn-secondary" style="color:#c62828" @onclick="ClickDelete">Eliminar</button>
+                }
+                @if (ShowSaveChange)
+                {
+                    <button type="button" class="md-btn-primary" @onclick="ClickSaveChange">Guardar Cambios</button>
                 }
                 @if (ShowOk)
                 {

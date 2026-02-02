@@ -172,8 +172,14 @@
                 CloseOnOverlayClick="true"
                 ShowOk="true"
                 OnOk="() => {
-                    _modalNotifier.Close();
-                    if(_modalNotifier.ShouldNavigateAfterClose)
-                        Navigation.NavigateTo(_modalNotifier.NavigationUrl,true);
+
+                    if (_modalNotifier.ShouldNavigateAfterClose)
+                    {
+                        Navigation.NavigateTo(_modalNotifier.NavigationUrl, true);
+                    }
+                    else
+                    {
+                        _modalNotifier.Close();
+                    }
                 }" />
 }
