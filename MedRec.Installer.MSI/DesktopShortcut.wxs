@@ -1,0 +1,32 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Fragment>
+
+		<StandardDirectory Id="DesktopFolder">
+
+			<Component Id="DesktopShortcutComponent" Guid="*">
+				<Shortcut
+				  Id="MedRecDesktopShortcut"
+				  Name="MedRec"
+				  Target="[INSTALLFOLDER]MedRec.WPF.UI.exe"
+				  WorkingDirectory="INSTALLFOLDER"
+				  Icon="MedRecIcon" />
+
+				<RegistryValue
+				  Root="HKCU"
+				  Key="Software\MedRec"
+				  Name="DesktopShortcut"
+				  Type="integer"
+				  Value="1"
+				  KeyPath="yes" />
+			</Component>
+
+		</StandardDirectory>
+
+		<ComponentGroup Id="DesktopShortcut">
+			<ComponentRef Id="DesktopShortcutComponent" />
+		</ComponentGroup>
+
+	</Fragment>
+</Wix>
+
+
