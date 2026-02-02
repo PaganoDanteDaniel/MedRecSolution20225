@@ -13,19 +13,31 @@ using Microsoft.AspNetCore.Components;
 namespace MedRec.CommonComponents.Views.Components;
 public partial class ModalComponent
 {
-    [Parameter] public RenderFragment ChildContent { get; set; }
-    [Parameter] public bool Show { get; set; }
-    [Parameter] public EventCallback<bool> ShowChanged { get; set; }
+    // Contenido y configuración básica
     [Parameter] public string Title { get; set; }
-    [Parameter] public EventCallback Closing { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
     [Parameter] public ModalType Type { get; set; } = ModalType.MessageInfo;
     [Parameter] public bool CenterText { get; set; } = false;
-    [Parameter] public bool ShowAcceptButton { get; set; } // NUEVA PROPIEDAD
-    [Parameter] public EventCallback OnAccept { get; set; } // NUEVA PROPIEDAD
-    [Parameter] public bool ShowCancelButton { get; set; } // NUEVA PROPIEDAD
-    
-    private bool IsLargeModal => Type == ModalType.LargeContent;
 
+    // Visibilidad y control del modal
+    [Parameter] public bool Show { get; set; }
+    [Parameter] public EventCallback<bool> ShowChanged { get; set; }
+    [Parameter] public EventCallback Closing { get; set; }
+    [Parameter] public EventCallback<bool> OnExit { get; set; }
+
+    // Botón de aceptar
+    [Parameter] public bool ShowAcceptButton { get; set; }
+    [Parameter] public string ButtonAcceptText { get; set; } = "ACEPTAR";
+    [Parameter] public EventCallback OnAccept { get; set; }
+
+    // Botón de cancelar
+    [Parameter] public bool ShowCancelButton { get; set; }
+    [Parameter] public string ButtonCancelText { get; set; } = "CANCELAR";
+
+    // Estilo y comportamiento adicional
+    [Parameter] public bool ActionDangerous { get; set; } = false;
+    private bool IsLargeModal => Type == ModalType.LargeContent;
+    private bool IsNormalModal => Type == ModalType.LargeContent;
     private void Close()
     {
         Show = false;

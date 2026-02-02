@@ -20,7 +20,7 @@ internal class DeleteMedicalAppointmentInteractor(
 
         try
         {
-            await unitOfWork.ExecuteWithRetryAsync(async () =>
+            await unitOfWork.ExecuteWithRetry(async () =>
             {
                 await unitOfWork.BeginTransaction(ct);
                 try
@@ -38,6 +38,13 @@ internal class DeleteMedicalAppointmentInteractor(
             }, ct);
 
             await presenter.Handle(deleted, ct);
+        }
+        catch (LostConnectionException lce)
+        {
+            await presenter.ErrorAsync(new ErrorInfo(
+                lce.Message,
+                ErrorCode.DatabaseError,
+                503));
         }
         catch (ConcurrencyException cx)
         {
@@ -61,17 +68,13 @@ internal class DeleteMedicalAppointmentInteractor(
         }
         catch (OperationCanceledException)
         {
-            await presenter.ErrorAsync(new ErrorInfo(
-                "Operación cancelada por el usuario.",
-                ErrorCode.Cancelled,
-                null,
-                499));
+            throw;
         }
         catch (Exception ex)
         {
             await presenter.ErrorAsync(new ErrorInfo(
                 "Ocurrió un error inesperado al eliminar el turno.",
-                ErrorCode.Unknown,
+                ErrorCode.DatabaseError,
                 new { Exception = ex.Message },
                 500));
         }

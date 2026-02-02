@@ -1,93 +1,62 @@
-﻿using MedRec.Entity.Enums;
+﻿using MedRec.Entity.DTOs;
+using MedRec.Entity.Enums;
+using MedRec.Entity.Interfaces;
 using MedRec.Entity.POCOEntities;
-using MedRec.Entity.Results;
 using MedRec.HealthInsurance.BusinessObjects.Interfaces.Repositories;
 using MedRec.Patients.BusinessObjects.Interfaces.Ports;
 using MedRec.Patients.BusinessObjects.Interfaces.Repositories;
-using MedRec.Shared.Exceptions;
 
 namespace MedRec.Patients.UseCases.Implementations;
 
-internal class PatientDetailsInteractor(
-    IPatientDetailsOutputPort outputPort,
-    IPatientQueriesRepository patientQueries,
-    IHealthInsuranceQueriesRepository healthInsuranceQueries) : IPatientDetailsInputPort
+internal class PatientDetailsInteractor : IPatientDetailsInputPort
 {
-    public async Task Handle(Guid patientId, CancellationToken cts = default)
+    private readonly IPatientDetailsOutputPort _presenter;
+    private readonly IPatientQueriesRepository _patientQueries;
+    private readonly IHealthInsuranceQueriesRepository _healthInsuranceQueries;
+    private readonly IRepositoryUnitOfWork _unitOfWork;
+
+    public PatientDetailsInteractor(
+        IPatientDetailsOutputPort presenter,
+        IPatientQueriesRepository patientQueries,
+        IHealthInsuranceQueriesRepository healthInsuranceQueries,
+        IRepositoryUnitOfWork unitOfWork)
     {
-        cts.ThrowIfCancellationRequested();
-
-        try
-        {
-            // Obtiene los detalles del paciente desde el repositorio.
-            var patientResult = await patientQueries.GetPatientById(patientId, cts);
-
-            if (!patientResult.IsSuccess)
-            {
-                await outputPort.ErrorAsync(patientResult.Error);
-                return;
-            }
-
-            if (patientResult.Value.HealthInsuranceId.HasValue)
-            {
-                await GetHealthInsurance(patientResult, cts);
-                return;
-            }
-            await outputPort.Handle(patientResult.Value!);
-
-        }
-        catch (Exception)
-        {
-            throw new BusinessException("Error obteniendo los datos del Paciente", ErrorCode.Unknown);
-        }
-
+        _presenter = presenter;
+        _patientQueries = patientQueries;
+        _healthInsuranceQueries = healthInsuranceQueries;
+        _unitOfWork = unitOfWork;
     }
 
-    public async Task Handle(string documentNumber, CancellationToken cts = default)
+    public async Task Handle(Guid patientId, CancellationToken ct = default)
     {
-        cts.ThrowIfCancellationRequested();
+        ct.ThrowIfCancellationRequested();
 
-        try
+        Patient patient = null;
+        HealthInsuranceCompany healthInsurance = null;
+
+        await _unitOfWork.ExecuteWithRetry(async () =>
         {
-            // Obtiene los detalles del paciente desde el repositorio.
-            var patientResult = await patientQueries.GetPatientByDocumentNumber(documentNumber, cts);
-
-            // Envía los detalles del paciente al presentador.
-            if (!patientResult.IsSuccess)
+            patient = await _patientQueries.GetPatientById(patientId, ct);
+            if (patient is null)
             {
-                await outputPort.ErrorAsync(patientResult.Error);
+                await _presenter.ErrorAsync(new ErrorInfo(
+                    $"El paciente con Id '{patientId}' no existe o fue eliminado.",
+                    ErrorCode.NotFound,
+                    new { PatientId = patientId },
+                    404));
                 return;
             }
 
-            if (patientResult.Value.HealthInsuranceId.HasValue)
+            if (patient.HealthInsuranceId is Guid insuranceId)
             {
-                await GetHealthInsurance(patientResult, cts);
-                return;
+                healthInsurance = await _healthInsuranceQueries.GetById(insuranceId, ct);
             }
-            await outputPort.Handle(patientResult.Value!);
-        }
-        catch (Exception)
-        {
-            throw new BusinessException("Error obteniendo los datos del Paciente", ErrorCode.Unknown);
-        }
+        }, ct);
 
-    }
-
-    private async Task GetHealthInsurance(Result<Patient> patientResult, CancellationToken cts)
-    {
-        cts.ThrowIfCancellationRequested();
-        try
+        if (patient is not null)
         {
-            if (patientResult.Value.HealthInsuranceId is Guid id)
-            {
-                var healthResult = await healthInsuranceQueries.GetById(id, cts);
-                await outputPort.Handle(patientResult.Value!, healthResult.Value);
-            }
+            await _presenter.ErrorAsync(null);
+            await _presenter.Handle(patient, healthInsurance, ct);
         }
-        catch (Exception)
-        {
-            throw;
-        }
-
     }
 }

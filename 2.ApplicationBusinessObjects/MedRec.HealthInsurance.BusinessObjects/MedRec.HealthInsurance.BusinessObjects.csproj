@@ -6,7 +6,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\1.EnterpriseBusinessObjects\MedRec.Shared\MedRec.Shared.csproj" />
     <ProjectReference Include="..\MedRec.BusinessObjects\MedRec.BusinessObjects.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\HealthInsuranceValidatorMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>HealthInsuranceValidatorMessages.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\HealthInsuranceValidatorMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>HealthInsuranceValidatorMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

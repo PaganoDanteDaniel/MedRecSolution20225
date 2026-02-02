@@ -1,11 +1,12 @@
 ﻿using MedRec.BusinessObjects.Interfaces;
+using MedRec.BusinessObjects.Results;
 using MedRec.Entity.POCOEntities;
 using MedRec.Patients.BusinessObjects.DTOs;
 
 namespace MedRec.Patients.BusinessObjects.Interfaces.Ports;
-public interface IPatientsListOutputPort : ICommonOutputPort
+public interface IPatientsListOutputPort : IBaseOutputPort
 {
-    int TotalRecords { get; }
-    IEnumerable<PatientSummaryDto> Patients { get; }
+    OperationResult<int> TotalRecords { get; }
+    OperationResult<IEnumerable<PatientSummaryDto>> Result { get; }
     Task Handle(IEnumerable<Patient> patientList, int totalRecord, CancellationToken cancellationToken = default);
 }

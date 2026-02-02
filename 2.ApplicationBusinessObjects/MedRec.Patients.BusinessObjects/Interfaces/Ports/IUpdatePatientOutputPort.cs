@@ -1,9 +1,10 @@
 ﻿#nullable enable
 using MedRec.BusinessObjects.Interfaces;
+using MedRec.BusinessObjects.Results;
 
 namespace MedRec.Patients.BusinessObjects.Interfaces.Ports;
-public interface IUpdatePatientOutputPort : ICommonOutputPort
+public interface IUpdatePatientOutputPort : IBaseOutputPort
 {
-    bool UpdatedSuccessfully { get; }
-    Task Handle(bool IsUpdated, CancellationToken cancellationToken = default);
+    OperationResult<bool> Result { get; }
+    Task Handle(CancellationToken cancellationToken = default);
 }

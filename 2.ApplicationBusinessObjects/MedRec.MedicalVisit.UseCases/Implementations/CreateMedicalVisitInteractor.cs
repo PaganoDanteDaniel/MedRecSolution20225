@@ -9,9 +9,9 @@ namespace MedRec.MedicalVisit.UseCases.Implementations;
 internal class CreateMedicalVisitInteractor(
     ICreateMedicalVisitOutputPort outputPort,
     IMedicalVisitCommandRepository commandRepository,
-    IModelValidatorHub<MedicalVisitDto> validatorHub) : ICreateMedicalVisitInputPort
+    IModelValidatorHub<CreateMedicalVisitDto> validatorHub) : ICreateMedicalVisitInputPort
 {
-    public async Task Handle(MedicalVisitDto dto, CancellationToken cts = default)
+    public async Task Handle(CreateMedicalVisitDto dto, CancellationToken cts = default)
     {
         cts.ThrowIfCancellationRequested();
 

@@ -5,6 +5,7 @@
 @using MedRec.MedicalVisit.BusinessObjects.DTOs
 @using MedRec.MedicalVisit.BusinessObjects.Validator
 @using MedRec.MedicalVisit.ViewModels.Models
+@using MedRec.MedicalVisit.ViewModels.Orchestration
 @using MedRec.MedicalVisit.ViewModels.VM
 @using MedRec.CommonComponents.Views.Components
 @using MedRec.MedicalVisit.Views.Resources
@@ -13,11 +14,19 @@
 
 @inject IModelValidatorHub<CreateMedicalVisitModel> visitValidator
 
+@if (isLoading)
+{
+    <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.6); z-index:1000;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+}
 <EditForm EditContext="_editContext" OnSubmit="SaveChanged" autocomplete="off">
 
     <ModelValidator T="CreateMedicalVisitModel"
                     Validator="visitValidator"
-                    ValidationRules="vm => CreateMedicalVisitValidator.Validate((MedicalVisitDto)vm, VM.Model.DateOfBirth.CalculateAge())" />
+                    ValidationRules="vm => CreateMedicalVisitValidator.Validate(MedicalVisitMapper.ToCreateDto(vm), VM.Model.DateOfBirth.CalculateAge())" />
 
     @* ---------- Campos trampa para autofill ---------- *@
     <input autocomplete="username" style="position: absolute; left: -9999px; top: -9999px;" />
@@ -65,7 +74,7 @@
                             <InputDate id="visit-date"
                                        @bind-Value="VM.Model.VisitDate"
                                        class="date-input"
-                                       readonly="@IsReadOnly" />
+                                       readonly="true" />
                         </div>
                         <ValidationMessage For="() => VM.Model.VisitDate" class="validation-message" />
                     </div>
@@ -138,7 +147,7 @@
                     <i class="bi bi-save2"></i> @MedicalVisitMessages.ButtonExit
                 </button>
 
-                <button type="submit" disabled="@HasChanges">
+                <button type="submit">
                     <i class="bi bi-save2"></i> @MedicalVisitMessages.ButtonSaveMedicalVisit
                 </button>
             </div>
@@ -156,191 +165,5 @@
                 ShowAcceptButton="_showAcceptButton" 
                 ShowCancelButton="_showCancelButton"
                 OnAccept="@OnAcceptSave">
-    @((MarkupString)VM.InformationMessage)
+    @((MarkupString)_modalMessage)
 </ModalComponent>
-@code{
-    [Inject] private NavigationManager Navigation { get; set; }
-    [Parameter] public CreateMedicalVisitVM VM { get; set; }
-    [Parameter] public Guid PatientId { get; set; }
-    [Parameter] public Guid? VisitId { get; set; }
-    [Parameter] public bool IsReadOnly { get; set; }
-    [Parameter] public bool IsEditMode { get; set; }
-    [Parameter] public bool CloneNow { get; set; } = false;
-
-    private EditContext _editContext;
-    private string _modalTitle = "Mensaje del sistema";
-    private ModalType _modalType = ModalType.MessageInfo;
-    private bool _showAcceptButton = false;
-    private bool _showCancelButton = false;
-    private bool _isConfirmationModal = false;
-    private bool _showModal;
-
-
-    private CreateMedicalVisitModel _originalModel;
-    private bool HasChanges => DeepEquals(_originalModel, VM.Model);
-
-    private bool _navigateAfterClose = false;
-    private string _navigationUrl = "/";
-
-
-    private TaskCompletionSource<bool> _saveConfirmationTcs;
-
-    private CancellationTokenSource _cts;
-
-    protected override void OnInitialized()
-    {
-        VM.Model.PatientId = PatientId;
-        _editContext = new EditContext(VM.Model);
-
-        // Suscripción a eventos del ViewModel
-        VM.OnShowMessage += () => ShowModalMessage("Información", ModalType.MessageInfo);
-        VM.OnShowWarning += () => ShowModalMessage("Advertencia", ModalType.MessageWarning);
-        VM.OnShowError += () => ShowModalMessage("Error", ModalType.MessageError);
-        VM.OnShowConcurrencyError += () => ShowModalMessage("Conflicto de concurrencia", ModalType.MessageError);
-        VM.OnMedicalVisitAdded += StateHasChanged;
-        VM.OnMedicalVisitUpdated += StateHasChanged;
-    }
-    protected override Task OnParametersSetAsync()
-    {
-        // Clonar SOLO cuando el modelo está cargado y la versión cambia
-        if (VM.Model != null && CloneNow)
-        {
-            _originalModel = VM.Model.Clone();
-
-        }
-
-        return Task.CompletedTask;
-    }
-    private void ShowModalMessageAndNavigate(string title, ModalType type, string navigationUrl, bool showAcceptButton = true, bool showCancelButton = false)
-    {
-        _modalTitle = title;
-        _modalType = type;
-        _showModal = true;
-        _navigateAfterClose = true;
-        _navigationUrl = navigationUrl;
-        InvokeAsync(StateHasChanged);
-    }
-    private void ShowModalMessage(string title, ModalType type, bool showAcceptButton = true, bool showCancelButton = false)
-    {
-        _modalTitle = title;
-        _modalType = type;
-        _showModal = true;
-        _showAcceptButton = showAcceptButton;
-        _showCancelButton = showCancelButton;
-        _navigateAfterClose = false;
-        InvokeAsync(StateHasChanged);
-    }
-
-    private string CreateUrl()
-    {
-        var nombreCodificado = System.Web.HttpUtility.UrlEncode($"{VM.Model.FullName}");
-        var fechaCodificada = VM.Model.DateOfBirth.ToString("yyyy-MM-dd");
-        var url = $"/medical-visit/list?id={PatientId}&nombre={nombreCodificado}&fechaNac={fechaCodificada}";
-        return url;
-    }
-    private void HandleButtonClick()
-    {
-
-        Navigation.NavigateTo(CreateUrl(), true);
-    }
-    public async Task SaveChanged()
-    {
-        if (!IsEditMode)
-        {
-            if (_editContext.Validate() == true)
-            {
-                _cts?.Dispose();
-                _cts = new CancellationTokenSource();
-                await VM.AddMedicalVisitAsync(_cts.Token);
-
-                VM.InformationMessage = "LOS DATOS FUERON GUARDADOS SATISFACTORIAMENTE";
-                _isConfirmationModal = false; // No es confirmación
-                ShowModalMessageAndNavigate("CONFIRMACIÓN DE GUARDADO", ModalType.MessageSuccess, CreateUrl());
-            }
-        }
-        else
-        {
-            if (_editContext.Validate() == true)
-            {
-                _cts?.Dispose();
-                _cts = new CancellationTokenSource();
-                // Modal de confirmación
-                VM.InformationMessage = "¿SEGURO DESEA ACTUALIZAR LOS DATOS DE LA VISITA?";
-                _showAcceptButton = true;
-                _showCancelButton = true;
-                _isConfirmationModal = true; // Activar flag
-                ShowModalMessage("CONFIRMACIÓN DE ACTUALIZACIÓN", ModalType.MessageWarning, true, true);
-
-                _saveConfirmationTcs = new TaskCompletionSource<bool>();
-                bool confirmed = await _saveConfirmationTcs.Task; // Espera aquí
-
-                if (confirmed)
-                {
-                    await Task.Delay(50);
-                    // Aquí deberías ejecutar la actualización real
-                    var url = CreateUrl();
-                    await VM.UpdateMedicalVisitAsync(_cts.Token);
-
-                    // Modal informativo de éxito
-                    VM.InformationMessage = "LOS DATOS FUERON ACTUALIZADOS SATISFACTORIAMENTE";
-                    _isConfirmationModal = false; // Ya no es confirmación
-                    _showAcceptButton = true;
-                    _showCancelButton = false;
-                    ShowModalMessageAndNavigate("CONFIRMACIÓN DE ACTUALIZACIÓN", ModalType.MessageSuccess, url);
-                }
-            }
-        }
-    }
-    private bool DeepEquals(CreateMedicalVisitModel a, CreateMedicalVisitModel b)
-    {
-        if (a == null || b == null) return a == b;
-
-        var hasChange = a.Reason.ToUpperInvariant() == b.Reason.ToUpperInvariant() &&
-               a.Diagnosis.ToUpperInvariant() == b.Diagnosis.ToUpperInvariant() &&
-               a.Treatment.ToUpperInvariant() == b.Treatment.ToUpperInvariant() &&
-               a.SystolicPressure == b.SystolicPressure &&
-               a.DiastolicPressure == b.DiastolicPressure &&
-               a.PulsePerMinute == b.PulsePerMinute &&
-               a.Temperature == b.Temperature &&
-               a.Notes.ToUpperInvariant() == b.Notes.ToUpperInvariant();
-        return hasChange;
-    }
-    private void OnAcceptSave()
-    {        // Solo establecer resultado si es un modal de confirmación
-        if (_isConfirmationModal && _saveConfirmationTcs != null)
-        {
-            _saveConfirmationTcs.SetResult(true);
-            _saveConfirmationTcs = null; // Limpiar para evitar reutilización
-            _isConfirmationModal = false;
-            _showModal = false;
-            return;
-        }
-
-        CloseModal();
-    }
-
-    private void CloseModal()
-    {
-        _showModal = false;
-
-        if (_navigateAfterClose)
-        {
-            _navigateAfterClose = false;
-            Navigation.NavigateTo(_navigationUrl, true);
-        }
-    }
-
-    public void Dispose()
-    {
-        if (VM is not null)
-        {
-            VM.OnShowMessage -= () => ShowModalMessage("Información", ModalType.MessageInfo);
-            VM.OnShowWarning -= () => ShowModalMessage("Advertencia", ModalType.MessageWarning);
-            VM.OnShowError -= () => ShowModalMessage("Error", ModalType.MessageError);
-            VM.OnShowConcurrencyError -= () => ShowModalMessage("Conflicto de concurrencia", ModalType.MessageError);
-            VM.OnMedicalVisitAdded -= StateHasChanged;
-            VM.OnMedicalVisitUpdated -= StateHasChanged;
-        }
-        _cts?.Dispose();
-    }
-}

@@ -5,7 +5,7 @@ using MedRec.MedicalVisit.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedRec.MedicalVisit.DataContext.MySql.Services;
-internal class MedicalVisitQueriesDataContextMySql(DataBaseContextMySql context) :
+internal class MedicalVisitQueriesDataContextMySql(MedRecContext context) :
     IMedicalVisitQueriesDataContext
 
 {
@@ -74,7 +74,7 @@ internal class MedicalVisitQueriesDataContextMySql(DataBaseContextMySql context)
         var query = context.PatientMedicalVisits.AsNoTracking().AsQueryable();
 
         query = query.Where(p => p.IsDeleted == includeDeleted);
-
-        return await query.FirstOrDefaultAsync(p => p.Id == visitId);
+        var date = await query.FirstOrDefaultAsync(p => p.Id == visitId);
+        return date;
     }
 }

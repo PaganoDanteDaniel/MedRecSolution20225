@@ -1,21 +1,34 @@
-﻿@using MedRec.CommonComponents.Views.Components
+﻿@using MedRec.CommonComponents.Views
+@using MedRec.CommonComponents.Views.Components
 @using MedRec.Entity.DTOs
 @using MedRec.HealthInsurance.ViewModels.VM
 @using MedRec.HealthInsurance.ViewModels.Models
 @using MedRec.HealthInsurance.Views.Resources
 @using Microsoft.AspNetCore.Components.Forms
+@using System.Runtime.CompilerServices
+
+@inherits OwningComponentBase<HealthInsuranceCatalogVM>
+
 <div class="container">
+    @if (isLoading)
+    {
+        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.6); z-index:1000;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+        </div>
+    }
     <div class="search-section">
         <SearchAndAddComponent LabelText="@HealthInsuranceMessages.FilterLabelText"
                                Placeholder="@HealthInsuranceMessages.PlaceholderFilterInput"
                                ButtonText="AGREGAR"
                                @bind-Value="Filter"
-                               OnButtonClick="OnAddHealthCompany"
+                               OnButtonClick="OnAddHealthInsurance"
                                ShowButton />
     </div>
     <div class="table-container">
         <TableComponent TItem="HealthInsuranceModel"
-                        Items="Model.HealthInsuranceCatalog.ToList()"
+                        Items="VM.HealthInsuranceCatalog.ToList()"
                         OnRowClick="SelectHealthInsurance"
                         OnEdit="OnUpdateHealthInsurance"
                         OnDelete="OnDeleteHealthInsurance">
@@ -26,7 +39,7 @@
                         <th scope="col">Nombre</th>
                         <th class="actions" style="width: 12%;" scope="col">Acciones</th>
                     </tr>
-                    </thead>
+                </thead>
             </FullHeaderTemplate>
             <RowTemplate Context="healthInsurance">
                 <td style="width:12%;"><span class="truncate">@healthInsurance.Acronym</span></td>
@@ -40,28 +53,320 @@
                              MaxPageButton="@MaxPageButton"
                              PageChanged="HandlePageChanged" />
     </div>
-   
 </div>
-@if (showHealthCompanyDelete)
-{
-    <ModalComponent Title=@HealthInsuranceMessages.ModalTitleText
-                    Show="@showHealthCompanyDelete"
-                    ShowChanged="(value) => OnCloseHealthCompanyDelete(value)"
-                    ShowAcceptButton="true"
-                    OnAccept="OnAcceptDelete"
-                    IsSuccess="true">
-        <div>
-            @HealthInsuranceMessages.ModalMessageText
-        </div>
-    </ModalComponent>
-}
-@* @if (showHealthCompanyUpdate)
-{
-    <ModalComponent Title=@UpdateHealthCompanyMessages.TitleText
-                    Show="@showHealthCompanyUpdate"
-                    ShowChanged="(value) => OnCloseHealthCompanyUpdate(value)">
-        <UpdateHealthCompanyComponent InsuranceHealthCompanyId=@healthCompanyId
-                                      OnHealthCompanyUpdated="OnHealthCompanyUpdated" />
-    </ModalComponent>
 
-} *@
+
+<MdMessageModal Visible="@ModalVisible"
+                VisibleChanged="@(v => ModalVisible = v)"
+                Type="@ModalType"
+                Title="@ModalTitle"
+                Message="@ModalMessage"
+                Body="@ModalBody"
+                CloseOnOverlayClick="@CloseOnOverlayClick"
+                ShowOk="@ShowOk"
+                ShowCancel="@ShowCancel"
+                ShowDelete="@ShowDelete"
+                ShowRetry="@ShowRetry"
+                OnOk="_onOkCallback"
+                OnCancel="_onCancelCallback"
+                OnDelete="_onDeleteCallback"
+                OnRetry="_onRetryCallback" />
+
+@code {
+    private bool isLoading = false;
+    private UpdateHealthInsuranceComponent? _updateComponentRef;
+
+    private CancellationTokenSource _cts;
+    private CancellationTokenSource _debounceCts;
+
+    [Inject] public NavigationManager NavigationManager { get; set; }
+
+    private HealthInsuranceCatalogVM VM => Service;
+
+    [Parameter] public EventCallback OnRequestAddHealthInsurance { get; set; }
+    [Parameter] public EventCallback<Guid> OnRequestUpdateHealthInsurance { get; set; }
+
+
+    [Parameter] public EventCallback<(Guid Id, string Name)> OnHealthCompanySelected { get; set; }
+    [Parameter] public EventCallback<string> FooterMessageParameterChanged { get; set; }
+    [Parameter] public int MaxPageButton { get; set; }
+
+    [Parameter]
+    public string FooterMessage
+    {
+        get => _footerMessage;
+        set
+        {
+            if (_footerMessage != value)
+            {
+                _footerMessage = value;
+                FooterMessageParameterChanged.InvokeAsync(value);
+            }
+        }
+    }
+
+    private string Filter
+    {
+        get => _paginationDto.FilterOne;
+        set
+        {
+            if (_paginationDto.FilterOne != value)
+            {
+                _paginationDto.FilterOne = value;
+                _ = OnSearchTermChanged(value);
+            }
+        }
+    }
+
+    private PaginationDto _paginationDto = new(1, 10);
+    private int _totalPages = 1;
+
+    // === NUEVAS PROPIEDADES PARA EL NUEVO MODAL ===
+    private bool ModalVisible;
+    private ModalType ModalType = ModalType.MessageInfo;
+    private string ModalTitle = "Mensaje";
+    private string ModalMessage = "";
+    private RenderFragment? ModalBody;
+    private bool CloseOnOverlayClick = true;
+    private bool ShowOk = false;
+    private bool ShowCancel = false;
+    private bool ShowDelete = false;
+    private bool ShowRetry = false;
+
+    // Callbacks para el nuevo modal
+    private EventCallback _onOkCallback = default;
+    private EventCallback _onCancelCallback = default;
+    private EventCallback _onDeleteCallback = default;
+    private EventCallback _onRetryCallback = default;
+
+    [Parameter] public EventCallback OnLoadingCompleted { get; set; }
+
+    // Estado de acciones
+    private Guid healthCompanyId;
+    private bool _addAction;
+    private bool _deleteAction;
+    private bool _updateAction;
+    private string _footerMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLoading = true;
+        // Suscribir eventos del VM al nuevo sistema de modales
+        VM.OnShowMessage += () => ShowInfoModal("Información", VM.InformationMessage);
+        VM.OnShowWarning += () => ShowWarningModal("Advertencia", VM.InformationMessage);
+        VM.OnShowError += () => ShowErrorModal("Error", VM.InformationMessage);
+        VM.OnShowConcurrencyError += () => ShowErrorModal("Conflicto de concurrencia", VM.InformationMessage);
+        VM.OnHealthInsuranceDeleted += StateHasChanged;
+
+        await LoadHealthCompanies();
+    }
+
+    private async Task OnSearchTermChanged(string searchTerm)
+    {
+        _debounceCts?.Cancel();
+        _debounceCts = new CancellationTokenSource();
+
+        if (searchTerm.Length > 2 || searchTerm.Length == 0)
+        {
+            try
+            {
+                await Task.Delay(600, _debounceCts.Token);
+                _paginationDto.CurrentPage = 1;
+                await LoadHealthCompanies();
+            }
+            catch (TaskCanceledException) { }
+        }
+    }
+
+    private async Task SelectHealthInsurance(HealthInsuranceModel healthInsurance)
+    {
+        await OnHealthCompanySelected.InvokeAsync((healthInsurance.Id, healthInsurance.Name));
+    }
+
+    private async Task LoadHealthCompanies()
+    {
+        try
+        {
+            _cts?.Dispose();
+            _cts = new CancellationTokenSource();
+
+            await VM.GetHealthInsuranceAsync(_paginationDto, _cts.Token);
+            var total = VM.TotalRecords;
+            FooterMessage = string.Format(HealthInsuranceMessages.TotalRegistryTemplate, total);
+            _totalPages = (int)Math.Ceiling((double)total / _paginationDto.PageSize);
+        }
+        finally
+        {
+            isLoading = false;
+            if (OnLoadingCompleted.HasDelegate)
+                await OnLoadingCompleted.InvokeAsync();
+            StateHasChanged();
+        }
+    }
+
+    private async Task HandlePageChanged(int newPage)
+    {
+        _paginationDto.CurrentPage = newPage;
+        await LoadHealthCompanies();
+    }
+
+    // === FLUJOS DE USUARIO ===
+
+    private void OnAddHealthInsurance()
+    {
+        // Emitir evento para que el padre abra Modal
+        _ = OnRequestAddHealthInsurance.InvokeAsync();
+    }
+
+    private void OnUpdateHealthInsurance(HealthInsuranceModel healthCompany)
+    {
+        _ = OnRequestUpdateHealthInsurance.InvokeAsync(healthCompany.Id);
+    }
+
+    private void OnDeleteHealthInsurance(HealthInsuranceModel healthCompany)
+    {
+        ResetButtons();
+        _deleteAction = true;
+        healthCompanyId = healthCompany.Id;
+        VM.InformationMessage = HealthInsuranceMessages.ModalMessageText;
+
+        ModalTitle = HealthInsuranceMessages.ModalTitleText;
+        ModalType = ModalType.MessageDanger;
+        ModalMessage=VM.InformationMessage;
+
+        ShowDelete = true;
+        ShowCancel = true;
+        CloseOnOverlayClick = false;
+        _onDeleteCallback = EventCallback.Factory.Create(this, OnAcceptDelete);
+        _onCancelCallback = EventCallback.Factory.Create(this, OnCloseModal);
+        ModalVisible = true;
+    }
+
+    private async Task OnAcceptDelete()
+    {
+        try
+        {
+            await VM.DeleteHealthInsuranceAsync(healthCompanyId);
+            await LoadHealthCompanies();
+        }
+        finally
+        {
+            _deleteAction = false;
+            ModalVisible = false;
+        }
+    }
+
+    private async Task HandleUpdateOk()
+    {
+        if (_updateComponentRef is not null)
+        {
+            // Validamos y guardamos
+            await _updateComponentRef.SaveAsync();
+            // NOTA: SaveAsync ya llama a OnHealthInsuranceUpdated,
+            // que a su vez llama a OnHealthCompanyUpdated → cierra el modal y refresca.
+            // Así que no necesitamos cerrar aquí explícitamente.
+        }
+    }
+
+    private void HandleUpdateCancel()
+    {
+        // Opcional: limpiar campos antes de cerrar
+        _updateComponentRef?.CleanField();
+
+        // Cerrar modal
+        OnCloseModal();
+    }
+    // === CIERRE Y LIMPIEZA ===
+
+    private void OnCloseModal()
+    {
+        _addAction = false;
+        _updateAction = false;
+        _deleteAction = false;
+        ModalVisible = false;
+    }
+
+    private async Task OnHealthCompanyAdded()
+    {
+        _addAction = false;
+        await LoadHealthCompanies();
+        ModalVisible = false;
+    }
+
+    private async Task OnHealthCompanyUpdated()
+    {
+        _updateAction = false;
+        await LoadHealthCompanies();
+        ModalVisible = false;
+    }
+
+    private void OnCancelAdder()
+    {
+        OnCloseModal();
+    }
+
+    // === MÉTODOS AUXILIARES PARA MENSAJES SIMPLES ===
+
+    private void ShowInfoModal(string title, string message)
+    {
+        ModalTitle = title;
+        ModalType = ModalType.MessageInfo;
+        ModalMessage = message;
+        ShowOk = true;
+        CloseOnOverlayClick = true;
+
+        _onOkCallback = EventCallback.Factory.Create(this, OnCloseModal);
+
+        ModalVisible = true;
+    }
+
+    private void ShowWarningModal(string title, string message)
+    {
+        ModalTitle = title;
+        ModalType = ModalType.MessageWarning;
+        ModalMessage = message;
+        ShowOk = true;
+        CloseOnOverlayClick = true;
+
+        _onOkCallback = EventCallback.Factory.Create(this, OnCloseModal);
+
+        ModalVisible = true;
+    }
+
+    private void ShowErrorModal(string title, string message)
+    {
+        ModalTitle = title;
+        ModalType = ModalType.MessageError;
+        ModalMessage = message;
+        ShowOk = true;
+        CloseOnOverlayClick = true;
+
+        _onOkCallback = EventCallback.Factory.Create(this, OnCloseModal);
+
+        ModalVisible = true;
+    }
+
+    void ResetButtons()
+    {
+        ShowOk = false;
+        ShowCancel = false;
+        ShowRetry = false;
+        ShowDelete = false;
+        ModalBody = null;
+    }
+
+    public void Dispose()
+    {
+        if (VM is not null)
+        {
+            // Desuscribir eventos
+            VM.OnShowMessage -= () => ShowInfoModal("Información", VM.InformationMessage);
+            VM.OnShowWarning -= () => ShowWarningModal("Advertencia", VM.InformationMessage);
+            VM.OnShowError -= () => ShowErrorModal("Error", VM.InformationMessage);
+            VM.OnShowConcurrencyError -= () => ShowErrorModal("Conflicto de concurrencia", VM.InformationMessage);
+            VM.OnHealthInsuranceDeleted -= StateHasChanged;
+        }
+        _cts?.Dispose();
+        _debounceCts?.Dispose();
+    }
+}

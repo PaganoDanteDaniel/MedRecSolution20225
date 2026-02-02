@@ -1,26 +1,49 @@
 ﻿@page "/patient/update/{patientId:guid}"
+@using MedRec.CommonComponents.Views.Page
+
+@inherits OwningComponentBase<UpdatePatientVM>
 
 <div class="body-content">
-    <TitleComponent Title=@UpdatePatientMessages.UpdatePatientPageTitle />
-    <!-- Zona desplazable -->
-    <div class="scrollable-section">
-        <ErrorBoundary @ref=ErrorBoundaryRef>
-           <ChildContent>
-               <UpdatePatientComponent 
-                   VM="VM" 
-                   PatientId="PatientId" />
-           </ChildContent>
-           <ErrorContent>
-               <ExceptionDisplayComponent Exception="context"/>
-                   <button class="btn btn-danger" @onclick=Recover>
-                       Aceptar
-                   </button>
-           </ErrorContent>
-       </ErrorBoundary>
-   </div>
-    <div class="me-footer">
-        <FooterComponent Message="@VM.InformationMessage" />
-    </div>
+
+<PageShell FooterMessage="@footerMessage" @ref="pageShellRef" CenterContent="true">
+    <HeaderContent>
+        <CustomHeader ButtonBackPress="OnBackPressed"
+                      ColorA50="--color-blue-50"
+                      ColorA100="--color-blue-100"
+                      ColorB100="--color-blue-200"
+                      ColorA600="--color-blue-600"
+                      ColorB600="--color-blue-600">
+            <HeaderContent>
+                <div class="header-icon">
+                    <svg class="icon-header" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                </div>
+                    <h1 class="header-title">@UpdatePatientMessages.UpdatePatientPageTitle</h1>
+            </HeaderContent>
+        </CustomHeader>
+    </HeaderContent>
+
+    <ChildContent>
+            <UpdatePatientComponent VM="VM"
+                                    PatientId="PatientId" />
+    </ChildContent>
+
+    <ErrorContent Context="context">
+        <ExceptionDisplayComponent Exception="context" />
+        <button class="btn btn-danger" @onclick="(()=>pageShellRef.Recover())">OK</button>
+    </ErrorContent>
+</PageShell>
+
+  
 </div>
 
-
+@if (_isLoading)
+{
+    <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.6); z-index:1000;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+}

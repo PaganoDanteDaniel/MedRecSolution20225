@@ -88,6 +88,15 @@ namespace MedRec.Patients.Views.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a CANCELAR.
+        /// </summary>
+        internal static string CancelConcurrencyButton {
+            get {
+                return ResourceManager.GetString("CancelConcurrencyButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a LIMPAR.
         /// </summary>
         internal static string ClearButton {
@@ -97,11 +106,38 @@ namespace MedRec.Patients.Views.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a OTROS  USUARIOS MODIFICARON ESTOS CAMPOS MIENTRAS EDITABAS. SELECCIONA QUE VALOR CONSERVAR:.
+        /// </summary>
+        internal static string ConcurrencyConflictMessage {
+            get {
+                return ResourceManager.GetString("ConcurrencyConflictMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a CONFLICTO DE CONCURRENCIA.
+        /// </summary>
+        internal static string ConcurrencyConflictTitle {
+            get {
+                return ResourceManager.GetString("ConcurrencyConflictTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a FECHA DE NACIMIENTO.
         /// </summary>
         internal static string DateOfBirthLabel {
             get {
                 return ResourceManager.GetString("DateOfBirthLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a VALOR ACTUAL EN EL SISTEMA:.
+        /// </summary>
+        internal static string DbValueLabel {
+            get {
+                return ResourceManager.GetString("DbValueLabel", resourceCulture);
             }
         }
         
@@ -178,6 +214,24 @@ namespace MedRec.Patients.Views.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a USAR VALORES DEL SISTEMA.
+        /// </summary>
+        internal static string KeepDbValueOption {
+            get {
+                return ResourceManager.GetString("KeepDbValueOption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a MANTENER MIS CAMBIOS.
+        /// </summary>
+        internal static string KeepUserValueOption {
+            get {
+                return ResourceManager.GetString("KeepUserValueOption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a APELLIDO DEL PACIENTE.
         /// </summary>
         internal static string LastNameLabel {
@@ -192,6 +246,15 @@ namespace MedRec.Patients.Views.Resources {
         internal static string PhoneNumberLabel {
             get {
                 return ResourceManager.GetString("PhoneNumberLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a APLICAR Y GUARDAR.
+        /// </summary>
+        internal static string RetryConcurrencyButton {
+            get {
+                return ResourceManager.GetString("RetryConcurrencyButton", resourceCulture);
             }
         }
         
@@ -214,7 +277,7 @@ namespace MedRec.Patients.Views.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a ACTUALIZACIÓN DE LOS DATOS DEL PACIENTE.
+        ///   Busca una cadena traducida similar a Modificar Paciente.
         /// </summary>
         internal static string UpdatePatientPageTitle {
             get {
@@ -228,6 +291,15 @@ namespace MedRec.Patients.Views.Resources {
         internal static string UpdatePatientTemplate {
             get {
                 return ResourceManager.GetString("UpdatePatientTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a TUS CAMBIOS.
+        /// </summary>
+        internal static string UserValueLabel {
+            get {
+                return ResourceManager.GetString("UserValueLabel", resourceCulture);
             }
         }
     }

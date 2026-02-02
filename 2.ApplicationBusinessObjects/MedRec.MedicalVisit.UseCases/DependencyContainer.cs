@@ -6,11 +6,11 @@ public static class DependencyContainer
 {
     public static IServiceCollection AddMedicalVisitUseCasesServices(this IServiceCollection services)
     {
-        services.AddScoped<ICreateMedicalVisitInputPort, CreateMedicalVisitInteractor>()
-                .AddScoped<IMedicalVisitSummaryListInputPort, MedicalVisitSummaryListInteractor>()
-                .AddScoped<IGetMedicalHistoryIdInputPort, GetMedicalHistoryIdInteractor>()
-                .AddScoped<IGetMedicalVisitInputPort, GetMedicalVisitInteractor>()
-                .AddScoped<IUpdateMedicalVisitInputPort, UpdateMedicalVisitInteractor>();
+        services.AddScoped<ICreateMedicalVisitInputPort, CreateMedicalVisitInteractorUoW>()
+                .AddScoped<IMedicalVisitSummaryListInputPort, MedicalVisitSummaryListInteractorUoW>()
+                .AddScoped<IGetMedicalHistoryIdInputPort, GetMedicalHistoryIdInteractorUoW>()
+                .AddScoped<IGetMedicalVisitInputPort, GetMedicalVisitInteractorUoW>()
+                .AddScoped<IUpdateMedicalVisitInputPort, UpdateMedicalVisitInteractorUoW>();
 
 
         return services;

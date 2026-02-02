@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\1.EnterpriseBusinessObjects\MedRec.Entity\MedRec.Entity.csproj" />
+    <ProjectReference Include="..\..\4.Framework&amp;Drivers\MedRec.DataContext.MySql\MedRec.DataContext.MySql.csproj" />
   </ItemGroup>
 
   <ItemGroup>

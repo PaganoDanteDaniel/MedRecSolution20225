@@ -34,7 +34,9 @@
         margin: 0;
         font-size: var(--font-size-header);
     }
-
+.agenda-title {
+    font-size: var(--font-size-base);
+}
 .calendar-selector {
     display: flex;
     gap: 0.5rem;
@@ -258,6 +260,7 @@
 .appointment-reason {
     font-size: calc(var(--font-size-label) * 0.8);
     margin-top: var(--space-xs-fluid);
+    margin-bottom: var(--space-xs-fluid);
     line-height: 1;
     color: #666; /* Un color más suave para el motivo */
 }

@@ -4,6 +4,7 @@
 @using MedRec.Patients.BusinessObjects.DTOs
 @using MedRec.Patients.ViewModels.Models
 
+@implements IDisposable
 @inject IModelValidatorHub<UpdatePatientModel> patientValidator
 
 <EditForm EditContext="_editContext" OnValidSubmit="UpdatePatient">
@@ -11,7 +12,7 @@
     <ModelValidator T="UpdatePatientModel"
                     Validator="patientValidator"
                     ValidationRules="p => UpdatePatientValidator.Validate((UpdatePatientDto)p, validateId: true)" />
-
+ 
     <div class="update-patient-form">
         @* ---------- Campos trampa para capturar autofill de Chromium ---------- *@
         <input autocomplete="username" style="position: absolute; left: -9999px; top: -9999px;" />
@@ -126,29 +127,21 @@
         </div>
 
         <div class="update-patient-row">
-            <div class="update-patient-col">
-                <label for="HealthInsuranceCompanyId">@UpdatePatientMessages.HealthInsuranceCompanyLabel</label>
+              <div class="update-patient-col">
+                <label for="healthCompany">@UpdatePatientMessages.HealthInsuranceCompanyLabel</label>
                 <div class="inline-group">
-                    <input id="healthCompany" 
+                    <input id="healthCompany"
                            @bind="VM.Model.SelectedHealthCompanyName"
                            @bind:after="() => OnFieldChanged(() => VM.Model.SelectedHealthCompanyName)"
-                           style="width: 85%;" 
-                           readonly autocomplete="off" />
-                    <button type="button" @onclick="OpenHealthCompanyList">
+                           style="width: 85%;"
+                           readonly
+                           autocomplete="off" />
+                    <button type="button" @onclick="() => _healthInsuranceSelectorRef?.Open()">
                         <i class="bi bi-search"></i>
                     </button>
                 </div>
-                @if(_showHealthCompanyList)
-                {
-                   <ModalComponent Title="SELECTOR DE OBRAS SOCIALES"
-                                    Show="@_showHealthCompanyList"
-                                    Type="ModalType.LargeContent"
-                                    ShowChanged="(value) => _showHealthCompanyList = value">
-                        <HealthInsuranceComponent MaxPageButton="3"
-                                                  OnHealthCompanySelected="@OnHealthCompanySelected" />
-                    </ModalComponent>
-                }
             </div>
+            
             <div class="update-patient-col">
                 <label for="HealthInsuranceCard">@UpdatePatientMessages.HealthInsuranceCardLabel</label>
                 <input type="text"
@@ -185,6 +178,7 @@
                 <ValidationMessage For="() => VM.Model.HealthInsurancePlan" class="validation-message" />
             </div>
         </div>
+
         <div class="update-patient-row button-group">
             <button type="submit" disabled="@(!HasChanges)">
                 <i class="fas fa-check"></i> @UpdatePatientMessages.SubmitButton
@@ -201,13 +195,94 @@
     </div>
 </EditForm>
 
-<ModalComponent Show="@_showModal"
-                ShowChanged="@((bool val) => _showModal = val)"
-                Title="@_modalTitle"
-                Type="@_modalType"
-                CenterText="true"
-                ShowAcceptButton="true"
-                OnAccept="@CloseModal"
-                ShowCancelButton="false">
-    @((MarkupString)VM.InformationMessage)
-</ModalComponent>
+@if (isLoading)
+{
+    <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.6); z-index:1000;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+}
+
+<HealthInsuranceSelector @ref="_healthInsuranceSelectorRef"
+                         OnSelected="OnHealthCompanySelected" />
+
+@if (_modalNotifier.IsVisible)
+{
+    <MdMessageModal Visible="true"
+                    VisibleChanged="@(v => _modalNotifier.Close())"
+                    Type="@_modalNotifier.Type"
+                    Title="@_modalNotifier.Title"
+                    Message="@_modalNotifier.Message"
+                    ShowOk="true"
+                    OnOk="() => {
+                        
+                        if (_modalNotifier.ShouldNavigateAfterClose)
+                        {
+                            Navigation.NavigateTo(_modalNotifier.NavigationUrl, true);
+                        }
+                        else
+                        {
+                            _modalNotifier.Close();
+                        }
+                    }" />
+}
+
+@if (_showConcurrencyModal)
+{
+   <MdMessageModal Visible="@(_showConcurrencyModal && VM.ConcurrencyConflicts.Count > 0)"
+                VisibleChanged="@(async (visible) => OnConcurrencyShowChanged(visible))"
+                Type="ModalType.MessageWarning"
+                Title="@UpdatePatientMessages.ConcurrencyConflictTitle"
+                ShowOk="false"
+                ShowCancel="true"
+                ShowRetry="true"
+                ShowDelete="false"
+                OnCancel="OnConcurrencyCancel"
+                OnRetry="RetryWithResolvedValues">
+    <Body>
+        <div class="concurrency-panel md-card bg-surface-container-high p-2">
+             <p class="text-body-medium mb-3">@UpdatePatientMessages.ConcurrencyConflictMessage</p>
+
+            @for (var i = 0; i < VM.ConcurrencyConflicts.Count; i++)
+            {
+                var conflict = VM.ConcurrencyConflicts[i];
+                <div class="concurrency-field mb-3">
+                    <div class="text-label-large mb-1">@GetFriendlyLabel(conflict.Label)</div>
+                    <div class="d-flex flex-column flex-md-row gap-2">
+                        <div class="flex-grow-1">
+                            <small class="text-body-small text-secondary">@UpdatePatientMessages.DbValueLabel:</small>
+                            <div class="text-body-medium">@conflict.DbValueDisplay</div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <small class="text-body-small text-secondary">@UpdatePatientMessages.UserValueLabel:</small>
+                            <div class="text-body-medium">@conflict.UserValueDisplay</div>
+                        </div>
+                        <div class="d-flex flex-column justify-content-end">
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="@($"conf-res-{i}")"
+                                       value="KeepDbValue"
+                                       checked="@(conflict.Resolution.ToString() == "KeepDbValue")"
+                                       @onchange="@(e => OnResolutionChanged(conflict, e.Value?.ToString()))" />
+                                <label class="form-check-label">@UpdatePatientMessages.KeepDbValueOption</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="@($"conf-res-{i}")"
+                                       value="KeepUserValue"
+                                       checked="@(conflict.Resolution.ToString() == "KeepUserValue")"
+                                       @onchange="@(e => OnResolutionChanged(conflict, e.Value?.ToString()))" />
+                                <label class="form-check-label">@UpdatePatientMessages.KeepUserValueOption</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </Body>
+</MdMessageModal> 
+}
+

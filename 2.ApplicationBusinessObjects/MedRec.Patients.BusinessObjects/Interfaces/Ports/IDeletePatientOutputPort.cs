@@ -1,8 +1,9 @@
 ﻿using MedRec.BusinessObjects.Interfaces;
+using MedRec.BusinessObjects.Results;
 
 namespace MedRec.Patients.BusinessObjects.Interfaces.Ports;
-public interface IDeletePatientOutputPort : ICommonOutputPort
+public interface IDeletePatientOutputPort : IBaseOutputPort
 {
-    bool IsDeleted { get; }
-    Task Handle(bool successful, CancellationToken cancellationToken = default);
+    OperationResult<bool> Result { get; }
+    Task Handle(CancellationToken cancellationToken = default);
 }

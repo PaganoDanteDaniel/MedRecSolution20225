@@ -1,24 +1,23 @@
+using MedRec.CommonComponents.Views.Page;
 using MedRec.Patients.ViewModels.VM;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 
 namespace MedRec.Patients.Views.Pages;
 public partial class UpdatePatientPage
 {
-    [Inject] public UpdatePatientVM VM { get; set; }
-    [Parameter] public int MaxPageButton { get; set; } = 9;
+    private UpdatePatientVM VM => Service;
+    [Inject] public NavigationManager Navigation { get; set; }
     [Parameter] public Guid PatientId { get; set; }
 
-    private string footerMessage;
-    private void OnMessageFooterChange(string message)
-    {
-        footerMessage = message;
-    }
+    #region Fields
+    private string footerMessage = "MedRec Software de gestión médica";
 
-    ErrorBoundary ErrorBoundaryRef;
-
-    void Recover()
+    private PageShell pageShellRef;
+    private bool _isLoading = false;
+    #endregion
+    private Task OnBackPressed(int _)
     {
-        ErrorBoundaryRef?.Recover();
+        Navigation.NavigateTo("/patient-control");
+        return Task.CompletedTask;
     }
 }

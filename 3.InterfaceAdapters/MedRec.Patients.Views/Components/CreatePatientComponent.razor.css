@@ -4,7 +4,6 @@
     flex-direction: column;
     /*max-width: 1200px;*/
     width: 75vw;
-    height:75vh;
     padding:3rem 3rem 0 3rem;
     color: var(--form-text);
     box-sizing: border-box; /* clave */

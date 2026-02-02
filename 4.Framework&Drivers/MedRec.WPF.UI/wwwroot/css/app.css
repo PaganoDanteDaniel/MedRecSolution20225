@@ -1,7 +1,12 @@
 ﻿/* ===============================
    BASE GLOBAL
    =============================== */
-
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* ocupa toda la altura visible de la ventana */
+    overflow: hidden; /* evita scroll global */
+}
 html {
     font-size: 16px;
 }

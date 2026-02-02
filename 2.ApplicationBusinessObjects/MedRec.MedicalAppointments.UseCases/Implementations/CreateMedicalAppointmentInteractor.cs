@@ -19,19 +19,35 @@ internal class CreateMedicalAppointmentInteractor(
 {
     public async Task Handle(CreateMedicalAppointmentDto createAppointmentDto, CancellationToken ct)
     {
-        ct.ThrowIfCancellationRequested();
+        if (ct.IsCancellationRequested)
+        {
+            await presenter.ErrorAsync(new ErrorInfo(
+                "Operación cancelada por el usuario.",
+                ErrorCode.Cancelled,
+                null,
+                499));
+            return;
+        }
+        if (createAppointmentDto == null)
+        {
+            await presenter.ErrorAsync(new ErrorInfo(
+                "No ha proporcionado los datos para la creación del turno.",
+                ErrorCode.ValidationError,
+                httpStatusCode: 400));
+            return;
+        }
 
         var entity = ToEntity(createAppointmentDto);
 
         try
         {
-            await unitOfWork.ExecuteWithRetryAsync(async () =>
+            await unitOfWork.ExecuteWithRetry(async () =>
             {
                 await unitOfWork.BeginTransaction(ct);
                 try
                 {
                     await commandRepository.Create(entity, ct);
-                    await unitOfWork.SaveChanges(ct); // GuardDBContext traduce excepciones SQL a las nuestras
+                    await unitOfWork.SaveChanges(ct);
                     await unitOfWork.CommitTransaction(ct);
                 }
                 catch
@@ -45,6 +61,13 @@ internal class CreateMedicalAppointmentInteractor(
             var created = await queriesRepository.GetById(entity.Id, ct);
 
             await presenter.Handle(created, ct);
+        }
+        catch (LostConnectionException lce)
+        {
+            await presenter.ErrorAsync(new ErrorInfo(
+                lce.Message,
+                ErrorCode.DatabaseError,
+                503));
         }
         catch (ConcurrencyException cx)
         {
@@ -80,11 +103,7 @@ internal class CreateMedicalAppointmentInteractor(
         }
         catch (OperationCanceledException)
         {
-            await presenter.ErrorAsync(new ErrorInfo(
-                "Operación cancelada por el usuario.",
-                ErrorCode.Cancelled,
-                null,
-                499));
+            throw;
         }
         catch (Exception ex)
         {

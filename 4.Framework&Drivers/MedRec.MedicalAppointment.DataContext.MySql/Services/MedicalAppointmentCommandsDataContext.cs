@@ -7,7 +7,7 @@ using MedRec.Shared.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedRec.MedicalAppointments.DataContext.MySql.Services;
-internal class MedicalAppointmentCommandsDataContext(DataBaseContextMySql context)
+internal class MedicalAppointmentCommandsDataContext(MedRecContext context)
     : IMedicalAppointmentCommandsDataContext
 {
     public async Task CreateAsync(MedicalAppointment entity, CancellationToken ct)
@@ -48,7 +48,6 @@ internal class MedicalAppointmentCommandsDataContext(DataBaseContextMySql contex
         {
             throw new BusinessException(new ErrorInfo("Error al actualizar el turno.", ErrorCode.UpdateError, ex.InnerException?.Message ?? ex.Message, 500));
         }
-        catch (BusinessException) { throw; } // propagar business exceptions ya lanzadas
         catch (Exception ex)
         {
             throw new BusinessException(new ErrorInfo("Error inesperado en DataContext.", ErrorCode.Unknown, ex.Message, 500));
@@ -71,7 +70,6 @@ internal class MedicalAppointmentCommandsDataContext(DataBaseContextMySql contex
         {
             throw new BusinessException(new ErrorInfo("Error al reasignar el turno.", ErrorCode.UpdateError, ex.InnerException?.Message ?? ex.Message, 500));
         }
-        catch (BusinessException) { throw; }
         catch (Exception ex)
         {
             throw new BusinessException(new ErrorInfo("Error inesperado en DataContext.", ErrorCode.Unknown, ex.Message, 500));

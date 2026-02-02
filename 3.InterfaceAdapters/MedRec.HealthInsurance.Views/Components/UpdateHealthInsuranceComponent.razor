@@ -1,0 +1,114 @@
+﻿@using MedRec.CommonComponents.Views
+@using MedRec.CommonComponents.Views.Validators
+@using MedRec.HealthInsurance.BusinessObjects.DTOs
+@using MedRec.HealthInsurance.BusinessObjects.Validators
+@using MedRec.HealthInsurance.ViewModels.Models
+@using MedRec.Validator.Interfaces
+
+@inherits OwningComponentBase<UpdateHealthInsuranceVM> 
+
+@inject IModelValidatorHub<UpdateHealthInsuranceModel> updateHealthInsuranceValidator
+
+<div class="update-health-component-form">
+    <EditForm EditContext="_editContext" >
+                <DataAnnotationsValidator />
+
+                <ModelValidator T="UpdateHealthInsuranceModel"
+                        Validator="updateHealthInsuranceValidator"
+                        ValidationRules="vm => UpdateHealthInsuranceValidator.Validate((UpdateHealthInsuranceDto)vm)" />
+        <div>
+            <label for="name">@UpdateHealthInsuranceMessages.NameLabelText</label>
+            <InputText class="uppercase-input" id="name" @bind-Value="VM.Model.Name"
+                       placeholder=@UpdateHealthInsuranceMessages.PlaceholderNameInput
+                       name="patients-input" />
+            <ValidationMessage For="@(() => VM.Model.Name)" class="validation-message" />
+        </div>
+
+        <div>
+            <label for="acronym">@UpdateHealthInsuranceMessages.AcronymLabelText</label>
+            <InputText class="uppercase-input" id="acronym" @bind-Value="VM.Model.Acronym"
+                       placeholder=@UpdateHealthInsuranceMessages.PlaceholderAcronymInput
+                       name="patients-input" />
+            <ValidationMessage For="@(() => VM.Model.Acronym)" class="validation-message" />
+        </div>
+
+    </EditForm>
+</div>
+<MdMessageModal Visible="@ModalVisible"
+                VisibleChanged="@(v => ModalVisible = v)"
+                Type="@ModalType"
+                Title="@ModalTitle"
+                Message="@ModalMessage"
+                Body="@ModalBody"
+                CloseOnOverlayClick=@CloseOnOverlayClick
+                ShowOk="@ShowOk"
+                ShowCancel="@ShowCancel"
+                ShowRetry="@ShowRetry"
+                ShowDelete="@ShowDelete"
+                OnOk="_onOkHandler" />
+<style>
+    .update-health-component-form {
+        background-color: var(--form-background);
+        border: 1px solid var(--form-border);
+        padding: 20px;
+        border-radius: 8px;
+        color: var(--form-text);
+        width: 55vw; /* Ancho del formulario */
+        margin: 0 auto; /* Centrar el formulario */
+    }
+
+        .update-health-component-form .validation-message {
+            color: red; /*Color destacado para mensajes de validación*/
+        }
+
+        .update-health-component-form label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--form-text);
+        }
+
+        .update-health-component-form input {
+            width: 50vw;
+            padding: 8px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            background-color: var(--input-background);
+            color: var(--input-text);
+            margin-bottom: 15px;
+        }
+
+            .update-health-component-form input:focus {
+                background-color: var(--input-focus-background);
+                border-color: var(--input-focus-border);
+                color: var(--input-focus-text);
+            }
+
+        .update-health-component-form button {
+            background-color: var(--button-background);
+            border: 1px solid var(--button-border);
+            color: var(--button-text);
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+
+            .update-health-component-form button:hover {
+                background-color: var(--button-hover-background);
+                border-color: var(--button-hover-border);
+                color: var(--button-hover-text);
+            }
+
+            .update-health-component-form button i {
+                font-size: 20px; /* Tamaño del ícono */
+                margin-right: 5px; /* Espacio entre el ícono y el texto */
+            }
+
+        .update-health-component-form .button-group {
+            display: flex;
+            justify-content: flex-end; /* Alinear los botones a la derecha */
+        }
+</style>

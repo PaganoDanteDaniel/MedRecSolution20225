@@ -79,7 +79,7 @@ namespace MedRec.HealthInsurance.Views.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a POCESO DE ELIMINACION.
+        ///   Busca una cadena traducida similar a Proceso de eliminación.
         /// </summary>
         internal static string ModalTitleText {
             get {

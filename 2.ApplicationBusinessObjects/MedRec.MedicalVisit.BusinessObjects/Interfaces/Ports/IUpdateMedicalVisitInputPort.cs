@@ -3,5 +3,5 @@
 namespace MedRec.MedicalVisit.BusinessObjects.Interfaces.Ports;
 public interface IUpdateMedicalVisitInputPort
 {
-    Task Handle(MedicalVisitDto dto, CancellationToken cts = default);
+    Task Handle(UpdateMedicalVisitDto dto, CancellationToken cts = default);
 }

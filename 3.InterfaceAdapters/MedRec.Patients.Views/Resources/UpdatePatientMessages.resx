@@ -126,11 +126,23 @@
   <data name="BiologicalSexLabel" xml:space="preserve">
     <value>SEXO BIOLÓGICO</value>
   </data>
+  <data name="CancelConcurrencyButton" xml:space="preserve">
+    <value>CANCELAR</value>
+  </data>
   <data name="ClearButton" xml:space="preserve">
     <value>LIMPAR</value>
   </data>
+  <data name="ConcurrencyConflictMessage" xml:space="preserve">
+    <value>OTROS  USUARIOS MODIFICARON ESTOS CAMPOS MIENTRAS EDITABAS. SELECCIONA QUE VALOR CONSERVAR:</value>
+  </data>
+  <data name="ConcurrencyConflictTitle" xml:space="preserve">
+    <value>CONFLICTO DE CONCURRENCIA</value>
+  </data>
   <data name="DateOfBirthLabel" xml:space="preserve">
     <value>FECHA DE NACIMIENTO</value>
+  </data>
+  <data name="DbValueLabel" xml:space="preserve">
+    <value>VALOR ACTUAL EN EL SISTEMA:</value>
   </data>
   <data name="DocumentNumberLabel" xml:space="preserve">
     <value>NÚMERO DE DOCUMENTO</value>
@@ -156,11 +168,20 @@
   <data name="HealthInsurancePlanLabel" xml:space="preserve">
     <value>PLAN DE COBERTURA</value>
   </data>
+  <data name="KeepDbValueOption" xml:space="preserve">
+    <value>USAR VALORES DEL SISTEMA</value>
+  </data>
+  <data name="KeepUserValueOption" xml:space="preserve">
+    <value>MANTENER MIS CAMBIOS</value>
+  </data>
   <data name="LastNameLabel" xml:space="preserve">
     <value>APELLIDO DEL PACIENTE</value>
   </data>
   <data name="PhoneNumberLabel" xml:space="preserve">
     <value>NÚMERO DE TELEFONO</value>
+  </data>
+  <data name="RetryConcurrencyButton" xml:space="preserve">
+    <value>APLICAR Y GUARDAR</value>
   </data>
   <data name="SubmitButton" xml:space="preserve">
     <value>GUARDAR</value>
@@ -169,9 +190,12 @@
     <value>ACTUALIZAR PACIENTE</value>
   </data>
   <data name="UpdatePatientPageTitle" xml:space="preserve">
-    <value>ACTUALIZACIÓN DE LOS DATOS DEL PACIENTE</value>
+    <value>Modificar Paciente</value>
   </data>
   <data name="UpdatePatientTemplate" xml:space="preserve">
     <value>PACIENTE ACTUALIZADO EXITOSAMENTE</value>
+  </data>
+  <data name="UserValueLabel" xml:space="preserve">
+    <value>TUS CAMBIOS</value>
   </data>
 </root>

@@ -61,7 +61,7 @@ namespace MedRec.Patients.Views.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a EL PACIENTE {0} FUE ELIMINADO CON EXITO.
+        ///   Busca una cadena traducida similar a EL PACIENTE FUE ELIMINADO CON EXITO.
         /// </summary>
         internal static string DeletedPatientMessageTemplate {
             get {
@@ -70,7 +70,7 @@ namespace MedRec.Patients.Views.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a ERROR AL ELIMINAR EL PACIENTE {0}.
+        ///   Busca una cadena traducida similar a ERROR AL ELIMINAR EL PACIENTE.
         /// </summary>
         internal static string ErrorDeletePatientMessageTemplate {
             get {
@@ -151,7 +151,7 @@ namespace MedRec.Patients.Views.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a ¿ESTA SEGURO DE ELIMINAR AL PACIENTE?.
+        ///   Busca una cadena traducida similar a ¿ESTA SEGURO DE ELIMINAR AL PACIENTE?&lt;br /&gt;{0}.
         /// </summary>
         internal static string ModalMessageText {
             get {

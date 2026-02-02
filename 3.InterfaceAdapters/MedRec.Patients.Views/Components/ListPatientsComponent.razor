@@ -7,6 +7,14 @@
 @inherits OwningComponentBase<PatientsListVM>
 
 <div class="container@(WithHeight ? " with-height" : "")">
+    @if (isLoading)
+    {
+        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.6); z-index:1000;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+        </div>
+    }
     <div class="search-section">
         <SearchAndAddComponent LabelText="@ListPatientsMessages.FilterLabel"
                            Placeholder="@ListPatientsMessages.PlaceholderFilterInput"
@@ -69,21 +77,25 @@
     </div>
 </div>
 
-    <ModalComponent Title=@ListPatientsMessages.ModalTitleText
-                    Show="@_showDeleteConfirmation"
-                    ShowChanged="(value) => OnCloseDeleteModal(value)"
-                    ShowAcceptButton = "true"
-                    ShowCancelButton = "true"
-                    CenterText = "true"
-                    OnAccept="OnAcceptDelete"
-                    Type="ModalType.MessageWarning">
-        <div >
-            @ListPatientsMessages.ModalMessageText
-        </div>
-        <div>
-            @string.Format(ListPatientsMessages.ModalMessageTextTemplate, $"{(_patientToDelete?.LastName ?? "")}, {(_patientToDelete?.FirstName ?? "")}")
-        </div>
-    </ModalComponent>
+
+@if (_modalNotifier.IsVisible)
+{
+    <MdMessageModal Visible="true"
+                    VisibleChanged="@(v => _modalNotifier.IsVisible = v)"
+                    Type="@_modalNotifier.Type"
+                    Title="@_modalNotifier.Title"
+                    Message="@_modalNotifier.Message"
+                    Body="@_modalNotifier.ModalBody"
+                    CloseOnOverlayClick="@_modalNotifier.CloseOnOverlayClick"
+                    ShowOk="@_modalNotifier.ShowOk"
+                    ShowCancel="@_modalNotifier.ShowCancel"
+                    ShowDelete="@_modalNotifier.ShowDelete"
+                    ShowRetry="@_modalNotifier.ShowRetry"
+                    OnOk="_onOkCallback"
+                    OnCancel="_onCancelCallback"
+                    OnDelete="_onDeleteCallback"
+                    OnRetry="_onRetryCallback" />
+}
 
 <script >
     // Inicializa los tooltips

@@ -1,18 +1,80 @@
-﻿
-
-<div class="sidebar @NavClass">
-    <div class="nav-header">
-        <button class="hamburger-btn" @onclick="ToggleNav">
+﻿@* <div class="md-sidebar md-elevation-1 @NavClass" role="navigation" aria-label="Navegación principal">
+    <div class="nav-header md-flex md-items-center md-gap-3 md-border-b md-pt-4">
+        <button class="md-btn-secondary md-w-12 md-h-12 md-rounded-md md-flex md-items-center" @onclick="ToggleNav"
+                aria-expanded="@(!_isCollapsed).ToString().ToLower()" aria-label="Alternar navegación">
             @if (_isCollapsed)
             {
-                <!-- Cuando está colapsado -->
-                @* <i class="bi bi-three-dots-vertical"></i> *@
                 <i class="bi bi-arrow-bar-right"></i>
             }
             else
             {
-                <!-- Cuando está expandido -->
-                @* <i class="bi bi-list"></i> *@
+                <i class="bi bi-arrow-bar-left"></i>
+            }
+        </button>
+
+        @if (!_isCollapsed)
+        {
+            <span class="md-text-title" style="margin-left:0.5rem">MedRec App</span>
+        }
+    </div>
+
+    <ul class="nav-links" style="list-style:none;padding:0;margin:var(--fluid-gap) 0 0 0;">
+        <li>
+            <a class="md-nav-item" href="/" title="Lista Pacientes" aria-label="Lista Pacientes">
+                <i class="bi bi-house"></i>
+                @if (!_isCollapsed)
+                {
+                    <span class="md-text-body" style="margin-left:0.75rem">Lista Pacientes</span>
+                }
+            </a>
+        </li>
+
+        <li>
+            <a class="md-nav-item" href="/create-patient" title="Nuevo Paciente" aria-label="Nuevo Paciente">
+                <i class="bi bi-person-plus"></i>
+                @if (!_isCollapsed)
+                {
+                    <span class="md-text-body" style="margin-left:0.75rem">Nuevo Paciente</span>
+                }
+            </a>
+        </li>
+
+        <li>
+            <a class="md-nav-item" href="/weekly-schedule" title="Agenda" aria-label="Agenda">
+                <i class="bi bi-calendar3"></i>
+                @if (!_isCollapsed)
+                {
+                    <span class="md-text-body" style="margin-left:0.75rem">Agenda</span>
+                }
+            </a>
+        </li>
+
+        <li>
+            <a class="md-nav-item" href="/contact" title="Contacto" aria-label="Contacto">
+                <i class="bi bi-envelope"></i>
+                @if (!_isCollapsed)
+                {
+                    <span class="md-text-body" style="margin-left:0.75rem">Contacto</span>
+                }
+            </a>
+        </li>
+    </ul>
+</div>
+ *@
+
+
+
+
+@* comentario*@
+<div class="sidebar @NavClass">
+    <div class="nav-header">
+        <button class="hamburger-btn" @onclick="ToggleNav">
+            @if (_isCollapsed)
+            { 
+                <i class="bi bi-arrow-bar-right"></i>
+            }
+            else
+            {   
                 <i class="bi bi-arrow-bar-left"></i>
             }
         </button>
@@ -25,7 +87,7 @@
     <ul class="nav-links">
         <li>
             <a href="/">
-                <i class="bi bi-people"></i>
+                <i class="bi bi-house"></i>
                 @if (!_isCollapsed)
                 {
                     <span>Lista Pacientes</span>
@@ -33,7 +95,7 @@
             </a>
         </li>
         <li>
-            <a href="/patient-menu">
+            <a href="/create-patient">
                 <i class="bi bi-person-plus"></i>
                 @if (!_isCollapsed)
                 {
@@ -42,7 +104,7 @@
             </a>
         </li>
         <li>
-            <a href="/agenda">
+            <a href="/weekly-schedule">
                 <i class="bi bi-calendar3"></i>
                 @if (!_isCollapsed)
                 {
@@ -61,4 +123,3 @@
         </li>
     </ul>
 </div>
-
