@@ -2,8 +2,12 @@
 using MedRec.Patients.BusinessObjects.DTOs;
 using MedRec.Patients.BusinessObjects.Interfaces.Ports;
 using MedRec.Patients.ViewModels.Models;
+using MedRec.Shared.DTOs;
+using MedRec.Shared.Enums;
+using System.Collections.ObjectModel;
 
 namespace MedRec.Patients.ViewModels.VM;
+
 public class UpdatePatientVM(
     IUpdatePatientInputPort interactor,
     IUpdatePatientOutputPort presenter,
@@ -15,112 +19,199 @@ public class UpdatePatientVM(
     private readonly IPatientDetailsInputPort _detailsInteractor = detailsInteractor;
     private readonly IPatientDetailsOutputPort _detailsPresenter = detailsPresenter;
 
-    public event Action OnPatientUpdated;
-    public event Action OnShowMessage;
-    public event Action OnShowWarning;
-    public event Action OnShowError;
-    public event Action OnShowConcurrencyError;
+    public ObservableCollection<ConflictFieldModel> ConcurrencyConflicts { get; } = [];
+
+    public event Action? OnPatientUpdated;
+    public event Action? OnShowMessage;
+    public event Action? OnShowWarning;
+    public event Action? OnShowError;
+    public event Action? OnShowConcurrencyError;
 
     public UpdatePatientModel Model { get; set; } = new();
-    public string InformationMessage { get; set; }
+    public string InformationMessage { get; set; } = string.Empty;
+
     public async Task GetPatient(Guid patientId, CancellationToken cts = default)
     {
         try
         {
-            InformationMessage = "";
-            await _detailsInteractor.Handle(patientId, cts);
-            if (_detailsPresenter.ErrorMessage is not null)
-            {
-                var error = _detailsPresenter.ErrorMessage;
-                InformationMessage = error.Message;
+            InformationMessage = string.Empty;
+            ConcurrencyConflicts.Clear();
 
-                switch (error.Code)
+            await _detailsInteractor.Handle(patientId, cts);
+            var result = _detailsPresenter.Result;
+
+            if (!result.Success)
+            {
+                InformationMessage = result.Error?.Message ?? "Error desconocido.";
+
+                switch (result.MessageAction)
                 {
-                    case ErrorCode.DuplicateKey:
+                    case UserMessageAction.ShowWarning:
                         OnShowWarning?.Invoke();
                         break;
-                    case ErrorCode.ConcurrencyError:
+                    case UserMessageAction.ShowConcurrencyMessage:
                         OnShowConcurrencyError?.Invoke();
                         break;
-                    case ErrorCode.DatabaseError:
+                    case UserMessageAction.ShowError:
                         OnShowError?.Invoke();
                         break;
-                    default:
+                    case UserMessageAction.ShowInfoMessage:
                         OnShowMessage?.Invoke();
                         break;
                 }
+                return;
             }
-            else if (_detailsPresenter.PatientDetails is not null)
-            {
-                var p = _detailsPresenter.PatientDetails;
 
-                Model.Id = p.Id;
-                Model.FirstName = p.FirstName;
-                Model.LastName = p.LastName;
-                Model.DocumentNumber = p.DocumentNumber;
-                Model.Address = p.Address;
-                Model.PhoneNumber = p.PhoneNumber;
-                Model.Email = p.Email;
-                Model.DateOfBirth = p.DateOfBirth;
-                Model.BiologicalSexId = p.BiologicalSexId;
-                Model.HealthInsuranceCompanyId = p.HealthInsuranceCompanyId;
-                Model.SelectedHealthCompanyName = p.HealthInsuranceCompanyName;
-                Model.HealthInsuranceMemberNumber = p.HealthInsuranceMemberNumber;
-                Model.HealthInsuranceCard = p.HealthInsuranceCard;
-                Model.HealthInsurancePlan = p.HealthInsurancePlan;
-                Model.RowVersion = p.RowVersion;
-            }
+            MapToModel(result.Value!);
         }
         catch (Exception ex)
         {
-            // Para ErrorBoundary
-            throw new InvalidOperationException("Error crítico al obtener el paciente", ex);
+            // Propagar para ErrorBoundary con contexto
+            throw new InvalidOperationException("Error crítico al obtener paciente.", ex);
         }
     }
+
     public async Task UpdatePatient(CancellationToken cts = default)
     {
         try
         {
-            InformationMessage = "";
+            InformationMessage = string.Empty;
+
+            // El interactor/usos del repositorio deben adjuntar un stub, marcar Modified
+            // y establecer UserValue del token de concurrencia (RowVersion) según Microsoft Docs.
             await _interactor.Handle((UpdatePatientDto)Model, cts);
 
-            if (_presenter.ValidationErrors?.Any() == true)
-            {
-                InformationMessage = string.Join("<br />", _presenter.ValidationErrors.Select(
-                    x => x.ErrorMessage).ToArray());
-                OnShowMessage.Invoke();
-            }
-            else if (_presenter.ErrorMessage is not null)
-            {
-                var error = _presenter.ErrorMessage;
-                InformationMessage = error.Message;
+            var result = _presenter.Result;
 
-                switch (error.Code)
+            if (result.HasValidationErrors)
+            {
+                InformationMessage = string.Join("<br />", result.ValidationErrors.Select(x => x.ErrorMessage));
+                OnShowMessage?.Invoke();
+                return;
+            }
+
+            if (!result.Success)
+            {
+                InformationMessage = result.Error?.Message ?? "Error desconocido.";
+
+                switch (result.MessageAction)
                 {
-                    case ErrorCode.DuplicateKey:
+                    case UserMessageAction.ShowWarning:
                         OnShowWarning?.Invoke();
                         break;
-                    case ErrorCode.ConcurrencyError:
+
+                    case UserMessageAction.ShowConcurrencyMessage:
+                        // Limpiar lista previa para evitar duplicados en reintentos
+                        ConcurrencyConflicts.Clear();
+
+                        if (result.Error?.Details is IReadOnlyList<ConcurrencyConflictDto> conflictList)
+                        {
+                            foreach (var dto in conflictList)
+                            {
+                                // Si el conflicto incluye la nueva RowVersion desde BD, actualizar el modelo
+                                if (dto.PropertyName == nameof(Model.RowVersion) && dto.DataBaseValue is byte[] rv)
+                                {
+                                    Model.RowVersion = rv;
+                                }
+                                else
+                                {
+                                    ConcurrencyConflicts.Add(new ConflictFieldModel(dto));
+                                }
+                            }
+                        }
                         OnShowConcurrencyError?.Invoke();
                         break;
-                    case ErrorCode.DatabaseError:
+
+                    case UserMessageAction.ShowError:
                         OnShowError?.Invoke();
                         break;
-                    default:
+
+                    case UserMessageAction.ShowInfoMessage:
                         OnShowMessage?.Invoke();
                         break;
                 }
+                return;
             }
-            else if (_presenter.UpdatedSuccessfully)
-            {
-                Model = new UpdatePatientModel();
-                OnPatientUpdated?.Invoke();
-            }
+
+            // Éxito: limpiar modelo para evitar reenvíos accidentales
+            InformationMessage = "Paciente actualizado exitosamente...";
+            ConcurrencyConflicts.Clear();
+            OnPatientUpdated?.Invoke();
+            Model = new();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            // Para ErrorBoundary
-            throw new InvalidOperationException("Error crítico al actualizar el paciente", ex);
+            InformationMessage = "Error inesperado al actualizar el paciente.";
+            OnShowError?.Invoke();
         }
+    }
+
+    private void MapToModel(PatientDetailDto dto)
+    {
+        Model.Id = dto.Id;
+        Model.FirstName = dto.FirstName;
+        Model.LastName = dto.LastName;
+        Model.DocumentNumber = dto.DocumentNumber;
+        Model.Address = dto.Address;
+        Model.PhoneNumber = dto.PhoneNumber;
+        Model.Email = dto.Email;
+        Model.DateOfBirth = dto.DateOfBirth;
+        Model.BiologicalSexId = dto.BiologicalSexId;
+        Model.HealthInsuranceCompanyId = dto.HealthInsuranceCompanyId;
+        Model.SelectedHealthCompanyName = dto.HealthInsuranceCompanyName;
+        Model.HealthInsuranceMemberNumber = dto.HealthInsuranceMemberNumber;
+        Model.HealthInsuranceCard = dto.HealthInsuranceCard;
+        Model.HealthInsurancePlan = dto.HealthInsurancePlan;
+        Model.RowVersion = dto.RowVersion;
+    }
+
+    public async Task RetryWithResolvedValues(CancellationToken ct = default)
+    {
+        // Aplicar resoluciones al modelo (KeepDbValue/KeepUserValue)
+        foreach (var conflict in ConcurrencyConflicts)
+        {
+            var prop = conflict.Label;
+            var value = conflict.Resolution switch
+            {
+                ResolutionChoice.KeepDbValue => conflict.DbValue,
+                ResolutionChoice.KeepUserValue => conflict.UserValue,
+                ResolutionChoice.EditManually => throw new NotSupportedException("EditManually no implementado aún"),
+                _ => conflict.UserValue
+            };
+
+            switch (prop)
+            {
+                case nameof(Model.FirstName): Model.FirstName = value?.ToString() ?? string.Empty; break;
+                case nameof(Model.LastName): Model.LastName = value?.ToString() ?? string.Empty; break;
+                case nameof(Model.DocumentNumber): Model.DocumentNumber = value?.ToString() ?? string.Empty; break;
+                case nameof(Model.Address): Model.Address = value?.ToString() ?? string.Empty; break;
+                case nameof(Model.PhoneNumber): Model.PhoneNumber = value?.ToString() ?? string.Empty; break;
+                case nameof(Model.Email): Model.Email = value?.ToString() ?? string.Empty; break;
+                case nameof(Model.DateOfBirth): Model.DateOfBirth = value is DateTime dt ? dt : default; break;
+                case nameof(Model.BiologicalSexId):
+                    if (value is BiologicalSex sex)
+                        Model.BiologicalSexId = sex;
+                    else if (value is int sexInt)
+                        Model.BiologicalSexId = (BiologicalSex)sexInt;
+                    else
+                        Model.BiologicalSexId = default;
+                    break;
+                case nameof(Model.HealthInsuranceCompanyId):
+                    Model.HealthInsuranceCompanyId = value switch
+                    {
+                        Guid g => g,
+                        string s when Guid.TryParse(s, out var g) => g,
+                        null => null,
+                        _ => null
+                    };
+                    break;
+                case nameof(Model.HealthInsuranceMemberNumber): Model.HealthInsuranceMemberNumber = value?.ToString() ?? string.Empty; break;
+                case nameof(Model.HealthInsuranceCard): Model.HealthInsuranceCard = value?.ToString() ?? string.Empty; break;
+                case nameof(Model.HealthInsurancePlan): Model.HealthInsurancePlan = value?.ToString() ?? string.Empty; break;
+            }
+        }
+
+        // Reintentar con el RowVersion actualizado (si fue provisto por BD)
+        await UpdatePatient(ct);
     }
 }

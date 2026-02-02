@@ -6,4 +6,5 @@ public interface IDataContextUnitOfWork
     Task RollbackTransactionAsync(CancellationToken cancellationToken = default);
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     Task ExecuteWithRetryAsync(Func<Task> operation, CancellationToken cancellationToken = default);
+    Task ExecuteInTransactionWithRetryAsync(Func<Task> work, CancellationToken ct = default);
 }

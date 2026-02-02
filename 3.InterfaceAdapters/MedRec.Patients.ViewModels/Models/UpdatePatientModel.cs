@@ -48,11 +48,11 @@ public class UpdatePatientModel
 
         return new UpdatePatientDto(
                     model.Id,
-                    model.FirstName,
-                    model.LastName,
+                    model.FirstName.ToUpperInvariant(),
+                    model.LastName.ToUpperInvariant(),
                     model.DocumentNumber,
                     model.DateOfBirth,
-                    model.Address,
+                    model.Address?.ToUpperInvariant() ?? string.Empty,
                     model.PhoneNumber,
                     model.Email,
                     model.BiologicalSexId,

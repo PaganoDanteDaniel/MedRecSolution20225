@@ -4,14 +4,14 @@ public sealed class ConcurrencyConflictDto
 {
     public string EntityName { get; }
     public string PropertyName { get; }
-    public object? CurrentValue { get; }
-    public object? OriginalValue { get; }
+    public object? DataBaseValue { get; }
+    public object? UserValue { get; }
 
-    public ConcurrencyConflictDto(string entityName, string propertyName, object? currentValue, object? originalValue)
+    public ConcurrencyConflictDto(string entityName, string propertyName, object? dataBaseValue, object? userValue)
     {
         EntityName = entityName ?? throw new ArgumentNullException(nameof(entityName));
         PropertyName = propertyName ?? throw new ArgumentNullException(nameof(propertyName));
-        CurrentValue = currentValue;
-        OriginalValue = originalValue;
+        DataBaseValue = dataBaseValue;
+        UserValue = userValue;
     }
 }

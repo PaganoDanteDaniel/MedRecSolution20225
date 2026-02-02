@@ -5,27 +5,40 @@ using MedRec.Validator.ValueObjects;
 namespace MedRec.MedicalVisit.Presenters.Implementations;
 internal class CreateMedicalVisitPresenter : ICreateMedicalVisitOutputPort
 {
-    public bool Created { get; private set; }
+    private bool _created;
+    private ErrorInfo? _errorMessage;
+    private IReadOnlyList<ValidationError> _validationErrors = Array.Empty<ValidationError>();
+    public bool Created => _created;
 
-    public IEnumerable<ValidationError> ValidationErrors { get; private set; }
+    public IEnumerable<ValidationError> ValidationErrors => _validationErrors;
 
-    public ErrorInfo ErrorMessage { get; private set; }
-
-    public Task ErrorAsync(ErrorInfo message)
-    {
-        ErrorMessage = message;
-        return Task.CompletedTask;
-    }
+    // Devuelve un ErrorInfo no nulo; usamos un fallback si no hay error.
+    public ErrorInfo ErrorMessage => _errorMessage ?? new ErrorInfo(string.Empty);
 
     public Task Handle()
     {
-        Created = true;
+        // Éxito: limpiar errores previos y marcar creado
+        _errorMessage = null;
+        _validationErrors = Array.Empty<ValidationError>();
+        _created = true;
+        return Task.CompletedTask;
+    }
+
+    public Task ErrorAsync(ErrorInfo message)
+    {
+        // Error: guardar mensaje y limpiar validaciones
+        _created = false;
+        _errorMessage = message ?? new ErrorInfo("Error desconocido.");
+        _validationErrors = Array.Empty<ValidationError>();
         return Task.CompletedTask;
     }
 
     public Task ValidationErrorsAsync(IEnumerable<ValidationError> errors)
     {
-        ValidationErrors = errors.ToList();
+        // Validaciones: guardar y limpiar mensaje de error
+        _created = false;
+        _validationErrors = (errors ?? Enumerable.Empty<ValidationError>()).ToArray();
+        _errorMessage = null;
         return Task.CompletedTask;
     }
 }

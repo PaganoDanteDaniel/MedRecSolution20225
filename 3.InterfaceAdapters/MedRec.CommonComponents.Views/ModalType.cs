@@ -5,6 +5,8 @@ public enum ModalType
     MessageError,
     MessageWarning,
     MessageInfo,
-    LargeContent
+    MessageDanger,
+    LargeContent,
+    NormalContent
 }
 

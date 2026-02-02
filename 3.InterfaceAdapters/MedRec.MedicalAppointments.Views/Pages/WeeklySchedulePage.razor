@@ -1,7 +1,8 @@
-﻿@page "/agenda"
+﻿@page "/weekly-schedule"
 @using MedRec.CommonComponents.Views.Components
 @using MedRec.CommonComponents.Views.Exceptions
 @using MedRec.MedicalAppointments.Views.Components
+@inject NavigationManager NavManager
 <style>
     :host {
         display: flex;
@@ -41,7 +42,26 @@
     }
 </style>
 <div class="body-content">
-    <TitleComponent Title="AGENDA DE TURNOS" />
+    <CustomHeader ButtonBackPress="HandleBackPressed" 
+                  ColorA50="--color-pink-50"
+                  ColorA100="--color-pink-100"
+                  ColorB100="--color-pink-100"
+                  ColorA600="--color-pink-600"
+                  ColorB600="--color-pink-600">
+        <HeaderContent>
+            <div class="header-icon">
+                <svg class="icon-header" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M16 19h6" />
+                    <path d="M16 2v4" />
+                    <path d="M19 16v6" />
+                    <path d="M21 12.598V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8.5" />
+                    <path d="M3 10h18" />
+                    <path d="M8 2v4" />
+                </svg>
+            </div>
+            <h1 class="header-title">Agenda de turnos semanal</h1>
+        </HeaderContent>
+    </CustomHeader>
 
     <!-- Zona desplazable class="scrollable-section"-->
     <div class="scrollable-section">
@@ -63,7 +83,13 @@
 </div>
 
 @code {
-    private string footerMessage;
+    private string footerMessage = "MedRec Software de gestión médica";
+
+    private Task HandleBackPressed(int _)
+    {
+        NavManager.NavigateTo("/");
+        return Task.CompletedTask;
+    }
 
     private void OnMessageFooterChange(string title)
     {

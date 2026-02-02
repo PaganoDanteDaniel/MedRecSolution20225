@@ -1,50 +1,41 @@
-﻿using MedRec.Entity.DTOs;
+﻿using MedRec.BusinessObjects.Abstracts;
+using MedRec.BusinessObjects.Results;
 using MedRec.Entity.POCOEntities;
 using MedRec.Patients.BusinessObjects.DTOs;
 using MedRec.Patients.BusinessObjects.Interfaces.Ports;
-using MedRec.Validator.ValueObjects;
 
 namespace MedRec.Patients.Presenters.Implementations;
-internal class PatientDetailPresenter : IPatientDetailsOutputPort
+internal class PatientDetailPresenter :
+    BaseOutputPort<PatientDetailDto>,
+    IPatientDetailsOutputPort
 {
-    public PatientDetailDto PatientDetails { get; private set; }
+    private PatientDetailDto _patientDetails;
 
-    public IEnumerable<ValidationError> ValidationErrors { get; private set; }
-
-    public ErrorInfo ErrorMessage { get; private set; }
-
-    public Task ErrorAsync(ErrorInfo message)
+    public Task Handle(Patient patient, HealthInsuranceCompany healthInsurance = null, CancellationToken cancellationToken = default)
     {
-        ErrorMessage = message;
-        return Task.CompletedTask;
-    }
+        if (patient != null)
+        {
+            _patientDetails = new PatientDetailDto(
+                patient.Id,
+                patient.FirstName,
+                patient.LastName,
+                patient.DocumentNumber,
+                patient.Address,
+                patient.CityId,
+                patient.PhoneNumber,
+                patient.Email,
+                patient.DateOfBirth,
+                patient.BiologicalSexId,
+                patient.HealthInsuranceId,
+                healthInsurance?.Name ?? string.Empty,
+                patient.HealthInsuranceMemberNumber,
+                patient.HealthInsuranceCard,
+                patient.HealthInsurancePlan,
+                patient.RowVersion);
 
-    public Task Handle(Patient p, HealthInsuranceCompany healthInsurance = null, CancellationToken cancellationToken = default)
-    {
-        PatientDetails = new PatientDetailDto(
-            p.Id,
-            p.FirstName,
-            p.LastName,
-            p.DocumentNumber,
-            p.Address,
-            p.CityId,
-            p.PhoneNumber,
-            p.Email,
-            p.DateOfBirth,
-            p.BiologicalSexId,
-            p.HealthInsuranceId,
-            healthInsurance?.Name ?? string.Empty,
-            p.HealthInsuranceMemberNumber,
-            p.HealthInsuranceCard,
-            p.HealthInsurancePlan,
-            p.RowVersion);
+            Result = OperationResult<PatientDetailDto>.Ok(_patientDetails);
+        }
 
-        return Task.CompletedTask;
-    }
-
-    public Task ValidationErrorsAsync(IEnumerable<ValidationError> errors)
-    {
-        ValidationErrors = errors.ToList();
         return Task.CompletedTask;
     }
 }

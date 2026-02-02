@@ -1,0 +1,170 @@
+﻿<header class="header">
+    <div class="header-content">
+        <button class="back-button" @onclick="GoBack" aria-label="Atrás">
+            <svg class="back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <line x1="19" y1="12" x2="5" y2="12" />
+                <polyline points="12 19 5 12 12 5" />
+            </svg>
+            <span class="back-text">Atrás</span>
+        </button>
+
+        <div class="header-inner">
+            <div class="header-title-container">
+                @HeaderContent
+            </div>
+        </div>
+    </div>
+</header>
+
+<style>
+    /* ============================
+           VARIABLES DINÁMICAS
+           (solo se renderizan si el usuario pasa un color)
+        ============================= */
+    :root {
+        @(ColorA50 is null ? "" : $"--color-50: {NormalizeValue(ColorA50)};")
+        @(ColorA100 is null ? "" : $"--color-100: {NormalizeValue(ColorA100)};")
+        @(ColorB100 is null ? "" : $"--color-100: {NormalizeValue(ColorB100)};")
+        @(ColorA600 is null ? "" : $"--color-600: {NormalizeValue(ColorA600)};")
+        @(ColorB600 is null ? "" : $"--color-600: {NormalizeValue(ColorB600)};")
+        --color-white: var(--white);
+    }
+</style>
+
+@code {
+    // =====================================
+    //  PARÁMETROS DE CUSTOMIZACIÓN DE COLOR
+    // =====================================
+    [Parameter] public string? ColorA50 { get; set; }   // reemplaza: --color-violet-50
+    [Parameter] public string? ColorA100 { get; set; }  // reemplaza: --color-violet-100
+    [Parameter] public string? ColorB100 { get; set; }  // reemplaza: --color-purple-100
+    [Parameter] public string? ColorA600 { get; set; }  // reemplaza: --color-violet-600
+    [Parameter] public string? ColorB600 { get; set; }  // reemplaza: --color-purple-600
+
+    // Eventos / contenido
+    [Parameter] public EventCallback<int> ButtonBackPress { get; set; }
+    [Parameter] public RenderFragment? HeaderContent { get; set; }
+
+    private async Task GoBack() => await ButtonBackPress.InvokeAsync(0);
+
+    // Normaliza valores tipo var(--x) o literal (#fff, rgb(), etc.)
+    private static string? NormalizeValue(string? v)
+    {
+        if (string.IsNullOrWhiteSpace(v)) return null;
+        v = v.Trim();
+        if (v.StartsWith("var(", StringComparison.OrdinalIgnoreCase)) return v;
+        if (v.StartsWith("--")) return $"var({v})";
+        return v;
+    }
+}
+
+
+<style>
+    .header {
+        padding: var(--spacing-2);
+        margin-bottom: var(--spacing-4);
+        border: 1px solid var(--color-100);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        background: var(--color-50);
+    }
+
+    /* Contenedor principal centrado con positioning para colocar botón a la izquierda */
+    .header-content {
+        max-width: 1152px;
+        margin: 0 auto;
+        position: relative; /* permite posicionar el botón a la izquierda */
+        display: block;
+    }
+
+    /* Wrapper que centra el contenido del header (el @HeaderContent) */
+    .header-inner {
+        display: flex;
+        justify-content: center; /* centra el contenido dentro del ancho máximo */
+        align-items: center;
+        gap: var(--spacing-4);
+        min-height: 3rem; /* asegura altura suficiente para no solapar el botón */
+    }
+
+    /* Botón de volver alineado a la izquierda del contenedor .header-content */
+    .back-button {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-2);
+        border: none;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        cursor: pointer;
+        transition: all 300ms ease-in-out;
+        padding: 0.5rem 0.75rem;
+        background: transparent;
+        height: auto;
+        min-height: 3rem;
+    }
+
+    .back-button:hover {
+        box-shadow: var(--shadow-lg);
+        background-color: var(--color-50);
+    }
+
+    /* Icono dentro del botón */
+    .back-icon {
+        width: 1.25rem;
+        height: 1.25rem;
+        color: var(--color-600);
+        stroke-width: 2;
+        flex: 0 0 auto;
+    }
+
+    /* Texto del botón: mismo color que el icono */
+    .back-text {
+        color: var(--color-600);
+        font-weight: 600;
+        font-size: var(--font-size-md);
+        line-height: 1;
+        white-space: nowrap;
+    }
+
+    /* Si el contenido del header tiene un icono + título */
+    .header-title-container {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-3);
+    }
+
+    .header-icon {
+        width: 3rem;
+        height: 3rem;
+        background: linear-gradient(to bottom right, var(--color-100), var(--color-100));
+        border-radius: var(--radius-xl);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .icon-header {
+        width: 1.5rem;
+        height: 1.5rem;
+        color: var(--color-600);
+        stroke-width: 2;
+    }
+
+    .header-title {
+        font-size: var(--font-size-2xl);
+        font-weight: 700;
+        background: linear-gradient(to right, var(--color-600), var(--color-600));
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* Asegura que el botón no tape el título en pantallas pequeñas */
+    @@media (max-width: 480px) {
+        .back-text { display: none; } /* solo mostrar icono en pantallas muy pequeñas */
+        .back-button { padding: 0.5rem; }
+    }
+</style>

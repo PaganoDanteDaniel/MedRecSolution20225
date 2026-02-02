@@ -1,0 +1,193 @@
+
+/* Aplicar estilos de layout al wrapper del componente */
+.pdb-page {
+    font-size: var(--font-size-base);
+    background-color: #fafafa;
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 4rem;
+}
+
+/* MAIN */
+.main-content {
+    padding: 0 var(--spacing-6);
+    flex: 1;
+}
+
+/* GRID DE MENÚ
+       Se añadió .grid-container como alias para que el markup actual
+       (que usa class="grid-container") se comporte igual que PatientsDashboard.
+    */
+.grid-container,
+.menu-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-6);
+    max-width: 1152px;
+    margin: 0 auto;
+    width: 100%; /* permite que el grid use todo el ancho disponible */
+    box-sizing: border-box;
+}
+
+
+@media (min-width: 768px) {
+    .grid-container, .menu-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* TARJETAS */
+.menu-card {
+    background-color: var(--color-white);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-4);
+    box-shadow: var(--shadow-lg);
+    border: 2px solid transparent;
+    transition: all 300ms ease-in-out;
+    cursor: pointer;
+    width: 100%; /* asegura que cada tarjeta ocupe el 100% de su columna */
+}
+
+    .menu-card:hover {
+        box-shadow: var(--shadow-2xl);
+        transform: translateY(-0.25rem);
+    }
+
+    .menu-card.card-green:hover {
+        border-color: var(--color-green-200);
+    }
+
+    .menu-card.card-pink:hover {
+        border-color: var(--color-pink-200);
+    }
+
+    .menu-card.card-blue:hover {
+        border-color: var(--color-blue-200);
+    }
+
+    .menu-card.card-red:hover {
+        border-color: var(--color-red-200);
+    }
+
+/* ICONOS */
+.card-icon {
+    width: 4rem;
+    height: 4rem;
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-4);
+    transition: transform 300ms ease-in-out;
+}
+
+.menu-card:hover .card-icon {
+    transform: scale(1.1);
+}
+
+.card-icon.icon-green {
+    background: linear-gradient(to bottom right, var(--color-green-100), var(--color-green-200));
+}
+
+.card-icon.icon-pink {
+    background: linear-gradient(to bottom right, var(--color-pink-100), var(--color-pink-200));
+}
+
+.card-icon.icon-blue {
+    background: linear-gradient(to bottom right, var(--color-blue-100), var(--color-blue-200));
+}
+
+.card-icon.icon-red {
+    background: linear-gradient(to bottom right, var(--color-red-100), var(--color-red-200));
+}
+
+.icon {
+    width: 2rem;
+    height: 2rem;
+}
+
+.icon-green .icon {
+    color: var(--color-green-600);
+}
+
+.icon-pink .icon {
+    color: var(--color-pink-600);
+}
+
+.icon-blue .icon {
+    color: var(--color-blue-600);
+}
+
+.icon-red .icon {
+    color: var(--color-red-600);
+}
+
+/* TEXTOS */
+.card-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    margin-bottom: var(--spacing-2);
+}
+
+    .card-title.title-green {
+        color: var(--color-green-900);
+    }
+
+    .card-title.title-pink {
+        color: var(--color-pink-900);
+    }
+
+    .card-title.title-blue {
+        color: var(--color-blue-900);
+    }
+
+    .card-title.title-red {
+        color: var(--color-red-900);
+    }
+
+.card-description {
+    font-size: var(--font-size-base);
+    color: var(--color-gray-600);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .header {
+        padding: var(--spacing-4);
+    }
+
+    .main-content {
+        padding: 0 var(--spacing-4);
+    }
+
+    .back-button {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    .header-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    .icon-header {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    .menu-card {
+        padding: var(--spacing-6);
+    }
+
+    .card-icon {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .icon {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+}

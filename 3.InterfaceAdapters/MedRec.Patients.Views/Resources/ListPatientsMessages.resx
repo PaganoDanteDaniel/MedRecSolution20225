@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DeletedPatientMessageTemplate" xml:space="preserve">
-    <value>EL PACIENTE {0} FUE ELIMINADO CON EXITO</value>
+    <value>EL PACIENTE FUE ELIMINADO CON EXITO</value>
   </data>
   <data name="ErrorDeletePatientMessageTemplate" xml:space="preserve">
-    <value>ERROR AL ELIMINAR EL PACIENTE {0}</value>
+    <value>ERROR AL ELIMINAR EL PACIENTE</value>
   </data>
   <data name="FilterLabel" xml:space="preserve">
     <value>BUSCAR PACIENTE</value>
@@ -148,7 +148,7 @@
     <value>TELÉFONO</value>
   </data>
   <data name="ModalMessageText" xml:space="preserve">
-    <value>¿ESTA SEGURO DE ELIMINAR AL PACIENTE?</value>
+    <value>¿ESTA SEGURO DE ELIMINAR AL PACIENTE?&lt;br /&gt;{0}</value>
   </data>
   <data name="ModalMessageTextTemplate" xml:space="preserve">
     <value>{0}</value>

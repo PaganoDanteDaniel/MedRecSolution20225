@@ -5,5 +5,6 @@ public interface IRepositoryUnitOfWork : IDisposable
     Task CommitTransaction(CancellationToken ct = default);
     Task RollbackTransaction(CancellationToken ct = default);
     Task<int> SaveChanges(CancellationToken ct = default);
-    Task ExecuteWithRetryAsync(Func<Task> operation, CancellationToken ct = default);
+    Task ExecuteWithRetry(Func<Task> operation, CancellationToken ct = default);
+    Task ExecuteInTransactionWithRetry(Func<Task> work, CancellationToken ct = default);
 }

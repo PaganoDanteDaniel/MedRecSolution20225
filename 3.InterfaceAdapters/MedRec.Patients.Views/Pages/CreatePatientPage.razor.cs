@@ -1,24 +1,28 @@
+using MedRec.CommonComponents.Views.Page;
 using MedRec.Patients.ViewModels.VM;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 
 namespace MedRec.Patients.Views.Pages;
 public partial class CreatePatientPage
 {
-    #region Injects services
-    [Inject] public CreatePatientVM VM { get; set; }
-    [Inject] public NavigationManager Navigation { get; set; }
-    #endregion
-
     #region Fields
-    ErrorBoundary ErrorBoundaryRef;
-    string footerMessage = "";
-    #endregion
+    private string footerMessage = "MedRec Software de gestión médica";
 
-    #region Methods
-    void Recover()
+    private PageShell pageShellRef;
+    private bool _isLoading = false;
+    #endregion
+    private Task OnBackPressed(int _)
     {
-        ErrorBoundaryRef?.Recover();
+        Navigation.NavigateTo("/patient-control");
+        return Task.CompletedTask;
     }
+    private void SetLoading(bool loading)
+    {
+        _isLoading = loading;
+        InvokeAsync(StateHasChanged);
+    }
+    #region Injects services
+    private CreatePatientVM VM => Service;
+    [Inject] public NavigationManager Navigation { get; set; }
     #endregion
 }

@@ -1,0 +1,50 @@
+﻿@using MedRec.CommonComponents.Views
+@using MedRec.CommonComponents.Views.Validators
+@using MedRec.HealthInsurance.BusinessObjects.DTOs
+@using MedRec.HealthInsurance.BusinessObjects.Validators
+@using MedRec.HealthInsurance.ViewModels.Models
+@using MedRec.Validator.Interfaces
+
+@inherits OwningComponentBase<CreateHealthInsuranceVM>
+@inject IModelValidatorHub<CreateHealthInsuranceModel> addHealthInsuranceValidator
+
+<div class="add-health-company-form">
+   
+    <EditForm EditContext="_editContext" >
+        <DataAnnotationsValidator />
+
+        <ModelValidator T="CreateHealthInsuranceModel"
+                        Validator="addHealthInsuranceValidator"
+                        ValidationRules="vm =>CreateHealthInsuranceValidator.Validate((CreateHealthInsuranceDto)vm)" />
+
+        <div>
+            <label for="name">@AddHealthInsuranceMessages.NameLabelText</label>
+            <InputText class="uppercase-input" id="name" @bind-Value="VM.Model.Name"
+                       placeholder=@AddHealthInsuranceMessages.PlaceholderNameInput
+                       name="patients-input" />
+            <ValidationMessage For="@(() => VM.Model.Name)" class="validation-message" />
+        </div>
+
+        <div>
+            <label for="acronym">@AddHealthInsuranceMessages.AcronymLabelText</label>
+            <InputText class="uppercase-input" id="acronym" @bind-Value="VM.Model.Acronym"
+                       placeholder=@AddHealthInsuranceMessages.PlaceholderAcronymInput
+                       name="patients-input" />
+            <ValidationMessage For="@(() => VM.Model.Acronym)" class="validation-message" />
+        </div>
+    </EditForm>
+</div>
+
+
+<MdMessageModal Visible="@ModalVisible"
+                VisibleChanged="@(v => ModalVisible = v)"
+                Type="@ModalType"
+                Title="@ModalTitle"
+                Message="@ModalMessage"
+                Body="@ModalBody"
+                CloseOnOverlayClick=@CloseOnOverlayClick
+                ShowOk="@ShowOk"
+                ShowCancel="@ShowCancel"
+                ShowRetry="@ShowRetry"
+                ShowDelete="@ShowDelete"
+                OnOk="_onOkHandler"/>

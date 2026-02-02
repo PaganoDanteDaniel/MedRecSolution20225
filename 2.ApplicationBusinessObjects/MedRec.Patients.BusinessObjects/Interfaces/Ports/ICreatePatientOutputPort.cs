@@ -1,9 +1,10 @@
 ﻿using MedRec.BusinessObjects.Interfaces;
+using MedRec.BusinessObjects.Results;
 
 namespace MedRec.Patients.BusinessObjects.Interfaces.Ports;
-public interface ICreatePatientOutputPort : ICommonOutputPort
+public interface ICreatePatientOutputPort : IBaseOutputPort
 {
-    bool Created { get; }
-    Task Handle();    // Notifica éxito
+    OperationResult<bool> Result { get; }
+    Task Handle(CancellationToken ct = default);    // Notifica éxito
 
 }

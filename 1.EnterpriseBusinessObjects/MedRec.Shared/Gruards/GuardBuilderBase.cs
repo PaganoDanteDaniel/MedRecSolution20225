@@ -18,6 +18,7 @@ public abstract class GuardBuilderBase<TBuilder>
     /// </summary>
     public bool IsValid => _errors.Count == 0;
 
+
     /// <summary>
     /// Agrega un error personalizado al builder.
     /// </summary>

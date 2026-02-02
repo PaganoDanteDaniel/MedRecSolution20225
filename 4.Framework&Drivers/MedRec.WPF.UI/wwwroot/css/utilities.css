@@ -1,0 +1,385 @@
+/* Tamaños de texto */
+/* Tipografía fluida con clamp() — variables para fácil ajuste */
+/* Clases utilitarias usan las variables fluidas definidas en global.css */
+.text-6xl {
+    font-size: var(--fs-6xl);
+}
+
+.text-5xl {
+    font-size: var(--fs-5xl);
+}
+
+.text-4xl {
+    font-size: var(--fs-4xl);
+}
+
+.text-3xl {
+    font-size: var(--fs-3xl);
+}
+
+.text-2xl {
+    font-size: var(--fs-2xl);
+}
+
+.text-xl {
+    font-size: var(--fs-xl);
+}
+
+.text-lg {
+    font-size: var(--fs-lg);
+}
+
+.text-base {
+    font-size: var(--fs-base);
+}
+
+.text-sm {
+    font-size: var(--fs-sm);
+}
+
+/* ============================
+   Breakpoints responsivos
+   ============================ */
+@media (min-width: 640px) { /* sm */
+    .sm-hidden {
+        display: none;
+    }
+
+    .sm-block {
+        display: block;
+    }
+}
+
+@media (min-width: 768px) { /* md */
+    .md-hidden {
+        display: none;
+    }
+
+    .md-block {
+        display: block;
+    }
+}
+
+@media (min-width: 1024px) { /* lg */
+    .lg-hidden {
+        display: none;
+    }
+
+    .lg-block {
+        display: block;
+    }
+}
+
+@media (min-width: 1280px) { /* xl */
+    .xl-hidden {
+        display: none;
+    }
+
+    .xl-block {
+        display: block;
+    }
+}
+
+/* ============================
+   Sombras
+   ============================ */
+.shadow-sm {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.shadow-md {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 15px rgba(0,0,0,0.2);
+}
+
+.shadow-xl {
+    box-shadow: 0 20px 25px rgba(0,0,0,0.25);
+}
+
+/* ============================
+   Gradientes
+   ============================ */
+.bg-gradient-primary {
+    background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+}
+
+.bg-gradient-accent {
+    background: linear-gradient(to right, var(--color-accent), var(--color-muted));
+}
+
+.bg-gradient-rose {
+    background: linear-gradient(to right, var(--color-rose-400), var(--color-rose-600));
+}
+
+/* ============================
+   Transformaciones
+   ============================ */
+.scale-95 {
+    transform: scale(0.95);
+}
+
+.scale-105 {
+    transform: scale(1.05);
+}
+
+.rotate-45 {
+    transform: rotate(45deg);
+}
+
+.rotate-90 {
+    transform: rotate(90deg);
+}
+
+.translate-x-2 {
+    transform: translateX(0.5rem);
+}
+
+.translate-y-2 {
+    transform: translateY(0.5rem);
+}
+
+/* ============================
+   Opacidades
+   ============================ */
+.opacity-50 {
+    opacity: 0.5;
+}
+
+.opacity-70 {
+    opacity: 0.7;
+}
+
+.opacity-90 {
+    opacity: 0.9;
+}
+
+/* ============================
+   Transiciones
+   ============================ */
+.transition-all {
+    transition: all 0.3s ease-in-out;
+}
+
+.transition-colors {
+    transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+/* Altura y contenedor */
+.md-min-h-screen {
+    min-height: 100vh;
+}
+
+.md-container {
+    max-width: var(--container-max);
+    margin-inline: auto;
+}
+
+/* Padding horizontal y vertical responsivo */
+.md-px-4 {
+    padding-inline: var(--card-padding-xs);
+}
+
+@media (min-width: 640px) {
+    .md-sm-px-6 {
+        padding-inline: var(--card-padding-sm);
+    }
+}
+
+@media (min-width: 1024px) {
+    .md-lg-px-8 {
+        padding-inline: var(--card-padding-md);
+    }
+}
+
+.md-py-6 {
+    padding-block: var(--card-padding-xs);
+}
+
+.md-py-12 {
+    padding-block: var(--card-padding-md);
+}
+
+/* Grid y gaps */
+.md-grid {
+    display: grid;
+    gap: var(--fluid-gap);
+    grid-template-columns: repeat(auto-fit, minmax(var(--card-min-width), 1fr));
+}
+
+.md-grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+@media (min-width: 768px) {
+    .md-md-grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .md-lg-grid-cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.md-gap-6 {
+    gap: var(--fluid-gap);
+}
+
+/* Flex y alineación */
+.md-flex {
+    display: flex;
+}
+
+.md-items-center {
+    align-items: center;
+}
+
+.md-items-start {
+    align-items: flex-start;
+}
+
+.md-justify-center {
+    justify-content: center;
+}
+
+.md-gap-3 {
+    gap: 0.75rem;
+}
+
+/* Margins */
+.md-mb-12 {
+    margin-bottom: 1.5rem;
+}
+
+.md-mt-12 {
+    margin-top: 1.5rem;
+}
+
+/* Bordes */
+.md-border-b {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.md-border-purple-100 {
+    border-color: var(--color-purple-100);
+}
+
+/* Helpers de tamaño para íconos/contenedores */
+.md-w-14 {
+    width: 3.5rem;
+}
+
+.md-h-14 {
+    height: 3.5rem;
+}
+
+.md-w-12 {
+    width: 3rem;
+}
+
+.md-h-12 {
+    height: 3rem;
+}
+
+.md-w-9 {
+    width: 2.25rem;
+}
+
+.md-h-9 {
+    height: 2.25rem;
+}
+
+.md-w-7 {
+    width: 1.75rem;
+}
+
+.md-h-7 {
+    height: 1.75rem;
+}
+
+/* Texto en gris (mapea a tus tokens) */
+/* Nota: asegúrate de tener --color-gray-900 y --color-gray-600 definidos en global.css */
+.md-text-gray-900 {
+    color: var(--color-gray-900, var(--color-foreground));
+}
+
+.md-text-gray-600 {
+    color: var(--color-gray-600, var(--color-muted-foreground));
+}
+
+/* Fondo y utilidades de componentes */
+.md-bg-white {
+    background-color: var(--color-card);
+}
+
+.md-hero-gradient {
+    background-image: linear-gradient(to bottom right, var(--color-purple-50), var(--color-pink-50), var(--color-lavender-50));
+}
+
+/* Bordes y radio */
+.md-rounded-lg {
+    border-radius: var(--radius-lg);
+}
+
+.md-rounded-md {
+    border-radius: var(--radius-md);
+}
+
+/* Card helpers */
+.md-card-header {
+    margin-bottom: 0.75rem;
+}
+
+.md-card-content {
+    margin-top: 1rem;
+}
+
+.md-pt-4 {
+    padding-top: var(--card-padding-xs);
+}
+
+/* Elevación y sombras pequeñas */
+.md-shadow-sm {
+    box-shadow: 0 1px 2px rgba(0,0,0,.1);
+}
+
+/* Utilidades generales */
+.w-full {
+    width: 100%;
+}
+
+.md-transition-shadow {
+    transition: box-shadow 0.2s ease;
+}
+
+.md-duration-200 {
+    transition-duration: 0.2s;
+}
+
+.md-cursor-pointer {
+    cursor: pointer;
+}
+
+.md-m-0 {
+    margin: 0;
+}
+
+.md-leading-none {
+    line-height: 1;
+}
+
+/* Asegurar que los iconos se centran bien dentro de su contenedor */
+.bi {
+    display: inline-block;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+/* Reemplazos y mejoras específicas */
+.md-text-body {
+    font-size: var(--text-base-fluid);
+}

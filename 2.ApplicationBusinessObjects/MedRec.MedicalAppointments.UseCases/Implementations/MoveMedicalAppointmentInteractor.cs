@@ -22,7 +22,7 @@ internal class MoveMedicalAppointmentInteractor(
 
         try
         {
-            await unitOfWork.ExecuteWithRetryAsync(async () =>
+            await unitOfWork.ExecuteWithRetry(async () =>
             {
                 await unitOfWork.BeginTransaction(ct);
                 try
@@ -49,6 +49,13 @@ internal class MoveMedicalAppointmentInteractor(
             // Leer el turno actualizado (RowVersion y demás campos actuales)
             var updated = await queriesRepository.GetById(moveAppointmentDto.Id, ct);
             await presenter.Handle(updated, ct);
+        }
+        catch (LostConnectionException lce)
+        {
+            await presenter.ErrorAsync(new ErrorInfo(
+                lce.Message,
+                ErrorCode.DatabaseError,
+                503));
         }
         catch (ConcurrencyException cx)
         {
@@ -80,11 +87,7 @@ internal class MoveMedicalAppointmentInteractor(
         }
         catch (OperationCanceledException)
         {
-            await presenter.ErrorAsync(new ErrorInfo(
-                "Operación cancelada por el usuario.",
-                ErrorCode.Cancelled,
-                null,
-                499));
+            throw;
         }
         catch (Exception ex)
         {

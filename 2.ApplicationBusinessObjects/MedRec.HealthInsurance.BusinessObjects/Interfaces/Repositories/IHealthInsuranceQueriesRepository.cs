@@ -1,11 +1,11 @@
 ﻿using MedRec.Entity.DTOs;
 using MedRec.Entity.POCOEntities;
-using MedRec.Entity.Results;
 
 namespace MedRec.HealthInsurance.BusinessObjects.Interfaces.Repositories;
 public interface IHealthInsuranceQueriesRepository
 {
-    Task<Result<IEnumerable<HealthInsuranceCompany>>> GetAll(PaginationDto paginationDto, CancellationToken cancellationToken);
-    Task<Result<HealthInsuranceCompany>> GetById(Guid id, CancellationToken cancellationToken);
-    Task<Result<int>> GetCount(string filter, CancellationToken cancellationToken);
+    Task<IEnumerable<HealthInsuranceCompany>> GetAll(PaginationDto paginationDto, CancellationToken ct);
+    Task<HealthInsuranceCompany> GetById(Guid id, CancellationToken ct);
+    Task<bool> Exist(Guid id, CancellationToken ct);
+    Task<int> GetCount(string filter, CancellationToken ct);
 }

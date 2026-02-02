@@ -4,6 +4,8 @@ using MedRec.MedicalVisit.BusinessObjects.DTOs;
 using MedRec.MedicalVisit.BusinessObjects.Interfaces.Ports;
 using MedRec.MedicalVisit.ViewModels.Models;
 using MedRec.Patients.BusinessObjects.Interfaces.Ports;
+using MedRec.Shared.Exceptions;
+using MedRec.Shared.Exceptions.SQLExceptions;
 
 namespace MedRec.MedicalVisit.ViewModels.VM;
 public class CreateMedicalVisitVM(
@@ -11,16 +13,11 @@ public class CreateMedicalVisitVM(
     ICreateMedicalVisitOutputPort createMedicalVisitOutputPort,
     IGetMedicalHistoryIdInputPort getMedicalHistoryIdInputPort,
     IGetMedicalHistoryIdOutputPort getMedicalHistoryIdOutputPort,
-    IGetMedicalVisitInputPort getMedicalVisitInputPort,
-    IGetMedicalVisitOutputPort getMedicalVisitOutputPort,
     IPatientForMedicalVisitInputPort patientForMedicalVisitInputPort,
-    IPatientForMedicalVisitOutputPort patientForMedicalVisitOutputPort,
-    IUpdateMedicalVisitInputPort updateMedicalVisitInputPort,
-    IUpdateMedicalVisitOutputPort updateMedicalVisitOutputPort)
+    IPatientForMedicalVisitOutputPort patientForMedicalVisitOutputPort)
 {
 
     public event Action OnMedicalVisitAdded;
-    public event Action OnMedicalVisitUpdated;
     public event Action OnShowMessage;
     public event Action OnShowWarning;
     public event Action OnShowError;
@@ -37,6 +34,7 @@ public class CreateMedicalVisitVM(
         {
             cts.ThrowIfCancellationRequested();
             await patientForMedicalVisitInputPort.Handle(patientId, cts);
+
             if (patientForMedicalVisitOutputPort.ErrorMessage is not null)
             {
                 HandleErrors(patientForMedicalVisitOutputPort.ErrorMessage);
@@ -59,44 +57,6 @@ public class CreateMedicalVisitVM(
         }
     }
     //LoadVisitAsync InitializeNewVisit
-    public async Task LoadVisitAsync(Guid visitId, CancellationToken cts = default)
-    {
-        try
-        {
-            InformationMessage = "";
-            cts.ThrowIfCancellationRequested();
-
-            //await LoadDataPatient(Model.PatientId, cts);
-
-            await getMedicalVisitInputPort.Handle(visitId, cts);
-            if (getMedicalVisitOutputPort.ErrorMessage is not null)
-            {
-                HandleErrors(getMedicalVisitOutputPort.ErrorMessage);
-            }
-            else
-            {
-                var response = getMedicalVisitOutputPort.MedicalVisit;
-                Model.Id = response.Id;
-                Model.MedicalHistoryId = response.MedicalHistoryId;
-                Model.VisitDate = response.VisitDate;
-                Model.Reason = response.Reason;
-                Model.Diagnosis = (response.Diagnosis ?? string.Empty).ToUpperInvariant();
-                Model.Treatment = (response.Treatment ?? string.Empty).ToUpperInvariant();
-                Model.SystolicPressure = response.SystolicPressure;
-                Model.DiastolicPressure = response.DiastolicPressure;
-                Model.PulsePerMinute = response.PulsePerMinute;
-                Model.Temperature = response.Temperature;
-                Model.Notes = (response.Notes ?? string.Empty).ToUpperInvariant();
-                Model.RowVersion = response.RowVersion;
-            }
-
-        }
-        catch (Exception ex)
-        {
-
-            throw new InvalidOperationException("Error crítico al obtener la historia clínica del paciente", ex);
-        }
-    }
     public async Task InitializeNewVisit(Guid patientId, CancellationToken cts = default)
     {
         try
@@ -133,7 +93,8 @@ public class CreateMedicalVisitVM(
         {
             InformationMessage = "";
 
-            await createMedicalVisitInputPort.Handle((MedicalVisitDto)Model, cts);
+            await createMedicalVisitInputPort.Handle((CreateMedicalVisitDto)Model, cts);
+
             if (createMedicalVisitOutputPort.ValidationErrors?.Any() == true)
             {
                 InformationMessage = string.Join("<br />", createMedicalVisitOutputPort.ValidationErrors.Select(e => e.ErrorMessage));
@@ -145,45 +106,61 @@ public class CreateMedicalVisitVM(
             }
             else
             {
-                InformationMessage = "Visita registrada con exito.";
-                Model = new CreateMedicalVisitModel();
+                InformationMessage = "";
                 OnShowMessage?.Invoke();
                 OnMedicalVisitAdded?.Invoke();
             }
         }
+        catch (LostConnectionException lce)
+        {
+            await createMedicalVisitOutputPort.ErrorAsync(new ErrorInfo(
+                lce.Message,
+                ErrorCode.DatabaseError,
+                503));
+        }
+        catch (ConcurrencyException cx)
+        {
+            // 409: incluir conflictos tipados (lista de ConcurrencyConflictDto)
+            await createMedicalVisitOutputPort.ErrorAsync(new ErrorInfo(
+                "Conflicto de concurrencia al crear el turno.",
+                ErrorCode.ConcurrencyError,
+                cx.Conflicts,
+                409));
+        }
+        catch (DuplicateKeyException dx)
+        {
+            // 409: conflicto por clave duplicada (Details suele contener entidades implicadas)
+            await createMedicalVisitOutputPort.ErrorAsync(new ErrorInfo(
+                "Ya existe un registro que viola una restricción de unicidad.",
+                ErrorCode.DuplicateKey,
+                dx.Details,
+                409));
+        }
+        catch (UpdateException ux)
+        {
+            // 500: otros errores de persistencia
+            await createMedicalVisitOutputPort.ErrorAsync(new ErrorInfo(
+                "Error al persistir los cambios en la base de datos.",
+                ErrorCode.UpdateError,
+                ux.Details,
+                500));
+        }
+        catch (BusinessException bx)
+        {
+            // Mantener compatibilidad con BusinessException si aparece desde otras capas
+            await createMedicalVisitOutputPort.ErrorAsync(bx.Error);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
-
-            throw new InvalidOperationException("Error crítico al agregar paciente", ex);
-        }
-    }
-    public async Task UpdateMedicalVisitAsync(CancellationToken cts)
-    {
-        try
-        {
-            InformationMessage = "";
-            await updateMedicalVisitInputPort.Handle((MedicalVisitDto)Model, cts);
-            if (updateMedicalVisitOutputPort.ValidationErrors?.Any() == true)
-            {
-                InformationMessage = string.Join("<br />", updateMedicalVisitOutputPort.ValidationErrors.Select(e => e.ErrorMessage));
-                OnShowMessage?.Invoke();
-            }
-            else if (updateMedicalVisitOutputPort.ErrorMessage is not null)
-            {
-                HandleErrors(updateMedicalVisitOutputPort.ErrorMessage);
-            }
-            else
-            {
-                InformationMessage = "Visita registrada con exito.";
-                //Model = new CreateMedicalVisitModel();
-                OnShowMessage?.Invoke();
-                OnMedicalVisitUpdated?.Invoke();
-            }
-        }
-        catch (Exception)
-        {
-
-            throw;
+            await createMedicalVisitOutputPort.ErrorAsync(new ErrorInfo(
+                "Ocurrió un error inesperado al crear el turno.",
+                ErrorCode.Unknown,
+                new { Exception = ex.Message },
+                500));
         }
     }
     private void HandleErrors(ErrorInfo error)

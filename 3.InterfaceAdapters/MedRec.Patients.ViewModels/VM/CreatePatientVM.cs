@@ -32,34 +32,35 @@ public class CreatePatientVM
         {
             InformationMessage = "";
             await _interactor.HandleAsync((CreatePatientDto)Model, cts);
+            var result = _presenter.Result;
 
-            if (_presenter.ValidationErrors?.Any() == true)
+            if (result.HasValidationErrors)
             {
-
-                InformationMessage = string.Join("<br />", _presenter.ValidationErrors.Select(e => e.ErrorMessage));
+                InformationMessage = string.Join("<br />", result.ValidationErrors.Select(e => e.ErrorMessage));
                 OnShowMessage?.Invoke();
             }
-            else if (_presenter.ErrorMessage is not null)
+            else if (!result.Success)
             {
-                var error = _presenter.ErrorMessage;
-                InformationMessage = error.Message;
+                InformationMessage = result.Error?.Message ?? "Error desconocido.";
 
-                switch (error.Code)
+                switch (result.MessageAction)
                 {
-                    case ErrorCode.DuplicateKey:
+                    case UserMessageAction.ShowWarning:
                         OnShowWarning?.Invoke();
                         break;
-                    case ErrorCode.ConcurrencyError:
+                    case UserMessageAction.ShowConcurrencyMessage:
                         OnShowConcurrencyError?.Invoke();
                         break;
-                    case ErrorCode.DatabaseError:
+                    case UserMessageAction.ShowError:
                         OnShowError?.Invoke();
                         break;
-                    default:
+                    case UserMessageAction.ShowInfoMessage:
+                        OnShowMessage?.Invoke();
+                        break;
+                    default: // None o desconocido
                         OnShowMessage?.Invoke();
                         break;
                 }
-
             }
             else
             {
@@ -67,12 +68,17 @@ public class CreatePatientVM
                 Model = new CreatePatientModel();
                 OnPatientAdded?.Invoke();
             }
-
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            // Para ErrorBoundary
-            throw new InvalidOperationException(ex.Message);
+            // Solo para fallos catastróficos (ej: proxy no atrapó la excepción)
+            //Logger?.LogError(ex, "Excepción no manejada en AddPatientAsync");
+            InformationMessage = "Error inesperado al crear el paciente.";
+            OnShowError?.Invoke();
+
+            // Opcional: no relanzar si manejo todo en UI
+            // Si usas ErrorBoundary y quieres que lo capture, des comentar:
+            // throw new InvalidOperationException("Error crítico al crear paciente.", ex);
         }
         finally
         {

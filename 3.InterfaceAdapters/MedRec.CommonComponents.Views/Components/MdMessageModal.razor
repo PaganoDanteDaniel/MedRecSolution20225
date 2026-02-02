@@ -1,0 +1,60 @@
+﻿
+@if (Visible)
+{
+    <div class="md-modal-overlay" @onclick="@(CloseOnOverlayClick? OnOverlayClick : null)">
+        <div class="md-dialog @(IsLargeModal ? "modal-container-lg" : "modal-container") @(Type switch { 
+            ModalType.MessageInfo => "info",
+            ModalType.MessageWarning => "warning",
+            ModalType.MessageError => "error",
+            ModalType.MessageSuccess => "success",
+            ModalType.MessageDanger => "error",
+            _ => "" })" @onclick:stopPropagation>
+
+            <!-- HEADER -->
+            <div class="modal-header">
+                @IconSvg
+                <div class="modal-title-wrapper">
+                    <h2>@Title</h2>
+                </div>
+                <button type="button" class="btn-close" aria-label="Close" @onclick="ClickCancel" />
+            </div>
+
+            <div class="modal-divider"></div>
+
+            <!-- CONTENIDO -->
+            <div class="@($"modal-body {(Body is null ? "message-mode" : string.Empty)}")">
+                @if (Body is not null)
+                {
+
+                    @Body
+                }
+                else
+                {
+                    <p>@((MarkupString)Message)</p>
+                }
+            </div>
+
+            <div class="modal-divider"></div>
+
+            <!-- FOOTER -->
+            <div class="modal-footer">
+                @if (ShowCancel)
+                {
+                    <button type="button" class="md-btn-secondary" @onclick="ClickCancel">Cancelar</button>
+                }
+                @if (ShowRetry)
+                {
+                    <button type="button" class="md-btn-secondary" @onclick="ClickRetry">Reintentar</button>
+                }
+                @if (ShowDelete)
+                {
+                    <button type="button" class="md-btn-secondary" style="color:#c62828" @onclick="ClickDelete">Eliminar</button>
+                }
+                @if (ShowOk)
+                {
+                    <button type="button" class="md-btn-primary" @onclick="ClickOk">Aceptar</button>
+                }
+            </div>
+        </div>
+    </div>
+}
