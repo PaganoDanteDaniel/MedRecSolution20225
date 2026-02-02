@@ -2,7 +2,9 @@
 
 @using MedRec.CommonComponents.Views.Components
 @using MedRec.CommonComponents.Views.Exceptions
+@using MedRec.CommonComponents.Views.Page
 @using MedRec.Entity.Extensions
+@using MedRec.Entity.Helper
 @using MedRec.MedicalVisit.ViewModels.VM
 @using MedRec.MedicalVisit.Views.Components
 @using MedRec.MedicalVisit.Views.Resources
@@ -11,29 +13,52 @@
 @inherits OwningComponentBase<CreateMedicalVisitVMOrchestrator>
 
 <div class="body-content">
-    <TitleComponent Title="@Title" />
-
-    <!-- Zona desplazable -->
-    <div class="scrollable-section">
-        <ErrorBoundary @ref=ErrorBoundaryRef>
-            <ChildContent>
-                <CreateMedicalVisitComponent 
-                    PatientId="@PatientId" 
-                    VM="@VM" 
-                    VisitId="@VisitId"
-                    CloneNow="_cloneNow"/>
-            </ChildContent>
-            <ErrorContent>
-                <ExceptionDisplayComponent Exception="context" />
-                <button class="btn btn-danger" @onclick=Recover>OK</button>
-            </ErrorContent>
-        </ErrorBoundary>
-    </div>
-
-    <!-- Footer fijo -->
-    <div class="me-footer">
-        <FooterComponent Message="@footerMessage" />
-    </div>
+    <PageShell FooterMessage="@footerMessage" @ref="pageShellRef" CenterContent="false">
+        <HeaderContent>
+            <CustomHeader ButtonBackPress="OnBackPressed">
+                <HeaderContent>
+                    <div class="header-icon">
+                        <svg class="icon-header" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect width='8' height='4' x='8' y='2' rx='1' ry='1' />
+                                <path d='M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2' />
+                                <path d='M9 14h6'/>
+                                <path d='M12 17v-6' />
+                        </svg>
+                    </div>
+                        <h1 class="header-title">@Title</h1>
+                </HeaderContent>
+            </CustomHeader>
+        </HeaderContent>
+    
+        <ChildContent>
+            @if (_isLoading)
+            {
+                <div style="display: flex; justify-content: center; align-items: center; min-height: 400px;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando datos del paciente...</span>
+                    </div>
+                </div>
+            }
+            else if (_dataLoaded)
+            {
+                <CreateMedicalVisitComponent PatientId="@PatientId"
+                                             VM="@VM"
+                                             VisitId="@VisitId"
+                                             OnDataReady="HandleDataReady" />
+            }
+            else
+            {
+                <div class="alert alert-danger" role="alert">
+                    Error al cargar los datos del paciente.
+                </div>
+            }
+        </ChildContent>
+    
+        <ErrorContent Context="context">
+            <ExceptionDisplayComponent Exception="context" />
+            <button class="btn btn-danger" @onclick="(()=>pageShellRef.Recover())">OK</button>
+        </ErrorContent>
+    </PageShell>  
 </div>
 
 @code{
@@ -42,74 +67,95 @@
     [Parameter] public Guid? VisitId { get; set; }
     [Parameter] public Guid PatientId { get; set; }
 
+    private PageShell pageShellRef;
     private string footerMessage;
     private string Title { get; set; }
-    private bool _cloneNow = false;
+    private bool _isLoading = true;    // NUEVO: Flag de carga
+    private bool _dataLoaded = false;  // NUEVO: Flag de datos cargados
+    
     CancellationTokenSource ct = new CancellationTokenSource();
+    private CreateMedicalVisitComponent? _componentRef;
+
     protected override async Task OnInitializedAsync()
     {
         ct?.Dispose();
         ct = new CancellationTokenSource();
 
-        await VM.LoadDataPatient(PatientId, ct.Token);
-        _cloneNow = false;
-        await VM.InitializeNewVisit(PatientId);
+        try
+        {
+            _isLoading = true;
+            
+            await VM.LoadDataPatient(PatientId, ct.Token);
+            await VM.InitializeNewVisit(PatientId);
+
+            _dataLoaded = true;
+            
+            // NUEVO: Notificar al componente que los datos están listos
+            _componentRef?.NotifyDataReady();
+        }
+        catch (Exception ex)
+        {
+            _dataLoaded = false;
+            // Aquí podrías manejar el error, mostrar un mensaje, etc.
+            Console.WriteLine($"Error loading patient data: {ex.Message}");
+        }
+        finally
+        {
+            _isLoading = false;
+        }
 
         base.OnInitialized();
     }
 
-    // Función auxiliar para leer los valores de la Query String
+    private Task OnBackPressed(int _)
+    {
+        Navigation.NavigateTo(CreateUrl());
+        return Task.CompletedTask;
+    }
 
     protected override async Task OnParametersSetAsync()
     {
         await Task.Yield();
-        Title = string.Format(MedicalVisitMessages.CreateMedicalVisitTitleTemplate, VM.Model.FullName, VM.Model.DateOfBirth.CalculateAge());
+        
+        // Protección: Solo calcular el título si los datos están cargados
+        if (_dataLoaded && VM.Model.DateOfBirth != default(DateTime))
+        {
+            Title = string.Format(MedicalVisitMessages.CreateMedicalVisitTitleTemplate, 
+                                  VM.Model.FullName, 
+                                  VM.Model.DateOfBirth.CalculateAge());
+            Title = StringUtils.TitleCase(Title);
+        }
+        else
+        {
+            Title = "Nueva Visita Médica";
+        }
     }
+    
     private void OnMessageFooterChange(string title)
     {
         footerMessage = title;
     }
+    
     ErrorBoundary ErrorBoundaryRef;
 
     void Recover()
     {
         ErrorBoundaryRef?.Recover();
     }
+
+    private string CreateUrl()
+    {
+        // Protección: Verificar que los datos estén cargados
+        if (!_dataLoaded || VM.Model.DateOfBirth == default(DateTime))
+            return $"/medical-visit/list?id={PatientId}";
+            
+        var nombreCodificado = System.Web.HttpUtility.UrlEncode($"{VM.Model.FullName}");
+        var fechaCodificada = VM.Model.DateOfBirth.ToString("yyyy-MM-dd");
+        return $"/medical-visit/list?id={PatientId}&nombre={nombreCodificado}&fechaNac={fechaCodificada}";
+    }
+
+    private void HandleDataReady()
+    {
+        StateHasChanged();
+    }
 }
-
-
-<style>
-    :host {
-        display: flex;
-        flex-direction: column;
-        height: 100vh; /* ocupa toda la altura visible de la ventana */
-        overflow: hidden; /* evita scroll global */
-    }
-
-    /* contenedor principal */
-    .body-content {
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        min-height: 100vh;
-        overflow: hidden; /* para que el scroll solo sea interno */
-        background-color: var(--page-background, #f8f9fa);
-    }
-
-    /* sección que scrollea */
-    .scrollable-section {
-        flex: 1;
-        overflow-y: auto;
-        padding: 1rem;
-        box-sizing: border-box;
-    }
-
-    /* footer fijo al fondo */
-    .me-footer {
-        flex-shrink: 0;
-        border-top: 1px solid #ddd;
-        padding: 0.75rem 1rem;
-        background-color: #f9f9f9;
-        text-align: center;
-    }
-</style>

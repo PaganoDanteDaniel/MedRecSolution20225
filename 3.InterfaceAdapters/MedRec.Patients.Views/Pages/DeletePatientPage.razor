@@ -1,0 +1,226 @@
+﻿@page "/patient/delete"
+
+@using MedRec.CommonComponents.Views.Page
+@using MedRec.Patients.Views.Helpers
+
+@inherits OwningComponentBase<DeletePatientVM>
+
+<div class="body-content">
+
+    <PageShell FooterMessage="@footerMessage" @ref="pageShellRef" CenterContent="true">
+        <HeaderContent>
+            <CustomHeader ButtonBackPress="OnBackPressed">
+                <HeaderContent>
+                    <div class="header-icon">
+                        <svg class="icon-header" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg>
+                    </div>
+                        <h1 class="header-title">@UpdatePatientMessages.UpdatePatientPageTitle</h1>
+                </HeaderContent>
+            </CustomHeader>
+        </HeaderContent>
+    
+        <ChildContent>
+
+            
+        </ChildContent>
+    
+        <ErrorContent Context="context">
+            <ExceptionDisplayComponent Exception="context" />
+            <button class="btn btn-danger" @onclick="(()=>pageShellRef.Recover())">OK</button>
+        </ErrorContent>
+    </PageShell>
+
+    @* ======== MODAL PARA MOSTRAR LISTADO DE PACIENTES Y NOTIFICACIONES =======*@
+    <MdMessageModal Visible="_showModal"
+                    VisibleChanged="@(v => _showModal = v)"
+                    CloseOnOverlayClick="false"
+                    Type="@ModalType"
+                    Title="@ModalTitle"
+                    Body="@ModalBody"
+                    Message="@ModalMessage"
+                    ShowOk="@ShowOk"
+                    ShowCancel="@ShowCancel"
+                    ShowDelete="@ShowDelete"
+                    ShowRetry="@ShowRetry"
+                    OnOk="_onOkCallback"
+                    OnCancel="_onCancelCallback"
+                    OnDelete="_onDeleteCallback"
+                    OnRetry="_onRetryCallback">
+    </MdMessageModal>
+</div>
+
+@code {
+    private DeletePatientVM VM => Service;
+    private readonly ModalNotifier _modalNotifier = new();
+
+    [Inject] public NavigationManager Navigation { get; set; }
+
+    private Guid PatientId { get; set; }
+
+    #region === CAMPOS ===
+
+    private string footerMessage = "MedRec Software de gestión médica";
+    private bool _showModal = false;
+    private PageShell pageShellRef;
+    private bool _isLoading = false;
+    private Guid _patientId;
+
+    #endregion
+
+    #region === NUEVAS PROPIEDADES PARA EL NUEVO MODAL ===
+
+    private bool ModalVisible;
+    private ModalType ModalType = ModalType.MessageInfo;
+    private string ModalTitle = "Mensaje";
+    private string ModalMessage = "";
+    private RenderFragment? ModalBody;
+    private bool CloseOnOverlayClick = true;
+    private bool ShowOk = false;
+    private bool ShowCancel = false;
+    private bool ShowDelete = false;
+    private bool ShowRetry = false;
+
+    #endregion
+
+    #region === Callbacks para el nuevo modal ===
+
+    public EventCallback _onOkCallback = default;
+    public EventCallback _onCancelCallback = default;
+    public EventCallback _onDeleteCallback = default;
+    public EventCallback _onRetryCallback = default;
+
+    private EventCallback _onOkHandler;
+    #endregion
+
+    // Handlers de eventos (para desuscripción)
+    private Action _onPatientDeleted = default!;
+    private Action _onShowMessage = default!;
+    private Action _onShowWarning = default!;
+    private Action _onShowError = default!;
+    private Action _onShowConcurrencyError = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        SetupEventSubscriptions();
+
+        await OpenSelectPatientModal();
+    }
+    private void SetupEventSubscriptions()
+    {
+        _onPatientDeleted = () => ShowNotification("Éxito",
+            VM.InformationMessage,
+            ModalType.MessageSuccess,
+            EventCallback.Factory.Create(this, OnCloseModal));
+
+        _onShowMessage = () => ShowNotification("Notificación",
+            VM.InformationMessage,
+            ModalType.MessageError,
+            EventCallback.Factory.Create(this, OnCloseModal));
+        _onShowWarning = () => ShowNotification("Advertencia",
+            VM.InformationMessage,
+            ModalType.MessageWarning,
+            EventCallback.Factory.Create(this, OnCloseModal));
+        _onShowError = () => ShowNotification("Error",
+            VM.InformationMessage,
+            ModalType.MessageError,
+            EventCallback.Factory.Create(this, OnCloseModal));
+        _onShowConcurrencyError = () => ShowNotification("Conflicto de concurrencia", 
+            VM.InformationMessage,
+            ModalType.MessageWarning,
+            EventCallback.Factory.Create(this, OnCloseModal));
+
+        VM.OnShowMessage += _onShowMessage;
+        VM.OnShowWarning += _onShowWarning;
+        VM.OnShowError += _onShowError;
+        VM.OnShowConcurrencyError += _onShowConcurrencyError;
+        VM.OnPatientDeleted += _onPatientDeleted;
+    }
+
+    private void ShowNotification(string title, string message, ModalType type, EventCallback onOkHandler)
+    {
+        ModalTitle = title;
+        ModalType = type;
+        ModalBody = null;
+        ModalMessage = message;
+        _showModal = true;
+        _onOkHandler = onOkHandler;
+
+        StateHasChanged();
+    }
+
+    private Task OpenSelectPatientModal()
+    {
+        CloseOnOverlayClick = false;
+        ModalType = ModalType.NormalContent;
+        ModalTitle = "Seleccione el paciente a eliminar";
+        ShowOk = false;
+        ShowCancel = false;
+        ShowDelete = false;
+        ShowRetry = false;
+        ModalBody = builder =>
+        {
+            builder.OpenComponent<ListPatientsComponent>(0);
+            builder.AddAttribute(1, nameof(ListPatientsComponent.MaxPageButton), 3);
+            builder.AddAttribute(2, nameof(ListPatientsComponent.WithHeight), false);
+            builder.AddAttribute(3, nameof(ListPatientsComponent.OnPatientSelected),
+                EventCallback.Factory.Create<(Guid, string, string)>(this, OnPatientSelected));
+            builder.AddAttribute(4, nameof(ListPatientsComponent.ShowActionsColumn), false);
+            builder.CloseComponent();
+        };
+
+
+
+        _showModal = true; // Primero selector de paciente
+        return Task.CompletedTask;
+    }
+
+    private void OnPatientSelected((Guid idSelectedPatient, string patientName, string __) selectedPatient)
+    {
+        _showModal = false;
+        // _patientId = selectedPatient.idSelectedPatient;
+        // Redirigir a la misma página pero con el ID en la ruta -> asegura un estado limpio
+        // Mostrar modal de confirmación
+        var message = string.Format(
+            ListPatientsMessages.ModalMessageTextTemplate,
+            string.Format(ListPatientsMessages.ModalMessageText, $"{selectedPatient.patientName ?? ""}")
+        );
+        ShowDelete = true;
+        ShowCancel = true;
+        _onDeleteCallback = EventCallback.Factory.Create(this, OnAcceptDelete);
+        _onCancelCallback = EventCallback.Factory.Create(this, OnCloseModal);
+        ModalTitle = ListPatientsMessages.ModalTitleText;
+        ModalMessage = message;
+        ModalBody = null;
+        ModalType = ModalType.MessageDanger;
+        _showModal = true;
+    }
+
+    private Task OnBackPressed(int _)
+    {
+        Navigation.NavigateTo("/patient-control");
+
+        return Task.CompletedTask;
+    }
+
+    private async Task OnAcceptDelete()
+    {
+        await VM.DeleteAsync(_patientId);
+        var message = VM.InformationMessage;
+        if(string.IsNullOrEmpty(message))
+        {Navigation.NavigateTo("/patient-control");}
+    }
+
+    private void OnCloseModal()
+    {
+        _modalNotifier.IsVisible = false;
+    }
+
+    public void Dispose()
+    {
+        
+    }
+}

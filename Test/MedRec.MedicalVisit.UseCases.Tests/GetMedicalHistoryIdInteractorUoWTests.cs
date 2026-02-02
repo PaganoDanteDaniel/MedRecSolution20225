@@ -39,7 +39,7 @@ public class GetMedicalHistoryIdInteractorUoWTests
         var commandRepoMock = new Mock<IMedicalVisitCommandRepositoryUoW>();
         var uowMock = new Mock<IRepositoryUnitOfWork>();
 
-        var interactor = new GetMedicalHistoryIdInteractorUoW(
+        var interactor = new GetMedicalHistoryIdInteractor(
             outputPortMock.Object,
             queriesRepoMock.Object,
             commandRepoMock.Object,
@@ -74,7 +74,7 @@ public class GetMedicalHistoryIdInteractorUoWTests
             .Setup(r => r.GetMedicalHistory(patientId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingHistoryId);
 
-        var interactor = new GetMedicalHistoryIdInteractorUoW(
+        var interactor = new GetMedicalHistoryIdInteractor(
             outputPortMock.Object,
             queriesRepoMock.Object,
             commandRepoMock.Object,
@@ -118,7 +118,7 @@ public class GetMedicalHistoryIdInteractorUoWTests
         uowMock.Setup(u => u.CommitTransaction(It.IsAny<CancellationToken>()))
                .Returns(Task.CompletedTask);
 
-        var interactor = new GetMedicalHistoryIdInteractorUoW(
+        var interactor = new GetMedicalHistoryIdInteractor(
             outputPortMock.Object,
             queriesRepoMock.Object,
             commandRepoMock.Object,
@@ -167,7 +167,7 @@ public class GetMedicalHistoryIdInteractorUoWTests
         uowMock.Setup(u => u.RollbackTransaction(It.IsAny<CancellationToken>()))
                .Returns(Task.CompletedTask);
 
-        var interactor = new GetMedicalHistoryIdInteractorUoW(
+        var interactor = new GetMedicalHistoryIdInteractor(
             outputPortMock.Object,
             queriesRepoMock.Object,
             commandRepoMock.Object,

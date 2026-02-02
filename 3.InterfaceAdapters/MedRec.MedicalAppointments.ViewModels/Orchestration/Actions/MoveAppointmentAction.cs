@@ -15,14 +15,12 @@ internal sealed class MoveAppointmentAction(
         {
             var dto = AppointmentMapper.ToMoveDto(appointment);
             await inPort.Handle(dto, ct);
+            var result = outPort.Result;
 
-            if (outPort.ErrorMessage is not null)
-                return OperationResult.Fail<Appointment>(outPort.ErrorMessage, outPort.ValidationErrors);
+            if (!result.Success)
+                return OperationResult.Fail<Appointment>(result.Error, result.ValidationErrors);
 
-            if (outPort.movedMedicalAppointmentDto is null)
-                return OperationResult.Unknown<Appointment>();
-
-            var model = AppointmentMapper.ToModel(outPort.movedMedicalAppointmentDto);
+            var model = AppointmentMapper.ToModel(result.Value);
 
             appointment.DateTime = model.DateTime;
             appointment.RowVersion = model.RowVersion;

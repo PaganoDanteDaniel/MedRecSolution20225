@@ -1,0 +1,8 @@
+﻿<!--
+This file contains the declaration of all the localizable strings.
+-->
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="es-ES">
+
+  <String Id="DowngradeError" Value="Ya está instalada una versión más reciente de [ProductName]." />
+
+</WixLocalization>

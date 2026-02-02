@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+
+	<?define ProductVersion = "!(bind.packageVersion.MedRecMsiPackage)" ?>
+
+	<Bundle
+      Name="MedRec - Instalador"
+      Version="$(var.ProductVersion)"
+      Manufacturer="Dante Pagano Software Solutions"
+      UpgradeCode="6896C279-F346-F609-EFB4-2D1B5D55D76F"
+      IconSourceFile="MedRec.ico">
+
+		<BootstrapperApplication>
+			<bal:WixStandardBootstrapperApplication
+                LicenseFile="licencia.rtf"
+                Theme="rtfLicense"
+                LocalizationFile="es-es.wxl"
+                LogoFile="logo_medrec.png" />
+		</BootstrapperApplication>
+
+		<bal:Condition Message="!(loc.x64Required)" Condition="NativeMachine = 34404" />
+
+		<util:RegistrySearch
+            Id="SearchDotNet9"
+            Root="HKLM"
+            Key="SOFTWARE\dotnet\Setup\InstalledVersions\x64\sharedhost"
+            Value="Version"
+            Variable="DotNetVersion" />
+
+		<util:RegistrySearch
+            Id="SearchWebView2Standard"
+            Root="HKLM"
+            Key="SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F1119F96-3E1D-4435-BD31-7F3804826590}"
+            Value="pv"
+            Variable="WebView2VersionStd" />
+
+		<util:RegistrySearch
+            Id="SearchWebView2Custom"
+            Root="HKLM"
+            Key="SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
+            Value="pv"
+            Variable="WebView2VersionCustom" />
+
+		<Chain>
+			<ExePackage
+                Id="DotNet9Redist"
+                SourceFile="redist\windowsdesktop-runtime-9.0.10-win-x64.exe"
+                DetectCondition="DotNetVersion &gt;= v9.0.10"
+                InstallArguments="/install /quiet /norestart"
+                Permanent="yes"
+                Vital="yes" />
+
+			<ExePackage
+                Id="WebView2Redist"
+                SourceFile="redist\MicrosoftEdgeWebView2RuntimeInstallerX64.exe"
+                DetectCondition="WebView2VersionStd OR WebView2VersionCustom"
+                InstallArguments="/silent /install"
+                Permanent="yes"
+                Vital="yes" />
+
+			<MsiPackage
+                Id="MedRecMsiPackage"
+                SourceFile="..\MedRec.Installer.MSI\bin\x64\Release\es-ES\MedRec.Installer.MSI.msi"
+                Visible="no"/>
+		</Chain>
+
+	</Bundle>
+</Wix>

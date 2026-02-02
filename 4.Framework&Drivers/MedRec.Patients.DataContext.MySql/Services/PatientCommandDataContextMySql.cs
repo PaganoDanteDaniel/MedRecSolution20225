@@ -41,10 +41,9 @@ internal class PatientCommandDataContextMySql(MedRecContext context)
         await Task.CompletedTask;
     }
 
-    public async Task SoftDeletePatientAsync(Patient patient, CancellationToken cancellationToken = default)
-    {
+    public async Task SoftDeletePatientAsync(Patient patient, CancellationToken cancellationToken = default) =>
         await UpdatePatientAsync(patient, cancellationToken);
-    }
+
     public async Task HardDeletePatientAsync(Guid patientId, CancellationToken cancellationToken = default)
     {
         var trackedEntry = context.ChangeTracker.Entries<Patient>()

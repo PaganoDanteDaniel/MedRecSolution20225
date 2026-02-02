@@ -16,13 +16,12 @@ internal sealed class CreateAppointmentAction(
             var dto = AppointmentMapper.ToCreateDto(appointment);
             await inPort.Handle(dto, ct);
 
-            if (outPort.ErrorMessage is not null)
-                return OperationResult.Fail<Appointment>(outPort.ErrorMessage, outPort.ValidationErrors);
+            var result = outPort.Result;
 
-            if (outPort.AppointmentDto is null)
-                return OperationResult.Unknown<Appointment>();
+            if (!result.Success)
+                return OperationResult.Fail<Appointment>(result.Error, result.ValidationErrors);
 
-            var model = AppointmentMapper.ToModel(outPort.AppointmentDto);
+            var model = AppointmentMapper.ToModel(result.Value);
 
             // Sincronizar RowVersion y demás en la instancia original (opcional)
             appointment.RowVersion = model.RowVersion;

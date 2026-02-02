@@ -1,43 +1,46 @@
-﻿using MedRec.Entity.DTOs;
-using MedRec.Entity.Enums;
+﻿using MedRec.Entity.Interfaces;
 using MedRec.MedicalVisit.BusinessObjects.Interfaces.Ports;
 using MedRec.MedicalVisit.BusinessObjects.Interfaces.Repositories;
 
 namespace MedRec.MedicalVisit.UseCases.Implementations;
-internal class GetMedicalHistoryIdInteractor(
-    IGetMedicalHistoryIdOutputPort _outputPort,
-    IMedicalVisitQueriesRepository _repository,
-    IMedicalVisitCommandRepository _command) : IGetMedicalHistoryIdInputPort
+public class GetMedicalHistoryIdInteractor : IGetMedicalHistoryIdInputPort
 {
-    public async Task Handle(Guid patientId, CancellationToken cts = default)
+    private readonly IGetMedicalHistoryIdOutputPort _outputPort;
+    private readonly IMedicalVisitQueriesRepositoryUoW _repository;
+    private readonly IMedicalVisitCommandRepositoryUoW _command;
+    private readonly IRepositoryUnitOfWork _unitOfWork;
+
+    public GetMedicalHistoryIdInteractor(
+        IGetMedicalHistoryIdOutputPort outputPort,
+        IMedicalVisitQueriesRepositoryUoW repository,
+        IMedicalVisitCommandRepositoryUoW command,
+        IRepositoryUnitOfWork unitOfWork)
     {
-        cts.ThrowIfCancellationRequested();
+        _outputPort = outputPort;
+        _repository = repository;
+        _command = command;
+        _unitOfWork = unitOfWork;
+    }
 
-        var result = await _repository.GetMedicalHistory(patientId, cts);
-
-        if (!result.IsSuccess)
+    public async Task Handle(Guid patientId, CancellationToken ct = default)
+    {
+        await _unitOfWork.ExecuteInTransactionWithRetry(async () =>
         {
-            if (result.Error.Code == ErrorCode.NotFound)
+            // 1. Intentar obtener historial existente
+            Guid existingId = await _repository.GetMedicalHistory(patientId, ct);
+            if (existingId != Guid.Empty)
             {
-                var medHist = await _command.CreateMedicalHistory(patientId, cts);
-                if (!medHist.IsSuccess)
-                {
-                    await _outputPort.ErrorAsync(medHist.Error);
-                    return;
-                }
-
-                await _outputPort.Handle(medHist.Value, cts);
-            }
-            else
-            {
-                await _outputPort.ErrorAsync(new ErrorInfo("No se pudo obtenre la historia clínica del paciente.", ErrorCode.DatabaseError));
+                await _outputPort.Handle(existingId, ct);
                 return;
             }
-        }
-        else
-        {
-            await _outputPort.Handle(result.Value, cts);
-        }
 
+            // 2. No existe → crear dentro de transacción
+
+            Guid newId = await _command.CreateMedicalHistory(patientId, ct);
+            await _unitOfWork.SaveChanges(ct);
+
+            await _outputPort.ErrorAsync(null);
+            await _outputPort.Handle(newId, ct);
+        }, ct);
     }
 }

@@ -88,7 +88,7 @@
 }
 
 .card-icon.icon-green {
-    background: linear-gradient(to bottom right, var(--color-green-100), var(--color-green-200));
+    background: linear-gradient(to bottom right, var(--color-green-100), var(--color-green-200))!important;
 }
 
 .card-icon.icon-pink {
@@ -109,7 +109,7 @@
 }
 
 .icon-green .icon {
-    color: var(--color-green-600);
+    color: var(--color-green-600)!important;
 }
 
 .icon-pink .icon {
@@ -167,15 +167,15 @@
         height: 2.5rem;
     }
 
-    .header-icon {
+/*    .header-icon {
         width: 2.5rem;
         height: 2.5rem;
     }
 
-    .icon-header {
+    .icon-header{
         width: 1.25rem;
         height: 1.25rem;
-    }
+    }*/
 
     .menu-card {
         padding: var(--spacing-6);

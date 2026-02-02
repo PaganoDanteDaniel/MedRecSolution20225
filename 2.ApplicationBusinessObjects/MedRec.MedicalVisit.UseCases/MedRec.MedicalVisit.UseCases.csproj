@@ -6,14 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Implementations\CreateMedicalVisitInteractor.cs" />
-    <Compile Remove="Implementations\GetMedicalHistoryIdInteractor.cs" />
-    <Compile Remove="Implementations\GetMedicalVisitInteractor.cs" />
-    <Compile Remove="Implementations\MedicalVisitSummaryListInteractor.cs" />
-    <Compile Remove="Implementations\UpdateMedicalVisitInteractor.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\MedRec.MedicalVisit.BusinessObjects\MedRec.MedicalVisit.BusinessObjects.csproj" />
   </ItemGroup>
 

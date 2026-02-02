@@ -46,7 +46,7 @@ public class CreateMedicalVisitInteractorUoWTests
             .SetupGet(v => v.Errors)
             .Returns(new[] { new ValidationError("Reason", "El motivo es obligatorio.") });
 
-        var interactor = new CreateMedicalVisitInteractorUoW(
+        var interactor = new CreateMedicalVisitInteractor(
             outputPortMock.Object,
             commandRepoMock.Object,
             validatorMock.Object,
@@ -86,7 +86,7 @@ public class CreateMedicalVisitInteractorUoWTests
         uowMock.Setup(u => u.CommitTransaction(It.IsAny<CancellationToken>()))
                .Returns(Task.CompletedTask);
 
-        var interactor = new CreateMedicalVisitInteractorUoW(
+        var interactor = new CreateMedicalVisitInteractor(
             outputPortMock.Object,
             commandRepoMock.Object,
             validatorMock.Object,
@@ -128,7 +128,7 @@ public class CreateMedicalVisitInteractorUoWTests
         uowMock.Setup(u => u.RollbackTransaction(It.IsAny<CancellationToken>()))
                .Returns(Task.CompletedTask);
 
-        var interactor = new CreateMedicalVisitInteractorUoW(
+        var interactor = new CreateMedicalVisitInteractor(
             outputPortMock.Object,
             commandRepoMock.Object,
             validatorMock.Object,
@@ -168,7 +168,7 @@ public class CreateMedicalVisitInteractorUoWTests
         uowMock.Setup(u => u.RollbackTransaction(It.IsAny<CancellationToken>()))
                .Returns(Task.CompletedTask);
 
-        var interactor = new CreateMedicalVisitInteractorUoW(
+        var interactor = new CreateMedicalVisitInteractor(
             outputPortMock.Object,
             commandRepoMock.Object,
             validatorMock.Object,
@@ -213,7 +213,7 @@ public class CreateMedicalVisitInteractorUoWTests
                .Callback(() => rollbackCalled = true)
                .Returns(Task.CompletedTask);
 
-        var interactor = new CreateMedicalVisitInteractorUoW(
+        var interactor = new CreateMedicalVisitInteractor(
             outputPortMock.Object,
             commandRepoMock.Object,
             validatorMock.Object,

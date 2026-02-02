@@ -217,7 +217,7 @@ public partial class ListPatientsComponent
         var url = $"/medical-visit/list?id={patient.Id}&nombre={nombreCodificado}&fechaNac={fechaCodificada}";
         Navigation.NavigateTo(url, true);
     }
-    private async Task OnDeletePatient(PatientSummaryDto patient)
+    private void OnDeletePatient(PatientSummaryDto patient)
     {
         _patientToDelete = patient;
 
