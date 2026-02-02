@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# WiX installers – runtimes y binarios
+**/redis/
+
 # User-specific files
 *.rsuser
 *.suo
