@@ -7,7 +7,7 @@ namespace MedRec.MedicalAppointments.Views.Components;
 public partial class WeeklyScheduleComonet
 {
     private IJSObjectReference? module;
-    private WeeklyScheduleViewModel VM => Service;
+    private WeeklyScheduleViewModelOrchestrator VM => Service;
     // Estado
     private DateTime fechaBase = DateTime.Today;
     private string turno = "";

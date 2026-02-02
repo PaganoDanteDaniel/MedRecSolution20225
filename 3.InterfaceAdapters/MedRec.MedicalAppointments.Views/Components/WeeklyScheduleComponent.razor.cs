@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using System.Globalization;
 
 namespace MedRec.MedicalAppointments.Views.Components;
-public partial class WeeklyScheduleComponent(WeeklyScheduleViewModel VM) : ComponentBase
+public partial class WeeklyScheduleComponent(WeeklyScheduleViewModelOrchestrator VM) : ComponentBase
 {
     // Definiciones de estado (equivalente a las variables let/const de JavaScript)
     private DateTime fechaBase = DateTime.Today;
