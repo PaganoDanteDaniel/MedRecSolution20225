@@ -3,14 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\3.InterfaceAdapters\Repositories\MedRec.Patients.Repositories\MedRec.Patients.Repositories.csproj" />
+    <ProjectReference Include="..\..\3.InterfaceAdapters\Repositories\MedRec.DynamicTemplates.Repositories\MedRec.DynamicTemplates.Repositories.csproj" />
     <ProjectReference Include="..\MedRec.DataContext.MySql\MedRec.DataContext.MySql.csproj" />
   </ItemGroup>
 

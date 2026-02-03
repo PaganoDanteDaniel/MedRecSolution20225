@@ -1,4 +1,6 @@
-﻿using MedRec.HealthInsurance.ViewModels.VM;
+﻿using MedRec.DynamicTemplates.DataContext.MySql;
+using MedRec.DynamicTemplates.Repositories;
+using MedRec.HealthInsurance.ViewModels.VM;
 using MedRec.MedicalVisit.ViewModels.VM;
 using MedRec.Patients.ViewModels.VM;
 
@@ -46,6 +48,9 @@ public static class DependencyContainer
                 .AddMedicalAppointmentVMServices();
 
         //services.AddTransient<WeeklyScheduleViewModel>();
+
+        services.AddDynamicTemplatesDataContextServices()
+                .AddDynamicTemplatesRepositoriesServices();
 
         services.AddValidatorServices();
 
