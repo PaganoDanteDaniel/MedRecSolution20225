@@ -3,7 +3,7 @@ using MySqlConnector;
 using System.Data.Common;
 using System.Net.Sockets;
 
-namespace MedRec.DataContext.MySql.Infrastructure;
+namespace MedRec.DataContext.MySql.UnitOfWork;
 
 // Implementación específica para MySQL
 internal sealed class MySqlExceptionClassifier : IDbConnectionExceptionClassifier
@@ -34,7 +34,7 @@ internal sealed class MySqlExceptionClassifier : IDbConnectionExceptionClassifie
             if (inner is DbException dbEx)
             {
                 var msg = (dbEx.Message ?? string.Empty).ToUpperInvariant();
-                if (msg.Contains("UNABLE TO CONNECT") || (msg.Contains("HOST") && msg.Contains("CONNECT")))
+                if (msg.Contains("UNABLE TO CONNECT") || msg.Contains("HOST") && msg.Contains("CONNECT"))
                 {
                     reason = LostConnectionReason.UnableToConnect; return true;
                 }

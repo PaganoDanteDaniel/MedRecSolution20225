@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.MedicalVisit.BusinessObjects\MedRec.MedicalVisit.BusinessObjects.csproj" />
+    <ProjectReference Include="..\..\..\2.ApplicationBusinessObjects\MedRec.MedicalVisit.BusinessObjects\MedRec.MedicalVisit.BusinessObjects.csproj" />
   </ItemGroup>
 
 </Project>

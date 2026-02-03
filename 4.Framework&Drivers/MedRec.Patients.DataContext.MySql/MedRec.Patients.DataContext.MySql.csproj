@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.Patients.Repositories\MedRec.Patients.Repositories.csproj" />
+    <ProjectReference Include="..\..\3.InterfaceAdapters\Repositories\MedRec.Patients.Repositories\MedRec.Patients.Repositories.csproj" />
     <ProjectReference Include="..\MedRec.DataContext.MySql\MedRec.DataContext.MySql.csproj" />
   </ItemGroup>
 

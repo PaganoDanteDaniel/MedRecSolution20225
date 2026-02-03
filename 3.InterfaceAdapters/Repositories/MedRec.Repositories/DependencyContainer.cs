@@ -7,7 +7,6 @@ public static class DependencyContainer
     public static IServiceCollection AddRepositoriesServices(this IServiceCollection services)
     {
         services.AddScoped<IRepositoryUnitOfWork, RepositoryUnitOfWork>();
-
         return services;
     }
 }

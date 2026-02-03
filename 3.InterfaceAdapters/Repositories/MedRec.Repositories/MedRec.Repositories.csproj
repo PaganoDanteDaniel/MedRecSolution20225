@@ -11,8 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.MedicalAppointment.BusinessObjects\MedRec.MedicalAppointments.BusinessObjects.csproj" />
-    <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.MedicalVisit.BusinessObjects\MedRec.MedicalVisit.BusinessObjects.csproj" />
+    <ProjectReference Include="..\..\..\1.EnterpriseBusinessObjects\MedRec.Entity\MedRec.Entity.csproj" />
+    <ProjectReference Include="..\..\..\1.EnterpriseBusinessObjects\MedRec.Shared\MedRec.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
