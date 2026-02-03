@@ -14,6 +14,8 @@ public class PatientMedicalVisit
     public string Notes { get; set; }
     public bool IsDeleted { get; set; } = false;
     public byte[] RowVersion { get; set; }
+    public Guid? SpecialtyId { get; set; }
+    public Guid? DoctorId { get; set; }
 
 }
 

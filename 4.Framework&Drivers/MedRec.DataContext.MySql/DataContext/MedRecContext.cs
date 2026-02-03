@@ -80,6 +80,9 @@ public class MedRecContext : DbContext, IDisposable
     public DbSet<MedicalAppointment> MedicalAppointments { get; set; }
 
     public DbSet<MedicalAppointmentView> MedicalAppointmentsView => Set<MedicalAppointmentView>();
+    public DbSet<MedicalSpecialty> MedicalSpecialties { get; set; }
+    public DbSet<TemplateFieldDefinition> TemplateFieldDefinitions { get; set; }
+    public DbSet<MedicalVisitDynamicField> MedicalVisitDynamicFields { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

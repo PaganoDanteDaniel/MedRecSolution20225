@@ -33,5 +33,16 @@ public class MedicalVisitConfiguration : IEntityTypeConfiguration<PatientMedical
 
 
         builder.HasIndex(e => e.MedicalHistoryId);
+
+        builder.Property(e => e.SpecialtyId).IsRequired(false);
+        builder.Property(e => e.DoctorId).IsRequired(false);
+
+        builder.HasOne<MedicalSpecialty>()
+            .WithMany()
+            .HasForeignKey(e => e.SpecialtyId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasIndex(e => e.SpecialtyId)
+            .HasDatabaseName("idx_visit_specialty");
     }
 }
