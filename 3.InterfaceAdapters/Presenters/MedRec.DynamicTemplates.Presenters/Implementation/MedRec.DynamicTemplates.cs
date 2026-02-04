@@ -1,7 +1,7 @@
 using MedRec.DynamicTemplates.BusinessObjects.DTOs;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Ports;
 
-namespace MedRec.DynamicTemplates.Presenters.Implementations;
+namespace MedRec.DynamicTemplates.Presenters.Implementation;
 
 /// <summary>
 /// Presenter for GetActiveSpecialties use case

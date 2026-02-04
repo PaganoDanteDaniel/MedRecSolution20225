@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MedRec.DynamicTemplates.BusinessObjects\MedRec.DynamicTemplates.BusinessObjects.csproj" />
+  </ItemGroup>
+
 </Project>

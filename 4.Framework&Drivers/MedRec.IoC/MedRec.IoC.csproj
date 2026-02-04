@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.DynamicTemplates.UseCases\MedRec.DynamicTemplates.UseCases.csproj" />
     <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.HealthInsurance.UeseCases\MedRec.HealthInsurance.UseCases.csproj" />
     <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.MedicalAppointments.UseCases\MedRec.MedicalAppointments.UseCases.csproj" />
     <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.MedicalVisit.UseCases\MedRec.MedicalVisit.UseCases.csproj" />

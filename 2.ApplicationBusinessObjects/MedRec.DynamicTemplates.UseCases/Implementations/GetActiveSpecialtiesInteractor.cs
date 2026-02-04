@@ -26,7 +26,7 @@ internal class GetActiveSpecialtiesInteractor : IGetActiveSpecialtiesInputPort
         {
             cts.ThrowIfCancellationRequested();
 
-            var specialties = await _queriesRepository.GetActiveSpecialtiesAsync(cts);
+            var specialties = await _queriesRepository.GetActiveSpecialties(cts);
 
             var dtos = specialties.Select(s => new MedicalSpecialtyDto
             {
