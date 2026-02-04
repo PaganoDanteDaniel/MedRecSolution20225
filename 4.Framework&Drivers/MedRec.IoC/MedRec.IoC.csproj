@@ -19,8 +19,11 @@
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.MedicalVisit.ViewModels\MedRec.MedicalVisit.ViewModels.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.Patients.Presenters\MedRec.Patients.Presenters.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.Patients.ViewModels\MedRec.Patients.ViewModels.csproj" />
+    <ProjectReference Include="..\..\3.InterfaceAdapters\Presenters\MedRec.DynamicTemplates.Presenters\MedRec.DynamicTemplates.Presenters.csproj" />
+    <ProjectReference Include="..\..\3.InterfaceAdapters\Repositories\MedRec.DynamicTemplates.Repositories\MedRec.DynamicTemplates.Repositories.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\Repositories\MedRec.MedicalVisit.Repositories\MedRec.MedicalVisit.Repositories.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\Repositories\MedRec.Repositories\MedRec.Repositories.csproj" />
+    <ProjectReference Include="..\MedRec.DynamicTemplates.DataContext.MySql\MedRec.DynamicTemplates.DataContext.MySql.csproj" />
     <ProjectReference Include="..\MedRec.HealthInsurance.DataContext.EF\MedRec.HealthInsurance.DataContext.EF.csproj" />
     <ProjectReference Include="..\MedRec.MedicalAppointment.DataContext.MySql\MedRec.MedicalAppointments.DataContext.MySql.csproj" />
     <ProjectReference Include="..\MedRec.MedicalVisit.DataContext.MySql\MedRec.MedicalVisit.DataContext.MySql.csproj" />

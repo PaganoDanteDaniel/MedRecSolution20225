@@ -50,7 +50,9 @@ public static class DependencyContainer
         //services.AddTransient<WeeklyScheduleViewModel>();
 
         services.AddDynamicTemplatesDataContextServices()
-                .AddDynamicTemplatesRepositoriesServices();
+                .AddDynamicTemplatesRepositoriesServices()
+                .AddDynamicTemplatesPresenters()
+                .AddDynamicTemplatesUseCases();
 
         services.AddValidatorServices();
 

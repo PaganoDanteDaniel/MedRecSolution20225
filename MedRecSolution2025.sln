@@ -170,6 +170,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DynamicTemplates", "Dynamic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedRec.DynamicTemplates.DataContext.MySql", "4.Framework&Drivers\MedRec.DynamicTemplates.DataContext.MySql\MedRec.DynamicTemplates.DataContext.MySql.csproj", "{093CBAC2-06E7-47E7-B481-090D0B6C00C8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DynamicTemplates", "DynamicTemplates", "{9ABF01BE-1E22-413E-AD80-B6B72F9EB9AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedRec.DynamicTemplates.Presenters", "3.InterfaceAdapters\Presenters\MedRec.DynamicTemplates.Presenters\MedRec.DynamicTemplates.Presenters.csproj", "{66534A52-DBC7-8823-638A-7049F6552D68}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -870,6 +874,22 @@ Global
 		{093CBAC2-06E7-47E7-B481-090D0B6C00C8}.Release|x64.Build.0 = Release|Any CPU
 		{093CBAC2-06E7-47E7-B481-090D0B6C00C8}.Release|x86.ActiveCfg = Release|Any CPU
 		{093CBAC2-06E7-47E7-B481-090D0B6C00C8}.Release|x86.Build.0 = Release|Any CPU
+		{66534A52-DBC7-8823-638A-7049F6552D68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66534A52-DBC7-8823-638A-7049F6552D68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66534A52-DBC7-8823-638A-7049F6552D68}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{66534A52-DBC7-8823-638A-7049F6552D68}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{66534A52-DBC7-8823-638A-7049F6552D68}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{66534A52-DBC7-8823-638A-7049F6552D68}.Debug|x64.Build.0 = Debug|Any CPU
+		{66534A52-DBC7-8823-638A-7049F6552D68}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{66534A52-DBC7-8823-638A-7049F6552D68}.Debug|x86.Build.0 = Debug|Any CPU
+		{66534A52-DBC7-8823-638A-7049F6552D68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66534A52-DBC7-8823-638A-7049F6552D68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66534A52-DBC7-8823-638A-7049F6552D68}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{66534A52-DBC7-8823-638A-7049F6552D68}.Release|ARM64.Build.0 = Release|Any CPU
+		{66534A52-DBC7-8823-638A-7049F6552D68}.Release|x64.ActiveCfg = Release|Any CPU
+		{66534A52-DBC7-8823-638A-7049F6552D68}.Release|x64.Build.0 = Release|Any CPU
+		{66534A52-DBC7-8823-638A-7049F6552D68}.Release|x86.ActiveCfg = Release|Any CPU
+		{66534A52-DBC7-8823-638A-7049F6552D68}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -951,6 +971,8 @@ Global
 		{51560384-B384-8BDE-D148-7AAB256C577B} = {E1291724-AAFE-4E77-94BF-A7A357BD6471}
 		{B743F98B-A1C2-4A8B-9A94-7C219C03F50A} = {D5732680-C0BF-4F85-8750-E56047E33F97}
 		{093CBAC2-06E7-47E7-B481-090D0B6C00C8} = {B743F98B-A1C2-4A8B-9A94-7C219C03F50A}
+		{9ABF01BE-1E22-413E-AD80-B6B72F9EB9AD} = {970EB8E6-7352-42C3-B0DD-8E2003CFCCE2}
+		{66534A52-DBC7-8823-638A-7049F6552D68} = {9ABF01BE-1E22-413E-AD80-B6B72F9EB9AD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6700A9D3-DC96-480C-BBE0-4E04C5A4EA0A}

@@ -8,6 +8,23 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\1.EnterpriseBusinessObjects\MedRec.Entity\MedRec.Entity.csproj" />
+    <ProjectReference Include="..\..\1.EnterpriseBusinessObjects\MedRec.Shared\MedRec.Shared.csproj" />
+    <ProjectReference Include="..\..\1.EnterpriseBusinessObjects\MedRec.Validator\MedRec.Validator.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\DynamicTemplatesValidatorMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DynamicTemplatesValidatorMessages.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\DynamicTemplatesValidatorMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DynamicTemplatesValidatorMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
