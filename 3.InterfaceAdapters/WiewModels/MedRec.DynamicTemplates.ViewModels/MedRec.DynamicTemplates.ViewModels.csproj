@@ -7,9 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="VM\" />
-    <Folder Include="Orchestration\" />
+    <ProjectReference Include="..\..\..\2.ApplicationBusinessObjects\MedRec.DynamicTemplates.BusinessObjects\MedRec.DynamicTemplates.BusinessObjects.csproj" />
+    <ProjectReference Include="..\..\Presenters\MedRec.DynamicTemplates.Presenters\MedRec.DynamicTemplates.Presenters.csproj" />
   </ItemGroup>
 
 </Project>
