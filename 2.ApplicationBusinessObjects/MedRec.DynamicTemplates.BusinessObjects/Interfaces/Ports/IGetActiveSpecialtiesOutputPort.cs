@@ -1,21 +1,13 @@
+using MedRec.BusinessObjects.Interfaces;
 using MedRec.DynamicTemplates.BusinessObjects.DTOs;
 
 namespace MedRec.DynamicTemplates.BusinessObjects.Interfaces.Ports;
 
 /// <summary>
-/// Output port for GetActiveSpecialties use case
+/// Output port for GetActiveSpecialties use case.
+/// Inherit from IBaseOutputPort to expose ErrorAsync / ValidationErrorsAsync.
 /// </summary>
-public interface IGetActiveSpecialtiesOutputPort
+public interface IGetActiveSpecialtiesOutputPort : IBaseOutputPort
 {
-    /// <summary>
-    /// Handles successful retrieval of active specialties
-    /// </summary>
-    /// <param name="specialties">Collection of active medical specialties</param>
-    void Handle(IEnumerable<MedicalSpecialtyDto> specialties);
-
-    /// <summary>
-    /// Handles error when retrieving active specialties
-    /// </summary>
-    /// <param name="errorMessage">Error description</param>
-    void HandleError(string errorMessage);
+    Task Handle(IEnumerable<MedicalSpecialtyDto> specialties);
 }

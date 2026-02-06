@@ -1,10 +1,17 @@
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 using MedRec.DynamicTemplates.BusinessObjects.DTOs;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Ports;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Repositories;
 using MedRec.DynamicTemplates.BusinessObjects.Validators;
-using MedRec.Entity.Interfaces;
+using MedRec.Entity.DTOs;
 using MedRec.Entity.POCOEntities;
 using MedRec.Validator.Interfaces;
+using MedRec.Entity.Enums;
+using MedRec.Entity.Interfaces;
 
 namespace MedRec.DynamicTemplates.UseCases.Implementations;
 
@@ -50,7 +57,7 @@ internal class SaveDynamicFieldsInteractor : ISaveDynamicFieldsInputPort
                         g => g.Select(e => e.ErrorMessage).ToList()
                     );
 
-                _outputPort.HandleValidationErrors(errors);
+                await _outputPort.HandleValidationErrors(errors);
                 return;
             }
 
@@ -83,16 +90,24 @@ internal class SaveDynamicFieldsInteractor : ISaveDynamicFieldsInputPort
                 }
 
                 await _unitOfWork.SaveChanges(cts);
-                _outputPort.Handle(savedCount);
+                await _outputPort.Handle(savedCount);
             }, cts);
         }
         catch (OperationCanceledException)
         {
-            _outputPort.HandleError("Operación cancelada por el usuario.");
+            await _outputPort.ErrorAsync(new ErrorInfo
+            {
+                Code = ErrorCode.Cancelled,
+                Message = "Operación cancelada por el usuario."
+            });
         }
         catch (Exception ex)
         {
-            _outputPort.HandleError($"Error al guardar los campos dinámicos: {ex.Message}");
+            await _outputPort.ErrorAsync(new ErrorInfo
+            {
+                Code = ErrorCode.DatabaseError,
+                Message = $"Error al guardar los campos dinámicos: {ex.Message}"
+            });
         }
     }
 }

@@ -1,25 +1,13 @@
+using MedRec.BusinessObjects.Interfaces;
+
 namespace MedRec.DynamicTemplates.BusinessObjects.Interfaces.Ports;
 
 /// <summary>
-/// Output port for SaveDynamicFields use case
+/// Output port for SaveDynamicFields use case.
+/// Inherit from IBaseOutputPort to expose ErrorAsync / ValidationErrorsAsync.
 /// </summary>
-public interface ISaveDynamicFieldsOutputPort
+public interface ISaveDynamicFieldsOutputPort : IBaseOutputPort
 {
-    /// <summary>
-    /// Handles successful save of dynamic fields
-    /// </summary>
-    /// <param name="savedCount">Number of fields saved</param>
-    void Handle(int savedCount);
-
-    /// <summary>
-    /// Handles validation errors
-    /// </summary>
-    /// <param name="errors">Dictionary of field names and their validation errors</param>
-    void HandleValidationErrors(Dictionary<string, List<string>> errors);
-
-    /// <summary>
-    /// Handles error when saving dynamic fields
-    /// </summary>
-    /// <param name="errorMessage">Error description</param>
-    void HandleError(string errorMessage);
+    Task Handle(int savedCount);
+    Task HandleValidationErrors(Dictionary<string, List<string>> errors);
 }

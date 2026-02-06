@@ -1,41 +1,50 @@
+using MedRec.BusinessObjects.Results;
+using MedRec.DynamicTemplates.BusinessObjects.DTOs;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Ports;
-using MedRec.DynamicTemplates.Presenters.Implementation;
 using MedRec.DynamicTemplates.ViewModels.Models;
 
 namespace MedRec.DynamicTemplates.ViewModels.Orchestration;
 
-/// <summary>
-/// Orchestrator for listing active medical specialties
-/// </summary>
 public class ListSpecialtiesOrchestrator
 {
     private readonly IGetActiveSpecialtiesInputPort _inputPort;
+    private readonly IGetActiveSpecialtiesOutputPort _outputPort;
 
-    public ListSpecialtiesOrchestrator(IGetActiveSpecialtiesInputPort inputPort)
+    public ListSpecialtiesOrchestrator(
+        IGetActiveSpecialtiesInputPort inputPort,
+        IGetActiveSpecialtiesOutputPort outputPort)
     {
         _inputPort = inputPort;
+        _outputPort = outputPort;
     }
 
     public async Task<(bool Success, List<MedicalSpecialtyModel>? Specialties, string? ErrorMessage)>
         ExecuteAsync(CancellationToken cts = default)
     {
-        var presenter = new GetActiveSpecialtiesPresenter();
-
         await _inputPort.Handle(cts);
 
-        if (!presenter.IsSuccess)
+        var result = (_outputPort as dynamic).Result as OperationResult<IEnumerable<MedicalSpecialtyDto>>;
+
+        if (result is null)
         {
-            return (false, null, presenter.ErrorMessage);
+            return (false, null, "Error al obtener las especialidades activas.");
         }
 
-        var models = presenter.Specialties?.Select(dto => new MedicalSpecialtyModel
+        if (!result.Success)
         {
-            Id = dto.Id,
-            Name = dto.Name,
-            Description = dto.Description,
-            Icon = dto.Icon,
-            IsActive = dto.IsActive
-        }).ToList();
+            return (false, null, result.Error?.Message ?? "Error al obtener las especialidades activas.");
+        }
+
+        var models = result.Value?
+            .Select(dto => new MedicalSpecialtyModel
+            {
+                Id = dto.Id,
+                Name = dto.Name,
+                Description = dto.Description,
+                Icon = dto.Icon,
+                IsActive = dto.IsActive
+            })
+            .ToList();
 
         return (true, models, null);
     }

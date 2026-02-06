@@ -1,42 +1,25 @@
+using MedRec.BusinessObjects.Abstracts;
+using MedRec.BusinessObjects.Results;
 using MedRec.DynamicTemplates.BusinessObjects.DTOs;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Ports;
+using MedRec.Entity.DTOs;
+using MedRec.Entity.Enums;
 
 namespace MedRec.DynamicTemplates.Presenters.Implementation;
 
 /// <summary>
-/// Presenter for GetTemplateFieldsBySpecialty use case
+/// Presenter for GetTemplateFieldsBySpecialty use case.
 /// </summary>
-public class GetTemplateFieldsBySpecialtyPresenter : IGetTemplateFieldsBySpecialtyOutputPort
+public class GetTemplateFieldsBySpecialtyPresenter : BaseOutputPort<IEnumerable<TemplateFieldDefinitionDto>>, IGetTemplateFieldsBySpecialtyOutputPort
 {
-    public IEnumerable<TemplateFieldDefinitionDto>? Fields { get; private set; }
-    public string? ErrorMessage { get; private set; }
-    public bool IsSuccess { get; private set; }
-    public bool NotFound { get; private set; }
-
-    /// <inheritdoc/>
-    public void Handle(IEnumerable<TemplateFieldDefinitionDto> fields)
+    public Task Handle(IEnumerable<TemplateFieldDefinitionDto> fields)
     {
-        Fields = fields;
-        IsSuccess = true;
-        NotFound = false;
-        ErrorMessage = null;
+        Result = OperationResult<IEnumerable<TemplateFieldDefinitionDto>>.Ok(fields);
+        return Task.CompletedTask;
     }
 
-    /// <inheritdoc/>
-    public void HandleError(string errorMessage)
+    public Task HandleNotFound()
     {
-        ErrorMessage = errorMessage;
-        IsSuccess = false;
-        NotFound = false;
-        Fields = null;
-    }
-
-    /// <inheritdoc/>
-    public void HandleNotFound()
-    {
-        NotFound = true;
-        IsSuccess = false;
-        ErrorMessage = "No se encontraron campos de plantilla para la especialidad especificada.";
-        Fields = null;
+        return ErrorAsync(new ErrorInfo (code: ErrorCode.NotFound, message: "No se encontraron campos de plantilla para la especialidad especificada." ));
     }
 }

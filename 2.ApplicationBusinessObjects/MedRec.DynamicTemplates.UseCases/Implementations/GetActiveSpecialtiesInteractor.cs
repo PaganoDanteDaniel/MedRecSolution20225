@@ -1,6 +1,13 @@
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 using MedRec.DynamicTemplates.BusinessObjects.DTOs;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Ports;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Repositories;
+using MedRec.Entity.DTOs;
+using MedRec.Entity.Enums;
 
 namespace MedRec.DynamicTemplates.UseCases.Implementations;
 
@@ -37,15 +44,23 @@ internal class GetActiveSpecialtiesInteractor : IGetActiveSpecialtiesInputPort
                 IsActive = s.IsActive
             }).ToList();
 
-            _outputPort.Handle(dtos);
+            await _outputPort.Handle(dtos);
         }
         catch (OperationCanceledException)
         {
-            _outputPort.HandleError("Operación cancelada por el usuario.");
+            await _outputPort.ErrorAsync(new ErrorInfo
+            {
+                Code = ErrorCode.Cancelled,
+                Message = "Operación cancelada por el usuario."
+            });
         }
         catch (Exception ex)
         {
-            _outputPort.HandleError($"Error al obtener las especialidades activas: {ex.Message}");
+            await _outputPort.ErrorAsync(new ErrorInfo
+            {
+                Code = ErrorCode.DatabaseError,
+                Message = $"Error al obtener las especialidades activas: {ex.Message}"
+            });
         }
     }
 }

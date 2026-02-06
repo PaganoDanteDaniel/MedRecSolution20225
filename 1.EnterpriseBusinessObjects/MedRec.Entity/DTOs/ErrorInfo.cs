@@ -28,26 +28,26 @@ public class ErrorInfo
     /// <summary>
     /// Mensaje legible para el usuario o UI.
     /// </summary>
-    public string Message { get; }
+    public string Message { get; init; }
 
     /// <summary>
     /// Código interno de error (ej: DUPLICATE_KEY, CONCURRENCY_ERROR).
     /// </summary>
-    public ErrorCode Code { get; }
+    public ErrorCode Code { get; init; }
 
     /// <summary>
     /// Datos adicionales útiles para debugging o mostrar en UI (ej: { Campo, Valor }).
     /// </summary>
-    public object? Details { get; }
+    public object? Details { get; init; }
 
     /// <summary>
     /// Código HTTP sugerido (ej: 400, 409, 500).
     /// </summary>
-    public int? HttpStatusCode { get; }
+    public int? HttpStatusCode { get; init; }
 
     /// <summary>
     /// Momento en que ocurrió el error (UTC).
     /// </summary>
-    public DateTime Timestamp { get; }
+    public DateTime Timestamp { get; init; }
 }
 

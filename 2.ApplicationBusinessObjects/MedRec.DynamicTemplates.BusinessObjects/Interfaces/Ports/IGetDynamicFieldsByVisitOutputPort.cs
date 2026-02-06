@@ -1,26 +1,14 @@
+using MedRec.BusinessObjects.Interfaces;
 using MedRec.DynamicTemplates.BusinessObjects.DTOs;
 
 namespace MedRec.DynamicTemplates.BusinessObjects.Interfaces.Ports;
 
 /// <summary>
-/// Output port for GetDynamicFieldsByVisit use case
+/// Output port for GetDynamicFieldsByVisit use case.
+/// Inherit from IBaseOutputPort to expose ErrorAsync / ValidationErrorsAsync.
 /// </summary>
-public interface IGetDynamicFieldsByVisitOutputPort
+public interface IGetDynamicFieldsByVisitOutputPort : IBaseOutputPort
 {
-    /// <summary>
-    /// Handles successful retrieval of dynamic field values
-    /// </summary>
-    /// <param name="fields">Collection of dynamic field values for the visit</param>
-    void Handle(IEnumerable<DynamicFieldValueDto> fields);
-
-    /// <summary>
-    /// Handles error when retrieving dynamic fields
-    /// </summary>
-    /// <param name="errorMessage">Error description</param>
-    void HandleError(string errorMessage);
-
-    /// <summary>
-    /// Handles case when no fields are found for the visit
-    /// </summary>
-    void HandleNotFound();
+    Task Handle(IEnumerable<DynamicFieldValueDto> fields);
+    Task HandleNotFound();
 }
