@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\MedRec.CommonComponents.Views\MedRec.CommonComponents.Views.csproj" />
+    <ProjectReference Include="..\..\Presenters\MedRec.DynamicTemplates.Presenters\MedRec.DynamicTemplates.Presenters.csproj" />
+    <ProjectReference Include="..\..\..\2.ApplicationBusinessObjects\MedRec.DynamicTemplates.BusinessObjects\MedRec.DynamicTemplates.BusinessObjects.csproj" />
+    <ProjectReference Include="..\..\ViewModels\MedRec.DynamicTemplates.ViewModels\MedRec.DynamicTemplates.ViewModels.csproj" />
+  </ItemGroup>
+
+</Project>

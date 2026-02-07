@@ -1,39 +1,17 @@
-﻿using MedRec.Entity.DTOs;
+﻿using MedRec.BusinessObjects.Abstracts;
+using MedRec.BusinessObjects.Results;
 using MedRec.Entity.POCOEntities;
 using MedRec.MedicalVisit.BusinessObjects.DTOs;
 using MedRec.MedicalVisit.BusinessObjects.Interfaces.Ports;
-using MedRec.Validator.ValueObjects;
 
 namespace MedRec.MedicalVisit.Presenters.Implementations;
-internal class GetMedicalVisitPresenter : IGetMedicalVisitOutputPort
+
+internal class GetMedicalVisitPresenter : BaseOutputPort<GetMedicalVisitDto>, IGetMedicalVisitOutputPort
 {
-    private GetMedicalVisitDto _medicalVisit;
-    private ErrorInfo? _errorMessage;
-    private IReadOnlyList<ValidationError> _validationErrors = Array.Empty<ValidationError>();
-
-    public GetMedicalVisitDto MedicalVisit => _medicalVisit;
-    public IEnumerable<ValidationError> ValidationErrors => _validationErrors;
-    public ErrorInfo ErrorMessage => _errorMessage;
-
-    public Task ErrorAsync(ErrorInfo message)
-    {
-        _errorMessage = message ?? new ErrorInfo("Error desconocido.");
-        _validationErrors = Array.Empty<ValidationError>();
-        _medicalVisit = null;
-        return Task.CompletedTask;
-    }
-    public Task ValidationErrorsAsync(IEnumerable<ValidationError> errors)
-    {
-        _validationErrors = (errors ?? Enumerable.Empty<ValidationError>()).ToArray();
-        _errorMessage = null;
-        _medicalVisit = null;
-        return Task.CompletedTask;
-    }
     public Task Handle(PatientMedicalVisit medicalVisit, CancellationToken cts = default)
     {
-        _errorMessage = null;
-        _validationErrors = Array.Empty<ValidationError>();
-        _medicalVisit = new GetMedicalVisitDto
+
+        var visit = new GetMedicalVisitDto
         {
             Id = medicalVisit.Id,
             MedicalHistoryId = medicalVisit.MedicalHistoryId,
@@ -48,6 +26,7 @@ internal class GetMedicalVisitPresenter : IGetMedicalVisitOutputPort
             Notes = medicalVisit.Notes,
             RowVersion = medicalVisit.RowVersion
         };
+        Result = OperationResult<GetMedicalVisitDto>.Ok(visit);
         return Task.CompletedTask;
     }
 }

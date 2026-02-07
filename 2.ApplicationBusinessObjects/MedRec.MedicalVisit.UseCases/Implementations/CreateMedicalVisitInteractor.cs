@@ -7,6 +7,7 @@ using MedRec.MedicalVisit.BusinessObjects.Validator;
 using MedRec.Validator.Interfaces;
 
 namespace MedRec.MedicalVisit.UseCases.Implementations;
+
 public class CreateMedicalVisitInteractor(
     ICreateMedicalVisitOutputPort outputPort,
     IMedicalVisitCommandRepositoryUoW commandRepository,
@@ -36,7 +37,7 @@ public class CreateMedicalVisitInteractor(
 
             // 5. Éxito
             await outputPort.ErrorAsync(null);
-            await outputPort.Handle();
+            await outputPort.Handle(medicalVisit);
         }, ct);
     }
 }

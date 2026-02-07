@@ -10,7 +10,7 @@
 @using MedRec.MedicalVisit.Views.Resources
 
 @inject NavigationManager Navigation
-@inherits OwningComponentBase<CreateMedicalVisitVMOrchestrator>
+@inherits OwningComponentBase<CreateMedicalVisitVM>
 
 <div class="body-content">
     <PageShell FooterMessage="@footerMessage" @ref="pageShellRef" CenterContent="false">
@@ -41,10 +41,12 @@
             }
             else if (_dataLoaded)
             {
-                <CreateMedicalVisitComponent PatientId="@PatientId"
+                <CreateMedicalVisitComponent @ref="_componentRef"
+                                             PatientId="@PatientId"
                                              VM="@VM"
                                              VisitId="@VisitId"
                                              OnDataReady="HandleDataReady" />
+
             }
             else
             {
@@ -62,7 +64,7 @@
 </div>
 
 @code{
-    private CreateMedicalVisitVMOrchestrator VM => Service;
+    private CreateMedicalVisitVM VM => Service;
 
     [Parameter] public Guid? VisitId { get; set; }
     [Parameter] public Guid PatientId { get; set; }
@@ -91,7 +93,7 @@
             _dataLoaded = true;
             
             // NUEVO: Notificar al componente que los datos están listos
-            _componentRef?.NotifyDataReady();
+            // _componentRef?.NotifyDataReady();
         }
         catch (Exception ex)
         {
@@ -105,6 +107,8 @@
         }
 
         base.OnInitialized();
+
+       
     }
 
     private Task OnBackPressed(int _)

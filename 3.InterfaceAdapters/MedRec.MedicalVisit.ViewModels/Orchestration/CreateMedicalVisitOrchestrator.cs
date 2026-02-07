@@ -4,12 +4,13 @@ using MedRec.MedicalVisit.ViewModels.Orchestration.Actions.Interfaces;
 using MedRec.MedicalVisit.ViewModels.Orchestration.Interfaces;
 
 namespace MedRec.MedicalVisit.ViewModels.Orchestration;
+
 internal class CreateMedicalVisitOrchestrator(
     IGetPatientAction getPatientAction,
     IGetMedicalHistoryAction getMedicalHistory,
     ICreateMedicalVisitAction createMedicalVisit) : ICreateMedicalVisitOrchestrator
 {
-    public async Task<OperationResult<bool>> CreateMedicalVisit(CreateMedicalVisitModel model, CancellationToken ct = default) =>
+    public async Task<OperationResult<Guid>> CreateMedicalVisit(CreateMedicalVisitModel model, CancellationToken ct = default) =>
        await createMedicalVisit.ExecuteAsync(model, ct);
 
     public async Task<OperationResult<Guid>> GetHistoryId(Guid id, CancellationToken ct) =>

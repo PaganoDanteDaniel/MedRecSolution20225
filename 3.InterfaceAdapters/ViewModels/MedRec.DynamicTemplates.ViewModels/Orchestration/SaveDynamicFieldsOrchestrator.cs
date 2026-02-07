@@ -2,6 +2,7 @@ using MedRec.BusinessObjects.Results;
 using MedRec.DynamicTemplates.BusinessObjects.DTOs;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Ports;
 using MedRec.DynamicTemplates.ViewModels.Models;
+using MedRec.DynamicTemplates.ViewModels.Orchestration.Interfaces;
 
 namespace MedRec.DynamicTemplates.ViewModels.Orchestration;
 
@@ -11,7 +12,7 @@ namespace MedRec.DynamicTemplates.ViewModels.Orchestration;
 /// - Invoca el InputPort de guardado.
 /// - Devuelve validaciones o resultado de guardado para que la UI lo gestione.
 /// </summary>
-public class SaveDynamicFieldsOrchestrator
+public class SaveDynamicFieldsOrchestrator : ISaveDynamicFieldsOrchestrator
 {
     private readonly ISaveDynamicFieldsInputPort _inputPort;
     private readonly ISaveDynamicFieldsOutputPort _outputPort;

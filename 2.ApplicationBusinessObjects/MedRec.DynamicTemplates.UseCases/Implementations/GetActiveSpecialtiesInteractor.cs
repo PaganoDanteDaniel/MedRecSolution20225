@@ -1,8 +1,3 @@
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using MedRec.DynamicTemplates.BusinessObjects.DTOs;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Ports;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Repositories;

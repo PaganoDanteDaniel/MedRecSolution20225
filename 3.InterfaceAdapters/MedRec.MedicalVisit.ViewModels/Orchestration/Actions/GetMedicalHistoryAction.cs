@@ -4,6 +4,7 @@ using MedRec.MedicalVisit.BusinessObjects.Interfaces.Ports;
 using MedRec.MedicalVisit.ViewModels.Orchestration.Actions.Interfaces;
 
 namespace MedRec.MedicalVisit.ViewModels.Orchestration.Actions;
+
 internal class GetMedicalHistoryAction(
     IGetMedicalHistoryIdInputPort inPort,
     IGetMedicalHistoryIdOutputPort outPort) : IGetMedicalHistoryAction
@@ -16,13 +17,7 @@ internal class GetMedicalHistoryAction(
 
             await inPort.Handle(patientId, ct);
 
-            if (outPort.ErrorMessage is not null || outPort.ValidationErrors.Any())
-                return OperationResult.Fail<Guid>(outPort.ErrorMessage, outPort.ValidationErrors);
-
-            if (outPort.HistoryId == Guid.Empty)
-                return OperationResult.Unknown<Guid>();
-
-            return OperationResult.Ok(outPort.HistoryId);
+            return outPort.Result;
 
         }
         catch (OperationCanceledException)

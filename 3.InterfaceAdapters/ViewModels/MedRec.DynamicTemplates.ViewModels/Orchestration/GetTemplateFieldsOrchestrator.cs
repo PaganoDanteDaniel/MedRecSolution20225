@@ -2,6 +2,7 @@ using MedRec.BusinessObjects.Results;
 using MedRec.DynamicTemplates.BusinessObjects.DTOs;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Ports;
 using MedRec.DynamicTemplates.ViewModels.Models;
+using MedRec.DynamicTemplates.ViewModels.Orchestration.Interfaces;
 using MedRec.Entity.Enums;
 
 namespace MedRec.DynamicTemplates.ViewModels.Orchestration;
@@ -11,7 +12,7 @@ namespace MedRec.DynamicTemplates.ViewModels.Orchestration;
 /// - Invoca el InputPort y lee el OperationResult del Presenter.
 /// - Diferencia el caso NotFound para que la UI pueda reaccionar correctamente.
 /// </summary>
-public class GetTemplateFieldsOrchestrator
+public class GetTemplateFieldsOrchestrator : IGetTemplateFieldsOrchestrator
 {
     private readonly IGetTemplateFieldsBySpecialtyInputPort _inputPort;
     private readonly IGetTemplateFieldsBySpecialtyOutputPort _outputPort;
@@ -36,7 +37,7 @@ public class GetTemplateFieldsOrchestrator
     /// <param name="cts">Token de cancelación opcional</param>
     /// <returns>
     /// Tupla con:
-    /// - Success: true si la operación fue correcta.
+    /// - Ok: true si la operación fue correcta.
     /// - Fields: lista de modelos de campos (o null).
     /// - ErrorMessage: mensaje en caso de error.
     /// - NotFound: true si no hay campos definidos para la especialidad.

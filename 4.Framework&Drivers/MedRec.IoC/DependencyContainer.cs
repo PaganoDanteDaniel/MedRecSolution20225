@@ -1,5 +1,7 @@
 ﻿using MedRec.DynamicTemplates.DataContext.MySql;
 using MedRec.DynamicTemplates.Repositories;
+using MedRec.DynamicTemplates.ViewModels.Orchestration;
+using MedRec.DynamicTemplates.ViewModels.VM;
 using MedRec.HealthInsurance.ViewModels.VM;
 using MedRec.MedicalVisit.ViewModels.VM;
 using MedRec.Patients.ViewModels.VM;
@@ -37,22 +39,18 @@ public static class DependencyContainer
                 .AddMedicalVisitPresenterServices()
                 .AddMedicalVisitVMServices();
 
-        //services.AddTransient<CreateMedicalVisitVM>();
-        //services.AddTransient<UpdateMedicalVisitVM>();
-        services.AddTransient<MedicalVisitVM>();
-
         services.AddMedicalAppointmentDataContextServices()
                 .AddMedicalAppointmentRepositoriesServices()
                 .AddMedicalAppointmentUseCasesServicesWithProxy()
                 .AddMedicalAppointmentPresentersServices()
                 .AddMedicalAppointmentVMServices();
 
-        //services.AddTransient<WeeklyScheduleViewModel>();
-
         services.AddDynamicTemplatesDataContextServices()
                 .AddDynamicTemplatesRepositoriesServices()
                 .AddDynamicTemplatesPresenters()
-                .AddDynamicTemplatesUseCases();
+                .AddDynamicTemplatesUseCases()
+                .AddDynamicTemplatesVMServices();
+
 
         services.AddValidatorServices();
 

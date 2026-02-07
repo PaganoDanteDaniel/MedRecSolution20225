@@ -1,5 +1,6 @@
 ﻿@using MedRec.CommonComponents.Views
 @using MedRec.CommonComponents.Views.Validators
+@using MedRec.DynamicTemplates.Views.Components
 @using MedRec.Entity.Enums
 @using MedRec.Entity.Extensions
 @using MedRec.MedicalVisit.BusinessObjects.DTOs
@@ -96,7 +97,7 @@
                 <legend>SIGNOS VITALES Y NOTAS</legend>
                 <div class="vitals-notes-container">
                     <!-- Columna izquierda: signos vitales -->
-                    <div class="vitals-column">
+                    @* <div class="vitals-column">
                         <div class="vital-row">
                             <label for="systolic">@MedicalVisitMessages.LabelSystPress</label>
                             <InputNumber id="systolic"
@@ -128,6 +129,13 @@
                                          class="vital-input" />
                         </div>
                         <ValidationMessage For="() => VM.Model.Temperature" class="validation-message" />
+                    </div> *@
+
+                    <!-- Columna izquierda: campos dinámicos por especialidad -->
+                    <div class="vitals-column">
+                        <DynamicFieldsFormComponent VisitId='new Guid()'
+                                                    SpecialtyId='new Guid("3727b7c4-00f8-11f1-bdd1-871f06c2bc68")'
+                                                    IsReadOnly="false" />
                     </div>
 
                     <!-- Columna derecha: notas -->

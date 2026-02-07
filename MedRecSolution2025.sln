@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36212.18
+# Visual Studio Version 18
+VisualStudioVersion = 18.2.11415.280 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0.Core", "0.Core", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
@@ -178,7 +178,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedRec.DynamicTemplates.Use
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DynamicTemplates", "DynamicTemplates", "{072D63B5-4BD7-4A81-B71A-CB63C7EEB6F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedRec.DynamicTemplates.ViewModels", "3.InterfaceAdapters\WiewModels\MedRec.DynamicTemplates.ViewModels\MedRec.DynamicTemplates.ViewModels.csproj", "{A01D1C7A-4042-4304-B459-47821A951F3D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedRec.DynamicTemplates.ViewModels", "3.InterfaceAdapters\ViewModels\MedRec.DynamicTemplates.ViewModels\MedRec.DynamicTemplates.ViewModels.csproj", "{A01D1C7A-4042-4304-B459-47821A951F3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedRec.DynamicTemplates.Views", "3.InterfaceAdapters\Views\MedRec.DynamicTemplates.Views\MedRec.DynamicTemplates.Views.csproj", "{E5C623E9-23B8-4298-8838-1F826352B7E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -928,6 +930,22 @@ Global
 		{A01D1C7A-4042-4304-B459-47821A951F3D}.Release|x64.Build.0 = Release|Any CPU
 		{A01D1C7A-4042-4304-B459-47821A951F3D}.Release|x86.ActiveCfg = Release|Any CPU
 		{A01D1C7A-4042-4304-B459-47821A951F3D}.Release|x86.Build.0 = Release|Any CPU
+		{E5C623E9-23B8-4298-8838-1F826352B7E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5C623E9-23B8-4298-8838-1F826352B7E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5C623E9-23B8-4298-8838-1F826352B7E4}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{E5C623E9-23B8-4298-8838-1F826352B7E4}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{E5C623E9-23B8-4298-8838-1F826352B7E4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E5C623E9-23B8-4298-8838-1F826352B7E4}.Debug|x64.Build.0 = Debug|Any CPU
+		{E5C623E9-23B8-4298-8838-1F826352B7E4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E5C623E9-23B8-4298-8838-1F826352B7E4}.Debug|x86.Build.0 = Debug|Any CPU
+		{E5C623E9-23B8-4298-8838-1F826352B7E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5C623E9-23B8-4298-8838-1F826352B7E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5C623E9-23B8-4298-8838-1F826352B7E4}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{E5C623E9-23B8-4298-8838-1F826352B7E4}.Release|ARM64.Build.0 = Release|Any CPU
+		{E5C623E9-23B8-4298-8838-1F826352B7E4}.Release|x64.ActiveCfg = Release|Any CPU
+		{E5C623E9-23B8-4298-8838-1F826352B7E4}.Release|x64.Build.0 = Release|Any CPU
+		{E5C623E9-23B8-4298-8838-1F826352B7E4}.Release|x86.ActiveCfg = Release|Any CPU
+		{E5C623E9-23B8-4298-8838-1F826352B7E4}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1014,6 +1032,7 @@ Global
 		{1839D1A2-151C-41FB-8535-1CDEECB54FB8} = {937848C2-3EAF-4CA7-BC41-208D620F1132}
 		{072D63B5-4BD7-4A81-B71A-CB63C7EEB6F2} = {45230657-F857-4862-B249-E145B0810064}
 		{A01D1C7A-4042-4304-B459-47821A951F3D} = {072D63B5-4BD7-4A81-B71A-CB63C7EEB6F2}
+		{E5C623E9-23B8-4298-8838-1F826352B7E4} = {F667D523-744B-418A-AAEB-BD800F50097C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6700A9D3-DC96-480C-BBE0-4E04C5A4EA0A}

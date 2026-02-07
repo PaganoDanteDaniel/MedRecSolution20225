@@ -1,154 +1,119 @@
 ﻿using MedRec.Entity.DTOs;
 using MedRec.Entity.Enums;
-using MedRec.MedicalVisit.BusinessObjects.DTOs;
-using MedRec.MedicalVisit.BusinessObjects.Interfaces.Ports;
 using MedRec.MedicalVisit.ViewModels.Models;
-using MedRec.Patients.BusinessObjects.Interfaces.Ports;
+using MedRec.MedicalVisit.ViewModels.Orchestration;
+using MedRec.MedicalVisit.ViewModels.Orchestration.Interfaces;
+using MedRec.Shared.DTOs;
+using MedRec.Shared.Helpers;
 
 namespace MedRec.MedicalVisit.ViewModels.VM;
 
-public class UpdateMedicalVisitVM(
-    IGetMedicalVisitInputPort getMedicalVisitInputPort,
-    IGetMedicalVisitOutputPort getMedicalVisitOutputPort,
-    IPatientForMedicalVisitInputPort patientForMedicalVisitInputPort,
-    IPatientForMedicalVisitOutputPort patientForMedicalVisitOutputPort,
-    IUpdateMedicalVisitInputPort updateMedicalVisitInputPort,
-    IUpdateMedicalVisitOutputPort updateMedicalVisitOutputPort)
+public class UpdateMedicalVisitVM(IUpdateMedicalVisitOrchestrator orchestrator)
 {
-    //  Eventos
-    public event Action? OnMedicalVisitUpdated;
-    public event Action? OnShowMessage;
-    public event Action? OnShowWarning;
-    public event Action? OnShowError;
-    public event Action? OnShowConcurrencyError;
+    public event Action OnFinnishOperation;
+    public event Action OnShowMessage;
+    public event Action OnShowWarning;
+    public event Action OnShowError;
+    public event Action OnShowConcurrencyError;
 
-    //  Modelo y mensaje
     public UpdateMedicalVisitModel Model { get; set; } = new();
     public string InformationMessage { get; set; } = string.Empty;
-
-    //  MÉTODOS PÚBLICOS 
-
+    public IReadOnlyList<ConcurrencyConflictDto> ConcurrencyError { get; set; }
     public async Task LoadDataPatient(Guid patientId, CancellationToken ct = default)
     {
-        await HandleInputPortAsync(
-            async token => await patientForMedicalVisitInputPort.Handle(patientId, token),
-            patientForMedicalVisitOutputPort.ErrorMessage,
-            () =>
-            {
-                var response = patientForMedicalVisitOutputPort.DataPatient;
-                Model.FullName = response.FullName;
-                Model.DateOfBirth = response.DateOfBirth;
-                Model.HealthInsuranceName = response.HealthInsuranceName;
-                Model.Acronym = response.Acronym;
-                Model.HealthInsuranceCard = response.HealthInsuranceCard;
-                Model.HealthInsuranceMemberNumber = response.HealthInsuranceMemberNumber;
-                Model.HealthInsurancePlan = response.HealthInsurancePlan;
-            },
-            "Error crítico al obtener los datos del paciente.",
-            ct
-        );
-    }
+        InformationMessage = "";
+        try
+        {
+            var result = await orchestrator.GetPatient(patientId, ct);
 
+            if (!result.Success)
+                RaiseFromError(result.Error);
+
+            Model = result.Value;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("Error crítico al obtener los datos del paciente", ex);
+        }
+    }
     public async Task LoadVisitAsync(Guid visitId, CancellationToken ct = default)
     {
-        await HandleInputPortAsync(
-            async token => await getMedicalVisitInputPort.Handle(visitId, token),
-            getMedicalVisitOutputPort.ErrorMessage,
-            () =>
+        InformationMessage = "";
+        try
+        {
+            var result = await orchestrator.GetMedicalVisit(visitId, ct);
+            if (!result.Success)
             {
-                var response = getMedicalVisitOutputPort.MedicalVisit;
-                Model.Id = response.Id;
-                Model.MedicalHistoryId = response.MedicalHistoryId;
-                Model.VisitDate = response.VisitDate;
-                Model.Reason = response.Reason;
-                Model.Diagnosis = (response.Diagnosis ?? string.Empty).ToUpperInvariant();
-                Model.Treatment = (response.Treatment ?? string.Empty).ToUpperInvariant();
-                Model.SystolicPressure = response.SystolicPressure;
-                Model.DiastolicPressure = response.DiastolicPressure;
-                Model.PulsePerMinute = response.PulsePerMinute;
-                Model.Temperature = response.Temperature;
-                Model.Notes = (response.Notes ?? string.Empty).ToUpperInvariant();
-                Model.RowVersion = response.RowVersion;
-            },
-            "Error crítico al obtener los datos de la visita médica.",
-            ct
-        );
-    }
+                RaiseFromError(result.Error);
+                return;
+            }
 
+            var visit = MedicalVisitMapper.ToUpdateModel(result.Value);
+
+            // Si ya tenemos datos del paciente, conservarlos y sólo actualizar los campos de la visita.
+            var patient = Model ?? new UpdateMedicalVisitModel();
+
+            // Copiar solo los campos de la visita desde 'visit' a 'patient'
+            patient.Id = visit.Id;
+            patient.MedicalHistoryId = visit.MedicalHistoryId;
+            patient.VisitDate = visit.VisitDate;
+            patient.Reason = visit.Reason;
+            patient.Diagnosis = visit.Diagnosis;
+            patient.Treatment = visit.Treatment;
+            patient.SystolicPressure = visit.SystolicPressure;
+            patient.DiastolicPressure = visit.DiastolicPressure;
+            patient.PulsePerMinute = visit.PulsePerMinute;
+            patient.Temperature = visit.Temperature;
+            patient.Notes = visit.Notes;
+            patient.RowVersion = visit.RowVersion;
+
+            Model = patient;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("Error crítico al obtener los datos del paciente", ex);
+        }
+    }
     public async Task UpdateMedicalVisitAsync(CancellationToken ct = default)
     {
+        InformationMessage = "";
         try
         {
-            InformationMessage = string.Empty;
-            await updateMedicalVisitInputPort.Handle((UpdateMedicalVisitDto)Model, ct);
-
-            if (updateMedicalVisitOutputPort.ValidationErrors?.Any() == true)
+            var result = await orchestrator.UpdateMedicalVisit(Model, ct);
+            if (!result.Success)
             {
-                InformationMessage = string.Join("<br />",
-                    updateMedicalVisitOutputPort.ValidationErrors.Select(e => e.ErrorMessage));
-                OnShowMessage?.Invoke();
-            }
-            else if (updateMedicalVisitOutputPort.ErrorMessage is not null)
-            {
-                HandleErrors(updateMedicalVisitOutputPort.ErrorMessage);
+                if (result.ValidationErrors?.Any() == true)
+                {
+                    InformationMessage = string.Join("<br />", result.ValidationErrors.Select(e => e.ErrorMessage));
+                    OnShowMessage?.Invoke();
+                }
+                else if (result.Error is not null)
+                {
+                    RaiseFromError(result.Error);
+                }
+                return;
             }
             else
             {
-                InformationMessage = "Visita actualizada con éxito.";
-                OnShowMessage?.Invoke();
-                OnMedicalVisitUpdated?.Invoke();
+                ConcurrencyError = Array.Empty<ConcurrencyConflictDto>();
+                //OnShowMessage?.Invoke();
+                OnFinnishOperation?.Invoke();
             }
-        }
-        catch (OperationCanceledException)
-        {
-            // Cancelación normal, no se considera error
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException("Error crítico al actualizar la visita médica.", ex);
+            throw new InvalidOperationException("Error crítico al registrar la visita", ex);
         }
     }
-
-    // MÉTODOS PRIVADOS
-
-    /// <summary>
-    /// Encapsula el patrón común: limpiar mensaje, ejecutar InputPort, manejar error y mapear resultado.
-    /// </summary>
-    private async Task HandleInputPortAsync(
-        Func<CancellationToken, Task> inputAction,
-        ErrorInfo? errorInfo,
-        Action successAction,
-        string criticalErrorMessage,
-        CancellationToken ct)
+    private void RaiseFromError(ErrorInfo? error)
     {
-        try
+        if (error is null)
         {
-            InformationMessage = string.Empty;
-            ct.ThrowIfCancellationRequested();
-
-            await inputAction(ct);
-
-            if (errorInfo is not null)
-            {
-                HandleErrors(errorInfo);
-            }
-            else
-            {
-                successAction();
-            }
+            InformationMessage = "Error desconocido";
+            OnShowMessage?.Invoke();
+            return;
         }
-        catch (OperationCanceledException)
-        {
-            // Cancelación esperada -> no relanzamos ni notificamos
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidOperationException(criticalErrorMessage, ex);
-        }
-    }
 
-    private void HandleErrors(ErrorInfo error)
-    {
         InformationMessage = error.Message;
 
         switch (error.Code)
@@ -156,15 +121,20 @@ public class UpdateMedicalVisitVM(
             case ErrorCode.DuplicateKey:
                 OnShowWarning?.Invoke();
                 break;
-
             case ErrorCode.ConcurrencyError:
+
+                if (error.Details != null)
+                {
+                    var prop = error.Details.GetType().GetProperty("Conflicts");
+                    ConcurrencyError = prop?.GetValue(error.Details) as IReadOnlyList<ConcurrencyConflictDto>;
+                    if (ConcurrencyError != null)
+                        Model.ApplyCurrentValues(ConcurrencyError);
+                }
                 OnShowConcurrencyError?.Invoke();
                 break;
-
             case ErrorCode.DatabaseError:
                 OnShowError?.Invoke();
                 break;
-
             default:
                 OnShowMessage?.Invoke();
                 break;

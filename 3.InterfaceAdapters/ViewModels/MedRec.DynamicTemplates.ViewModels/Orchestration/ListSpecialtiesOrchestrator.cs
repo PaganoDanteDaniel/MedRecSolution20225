@@ -2,10 +2,11 @@ using MedRec.BusinessObjects.Results;
 using MedRec.DynamicTemplates.BusinessObjects.DTOs;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Ports;
 using MedRec.DynamicTemplates.ViewModels.Models;
+using MedRec.DynamicTemplates.ViewModels.Orchestration.Interfaces;
 
 namespace MedRec.DynamicTemplates.ViewModels.Orchestration;
 
-public class ListSpecialtiesOrchestrator
+public class ListSpecialtiesOrchestrator : IListSpecialtiesOrchestrator
 {
     private readonly IGetActiveSpecialtiesInputPort _inputPort;
     private readonly IGetActiveSpecialtiesOutputPort _outputPort;

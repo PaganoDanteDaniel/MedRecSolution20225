@@ -21,7 +21,7 @@ namespace MedRec.MedicalVisit.Views.Components;
 public partial class CreateMedicalVisitComponent : IDisposable
 {
     [Inject] private NavigationManager Navigation { get; set; }
-    [Parameter] public CreateMedicalVisitVMOrchestrator VM { get; set; }
+    [Parameter] public CreateMedicalVisitVM VM { get; set; }
     [Parameter] public Guid PatientId { get; set; }
     [Parameter] public Guid? VisitId { get; set; }
     [Parameter] public EventCallback OnDataReady { get; set; }
@@ -74,30 +74,39 @@ public partial class CreateMedicalVisitComponent : IDisposable
     protected override void OnInitialized()
     {
         // Suscribirse a eventos del ViewModel
-        SubscribeToViewModelEvents();
+        //SubscribeToViewModelEvents();
     }
 
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
 
-        // Si el VM cambió, reconfigurar todo
         if (VM is not null)
         {
-            // Desuscribir del VM anterior si existe
+            // Primero, desuscribirse del VM anterior (si aplica)
             UnsubscribeFromViewModelEvents();
 
-            // Suscribirse al nuevo VM
+            // Suscribirse al VM actual
             SubscribeToViewModelEvents();
 
-            // Inicializar modelo si es necesario
-            if (TryInitializeModel())
+            // Intentar inicializar el modelo (clonado / flags de cambios)
+            var initialized = TryInitializeModel();
+
+            // Asegurar SIEMPRE que existe un EditContext si hay modelo
+            if (VM.Model is not null && _editContext is null)
+            {
+                SetupEditContext(VM.Model);
+            }
+            else
+            {
+                // Si ya había EditContext pero el modelo cambió (nuevo objeto), reconfigurarlo
+                UpdateEditContextIfNeeded();
+            }
+
+            if (initialized)
             {
                 await InvokeAsync(StateHasChanged);
             }
-
-            // Actualizar EditContext si el modelo cambió
-            UpdateEditContextIfNeeded();
         }
     }
 
@@ -466,9 +475,15 @@ public partial class CreateMedicalVisitComponent : IDisposable
     // LIMPIEZA Y DISPOSICIÓN
     // =================================================================
 
+    private bool _disposed;
+
     public void Dispose()
     {
-        // Desuscribirse del EditContext
+        if (_disposed)
+            return;
+
+        _disposed = true;
+
         if (_editContext != null)
         {
             _editContext.OnFieldChanged -= OnFieldChanged;
@@ -493,11 +508,11 @@ public partial class CreateMedicalVisitComponent : IDisposable
     // MÉTODOS DE UTILIDAD (mantenidos por compatibilidad)
     // =================================================================
 
-    public void NotifyDataReady()
-    {
-        if (TryInitializeModel())
-        {
-            InvokeAsync(StateHasChanged);
-        }
-    }
+    //public void NotifyDataReady()
+    //{
+    //    if (TryInitializeModel())
+    //    {
+    //        InvokeAsync(StateHasChanged);
+    //    }
+    //}
 }

@@ -19,9 +19,10 @@ public static class DependencyContainer
         services.AddScoped<ICreateMedicalVisitOrchestrator, CreateMedicalVisitOrchestrator>()
                 .AddScoped<IUpdateMedicalVisitOrchestrator, UpdateMedicalVisitOrchestrator>();
 
-        services.AddTransient<CreateMedicalVisitVMOrchestrator>()
-                .AddTransient<UpdateMedicalVisitVMOrchestrator>();
+        services.AddTransient<CreateMedicalVisitVM>()
+                .AddTransient<UpdateMedicalVisitVM>();
 
+        services.AddTransient<MedicalVisitVM>();
         return services;
     }
 }

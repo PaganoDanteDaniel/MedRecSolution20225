@@ -22,6 +22,7 @@
     <ProjectReference Include="..\MedRec.CommonComponents.Views\MedRec.CommonComponents.Views.csproj" />
     <ProjectReference Include="..\MedRec.MedicalVisit.ViewModels\MedRec.MedicalVisit.ViewModels.csproj" />
     <ProjectReference Include="..\MedRec.Patients.ViewModels\MedRec.Patients.ViewModels.csproj" />
+    <ProjectReference Include="..\Views\MedRec.DynamicTemplates.Views\MedRec.DynamicTemplates.Views.csproj" />
   </ItemGroup>
 
   <ItemGroup>

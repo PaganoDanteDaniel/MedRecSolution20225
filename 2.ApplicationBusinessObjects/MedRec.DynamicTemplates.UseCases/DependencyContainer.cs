@@ -50,10 +50,10 @@ public static class DependencyContainer
     /// </summary>
     public static IServiceCollection AddDynamicTemplatesUseCasesDirect(this IServiceCollection services)
     {
-        services.AddTransient<IGetActiveSpecialtiesInputPort, GetActiveSpecialtiesInteractor>();
-        services.AddTransient<IGetTemplateFieldsBySpecialtyInputPort, GetTemplateFieldsBySpecialtyInteractor>();
-        services.AddTransient<ISaveDynamicFieldsInputPort, SaveDynamicFieldsInteractor>();
-        services.AddTransient<IGetDynamicFieldsByVisitInputPort, GetDynamicFieldsByVisitInteractor>();
+        services.AddScoped<IGetActiveSpecialtiesInputPort, GetActiveSpecialtiesInteractor>();
+        services.AddScoped<IGetTemplateFieldsBySpecialtyInputPort, GetTemplateFieldsBySpecialtyInteractor>();
+        services.AddScoped<ISaveDynamicFieldsInputPort, SaveDynamicFieldsInteractor>();
+        services.AddScoped<IGetDynamicFieldsByVisitInputPort, GetDynamicFieldsByVisitInteractor>();
 
         return services;
     }

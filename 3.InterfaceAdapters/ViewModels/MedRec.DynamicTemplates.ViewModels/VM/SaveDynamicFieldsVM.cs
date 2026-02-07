@@ -1,5 +1,5 @@
 using MedRec.DynamicTemplates.ViewModels.Models;
-using MedRec.DynamicTemplates.ViewModels.Orchestration;
+using MedRec.DynamicTemplates.ViewModels.Orchestration.Interfaces;
 
 namespace MedRec.DynamicTemplates.ViewModels.VM;
 
@@ -8,9 +8,9 @@ namespace MedRec.DynamicTemplates.ViewModels.VM;
 /// </summary>
 public class SaveDynamicFieldsVM
 {
-    private readonly SaveDynamicFieldsOrchestrator _orchestrator;
+    private readonly ISaveDynamicFieldsOrchestrator _orchestrator;
 
-    public SaveDynamicFieldsVM(SaveDynamicFieldsOrchestrator orchestrator)
+    public SaveDynamicFieldsVM(ISaveDynamicFieldsOrchestrator orchestrator)
     {
         _orchestrator = orchestrator;
         Model = new SaveDynamicFieldsModel();

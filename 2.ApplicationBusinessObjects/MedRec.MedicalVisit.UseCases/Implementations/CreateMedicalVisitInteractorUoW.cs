@@ -10,6 +10,7 @@ using MedRec.Shared.Exceptions.SQLExceptions;
 using MedRec.Validator.Interfaces;
 
 namespace MedRec.MedicalVisit.UseCases.Implementations;
+
 public class CreateMedicalVisitInteractorUoW(
     ICreateMedicalVisitOutputPort outputPort,
     IMedicalVisitCommandRepositoryUoW commandRepository,
@@ -44,10 +45,8 @@ public class CreateMedicalVisitInteractorUoW(
                 await unitOfWork.CommitTransaction(ct);
 
                 // 5. Éxito
-
+                await outputPort.Handle(medicalVisit);
             }, ct);
-
-            await outputPort.Handle();
         }
         catch (LostConnectionException lce)
         {

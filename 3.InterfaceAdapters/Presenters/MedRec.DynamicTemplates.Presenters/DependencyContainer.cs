@@ -17,10 +17,10 @@ public static class DependencyContainer
     public static IServiceCollection AddDynamicTemplatesPresenters(this IServiceCollection services)
     {
         // Register presenters as transient (new instance per request)
-        services.AddTransient<IGetActiveSpecialtiesOutputPort, GetActiveSpecialtiesPresenter>();
-        services.AddTransient<IGetTemplateFieldsBySpecialtyOutputPort, GetTemplateFieldsBySpecialtyPresenter>();
-        services.AddTransient<ISaveDynamicFieldsOutputPort, SaveDynamicFieldsPresenter>();
-        services.AddTransient<IGetDynamicFieldsByVisitOutputPort, GetDynamicFieldsByVisitPresenter>();
+        services.AddScoped<IGetActiveSpecialtiesOutputPort, GetActiveSpecialtiesPresenter>();
+        services.AddScoped<IGetTemplateFieldsBySpecialtyOutputPort, GetTemplateFieldsBySpecialtyPresenter>();
+        services.AddScoped<ISaveDynamicFieldsOutputPort, SaveDynamicFieldsPresenter>();
+        services.AddScoped<IGetDynamicFieldsByVisitOutputPort, GetDynamicFieldsByVisitPresenter>();
 
         return services;
     }

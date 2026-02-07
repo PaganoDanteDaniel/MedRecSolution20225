@@ -2,6 +2,7 @@ using MedRec.BusinessObjects.Results;
 using MedRec.DynamicTemplates.BusinessObjects.DTOs;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Ports;
 using MedRec.DynamicTemplates.ViewModels.Models;
+using MedRec.DynamicTemplates.ViewModels.Orchestration.Interfaces;
 using MedRec.Entity.Enums;
 
 namespace MedRec.DynamicTemplates.ViewModels.Orchestration;
@@ -11,7 +12,7 @@ namespace MedRec.DynamicTemplates.ViewModels.Orchestration;
 /// - Usa el OperationResult del Presenter para diferenciar NotFound y errores generales.
 /// - Mapea DTOs a modelos de vista para su consumo en la UI.
 /// </summary>
-public class GetDynamicFieldsOrchestrator
+public class GetDynamicFieldsOrchestrator : IGetDynamicFieldsOrchestrator
 {
     private readonly IGetDynamicFieldsByVisitInputPort _inputPort;
     private readonly IGetDynamicFieldsByVisitOutputPort _outputPort;

@@ -6,13 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="VM\CreateMedicalVisitVM.cs" />
-    <Compile Remove="VM\UpdateMedicalVisitVM.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.MedicalVisit.BusinessObjects\MedRec.MedicalVisit.BusinessObjects.csproj" />
     <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.Patients.BusinessObjects\MedRec.Patients.BusinessObjects.csproj" />
+    <ProjectReference Include="..\ViewModels\MedRec.DynamicTemplates.ViewModels\MedRec.DynamicTemplates.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>
