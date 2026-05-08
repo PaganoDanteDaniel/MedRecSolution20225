@@ -1,4 +1,6 @@
-﻿using MedRec.Entity.Interfaces;
+﻿using MedRec.DynamicTemplates.BusinessObjects.DTOs;
+using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Repositories;
+using MedRec.Entity.Interfaces;
 using MedRec.Entity.POCOEntities;
 using MedRec.MedicalVisit.BusinessObjects.DTOs;
 using MedRec.MedicalVisit.BusinessObjects.Interfaces.Ports;
@@ -12,32 +14,77 @@ public class CreateMedicalVisitInteractor(
     ICreateMedicalVisitOutputPort outputPort,
     IMedicalVisitCommandRepositoryUoW commandRepository,
     IModelValidatorHub<CreateMedicalVisitDto> validatorHub,
+    ITemplateFieldDefinitionQueriesRepositoryUoW templateFieldQueriesRepository,
+    IMedicalVisitDynamicFieldCommandRepositoryUoW dynamicFieldCommandRepository,
     IRepositoryUnitOfWork unitOfWork) : ICreateMedicalVisitInputPort
 {
-    public async Task Handle(CreateMedicalVisitDto dto, CancellationToken ct = default)
+    public async Task Handle(CreateMedicalVisitDto dto, CancellationToken cts = default)
     {
-        // 1. Validar el DTO
-        if (!await validatorHub.Validate(dto, v => CreateMedicalVisitValidator.Validate(v)))
+        var fieldDefinitions = await LoadFieldDefinitionsAsync(dto.SpecialtyId, cts);
+
+        if (!await validatorHub.Validate(dto, v => CreateMedicalVisitValidator.Validate(v, fieldDefinitions)))
         {
             await outputPort.ValidationErrorsAsync(validatorHub.Errors);
             return;
         }
 
+        cts.ThrowIfCancellationRequested();
 
-        ct.ThrowIfCancellationRequested();
-        // 2. Iniciar transacción
         await unitOfWork.ExecuteInTransactionWithRetry(async () =>
         {
-            // 3. Crear entidad desde DTO
             var medicalVisit = (PatientMedicalVisit)dto;
 
-            // 4. Persistir
-            await commandRepository.Create(medicalVisit, ct);
-            await unitOfWork.SaveChanges(ct);
+            await commandRepository.Create(medicalVisit, cts);
+            await unitOfWork.SaveChanges(cts);
 
-            // 5. Éxito
+            var dynamicFields = dto.DynamicFields
+            .Select(df => new MedicalVisitDynamicField
+            {
+                PatientMedicalVisitId = medicalVisit.Id,
+                FieldDefinitionId = df.FieldDefinitionId,
+                FieldValue = df.FieldValue,
+                NumericValue = df.NumericValue,
+                DateValue = df.DateValue,
+                BooleanValue = df.BooleanValue
+            });
+
+            await dynamicFieldCommandRepository.CreateRange(dynamicFields, cts);
+            await unitOfWork.SaveChanges(cts);
+
             await outputPort.ErrorAsync(null);
             await outputPort.Handle(medicalVisit);
-        }, ct);
+        }, cts);
     }
+
+    private async Task<IReadOnlyCollection<TemplateFieldDefinitionDto>> LoadFieldDefinitionsAsync(Guid specialtyId, CancellationToken ct)
+    {
+        if (specialtyId == Guid.Empty)
+        {
+            return Array.Empty<TemplateFieldDefinitionDto>();
+        }
+
+        var entities = await templateFieldQueriesRepository.GetActiveBySpecialtyId(specialtyId, ct);
+
+        return entities
+            .Select(MapTemplateFieldDefinitionToDto)
+            .ToArray();
+    }
+
+    private static TemplateFieldDefinitionDto MapTemplateFieldDefinitionToDto(TemplateFieldDefinition source) => new()
+    {
+        Id = source.Id,
+        SpecialtyId = source.SpecialtyId,
+        FieldName = source.FieldName,
+        FieldLabel = source.FieldLabel,
+        FieldType = source.FieldType,
+        Category = source.Category,
+        IsRequired = source.IsRequired,
+        DisplayOrder = source.DisplayOrder,
+        SelectOptions = source.SelectOptions,
+        DefaultValue = source.DefaultValue,
+        Unit = source.Unit,
+        MinimumValue = source.MinimumValue,
+        MaximumValue = source.MaximumValue,
+        HelpText = source.HelpText
+    };
 }

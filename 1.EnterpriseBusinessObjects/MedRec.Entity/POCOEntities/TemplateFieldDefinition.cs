@@ -1,4 +1,5 @@
 ﻿namespace MedRec.Entity.POCOEntities;
+
 public class TemplateFieldDefinition
 {
     public Guid Id { get; set; } = Guid.NewGuid();
@@ -15,7 +16,9 @@ public class TemplateFieldDefinition
     public decimal? MinimumValue { get; set; }
     public decimal? MaximumValue { get; set; }
     public string? HelpText { get; set; }
-    public bool IsActive { get; set; } = true;
+    public bool IsVisible { get; set; } = true;
+    public bool IsDeleted { get; set; } = true;
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
+    public byte[] RowVersion { get; set; }
 }

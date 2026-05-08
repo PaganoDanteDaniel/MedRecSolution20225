@@ -34,6 +34,10 @@ public class MedicalVisitDynamicFieldConfiguration : IEntityTypeConfiguration<Me
 
         builder.Property(e => e.UpdatedAt).IsRequired(false);
 
+        builder.Property(e => e.RowVersion)
+            .IsConcurrencyToken()
+            .ValueGeneratedOnAddOrUpdate();
+
         // Relaciones
         builder.HasOne<PatientMedicalVisit>()
             .WithMany()

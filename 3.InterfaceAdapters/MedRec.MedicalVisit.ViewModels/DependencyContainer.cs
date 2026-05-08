@@ -5,6 +5,7 @@ using MedRec.MedicalVisit.ViewModels.Orchestration.Interfaces;
 using MedRec.MedicalVisit.ViewModels.VM;
 
 namespace Microsoft.Extensions.DependencyInjection;
+
 public static class DependencyContainer
 {
     public static IServiceCollection AddMedicalVisitVMServices(this IServiceCollection services)
@@ -12,6 +13,7 @@ public static class DependencyContainer
         services.AddScoped<IGetPatientAction, GetPatientAction>()
                 .AddScoped<IGetMedicalVisitAction, GetMedicalVisitAction>()
                 .AddScoped<IGetMedicalHistoryAction, GetMedicalHistoryAction>()
+                .AddScoped<IGetTemplateFieldsAction, GetTemplateFieldsAction>()
                 .AddScoped<ICreateMedicalVisitAction, CreateMedicalVisitAction>()
                 .AddScoped<IUpdateMedicalVisitAction, UpdateMedicalVisitAction>();
 

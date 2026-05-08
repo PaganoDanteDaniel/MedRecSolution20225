@@ -74,21 +74,22 @@
     private string Title { get; set; }
     private bool _isLoading = true;    // NUEVO: Flag de carga
     private bool _dataLoaded = false;  // NUEVO: Flag de datos cargados
-    
-    CancellationTokenSource ct = new CancellationTokenSource();
+
+    CancellationTokenSource cts = new CancellationTokenSource();
     private CreateMedicalVisitComponent? _componentRef;
 
     protected override async Task OnInitializedAsync()
     {
-        ct?.Dispose();
-        ct = new CancellationTokenSource();
+        cts?.Dispose();
+        cts = new CancellationTokenSource();
 
         try
         {
             _isLoading = true;
-            
-            await VM.LoadDataPatient(PatientId, ct.Token);
-            await VM.InitializeNewVisit(PatientId);
+
+            await VM.LoadDataPatient(PatientId, cts.Token);
+            await VM.InitializeNewVisit(PatientId, cts.Token);
+            await VM.GetTemplateFields(VM.Model.SpecialtyId, cts.Token);
 
             _dataLoaded = true;
             

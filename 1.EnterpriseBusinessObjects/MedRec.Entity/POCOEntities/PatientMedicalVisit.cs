@@ -1,8 +1,9 @@
 ﻿namespace MedRec.Entity.POCOEntities;
+
 public class PatientMedicalVisit
 {
     public Guid Id { get; set; } = Guid.NewGuid();
-    public Guid MedicalHistoryId { get; set; }               // FK a Patient
+    public Guid MedicalHistoryId { get; set; }
     public DateTime VisitDate { get; set; }
     public string Reason { get; set; }
     public string Diagnosis { get; set; } = String.Empty;
@@ -14,8 +15,6 @@ public class PatientMedicalVisit
     public string Notes { get; set; }
     public bool IsDeleted { get; set; } = false;
     public byte[] RowVersion { get; set; }
-    public Guid? SpecialtyId { get; set; }
     public Guid? DoctorId { get; set; }
-
 }
 

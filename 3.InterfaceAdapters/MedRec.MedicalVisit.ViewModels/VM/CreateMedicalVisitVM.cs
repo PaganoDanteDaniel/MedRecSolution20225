@@ -1,5 +1,4 @@
 ﻿using MedRec.BusinessObjects.Results;
-using MedRec.DynamicTemplates.ViewModels.VM;
 using MedRec.Entity.DTOs;
 using MedRec.Entity.Enums;
 using MedRec.MedicalVisit.ViewModels.Models;
@@ -50,6 +49,23 @@ public class CreateMedicalVisitVM(ICreateMedicalVisitOrchestrator orchestrator)
         catch (Exception ex)
         {
             throw new InvalidOperationException("Error crítico al obtener la historia clínica del paciente", ex);
+        }
+    }
+
+    public async Task GetTemplateFields(Guid specialtyId, CancellationToken cts = default)
+    {
+        InformationMessage = "";
+        try
+        {
+            var result = await orchestrator.GetTemplateFields(specialtyId, cts);
+            if (!result.Success)
+                RaiseFromError(result.Error);
+            Model.TemplateFieldDefinitionModels = result.Value;
+        }
+        catch (Exception ex)
+        {
+
+            throw new InvalidOperationException("Error crítico al obtener los datos de capos dinámicos", ex);
         }
     }
     public async Task AddMedicalVisitAsync(CancellationToken ct)

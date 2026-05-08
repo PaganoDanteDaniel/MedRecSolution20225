@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MedRec.DataContext.MySql.Configurations;
+
 public class TemplateFieldDefinitionConfiguration : IEntityTypeConfiguration<TemplateFieldDefinition>
 {
     public void Configure(EntityTypeBuilder<TemplateFieldDefinition> builder)
@@ -61,9 +62,17 @@ public class TemplateFieldDefinitionConfiguration : IEntityTypeConfiguration<Tem
             .HasMaxLength(500)
             .IsRequired(false);
 
-        builder.Property(e => e.IsActive)
+        builder.Property(e => e.IsVisible)
             .IsRequired()
             .HasDefaultValue(true);
+
+        builder.Property(e => e.IsDeleted)
+            .IsRequired()
+            .HasDefaultValue(false);
+
+        builder.Property(p => p.RowVersion)
+            .IsConcurrencyToken()
+            .ValueGeneratedOnAddOrUpdate();
 
         builder.Property(e => e.CreatedAt).IsRequired();
 

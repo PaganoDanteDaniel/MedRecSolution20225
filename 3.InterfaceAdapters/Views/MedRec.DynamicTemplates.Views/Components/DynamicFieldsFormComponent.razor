@@ -1,5 +1,4 @@
 @using MedRec.DynamicTemplates.ViewModels.Models
-@using Microsoft.AspNetCore.Components.Forms
 @using System.Globalization
 
 <div class="dynamic-fields-form">
@@ -22,23 +21,38 @@
             @foreach (var field in TemplateFields.OrderBy(f => f.DisplayOrder))
             {
                 <div class="dynamic-field-row">
-                    <label>@field.FieldLabel</label>
+                    <label>
+                        @field.FieldLabel
+                        @if (field.IsRequired)
+                        {
+                            <span class="required-indicator">*</span>
+                        }
+                    </label>
 
                     @switch (field.FieldType?.ToLowerInvariant())
                     {
                         case "number":
                         case "decimal":
                             <input type="number"
-                                   class="dynamic-input"
+                                   class="@GetInputCssClass(field.Id)"
                                    value="@GetNumericValue(field.Id).ToString(CultureInfo.InvariantCulture)"
-                                   @oninput="(ChangeEventArgs e) => SetNumericValue(field.Id, ParseDecimal(e.Value))" />
+                                   @oninput="(ChangeEventArgs e) => SetNumericValue(field.Id, ParseDecimal(e.Value))"
+                                   min="@GetMinValue(field)"
+                                   max="@GetMaxValue(field)"
+                                   step="@GetStepValue(field)"
+                                   required="@field.IsRequired"
+                                   disabled="@IsReadOnly"
+                                   aria-invalid="@HasFieldErrors(field.Id)" />
                             break;
 
                         case "date":
                             <input type="date"
-                                   class="dynamic-input"
+                                   class="@GetInputCssClass(field.Id)"
                                    value="@GetDateValue(field.Id)?.ToString("yyyy-MM-dd")"
-                                   @onchange="(ChangeEventArgs e) => SetDateValue(field.Id, ParseDate(e.Value))" />
+                                   @onchange="(ChangeEventArgs e) => SetDateValue(field.Id, ParseDate(e.Value))"
+                                   required="@field.IsRequired"
+                                   disabled="@IsReadOnly"
+                                   aria-invalid="@HasFieldErrors(field.Id)" />
                             break;
 
                         case "boolean":
@@ -46,15 +60,27 @@
                             <input type="checkbox"
                                    class="dynamic-checkbox"
                                    checked="@GetBoolValue(field.Id)"
-                                   @onchange="(ChangeEventArgs e) => SetBoolValue(field.Id, ParseBool(e.Value))" />
+                                   @onchange="(ChangeEventArgs e) => SetBoolValue(field.Id, ParseBool(e.Value))"
+                                   disabled="@IsReadOnly" />
                             break;
 
                         default:
                             <input type="text"
-                                   class="dynamic-input"
+                                   class="@GetInputCssClass(field.Id)"
                                    value="@GetTextValue(field.Id)"
-                                   @oninput="(ChangeEventArgs e) => SetTextValue(field.Id, e.Value?.ToString())" />
+                                   @oninput="(ChangeEventArgs e) => SetTextValue(field.Id, e.Value?.ToString())"
+                                   required="@field.IsRequired"
+                                   disabled="@IsReadOnly"
+                                   aria-invalid="@HasFieldErrors(field.Id)" />
                             break;
+                    }
+
+                    @if (HasFieldErrors(field.Id))
+                    {
+                        foreach (var error in GetFieldErrors(field.Id))
+                        {
+                            <div class="validation-message">@error</div>
+                        }
                     }
 
                     @if (!string.IsNullOrWhiteSpace(field.HelpText))

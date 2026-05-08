@@ -1,34 +1,30 @@
-﻿using MedRec.Entity.POCOEntities;
+﻿using MedRec.DynamicTemplates.BusinessObjects.DTOs;
+using MedRec.Entity.POCOEntities;
 
 namespace MedRec.MedicalVisit.BusinessObjects.DTOs;
+
 public class CreateMedicalVisitDto
 {
     public Guid MedicalHistoryId { get; init; }
+    public Guid SpecialtyId { get; init; }
     public DateTime VisitDate { get; init; }
     public string Reason { get; init; }
     public string Diagnosis { get; init; }
     public string Treatment { get; init; }
-    public int? SystolicPressure { get; init; }
-    public int? DiastolicPressure { get; init; }
-    public int? PulsePerMinute { get; init; }
-    public double? Temperature { get; init; }
     public string Notes { get; init; }
+    public Guid DoctorId { get; init; }
+    public IEnumerable<DynamicFieldValueDto> DynamicFields { get; init; } = Enumerable.Empty<DynamicFieldValueDto>();
     public byte[] RowVersion { get; init; }
 
     public static explicit operator PatientMedicalVisit(CreateMedicalVisitDto dto) =>
         new()
         {
-            //Id = dto.Id,
             MedicalHistoryId = dto.MedicalHistoryId,
             VisitDate = dto.VisitDate,
             Reason = dto.Reason,
             Diagnosis = dto.Diagnosis,
             Treatment = dto.Treatment,
-            SystolicPressure = dto.SystolicPressure,
-            DiastolicPressure = dto.DiastolicPressure,
-            PulsePerMinute = dto.PulsePerMinute,
-            Temperature = dto.Temperature,
             Notes = dto.Notes,
-            RowVersion = dto.RowVersion,
+            RowVersion = dto.RowVersion
         };
 }

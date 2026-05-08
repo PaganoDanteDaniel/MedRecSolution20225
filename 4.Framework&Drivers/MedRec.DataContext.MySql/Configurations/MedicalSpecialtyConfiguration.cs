@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MedRec.DataContext.MySql.Configurations;
+
 public class MedicalSpecialtyConfiguration : IEntityTypeConfiguration<MedicalSpecialty>
 {
     public void Configure(EntityTypeBuilder<MedicalSpecialty> builder)
@@ -23,18 +24,21 @@ public class MedicalSpecialtyConfiguration : IEntityTypeConfiguration<MedicalSpe
             .HasMaxLength(50)
             .IsRequired(false);
 
-        builder.Property(e => e.IsActive)
+        builder.Property(e => e.IsDeleted)
             .IsRequired()
-            .HasDefaultValue(true);
+            .HasDefaultValue(false);
 
         builder.Property(e => e.CreatedAt)
             .IsRequired();
 
         builder.Property(e => e.UpdatedAt)
             .IsRequired(false);
+        builder.Property(e => e.RowVersion)
+            .IsConcurrencyToken()
+            .ValueGeneratedOnAddOrUpdate();
 
         // Índices
-        builder.HasIndex(e => e.IsActive)
+        builder.HasIndex(e => e.IsDeleted)
             .HasDatabaseName("idx_specialty_active");
 
         builder.HasIndex(e => e.Name)

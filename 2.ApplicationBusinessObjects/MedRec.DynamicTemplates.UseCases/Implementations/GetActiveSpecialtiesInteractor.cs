@@ -36,7 +36,7 @@ internal class GetActiveSpecialtiesInteractor : IGetActiveSpecialtiesInputPort
                 Name = s.Name,
                 Description = s.Description,
                 Icon = s.Icon,
-                IsActive = s.IsActive
+                IsActive = s.IsDeleted
             }).ToList();
 
             await _outputPort.Handle(dtos);

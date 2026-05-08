@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MedRec.DataContext.MySql.Migrations
 {
     [DbContext(typeof(MedRecContext))]
-    [Migration("20260203133722_AddDynamicTemplateSystem")]
-    partial class AddDynamicTemplateSystem
+    [Migration("20260209155608_InitialCatalog")]
+    partial class InitialCatalog
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -102,9 +102,8 @@ namespace MedRec.DataContext.MySql.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp(6)");
 
-                    b.Property<string>("Specialty")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                    b.Property<Guid>("SpecialtyId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -114,6 +113,9 @@ namespace MedRec.DataContext.MySql.Migrations
 
                     b.HasIndex("LicenseNumber")
                         .IsUnique();
+
+                    b.HasIndex("SpecialtyId")
+                        .HasDatabaseName("idx_doctor_specialty");
 
                     b.ToTable("Doctors", (string)null);
                 });
@@ -280,22 +282,27 @@ namespace MedRec.DataContext.MySql.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(true);
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
+                    b.Property<DateTime?>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp(6)");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IsActive")
+                    b.HasIndex("IsDeleted")
                         .HasDatabaseName("idx_specialty_active");
 
                     b.HasIndex("Name")
@@ -325,11 +332,19 @@ namespace MedRec.DataContext.MySql.Migrations
                     b.Property<string>("FieldValue")
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<decimal?>("NumericValue")
                         .HasColumnType("decimal(18,4)");
 
                     b.Property<Guid>("PatientMedicalVisitId")
                         .HasColumnType("char(36)");
+
+                    b.Property<DateTime?>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp(6)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -583,9 +598,6 @@ namespace MedRec.DataContext.MySql.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp(6)");
 
-                    b.Property<Guid?>("SpecialtyId")
-                        .HasColumnType("char(36)");
-
                     b.Property<int?>("SystolicPressure")
                         .HasColumnType("int");
 
@@ -601,10 +613,10 @@ namespace MedRec.DataContext.MySql.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MedicalHistoryId");
+                    b.HasIndex("DoctorId")
+                        .HasDatabaseName("idx_visit_doctor");
 
-                    b.HasIndex("SpecialtyId")
-                        .HasDatabaseName("idx_visit_specialty");
+                    b.HasIndex("MedicalHistoryId");
 
                     b.ToTable("PatientMedicalVisits", (string)null);
                 });
@@ -674,21 +686,31 @@ namespace MedRec.DataContext.MySql.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(true);
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsRequired")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false);
 
+                    b.Property<bool>("IsVisible")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
+
                     b.Property<decimal?>("MaximumValue")
                         .HasColumnType("decimal(18,4)");
 
                     b.Property<decimal?>("MinimumValue")
                         .HasColumnType("decimal(18,4)");
+
+                    b.Property<DateTime?>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp(6)");
 
                     b.Property<string>("SelectOptions")
                         .HasColumnType("json");
@@ -777,6 +799,15 @@ namespace MedRec.DataContext.MySql.Migrations
                         .WithMany()
                         .HasForeignKey("ProvinceId")
                         .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MedRec.Entity.POCOEntities.Doctor", b =>
+                {
+                    b.HasOne("MedRec.Entity.POCOEntities.MedicalSpecialty", null)
+                        .WithMany()
+                        .HasForeignKey("SpecialtyId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -873,16 +904,16 @@ namespace MedRec.DataContext.MySql.Migrations
 
             modelBuilder.Entity("MedRec.Entity.POCOEntities.PatientMedicalVisit", b =>
                 {
+                    b.HasOne("MedRec.Entity.POCOEntities.Doctor", null)
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("MedRec.Entity.POCOEntities.PatientMedicalHistory", null)
                         .WithMany()
                         .HasForeignKey("MedicalHistoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("MedRec.Entity.POCOEntities.MedicalSpecialty", null)
-                        .WithMany()
-                        .HasForeignKey("SpecialtyId")
-                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("MedRec.Entity.POCOEntities.TemplateFieldDefinition", b =>
