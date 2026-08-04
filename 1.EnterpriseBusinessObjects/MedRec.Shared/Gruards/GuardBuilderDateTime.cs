@@ -2,7 +2,6 @@
 public class GuardBuilderDateTime : GuardBuilderBase<GuardBuilderDateTime>
 {
     private readonly DateTime _value;
-    private readonly string _paramName;
 
     public GuardBuilderDateTime(DateTime value, string paramName) : base(paramName)
     {

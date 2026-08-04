@@ -1,5 +1,5 @@
-﻿using MedRec.Entity.DTOs;
-using MedRec.Entity.Enums;
+using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Repositories;
+using MedRec.Entity.DTOs;
 using MedRec.Entity.Interfaces;
 using MedRec.Entity.POCOEntities;
 using MedRec.MedicalVisit.BusinessObjects.DTOs;
@@ -27,16 +27,38 @@ public class CreateMedicalVisitInteractorUoWTests
             RowVersion = null
         };
 
+    private static (
+        Mock<ICreateMedicalVisitOutputPort> outputPort,
+        Mock<IMedicalVisitCommandRepositoryUoW> commandRepo,
+        Mock<IModelValidatorHub<CreateMedicalVisitDto>> validator,
+        Mock<ITemplateFieldDefinitionQueriesRepositoryUoW> templateFieldQueriesRepo,
+        Mock<IMedicalVisitDynamicFieldCommandRepositoryUoW> dynamicFieldCommandRepo,
+        Mock<IRepositoryUnitOfWork> uow) CreateMocks()
+    {
+        return (
+            new Mock<ICreateMedicalVisitOutputPort>(),
+            new Mock<IMedicalVisitCommandRepositoryUoW>(),
+            new Mock<IModelValidatorHub<CreateMedicalVisitDto>>(),
+            new Mock<ITemplateFieldDefinitionQueriesRepositoryUoW>(),
+            new Mock<IMedicalVisitDynamicFieldCommandRepositoryUoW>(),
+            new Mock<IRepositoryUnitOfWork>()
+        );
+    }
+
+    /// <summary>
+    /// ExecuteInTransactionWithRetry es responsabilidad del UnitOfWork real (retry, begin/commit/rollback);
+    /// para testear el interactor basta con que el mock invoque el delegate recibido.
+    /// </summary>
+    private static void SetUpTransactionToRunWork(Mock<IRepositoryUnitOfWork> uowMock) =>
+        uowMock.Setup(u => u.ExecuteInTransactionWithRetry(It.IsAny<Func<Task>>(), It.IsAny<CancellationToken>()))
+            .Returns((Func<Task> work, CancellationToken _) => work());
+
     [Fact]
     public async Task Handle_ShouldReturnValidationErrors_WhenDtoIsInvalid()
     {
         // Arrange
         var dto = new CreateMedicalVisitDto(); // Inválido (campos vacíos)
-
-        var outputPortMock = new Mock<ICreateMedicalVisitOutputPort>();
-        var commandRepoMock = new Mock<IMedicalVisitCommandRepositoryUoW>();
-        var uowMock = new Mock<IRepositoryUnitOfWork>();
-        var validatorMock = new Mock<IModelValidatorHub<CreateMedicalVisitDto>>();
+        var (outputPortMock, commandRepoMock, validatorMock, templateFieldQueriesRepoMock, dynamicFieldCommandRepoMock, uowMock) = CreateMocks();
 
         validatorMock
             .Setup(v => v.Validate(dto, It.IsAny<Func<CreateMedicalVisitDto, IReadOnlyList<ValidationError>>>()))
@@ -50,6 +72,8 @@ public class CreateMedicalVisitInteractorUoWTests
             outputPortMock.Object,
             commandRepoMock.Object,
             validatorMock.Object,
+            templateFieldQueriesRepoMock.Object,
+            dynamicFieldCommandRepoMock.Object,
             uowMock.Object
         );
 
@@ -60,8 +84,9 @@ public class CreateMedicalVisitInteractorUoWTests
         validatorMock.Verify(v => v.Validate(dto, It.IsAny<Func<CreateMedicalVisitDto, IReadOnlyList<ValidationError>>>()), Times.Once);
         outputPortMock.Verify(x => x.ValidationErrorsAsync(It.Is<IEnumerable<ValidationError>>(e =>
             e != null && e.GetEnumerator().MoveNext())), Times.Once);
-        outputPortMock.Verify(x => x.Handle(), Times.Never);
+        outputPortMock.Verify(x => x.Handle(It.IsAny<PatientMedicalVisit>()), Times.Never);
         outputPortMock.Verify(x => x.ErrorAsync(It.IsAny<ErrorInfo>()), Times.Never);
+        uowMock.Verify(u => u.ExecuteInTransactionWithRetry(It.IsAny<Func<Task>>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -69,27 +94,22 @@ public class CreateMedicalVisitInteractorUoWTests
     {
         // Arrange
         var dto = CreateValidDto();
-
-        var outputPortMock = new Mock<ICreateMedicalVisitOutputPort>();
-        var commandRepoMock = new Mock<IMedicalVisitCommandRepositoryUoW>();
-        var uowMock = new Mock<IRepositoryUnitOfWork>();
-        var validatorMock = new Mock<IModelValidatorHub<CreateMedicalVisitDto>>();
+        var (outputPortMock, commandRepoMock, validatorMock, templateFieldQueriesRepoMock, dynamicFieldCommandRepoMock, uowMock) = CreateMocks();
 
         validatorMock
             .Setup(v => v.Validate(dto, It.IsAny<Func<CreateMedicalVisitDto, IReadOnlyList<ValidationError>>>()))
             .ReturnsAsync(true);
 
-        uowMock.Setup(u => u.BeginTransaction(It.IsAny<CancellationToken>()))
-               .Returns(Task.CompletedTask);
+        SetUpTransactionToRunWork(uowMock);
         uowMock.Setup(u => u.SaveChanges(It.IsAny<CancellationToken>()))
                .ReturnsAsync(1);
-        uowMock.Setup(u => u.CommitTransaction(It.IsAny<CancellationToken>()))
-               .Returns(Task.CompletedTask);
 
         var interactor = new CreateMedicalVisitInteractor(
             outputPortMock.Object,
             commandRepoMock.Object,
             validatorMock.Object,
+            templateFieldQueriesRepoMock.Object,
+            dynamicFieldCommandRepoMock.Object,
             uowMock.Object
         );
 
@@ -98,137 +118,108 @@ public class CreateMedicalVisitInteractorUoWTests
 
         // Assert
         commandRepoMock.Verify(c => c.Create(It.IsAny<PatientMedicalVisit>(), It.IsAny<CancellationToken>()), Times.Once);
-        uowMock.Verify(u => u.BeginTransaction(It.IsAny<CancellationToken>()), Times.Once);
-        uowMock.Verify(u => u.SaveChanges(It.IsAny<CancellationToken>()), Times.Once);
-        uowMock.Verify(u => u.CommitTransaction(It.IsAny<CancellationToken>()), Times.Once);
-        outputPortMock.Verify(x => x.Handle(), Times.Once);
+        dynamicFieldCommandRepoMock.Verify(d => d.CreateRange(It.IsAny<IEnumerable<MedicalVisitDynamicField>>(), It.IsAny<CancellationToken>()), Times.Once);
+        uowMock.Verify(u => u.ExecuteInTransactionWithRetry(It.IsAny<Func<Task>>(), It.IsAny<CancellationToken>()), Times.Once);
+        outputPortMock.Verify(x => x.Handle(It.IsAny<PatientMedicalVisit>()), Times.Once);
         outputPortMock.Verify(x => x.ValidationErrorsAsync(It.IsAny<IEnumerable<ValidationError>>()), Times.Never);
-        outputPortMock.Verify(x => x.ErrorAsync(It.IsAny<ErrorInfo>()), Times.Never);
+        outputPortMock.Verify(x => x.ErrorAsync(null), Times.Once);
     }
 
     [Fact]
-    public async Task Handle_ShouldReturnDuplicateKeyError_WhenSaveChangesThrowsDuplicateKeyException()
+    public async Task Handle_ShouldPropagateDuplicateKeyException_WithoutSwallowingIt_WhenSaveChangesThrows()
     {
-        // Arrange
+        // Arrange: el interactor ya no atrapa excepciones de infraestructura (ver DIAGNOSTICO_ARQUITECTURA.md,
+        // punto 1) — deben propagarse para que el UseCaseExceptionProxy las mapee a ErrorInfo.
         var dto = CreateValidDto();
-
-        var outputPortMock = new Mock<ICreateMedicalVisitOutputPort>();
-        var commandRepoMock = new Mock<IMedicalVisitCommandRepositoryUoW>();
-        var uowMock = new Mock<IRepositoryUnitOfWork>();
-        var validatorMock = new Mock<IModelValidatorHub<CreateMedicalVisitDto>>();
+        var (outputPortMock, commandRepoMock, validatorMock, templateFieldQueriesRepoMock, dynamicFieldCommandRepoMock, uowMock) = CreateMocks();
 
         validatorMock
             .Setup(v => v.Validate(dto, It.IsAny<Func<CreateMedicalVisitDto, IReadOnlyList<ValidationError>>>()))
             .ReturnsAsync(true);
 
-        uowMock.Setup(u => u.BeginTransaction(It.IsAny<CancellationToken>()))
-               .Returns(Task.CompletedTask);
-        uowMock.Setup(u => u.SaveChanges(It.IsAny<CancellationToken>()))
+        uowMock.Setup(u => u.ExecuteInTransactionWithRetry(It.IsAny<Func<Task>>(), It.IsAny<CancellationToken>()))
                .ThrowsAsync(new DuplicateKeyException("Clave duplicada", null, new[] { "PatientMedicalVisit" }));
-        uowMock.Setup(u => u.RollbackTransaction(It.IsAny<CancellationToken>()))
-               .Returns(Task.CompletedTask);
 
         var interactor = new CreateMedicalVisitInteractor(
             outputPortMock.Object,
             commandRepoMock.Object,
             validatorMock.Object,
+            templateFieldQueriesRepoMock.Object,
+            dynamicFieldCommandRepoMock.Object,
             uowMock.Object
         );
 
-        // Act
-        await interactor.Handle(dto, CancellationToken.None);
+        // Act & Assert
+        await Assert.ThrowsAsync<DuplicateKeyException>(() => interactor.Handle(dto, CancellationToken.None));
 
-        // Assert
-        uowMock.Verify(u => u.RollbackTransaction(It.IsAny<CancellationToken>()), Times.Once);
-        outputPortMock.Verify(x => x.ErrorAsync(It.Is<ErrorInfo>(e =>
-            e.Code == ErrorCode.DuplicateKey && e.HttpStatusCode == 409)), Times.Once);
-        outputPortMock.Verify(x => x.Handle(), Times.Never);
+        outputPortMock.Verify(x => x.Handle(It.IsAny<PatientMedicalVisit>()), Times.Never);
+        outputPortMock.Verify(x => x.ErrorAsync(It.IsAny<ErrorInfo>()), Times.Never);
         outputPortMock.Verify(x => x.ValidationErrorsAsync(It.IsAny<IEnumerable<ValidationError>>()), Times.Never);
     }
 
     [Fact]
-    public async Task Handle_ShouldReturnConcurrencyError_WhenSaveChangesThrowsConcurrencyException()
+    public async Task Handle_ShouldPropagateConcurrencyException_WithoutSwallowingIt_WhenSaveChangesThrows()
     {
         // Arrange
         var dto = CreateValidDto();
-
-        var outputPortMock = new Mock<ICreateMedicalVisitOutputPort>();
-        var commandRepoMock = new Mock<IMedicalVisitCommandRepositoryUoW>();
-        var uowMock = new Mock<IRepositoryUnitOfWork>();
-        var validatorMock = new Mock<IModelValidatorHub<CreateMedicalVisitDto>>();
+        var (outputPortMock, commandRepoMock, validatorMock, templateFieldQueriesRepoMock, dynamicFieldCommandRepoMock, uowMock) = CreateMocks();
 
         validatorMock
             .Setup(v => v.Validate(dto, It.IsAny<Func<CreateMedicalVisitDto, IReadOnlyList<ValidationError>>>()))
             .ReturnsAsync(true);
 
-        uowMock.Setup(u => u.BeginTransaction(It.IsAny<CancellationToken>()))
-               .Returns(Task.CompletedTask);
-        uowMock.Setup(u => u.SaveChanges(It.IsAny<CancellationToken>()))
+        uowMock.Setup(u => u.ExecuteInTransactionWithRetry(It.IsAny<Func<Task>>(), It.IsAny<CancellationToken>()))
                .ThrowsAsync(new ConcurrencyException("Concurrencia", null, null));
-        uowMock.Setup(u => u.RollbackTransaction(It.IsAny<CancellationToken>()))
-               .Returns(Task.CompletedTask);
 
         var interactor = new CreateMedicalVisitInteractor(
             outputPortMock.Object,
             commandRepoMock.Object,
             validatorMock.Object,
+            templateFieldQueriesRepoMock.Object,
+            dynamicFieldCommandRepoMock.Object,
             uowMock.Object
         );
 
-        // Act
-        await interactor.Handle(dto, CancellationToken.None);
+        // Act & Assert
+        await Assert.ThrowsAsync<ConcurrencyException>(() => interactor.Handle(dto, CancellationToken.None));
 
-        // Assert
-        uowMock.Verify(u => u.RollbackTransaction(It.IsAny<CancellationToken>()), Times.Once);
-        outputPortMock.Verify(x => x.ErrorAsync(It.Is<ErrorInfo>(e =>
-            e.Code == ErrorCode.ConcurrencyError && e.HttpStatusCode == 409)), Times.Once);
-        outputPortMock.Verify(x => x.Handle(), Times.Never);
+        outputPortMock.Verify(x => x.Handle(It.IsAny<PatientMedicalVisit>()), Times.Never);
+        outputPortMock.Verify(x => x.ErrorAsync(It.IsAny<ErrorInfo>()), Times.Never);
         outputPortMock.Verify(x => x.ValidationErrorsAsync(It.IsAny<IEnumerable<ValidationError>>()), Times.Never);
     }
 
     [Fact]
-    public async Task Handle_ShouldReThrowOperationCanceledException_AfterRollback_WhenCanceled()
+    public async Task Handle_ShouldThrowOperationCanceledException_BeforeStartingTransaction_WhenCanceled()
     {
         // Arrange
         var dto = CreateValidDto();
         var cts = new CancellationTokenSource();
         cts.Cancel(); // simula que la operación fue cancelada
 
-        var outputPortMock = new Mock<ICreateMedicalVisitOutputPort>();
-        var commandRepoMock = new Mock<IMedicalVisitCommandRepositoryUoW>();
-        var uowMock = new Mock<IRepositoryUnitOfWork>();
-        var validatorMock = new Mock<IModelValidatorHub<CreateMedicalVisitDto>>();
+        var (outputPortMock, commandRepoMock, validatorMock, templateFieldQueriesRepoMock, dynamicFieldCommandRepoMock, uowMock) = CreateMocks();
 
         validatorMock
             .Setup(v => v.Validate(dto, It.IsAny<Func<CreateMedicalVisitDto, IReadOnlyList<ValidationError>>>()))
             .ReturnsAsync(true);
 
-        // Seguimiento del orden de ejecución
-        bool rollbackCalled = false;
-
-        uowMock.Setup(u => u.BeginTransaction(It.IsAny<CancellationToken>()))
-               .Returns(Task.CompletedTask);
-
-        uowMock.Setup(u => u.RollbackTransaction(CancellationToken.None))
-               .Callback(() => rollbackCalled = true)
-               .Returns(Task.CompletedTask);
-
         var interactor = new CreateMedicalVisitInteractor(
             outputPortMock.Object,
             commandRepoMock.Object,
             validatorMock.Object,
+            templateFieldQueriesRepoMock.Object,
+            dynamicFieldCommandRepoMock.Object,
             uowMock.Object
         );
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<OperationCanceledException>(
+        await Assert.ThrowsAsync<OperationCanceledException>(
             () => interactor.Handle(dto, cts.Token)
         );
 
-        // Assert
-        Assert.True(rollbackCalled, "RollbackTransaction debe haberse llamado antes de relanzar la excepción.");
-        uowMock.Verify(u => u.RollbackTransaction(CancellationToken.None), Times.Once);
-        outputPortMock.Verify(x => x.Handle(), Times.Never);
+        // La cancelación se detecta antes de abrir la transacción: no debe llegar a tocar el UoW ni el repositorio.
+        uowMock.Verify(u => u.ExecuteInTransactionWithRetry(It.IsAny<Func<Task>>(), It.IsAny<CancellationToken>()), Times.Never);
+        commandRepoMock.Verify(c => c.Create(It.IsAny<PatientMedicalVisit>(), It.IsAny<CancellationToken>()), Times.Never);
+        outputPortMock.Verify(x => x.Handle(It.IsAny<PatientMedicalVisit>()), Times.Never);
         outputPortMock.Verify(x => x.ValidationErrorsAsync(It.IsAny<IEnumerable<ValidationError>>()), Times.Never);
         outputPortMock.Verify(x => x.ErrorAsync(It.IsAny<ErrorInfo>()), Times.Never);
     }

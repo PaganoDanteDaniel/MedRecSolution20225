@@ -3,18 +3,16 @@ namespace MedRec.Shared.Gruards;
 public class GuardBuilderDecimal : GuardBuilderBase<GuardBuilderDecimal>
 {
     private readonly decimal _value;
-    private readonly string _paramName;
 
     public GuardBuilderDecimal(decimal value, string paramName) : base(paramName)
     {
         _value = value;
-        _paramName = paramName;
     }
 
     public GuardBuilderDecimal GreaterThanOrEqualTo(decimal comparer, string message = null)
     {
         if (_value < comparer)
-            AddError(message ?? $"El parámetro '{_paramName}' debe ser mayor o igual que {comparer}.");
+            AddError(message ?? $"El parÃ¡metro '{_paramName}' debe ser mayor o igual que {comparer}.");
 
         return this;
     }
@@ -22,7 +20,7 @@ public class GuardBuilderDecimal : GuardBuilderBase<GuardBuilderDecimal>
     public GuardBuilderDecimal LessThanOrEqualTo(decimal comparer, string message = null)
     {
         if (_value > comparer)
-            AddError(message ?? $"El parámetro '{_paramName}' debe ser menor o igual que {comparer}.");
+            AddError(message ?? $"El parÃ¡metro '{_paramName}' debe ser menor o igual que {comparer}.");
 
         return this;
     }
@@ -30,7 +28,7 @@ public class GuardBuilderDecimal : GuardBuilderBase<GuardBuilderDecimal>
     public GuardBuilderDecimal GreaterThan(decimal comparer, string message = null)
     {
         if (_value <= comparer)
-            AddError(message ?? $"El parámetro '{_paramName}' debe ser mayor que {comparer}.");
+            AddError(message ?? $"El parÃ¡metro '{_paramName}' debe ser mayor que {comparer}.");
 
         return this;
     }
@@ -38,7 +36,7 @@ public class GuardBuilderDecimal : GuardBuilderBase<GuardBuilderDecimal>
     public GuardBuilderDecimal LessThan(decimal comparer, string message = null)
     {
         if (_value >= comparer)
-            AddError(message ?? $"El parámetro '{_paramName}' debe ser menor que {comparer}.");
+            AddError(message ?? $"El parÃ¡metro '{_paramName}' debe ser menor que {comparer}.");
 
         return this;
     }
@@ -46,7 +44,7 @@ public class GuardBuilderDecimal : GuardBuilderBase<GuardBuilderDecimal>
     public GuardBuilderDecimal EqualTo(decimal comparer, string message = null)
     {
         if (_value == comparer)
-            AddError(message ?? $"El parámetro '{_paramName}' debe ser distinto a {comparer}.");
+            AddError(message ?? $"El parÃ¡metro '{_paramName}' debe ser distinto a {comparer}.");
 
         return this;
     }
@@ -54,7 +52,7 @@ public class GuardBuilderDecimal : GuardBuilderBase<GuardBuilderDecimal>
     public GuardBuilderDecimal NotEqualTo(decimal comparer, string message = null)
     {
         if (_value != comparer)
-            AddError(message ?? $"El parámetro '{_paramName}' no debe ser igual que {comparer}.");
+            AddError(message ?? $"El parÃ¡metro '{_paramName}' no debe ser igual que {comparer}.");
 
         return this;
     }

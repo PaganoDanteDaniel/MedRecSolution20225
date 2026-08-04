@@ -43,18 +43,10 @@ internal class UpdatePatientInteractor : IUpdatePatientInputPort
         // Sólo manejamos rollback transaccional interno; las excepciones se propagan al proxy.
         await _unitOfWork.ExecuteInTransactionWithRetry(async () =>
         {
-            try
-            {
-                await _commandsRepository.Update(patient, ct);
-                await _unitOfWork.SaveChanges(ct);
-                await _presenter.ErrorAsync(null);
-                await _presenter.Handle(ct);
-            }
-            catch
-            {
-                throw;
-            }
-
+            await _commandsRepository.Update(patient, ct);
+            await _unitOfWork.SaveChanges(ct);
+            await _presenter.ErrorAsync(null);
+            await _presenter.Handle(ct);
         }, ct);
     }
 }

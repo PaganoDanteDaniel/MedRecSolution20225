@@ -5,12 +5,10 @@ namespace MedRec.Shared.Gruards;
 public class GuardBuilderString : GuardBuilderBase<GuardBuilderString>
 {
     private readonly string _value;
-    private readonly string _paramName;
 
     public GuardBuilderString(string value, string paramName) : base(paramName)
     {
         _value = value;
-        _paramName = paramName;
     }
 
 

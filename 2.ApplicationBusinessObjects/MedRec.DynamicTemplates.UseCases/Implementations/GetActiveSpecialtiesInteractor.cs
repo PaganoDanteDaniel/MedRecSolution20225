@@ -1,8 +1,6 @@
 using MedRec.DynamicTemplates.BusinessObjects.DTOs;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Ports;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Repositories;
-using MedRec.Entity.DTOs;
-using MedRec.Entity.Enums;
 
 namespace MedRec.DynamicTemplates.UseCases.Implementations;
 
@@ -24,38 +22,19 @@ internal class GetActiveSpecialtiesInteractor : IGetActiveSpecialtiesInputPort
 
     public async Task Handle(CancellationToken cts = default)
     {
-        try
-        {
-            cts.ThrowIfCancellationRequested();
+        cts.ThrowIfCancellationRequested();
 
-            var specialties = await _queriesRepository.GetActiveSpecialties(cts);
+        var specialties = await _queriesRepository.GetActiveSpecialties(cts);
 
-            var dtos = specialties.Select(s => new MedicalSpecialtyDto
-            {
-                Id = s.Id,
-                Name = s.Name,
-                Description = s.Description,
-                Icon = s.Icon,
-                IsActive = s.IsDeleted
-            }).ToList();
+        var dtos = specialties.Select(s => new MedicalSpecialtyDto
+        {
+            Id = s.Id,
+            Name = s.Name,
+            Description = s.Description,
+            Icon = s.Icon,
+            IsActive = s.IsDeleted
+        }).ToList();
 
-            await _outputPort.Handle(dtos);
-        }
-        catch (OperationCanceledException)
-        {
-            await _outputPort.ErrorAsync(new ErrorInfo
-            {
-                Code = ErrorCode.Cancelled,
-                Message = "Operación cancelada por el usuario."
-            });
-        }
-        catch (Exception ex)
-        {
-            await _outputPort.ErrorAsync(new ErrorInfo
-            {
-                Code = ErrorCode.DatabaseError,
-                Message = $"Error al obtener las especialidades activas: {ex.Message}"
-            });
-        }
+        await _outputPort.Handle(dtos);
     }
 }

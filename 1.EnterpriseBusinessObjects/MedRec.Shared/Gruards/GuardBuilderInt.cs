@@ -3,7 +3,6 @@
 public class GuardBuilderInt : GuardBuilderBase<GuardBuilderInt>
 {
     private readonly int _value;
-    private readonly string _paramName;
 
     public GuardBuilderInt(int value, string paramName) : base(paramName)
     {
