@@ -220,7 +220,7 @@ Ambos archivos, 8 tests en total, pasan tras el fix (`dotnet test` → `Correcta
 
 ## 8. [MEDIO, nuevo] `GetMedicalHistoryIdInteractor` ya no valida `patientId == Guid.Empty`
 
-- [ ] Resuelto
+- [x] Resuelto (rama `CorreccionesDiagnosticoArquitectura`)
 
 **Dónde:** `2.ApplicationBusinessObjects\MedRec.MedicalVisit.UseCases\Implementations\GetMedicalHistoryIdInteractor.cs`
 
@@ -239,6 +239,16 @@ dependiendo de qué devuelva `GetMedicalHistory` para ese caso, podría intentar
 si ya existe una guarda contra `patientId` vacío más arriba en el flujo (en cuyo caso la validación en el
 interactor era redundante y se puede omitir a propósito) o si de verdad quedó un hueco a tapar con un
 `Guard.For(patientId, ...).NotNullOrEmpty()` al inicio del `Handle`.
+
+**Resuelto:** se confirmó que no hay ninguna guarda en `GetMedicalHistoryAction`, `CreateMedicalVisitOrchestrator`
+ni `CreateMedicalVisitVM` — `patientId` viaja sin validar desde la UI hasta el interactor. Sin la validación, un
+`patientId` vacío no fallaba con un error claro: `GetMedicalHistory(Guid.Empty)` no encuentra historia, cae en la
+rama de "crear", e intenta `CreateMedicalHistory(Guid.Empty, ct)` — insertar una historia clínica con FK a un
+paciente inexistente (una excepción de FK confusa en el mejor caso, un registro huérfano en el peor). Se repuso
+la validación en el interactor con el `Guard` compartido (`Guard.Against(patientId, nameof(patientId)).NotNullOrEmpty()`),
+devolviendo `ValidationErrorsAsync` en vez de reconstruir un `ErrorInfo` a mano — mismo patrón que
+`CreateMedicalVisitInteractor`. Se restauró el test `Handle_ShouldReturnValidationError_WhenPatientIdIsEmpty` con
+la nueva expectativa. `dotnet test` → 9/9 pasan; `dotnet build` de la solución completa → 0 errores.
 
 ---
 
@@ -261,6 +271,9 @@ interactor era redundante y se puede omitir a propósito) o si de verdad quedó 
 2. ~~**Punto 1** — rompe clasificación de errores en la feature que se está tocando ahora mismo.~~ ✅ Resuelto.
 3. ~~**Puntos 4 y 6** — limpieza de riesgo cero.~~ ✅ Resueltos.
 4. ~~**Punto 7** — sin esto no había forma de verificar con tests los cambios de `CreateMedicalVisit`.~~ ✅ Resuelto.
-5. **Punto 8** (nuevo) — decidir si falta reponer la validación de `patientId` vacío o si es redundante por diseño.
+5. ~~**Punto 8** — validación de `patientId` vacío repuesta.~~ ✅ Resuelto.
 6. ~~**Punto 5** — registros DI sin proxy.~~ ✅ Resuelto.
 7. ~~**Punto 3** — proyectos EF huérfanos.~~ ✅ Resuelto.
+
+Los 8 puntos del diagnóstico (incluidos los 2 hallazgos nuevos encontrados en el camino) quedaron resueltos en la
+rama `CorreccionesDiagnosticoArquitectura`.

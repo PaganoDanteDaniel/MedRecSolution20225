@@ -4,6 +4,7 @@ using MedRec.MedicalVisit.BusinessObjects.Interfaces.Ports;
 using MedRec.MedicalVisit.BusinessObjects.Interfaces.Repositories;
 using MedRec.MedicalVisit.UseCases.Implementations;
 using MedRec.Shared.Exceptions.SQLExceptions;
+using MedRec.Validator.ValueObjects;
 using Moq;
 
 namespace MedRec.MedicalVisit.UseCases.Tests;
@@ -31,6 +32,32 @@ public class GetMedicalHistoryIdInteractorUoWTests
     private static void SetUpTransactionToRunWork(Mock<IRepositoryUnitOfWork> uowMock) =>
         uowMock.Setup(u => u.ExecuteInTransactionWithRetry(It.IsAny<Func<Task>>(), It.IsAny<CancellationToken>()))
             .Returns((Func<Task> work, CancellationToken _) => work());
+
+    [Fact]
+    public async Task Handle_ShouldReturnValidationError_WhenPatientIdIsEmpty()
+    {
+        // Arrange: reinstated tras el punto 8 del diagnóstico — el interactor había perdido esta validación
+        // al migrar del GetMedicalHistoryIdInteractorUoW.cs original (borrado en el PR #12).
+        var (outputPortMock, queriesRepoMock, commandRepoMock, uowMock) = CreateMocks();
+
+        var interactor = new GetMedicalHistoryIdInteractor(
+            outputPortMock.Object,
+            queriesRepoMock.Object,
+            commandRepoMock.Object,
+            uowMock.Object
+        );
+
+        // Act
+        await interactor.Handle(Guid.Empty, CancellationToken.None);
+
+        // Assert
+        outputPortMock.Verify(x => x.ValidationErrorsAsync(It.Is<IEnumerable<ValidationError>>(e =>
+            e != null && e.GetEnumerator().MoveNext())), Times.Once);
+        queriesRepoMock.Verify(x => x.GetMedicalHistory(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        commandRepoMock.Verify(x => x.CreateMedicalHistory(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        outputPortMock.Verify(x => x.Handle(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        uowMock.Verify(u => u.ExecuteInTransactionWithRetry(It.IsAny<Func<Task>>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
 
     [Fact]
     public async Task Handle_ShouldReturnExistingHistoryId_WhenHistoryExists()
