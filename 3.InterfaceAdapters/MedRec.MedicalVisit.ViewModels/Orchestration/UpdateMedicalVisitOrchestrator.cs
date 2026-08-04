@@ -1,9 +1,11 @@
 ﻿using MedRec.BusinessObjects.Results;
+using MedRec.MedicalVisit.BusinessObjects.DTOs;
 using MedRec.MedicalVisit.ViewModels.Models;
 using MedRec.MedicalVisit.ViewModels.Orchestration.Actions.Interfaces;
 using MedRec.MedicalVisit.ViewModels.Orchestration.Interfaces;
 
 namespace MedRec.MedicalVisit.ViewModels.Orchestration;
+
 internal class UpdateMedicalVisitOrchestrator(
     IGetPatientAction getPatientAction,
     IGetMedicalVisitAction getMedicalVisit,
@@ -12,7 +14,7 @@ internal class UpdateMedicalVisitOrchestrator(
     public async Task<OperationResult<bool>> UpdateMedicalVisit(UpdateMedicalVisitModel model, CancellationToken ct) =>
         await updateMedicalVisit.ExecuteAsync(model, ct);
 
-    public async Task<OperationResult<UpdateMedicalVisitModel>> GetMedicalVisit(Guid id, CancellationToken ct) =>
+    public async Task<OperationResult<GetMedicalVisitDto>> GetMedicalVisit(Guid id, CancellationToken ct) =>
         await getMedicalVisit.ExecuteAsync(id, ct);
 
     public async Task<OperationResult<UpdateMedicalVisitModel>> GetPatient(Guid id, CancellationToken ct = default)

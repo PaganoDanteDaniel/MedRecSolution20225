@@ -149,7 +149,15 @@ internal class DataContextUnitOfWork(
             await strategy.ExecuteAsync(async () =>
             {
                 ct.ThrowIfCancellationRequested();
-                await operation();
+                try
+                {
+                    await operation();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+
             });
         }
         catch (OperationCanceledException)

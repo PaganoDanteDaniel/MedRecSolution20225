@@ -14,7 +14,7 @@ internal class MedicalSpecialtyQueriesDataContextMySql(MedRecContext context) :
 
         return await context.MedicalSpecialties
             .AsNoTracking()
-            .Where(s => s.IsActive)
+            .Where(s => s.IsDeleted)
             .OrderBy(s => s.Name)
             .ToListAsync(cts);
     }

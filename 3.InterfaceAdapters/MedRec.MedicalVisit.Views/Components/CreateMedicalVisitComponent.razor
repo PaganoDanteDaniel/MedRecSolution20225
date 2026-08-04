@@ -1,5 +1,7 @@
 ﻿@using MedRec.CommonComponents.Views
 @using MedRec.CommonComponents.Views.Validators
+@using MedRec.DynamicTemplates.BusinessObjects.DTOs
+@using MedRec.DynamicTemplates.Views.Components
 @using MedRec.Entity.Enums
 @using MedRec.Entity.Extensions
 @using MedRec.MedicalVisit.BusinessObjects.DTOs
@@ -26,7 +28,7 @@
 
     <ModelValidator T="CreateMedicalVisitModel"
                     Validator="visitValidator"
-                    ValidationRules="vm => CreateMedicalVisitValidator.Validate(MedicalVisitMapper.ToCreateDto(vm), VM.Model.DateOfBirth.CalculateAge())" />
+                    ValidationRules="vm => CreateMedicalVisitValidator.Validate(MedicalVisitMapper.ToCreateDto(vm), MedicalVisitMapper.ToDefinitionDtos(vm.TemplateFieldDefinitionModels))" />
 
     @* ---------- Campos trampa para autofill ---------- *@
     <input autocomplete="username" style="position: absolute; left: -9999px; top: -9999px;" />
@@ -95,39 +97,14 @@
             <fieldset class="form-section vitals-notes-section">
                 <legend>SIGNOS VITALES Y NOTAS</legend>
                 <div class="vitals-notes-container">
-                    <!-- Columna izquierda: signos vitales -->
+                    <!-- Columna izquierda: campos dinámicos por especialidad -->
                     <div class="vitals-column">
-                        <div class="vital-row">
-                            <label for="systolic">@MedicalVisitMessages.LabelSystPress</label>
-                            <InputNumber id="systolic"
-                                         @bind-Value="VM.Model.SystolicPressure"
-                                         class="vital-input" />
-                        </div>
-                        <ValidationMessage For="() => VM.Model.SystolicPressure" class="validation-message" />
-
-                        <div class="vital-row">
-                            <label for="diastolic">@MedicalVisitMessages.LabelDiastPress</label>
-                            <InputNumber id="diastolic"
-                                         @bind-Value="VM.Model.DiastolicPressure"
-                                         class="vital-input" />
-                        </div>
-                        <ValidationMessage For="() => VM.Model.DiastolicPressure" class="validation-message" />
-
-                        <div class="vital-row">
-                            <label for="pulse">@MedicalVisitMessages.LabelPulsePerMinute</label>
-                            <InputNumber id="pulse"
-                                         @bind-Value="VM.Model.PulsePerMinute"
-                                         class="vital-input" />
-                        </div>
-                        <ValidationMessage For="() => VM.Model.PulsePerMinute" class="validation-message" />
-
-                        <div class="vital-row">
-                            <label for="temperature">@MedicalVisitMessages.LabelTemperature</label>
-                            <InputNumber id="temperature"
-                                         @bind-Value="VM.Model.Temperature"
-                                         class="vital-input" />
-                        </div>
-                        <ValidationMessage For="() => VM.Model.Temperature" class="validation-message" />
+                        <DynamicFieldsFormComponent VisitId="VM.Model.Id"
+                                                    SpecialtyId="VM.Model.SpecialtyId"
+                                                    Fields="VM.Model.DynamicFields"
+                                                    TemplateDefinitions="VM.Model.TemplateFieldDefinitionModels"
+                                                    IsReadOnly="false"
+                                                    OnFieldsChanged="HandleDynamicFieldsChanged" />
                     </div>
 
                     <!-- Columna derecha: notas -->

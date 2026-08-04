@@ -14,7 +14,7 @@ internal class TemplateFieldDefinitionQueriesDataContextMySql(MedRecContext cont
 
         return await context.TemplateFieldDefinitions
             .AsNoTracking()
-            .Where(f => f.SpecialtyId == specialtyId)
+            .Where(f => f.SpecialtyId == specialtyId && f.IsVisible && !f.IsDeleted)
             .OrderBy(f => f.DisplayOrder)
             .ToListAsync(cts);
     }
@@ -34,7 +34,7 @@ internal class TemplateFieldDefinitionQueriesDataContextMySql(MedRecContext cont
 
         return await context.TemplateFieldDefinitions
             .AsNoTracking()
-            .Where(f => f.SpecialtyId == specialtyId && f.IsActive)
+            .Where(f => f.SpecialtyId == specialtyId && f.IsVisible && !f.IsDeleted)
             .OrderBy(f => f.DisplayOrder)
             .ToListAsync(cts);
     }

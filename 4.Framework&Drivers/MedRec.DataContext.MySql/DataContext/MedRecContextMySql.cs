@@ -46,3 +46,6 @@
 //Add-Migration InitialCreate -p MedRec.DataContext.MySql -s MedRec.DataContext.MySql -c MedRecContextMySql
 //Update-Database -p MedRec.DataContext.MySql -s MedRec.DataContext.MySql -context MedRecContextMySql
 //Remove-Migration -p MedRec.DataContext.MySql -s MedRec.DataContext.MySql -c MedRecContextMySql
+
+//Add-Migration InitialCreate -p MedRec.Infrastructure -s MedRec.Infrastructure -c MedRecDbContext
+//Update-Database -p MedRec.Infrastructure -s MedRec.Infrastructure -context MedRecDbContext

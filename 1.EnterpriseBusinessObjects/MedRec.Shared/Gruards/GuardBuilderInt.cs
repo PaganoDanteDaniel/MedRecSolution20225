@@ -1,4 +1,5 @@
 ﻿namespace MedRec.Shared.Gruards;
+
 public class GuardBuilderInt : GuardBuilderBase<GuardBuilderInt>
 {
     private readonly int _value;
@@ -12,7 +13,7 @@ public class GuardBuilderInt : GuardBuilderBase<GuardBuilderInt>
     public GuardBuilderInt LessThan(int comparer, string message = null)
     {
         if (_value < comparer)
-            AddError(message ?? $"El parámetro '{_paramName}' debe ser mayor o igual que {comparer}.");
+            AddError(message ?? $"El parámetro '{_paramName}' debe ser mayor que {comparer}.");
 
         return this;
     }

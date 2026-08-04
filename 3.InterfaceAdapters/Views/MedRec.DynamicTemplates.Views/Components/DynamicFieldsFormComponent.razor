@@ -1,0 +1,94 @@
+@using MedRec.DynamicTemplates.ViewModels.Models
+@using System.Globalization
+
+<div class="dynamic-fields-form">
+    <fieldset class="form-section dynamic-fields-section">
+
+        @if (loadErrorMessage is not null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @loadErrorMessage
+            </div>
+        }
+        else if (!TemplateFields.Any())
+        {
+            <div class="alert alert-info" role="alert">
+                No hay campos dinámicos configurados para esta especialidad.
+            </div>
+        }
+        else
+        {
+            @foreach (var field in TemplateFields.OrderBy(f => f.DisplayOrder))
+            {
+                <div class="dynamic-field-row">
+                    <label>
+                        @field.FieldLabel
+                        @if (field.IsRequired)
+                        {
+                            <span class="required-indicator">*</span>
+                        }
+                    </label>
+
+                    @switch (field.FieldType?.ToLowerInvariant())
+                    {
+                        case "number":
+                        case "decimal":
+                            <input type="number"
+                                   class="@GetInputCssClass(field.Id)"
+                                   value="@GetNumericValue(field.Id).ToString(CultureInfo.InvariantCulture)"
+                                   @oninput="(ChangeEventArgs e) => SetNumericValue(field.Id, ParseDecimal(e.Value))"
+                                   min="@GetMinValue(field)"
+                                   max="@GetMaxValue(field)"
+                                   step="@GetStepValue(field)"
+                                   required="@field.IsRequired"
+                                   disabled="@IsReadOnly"
+                                   aria-invalid="@HasFieldErrors(field.Id)" />
+                            break;
+
+                        case "date":
+                            <input type="date"
+                                   class="@GetInputCssClass(field.Id)"
+                                   value="@GetDateValue(field.Id)?.ToString("yyyy-MM-dd")"
+                                   @onchange="(ChangeEventArgs e) => SetDateValue(field.Id, ParseDate(e.Value))"
+                                   required="@field.IsRequired"
+                                   disabled="@IsReadOnly"
+                                   aria-invalid="@HasFieldErrors(field.Id)" />
+                            break;
+
+                        case "boolean":
+                        case "checkbox":
+                            <input type="checkbox"
+                                   class="dynamic-checkbox"
+                                   checked="@GetBoolValue(field.Id)"
+                                   @onchange="(ChangeEventArgs e) => SetBoolValue(field.Id, ParseBool(e.Value))"
+                                   disabled="@IsReadOnly" />
+                            break;
+
+                        default:
+                            <input type="text"
+                                   class="@GetInputCssClass(field.Id)"
+                                   value="@GetTextValue(field.Id)"
+                                   @oninput="(ChangeEventArgs e) => SetTextValue(field.Id, e.Value?.ToString())"
+                                   required="@field.IsRequired"
+                                   disabled="@IsReadOnly"
+                                   aria-invalid="@HasFieldErrors(field.Id)" />
+                            break;
+                    }
+
+                    @if (HasFieldErrors(field.Id))
+                    {
+                        foreach (var error in GetFieldErrors(field.Id))
+                        {
+                            <div class="validation-message">@error</div>
+                        }
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(field.HelpText))
+                    {
+                        <small class="form-text text-muted">@field.HelpText</small>
+                    }
+                </div>
+            }
+        }
+    </fieldset>
+</div>

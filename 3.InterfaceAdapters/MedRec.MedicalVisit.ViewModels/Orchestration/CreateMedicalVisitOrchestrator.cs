@@ -1,15 +1,18 @@
 ﻿using MedRec.BusinessObjects.Results;
+using MedRec.DynamicTemplates.ViewModels.Models;
 using MedRec.MedicalVisit.ViewModels.Models;
 using MedRec.MedicalVisit.ViewModels.Orchestration.Actions.Interfaces;
 using MedRec.MedicalVisit.ViewModels.Orchestration.Interfaces;
 
 namespace MedRec.MedicalVisit.ViewModels.Orchestration;
+
 internal class CreateMedicalVisitOrchestrator(
     IGetPatientAction getPatientAction,
     IGetMedicalHistoryAction getMedicalHistory,
+    IGetTemplateFieldsAction getTemplateFields,
     ICreateMedicalVisitAction createMedicalVisit) : ICreateMedicalVisitOrchestrator
 {
-    public async Task<OperationResult<bool>> CreateMedicalVisit(CreateMedicalVisitModel model, CancellationToken ct = default) =>
+    public async Task<OperationResult<Guid>> CreateMedicalVisit(CreateMedicalVisitModel model, CancellationToken ct = default) =>
        await createMedicalVisit.ExecuteAsync(model, ct);
 
     public async Task<OperationResult<Guid>> GetHistoryId(Guid id, CancellationToken ct) =>
@@ -43,5 +46,42 @@ internal class CreateMedicalVisitOrchestrator(
         };
 
         return OperationResult.Ok(model);
+    }
+
+    public async Task<OperationResult<List<TemplateFieldDefinitionModel>>> GetTemplateFields(Guid specialtyId, CancellationToken cts = default)
+    {
+        var result = await getTemplateFields.ExecuteAsync(specialtyId, cts);
+
+        if (!result.Success)
+        {
+            return OperationResult.Fail<List<TemplateFieldDefinitionModel>>(result.Error!, null);
+        }
+
+        if (result.Value is null)
+        {
+            return OperationResult.Unknown<List<TemplateFieldDefinitionModel>>("No se encontraron campos para esta especialidad.");
+        }
+
+        var models = result.Value?
+            .Select(dto => new TemplateFieldDefinitionModel
+            {
+                Id = dto.Id,
+                SpecialtyId = dto.SpecialtyId,
+                FieldName = dto.FieldName,
+                FieldLabel = dto.FieldLabel,
+                FieldType = dto.FieldType,
+                Category = dto.Category,
+                IsRequired = dto.IsRequired,
+                DisplayOrder = dto.DisplayOrder,
+                SelectOptions = dto.SelectOptions,
+                DefaultValue = dto.DefaultValue,
+                Unit = dto.Unit,
+                MinimumValue = dto.MinimumValue,
+                MaximumValue = dto.MaximumValue,
+                HelpText = dto.HelpText
+            })
+            .ToList();
+
+        return OperationResult.Ok(models);
     }
 }

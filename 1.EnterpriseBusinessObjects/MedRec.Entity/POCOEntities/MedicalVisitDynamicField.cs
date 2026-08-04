@@ -1,4 +1,5 @@
 ﻿namespace MedRec.Entity.POCOEntities;
+
 public class MedicalVisitDynamicField
 {
     public Guid Id { get; set; } = Guid.NewGuid();
@@ -10,4 +11,6 @@ public class MedicalVisitDynamicField
     public bool? BooleanValue { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
+    public bool IsDeleted { get; set; } = false;
+    public byte[] RowVersion { get; set; }
 }

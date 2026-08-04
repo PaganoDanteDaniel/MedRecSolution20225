@@ -169,7 +169,7 @@
     }
     /* Vital-row: etiqueta + input */
 
-    .medical-visit-form .vital-row {
+    .medical-visit-form ::deep .vital-row {
         display: grid;
         grid-template-columns: 35% 1fr;
         align-items: center;

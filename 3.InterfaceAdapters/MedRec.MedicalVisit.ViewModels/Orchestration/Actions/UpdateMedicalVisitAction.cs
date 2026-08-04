@@ -5,6 +5,7 @@ using MedRec.MedicalVisit.ViewModels.Models;
 using MedRec.MedicalVisit.ViewModels.Orchestration.Actions.Interfaces;
 
 namespace MedRec.MedicalVisit.ViewModels.Orchestration.Actions;
+
 public class UpdateMedicalVisitAction(
     IUpdateMedicalVisitInputPort inPort,
     IUpdateMedicalVisitOutputPort outPort) : IUpdateMedicalVisitAction
@@ -16,13 +17,8 @@ public class UpdateMedicalVisitAction(
         {
             var dto = MedicalVisitMapper.ToUpdateDto(model);
             await inPort.Handle(dto, ct);
-            if (outPort.ErrorMessage is not null || outPort.ValidationErrors.Any())
-                return OperationResult.Fail<bool>(outPort.ErrorMessage, outPort.ValidationErrors);
 
-            if (!outPort.IsUpdated)
-                return OperationResult.Unknown<bool>();
-
-            return OperationResult.Ok(outPort.IsUpdated);
+            return outPort.Result;
         }
         catch (OperationCanceledException)
         {

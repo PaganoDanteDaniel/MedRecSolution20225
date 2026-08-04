@@ -19,7 +19,7 @@ namespace MedRec.MedicalVisit.Views.Components;
 public partial class UpdateMedicalVisitComponent
 {
     [Inject] private NavigationManager Navigation { get; set; }
-    [Parameter] public UpdateMedicalVisitVMOrchestrator VM { get; set; }
+    [Parameter] public UpdateMedicalVisitVM VM { get; set; }
     [Parameter] public Guid PatientId { get; set; }
     [Parameter] public Guid? VisitId { get; set; }
     [Parameter] public bool IsReadOnly { get; set; }

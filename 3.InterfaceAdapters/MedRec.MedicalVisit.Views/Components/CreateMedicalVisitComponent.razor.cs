@@ -10,10 +10,16 @@
 
 using MedRec.CommonComponents.Views;
 using MedRec.CommonComponents.Views.Components;
+using MedRec.DynamicTemplates.BusinessObjects.DTOs;
+using MedRec.DynamicTemplates.ViewModels.Models;
+using MedRec.DynamicTemplates.ViewModels.Orchestration.Interfaces;
 using MedRec.MedicalVisit.ViewModels.Models;
 using MedRec.MedicalVisit.ViewModels.VM;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 
 namespace MedRec.MedicalVisit.Views.Components;
@@ -21,7 +27,8 @@ namespace MedRec.MedicalVisit.Views.Components;
 public partial class CreateMedicalVisitComponent : IDisposable
 {
     [Inject] private NavigationManager Navigation { get; set; }
-    [Parameter] public CreateMedicalVisitVMOrchestrator VM { get; set; }
+
+    [Parameter] public CreateMedicalVisitVM VM { get; set; }
     [Parameter] public Guid PatientId { get; set; }
     [Parameter] public Guid? VisitId { get; set; }
     [Parameter] public EventCallback OnDataReady { get; set; }
@@ -74,30 +81,39 @@ public partial class CreateMedicalVisitComponent : IDisposable
     protected override void OnInitialized()
     {
         // Suscribirse a eventos del ViewModel
-        SubscribeToViewModelEvents();
+        //SubscribeToViewModelEvents();
     }
 
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
 
-        // Si el VM cambió, reconfigurar todo
         if (VM is not null)
         {
-            // Desuscribir del VM anterior si existe
+            // Primero, desuscribirse del VM anterior (si aplica)
             UnsubscribeFromViewModelEvents();
 
-            // Suscribirse al nuevo VM
+            // Suscribirse al VM actual
             SubscribeToViewModelEvents();
 
-            // Inicializar modelo si es necesario
-            if (TryInitializeModel())
+            // Intentar inicializar el modelo (clonado / flags de cambios)
+            var initialized = TryInitializeModel();
+
+            // Asegurar SIEMPRE que existe un EditContext si hay modelo
+            if (VM.Model is not null && _editContext is null)
+            {
+                SetupEditContext(VM.Model);
+            }
+            else
+            {
+                // Si ya había EditContext pero el modelo cambió (nuevo objeto), reconfigurarlo
+                UpdateEditContextIfNeeded();
+            }
+
+            if (initialized)
             {
                 await InvokeAsync(StateHasChanged);
             }
-
-            // Actualizar EditContext si el modelo cambió
-            UpdateEditContextIfNeeded();
         }
     }
 
@@ -109,7 +125,7 @@ public partial class CreateMedicalVisitComponent : IDisposable
     {
         if (VM is null) return;
 
-        // Almacenar handlers en campos para poder desuscribirlos después
+        // Almacenar handlers en campos para poder desuscribarlos después
         _onShowMessageHandler = () => ShowModal("Información", VM.InformationMessage, ModalType.MessageInfo);
         _onShowWarningHandler = () => ShowModal("Advertencia", VM.InformationMessage, ModalType.MessageWarning);
         _onShowErrorHandler = () => ShowModal("Error", VM.InformationMessage, ModalType.MessageError);
@@ -216,11 +232,53 @@ public partial class CreateMedicalVisitComponent : IDisposable
                original.Reason == current.Reason &&
                original.Diagnosis == current.Diagnosis &&
                original.Treatment == current.Treatment &&
-               original.SystolicPressure == current.SystolicPressure &&
-               original.DiastolicPressure == current.DiastolicPressure &&
-               original.PulsePerMinute == current.PulsePerMinute &&
-               original.Temperature == current.Temperature &&
-               original.Notes == current.Notes;
+               original.Notes == current.Notes &&
+               AreDynamicFieldsEqual(original.DynamicFields, current.DynamicFields);
+    }
+
+    private static bool AreDynamicFieldsEqual(IReadOnlyCollection<DynamicFieldValueModel>? originalFields,
+                                              IReadOnlyCollection<DynamicFieldValueModel>? currentFields)
+    {
+        if (ReferenceEquals(originalFields, currentFields))
+            return true;
+
+        if (originalFields is null || currentFields is null)
+            return originalFields == currentFields;
+
+        if (originalFields.Count != currentFields.Count)
+            return false;
+
+        var orderedOriginal = originalFields.OrderBy(f => f.FieldDefinitionId).ToArray();
+        var orderedCurrent = currentFields.OrderBy(f => f.FieldDefinitionId).ToArray();
+
+        for (var i = 0; i < orderedOriginal.Length; i++)
+        {
+            var original = orderedOriginal[i];
+            var current = orderedCurrent[i];
+
+            if (original.FieldDefinitionId != current.FieldDefinitionId)
+                return false;
+
+            if (!string.Equals(original.FieldValue ?? string.Empty, current.FieldValue ?? string.Empty, StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            if (original.NumericValue != current.NumericValue ||
+                original.DateValue != current.DateValue ||
+                original.BooleanValue != current.BooleanValue)
+                return false;
+        }
+
+        return true;
+    }
+
+    private Task HandleDynamicFieldsChanged()
+    {
+        if (_isModelInitialized && VM?.Model is not null)
+        {
+            _hasUnsavedChanges = !AreModelsEqual(_originalModel, VM.Model);
+        }
+
+        return Task.CompletedTask;
     }
 
     // =================================================================
@@ -462,13 +520,70 @@ public partial class CreateMedicalVisitComponent : IDisposable
         }
     }
 
+    //private static TemplateFieldDefinitionDto MapDefinitionToDto(TemplateFieldDefinitionModel definition) => new()
+    //{
+    //    Id = definition.Id,
+    //    SpecialtyId = definition.SpecialtyId,
+    //    FieldName = definition.FieldName,
+    //    FieldLabel = definition.FieldLabel,
+    //    FieldType = definition.FieldType,
+    //    Category = definition.Category,
+    //    IsRequired = definition.IsRequired,
+    //    DisplayOrder = definition.DisplayOrder,
+    //    SelectOptions = definition.SelectOptions,
+    //    DefaultValue = definition.DefaultValue,
+    //    Unit = definition.Unit,
+    //    MinimumValue = definition.MinimumValue,
+    //    MaximumValue = definition.MaximumValue,
+    //    HelpText = definition.HelpText
+    //};
+
+    //private static TemplateFieldDefinitionModel CloneDefinitionModel(TemplateFieldDefinitionModel definition) => new()
+    //{
+    //    Id = definition.Id,
+    //    SpecialtyId = definition.SpecialtyId,
+    //    FieldName = definition.FieldName,
+    //    FieldLabel = definition.FieldLabel,
+    //    FieldType = definition.FieldType,
+    //    Category = definition.Category,
+    //    IsRequired = definition.IsRequired,
+    //    DisplayOrder = definition.DisplayOrder,
+    //    SelectOptions = definition.SelectOptions,
+    //    DefaultValue = definition.DefaultValue,
+    //    Unit = definition.Unit,
+    //    MinimumValue = definition.MinimumValue,
+    //    MaximumValue = definition.MaximumValue,
+    //    HelpText = definition.HelpText
+    //};
+
+    private static int? GetPatientAge(CreateMedicalVisitModel model)
+    {
+        if (model?.DateOfBirth == default)
+            return null;
+
+        var today = DateTime.Today;
+        var age = today.Year - model.DateOfBirth.Year;
+        if (model.DateOfBirth.Date > today.AddYears(-age))
+        {
+            age--;
+        }
+
+        return Math.Max(age, 0);
+    }
+
     // =================================================================
     // LIMPIEZA Y DISPOSICIÓN
     // =================================================================
 
+    private bool _disposed;
+
     public void Dispose()
     {
-        // Desuscribirse del EditContext
+        if (_disposed)
+            return;
+
+        _disposed = true;
+
         if (_editContext != null)
         {
             _editContext.OnFieldChanged -= OnFieldChanged;
@@ -493,11 +608,11 @@ public partial class CreateMedicalVisitComponent : IDisposable
     // MÉTODOS DE UTILIDAD (mantenidos por compatibilidad)
     // =================================================================
 
-    public void NotifyDataReady()
-    {
-        if (TryInitializeModel())
-        {
-            InvokeAsync(StateHasChanged);
-        }
-    }
+    //public void NotifyDataReady()
+    //{
+    //    if (TryInitializeModel())
+    //    {
+    //        InvokeAsync(StateHasChanged);
+    //    }
+    //}
 }

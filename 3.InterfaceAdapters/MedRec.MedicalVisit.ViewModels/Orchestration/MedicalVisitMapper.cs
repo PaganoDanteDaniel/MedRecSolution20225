@@ -1,8 +1,11 @@
-﻿using MedRec.MedicalVisit.BusinessObjects.DTOs;
+﻿using MedRec.DynamicTemplates.BusinessObjects.DTOs;
+using MedRec.DynamicTemplates.ViewModels.Models;
+using MedRec.MedicalVisit.BusinessObjects.DTOs;
 using MedRec.MedicalVisit.ViewModels.Models;
 using MedRec.Patients.BusinessObjects.DTOs;
 
 namespace MedRec.MedicalVisit.ViewModels.Orchestration;
+
 public static class MedicalVisitMapper
 {
     public static PatientModel ToPatientModel(PatientForMedicalVisitDto dto) => new()
@@ -43,15 +46,21 @@ public static class MedicalVisitMapper
     public static CreateMedicalVisitDto ToCreateDto(CreateMedicalVisitModel model) => new()
     {
         MedicalHistoryId = model.MedicalHistoryId,
+        SpecialtyId = model.SpecialtyId,
         VisitDate = model.VisitDate,
         Reason = (model.Reason ?? string.Empty).ToUpperInvariant(),
         Diagnosis = (model.Diagnosis ?? string.Empty).ToUpperInvariant(),
         Treatment = (model.Treatment ?? string.Empty).ToUpperInvariant(),
-        SystolicPressure = model.SystolicPressure,
-        DiastolicPressure = model.DiastolicPressure,
-        PulsePerMinute = model.PulsePerMinute,
-        Temperature = model.Temperature,
         Notes = (model.Notes ?? string.Empty).ToUpperInvariant(),
+        DynamicFields = model.DynamicFields?.Select(df => new DynamicFieldValueDto
+        {
+            FieldDefinitionId = df.FieldDefinitionId,
+            FieldValue = df.FieldValue,
+            NumericValue = df.NumericValue,
+            DateValue = df.DateValue,
+            BooleanValue = df.BooleanValue
+
+        }).ToList() ?? new List<DynamicFieldValueDto>(),
         RowVersion = model.RowVersion
     };
     public static UpdateMedicalVisitDto ToUpdateDto(UpdateMedicalVisitModel model) => new()
@@ -62,12 +71,41 @@ public static class MedicalVisitMapper
         Reason = (model.Reason ?? string.Empty).ToUpperInvariant(),
         Diagnosis = (model.Diagnosis ?? string.Empty).ToUpperInvariant(),
         Treatment = (model.Treatment ?? string.Empty).ToUpperInvariant(),
-        SystolicPressure = model.SystolicPressure,
-        DiastolicPressure = model.DiastolicPressure,
-        PulsePerMinute = model.PulsePerMinute,
-        Temperature = model.Temperature,
+        //SystolicPressure = model.SystolicPressure,
+        //DiastolicPressure = model.DiastolicPressure,
+        //PulsePerMinute = model.PulsePerMinute,
+        //Temperature = model.Temperature,
         Notes = (model.Notes ?? string.Empty).ToUpperInvariant(),
         RowVersion = model.RowVersion
     };
+    public static TemplateFieldDefinitionDto ToDefinitionDto(TemplateFieldDefinitionModel definition) => new()
+    {
+        Id = definition.Id,
+        SpecialtyId = definition.SpecialtyId,
+        FieldName = definition.FieldName,
+        FieldLabel = definition.FieldLabel,
+        FieldType = definition.FieldType,
+        Category = definition.Category,
+        IsRequired = definition.IsRequired,
+        DisplayOrder = definition.DisplayOrder,
+        SelectOptions = definition.SelectOptions,
+        DefaultValue = definition.DefaultValue,
+        Unit = definition.Unit,
+        MinimumValue = definition.MinimumValue,
+        MaximumValue = definition.MaximumValue,
+        HelpText = definition.HelpText
+    };
+
+    public static IReadOnlyList<TemplateFieldDefinitionDto> ToDefinitionDtos(
+    IEnumerable<TemplateFieldDefinitionModel> definitions)
+    {
+        if (definitions is null)
+            return Array.Empty<TemplateFieldDefinitionDto>();
+
+        return definitions
+            .Select(ToDefinitionDto)
+            .ToList();
+    }
+
 }
 

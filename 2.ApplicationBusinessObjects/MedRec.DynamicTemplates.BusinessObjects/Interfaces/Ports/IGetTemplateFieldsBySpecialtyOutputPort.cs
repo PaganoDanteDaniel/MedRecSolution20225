@@ -1,5 +1,7 @@
 using MedRec.BusinessObjects.Interfaces;
+using MedRec.BusinessObjects.Results;
 using MedRec.DynamicTemplates.BusinessObjects.DTOs;
+using MedRec.Entity.POCOEntities;
 
 namespace MedRec.DynamicTemplates.BusinessObjects.Interfaces.Ports;
 
@@ -9,6 +11,7 @@ namespace MedRec.DynamicTemplates.BusinessObjects.Interfaces.Ports;
 /// </summary>
 public interface IGetTemplateFieldsBySpecialtyOutputPort : IBaseOutputPort
 {
-    Task Handle(IEnumerable<TemplateFieldDefinitionDto> fields);
+    OperationResult<IEnumerable<TemplateFieldDefinitionDto>> Result { get; }
+    Task Handle(IEnumerable<TemplateFieldDefinition> fields);
     Task HandleNotFound();
 }

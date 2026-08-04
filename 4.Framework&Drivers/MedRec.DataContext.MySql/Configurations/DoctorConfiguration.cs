@@ -36,9 +36,10 @@ public class DoctorConfiguration : IEntityTypeConfiguration<Doctor>
         builder.HasIndex(d => d.LicenseNumber)
                .IsUnique();
 
-        // Specialty
-        builder.Property(d => d.Specialty)
-               .HasMaxLength(100);
+        // SpecialtyId
+        builder.Property(d => d.SpecialtyId)
+            .HasColumnType("char(36)")
+            .IsRequired(true);
 
         // Phone
         builder.Property(d => d.Phone)
@@ -67,5 +68,13 @@ public class DoctorConfiguration : IEntityTypeConfiguration<Doctor>
 
         // Índice para soft delete (útil en consultas filtradas)
         builder.HasIndex(d => d.IsDeleted);
+
+        builder.HasOne<MedicalSpecialty>()
+            .WithMany()
+            .HasForeignKey(e => e.SpecialtyId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(e => e.SpecialtyId)
+            .HasDatabaseName("idx_doctor_specialty");
     }
 }

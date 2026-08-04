@@ -1,145 +1,172 @@
 ﻿namespace MedRec.MedicalVisit.BusinessObjects.Validator;
+
 using global::MedRec.MedicalVisit.BusinessObjects.Constraints;
 using global::MedRec.MedicalVisit.BusinessObjects.DTOs;
 using global::MedRec.Validator.ValueObjects;
+using MedRec.DynamicTemplates.BusinessObjects.DTOs;
 using MedRec.MedicalVisit.BusinessObjects.Resources;
 using MedRec.Shared.Gruards;
 
 public static class CreateMedicalVisitValidator
 {
-    public static IReadOnlyList<ValidationError> Validate(CreateMedicalVisitDto visit, int? patientAge = null)
+    public static IReadOnlyList<ValidationError> Validate(
+        CreateMedicalVisitDto visit,
+        IEnumerable<TemplateFieldDefinitionDto> fieldDefinitions)
     {
         if (visit == null)
             throw new ArgumentNullException(nameof(visit));
 
         var errors = new List<ValidationError>();
 
-        // Id
-        //if (visit.Id == Guid.Empty)
-        //{
-        //    errors.Add(new ValidationError(nameof(visit.Id), MedicalVisitValidatorMessages.PatientId_Required));
-        //}
+        var specialtyValidation = Guard.Against(visit.SpecialtyId, nameof(visit.SpecialtyId))
+            .NotNullOrEmpty("La especialidad es obligatoria.");
+        errors.AddRange(specialtyValidation.Errors);
 
-        // VisitDate
         var dateValidation = Guard.Against(visit.VisitDate, nameof(visit.VisitDate))
             .NotInFuture(MedicalVisitValidatorMessages.VisitDate_NotInFuture);
         errors.AddRange(dateValidation.Errors);
 
-        // Reason
         var reasonValidation = Guard.Against(visit.Reason, nameof(visit.Reason))
             .NotNullOrEmpty(MedicalVisitValidatorMessages.Reason_Required)
             .MaxLength(MedicalVisitConstraints.MaxLengthReason, MedicalVisitValidatorMessages.Reason_MaxLength);
-
         errors.AddRange(reasonValidation.Errors);
 
-        // Diagnosis (opcional, pero con longitud)
         if (!string.IsNullOrWhiteSpace(visit.Diagnosis))
         {
             var diagnosisValidation = Guard.Against(visit.Diagnosis, nameof(visit.Diagnosis))
                 .MaxLength(MedicalVisitConstraints.MaxLengthDiagnosis,
-                           string.Format(MedicalVisitValidatorMessages.Diagnosis_MaxLength, MedicalVisitConstraints.MaxLengthDiagnosis));
+                    string.Format(MedicalVisitValidatorMessages.Diagnosis_MaxLength, MedicalVisitConstraints.MaxLengthDiagnosis));
             errors.AddRange(diagnosisValidation.Errors);
         }
 
-        // Treatment (opcional, pero con longitud)
         if (!string.IsNullOrWhiteSpace(visit.Treatment))
         {
             var treatmentValidation = Guard.Against(visit.Treatment, nameof(visit.Treatment))
                 .MaxLength(MedicalVisitConstraints.MaxLengthTreatment,
-                           string.Format(MedicalVisitValidatorMessages.Treatment_MaxLength, MedicalVisitConstraints.MaxLengthTreatment));
+                    string.Format(MedicalVisitValidatorMessages.Treatment_MaxLength, MedicalVisitConstraints.MaxLengthTreatment));
             errors.AddRange(treatmentValidation.Errors);
         }
-
-        // Notes (opcional, pero con longitud)
 
         var notesValidation = Guard.Against(visit.Notes, nameof(visit.Notes))
             .NotNullOrEmpty(MedicalVisitValidatorMessages.Note_Required)
             .MaxLength(MedicalVisitConstraints.MaxLengthNotes,
-                       string.Format(MedicalVisitValidatorMessages.Notes_MaxLength, MedicalVisitConstraints.MaxLengthNotes));
+                string.Format(MedicalVisitValidatorMessages.Notes_MaxLength, MedicalVisitConstraints.MaxLengthNotes));
         errors.AddRange(notesValidation.Errors);
 
+        var definitions = (fieldDefinitions ?? Enumerable.Empty<TemplateFieldDefinitionDto>())
+            .ToDictionary(d => d.Id, d => d);
 
-        // === Validación de signos vitales con límites médicos y edad ===
-
-        // Systolic Pressure
-        if (visit.SystolicPressure.HasValue)
+        foreach (var value in visit.DynamicFields ?? Enumerable.Empty<DynamicFieldValueDto>())
         {
-            var sys = visit.SystolicPressure.Value;
-            if (sys < MedicalVisitConstraints.MinSystolicPressure || sys > MedicalVisitConstraints.MaxSystolicPressure)
+            var fieldKey = $"DynamicFields[{value.FieldDefinitionId}]";
+
+            if (!definitions.TryGetValue(value.FieldDefinitionId, out var definition))
             {
-                errors.Add(new ValidationError(nameof(visit.SystolicPressure),
-                    string.Format(MedicalVisitValidatorMessages.SystolicPressure_OutOfRange,
-                        MedicalVisitConstraints.MinSystolicPressure,
-                        MedicalVisitConstraints.MaxSystolicPressure)));
+                errors.Add(new ValidationError(fieldKey, "El campo dinámico no está definido para esta especialidad."));
+                continue;
             }
-        }
 
-        // Diastolic Pressure
-        if (visit.DiastolicPressure.HasValue)
-        {
-            var dia = visit.DiastolicPressure.Value;
-            if (dia < MedicalVisitConstraints.MinDiastolicPressure || dia > MedicalVisitConstraints.MaxDiastolicPressure)
+            var displayName = string.IsNullOrWhiteSpace(definition.FieldLabel)
+                ? definition.FieldName
+                : definition.FieldLabel;
+
+            switch (definition.FieldType?.Trim().ToLowerInvariant())
             {
-                errors.Add(new ValidationError(nameof(visit.DiastolicPressure),
-                    string.Format(MedicalVisitValidatorMessages.DiastolicPressure_OutOfRange,
-                        MedicalVisitConstraints.MinDiastolicPressure,
-                        MedicalVisitConstraints.MaxDiastolicPressure)));
-            }
-        }
+                case "number":
+                case "decimal":
+                    ValidateNumericField(value, definition, displayName, fieldKey, errors);
+                    break;
 
-        // === Pulso: validación adaptativa ===
-        if (visit.PulsePerMinute.HasValue)
-        {
-            var pulse = visit.PulsePerMinute.Value;
-            int minPulse = MedicalVisitConstraints.MinPulsePerMinute;
-            int maxPulse;
+                case "date":
+                    ValidateDateField(value, definition, displayName, fieldKey, errors);
+                    break;
 
-            if (patientAge.HasValue)
-            {
-                var maxHr = CalculateMaxHeartRate(patientAge.Value);
-                // Permitir hasta 110% de FCmáx, pero no más del límite absoluto
-                maxPulse = Math.Min((int)(maxHr * 1.1), MedicalVisitConstraints.MaxPulsePerMinute);
+                case "boolean":
+                case "checkbox":
+                    ValidateBooleanField(value, definition, displayName, fieldKey, errors);
+                    break;
 
-                if (pulse < minPulse || pulse > maxPulse)
-                {
-                    errors.Add(new ValidationError(nameof(visit.PulsePerMinute),
-                        string.Format(MedicalVisitValidatorMessages.Pulse_OutOfRange_WithAge,
-                            minPulse, maxPulse, patientAge.Value, maxHr)));
-                }
-            }
-            else
-            {
-                // Sin edad: usar rango general seguro
-                maxPulse = MedicalVisitConstraints.MaxPulsePerMinute;
-                if (pulse < minPulse || pulse > maxPulse)
-                {
-                    errors.Add(new ValidationError(nameof(visit.PulsePerMinute),
-                        string.Format(MedicalVisitValidatorMessages.Pulse_OutOfRange_General,
-                            minPulse, maxPulse)));
-                }
-            }
-        }
-
-
-        // Temperature
-        if (visit.Temperature.HasValue)
-        {
-            var temp = visit.Temperature.Value;
-            if (temp < MedicalVisitConstraints.MinTemperature || temp > MedicalVisitConstraints.MaxTemperature)
-            {
-                errors.Add(new ValidationError(nameof(visit.Temperature),
-                    string.Format(MedicalVisitValidatorMessages.Temperature_OutOfRange,
-                        MedicalVisitConstraints.MinTemperature,
-                        MedicalVisitConstraints.MaxTemperature)));
+                default:
+                    ValidateTextField(value, definition, displayName, fieldKey, errors);
+                    break;
             }
         }
 
         return errors;
     }
 
-    // Fórmula clásica: FCmáx = 220 - edad
-    private static int CalculateMaxHeartRate(int age)
+    private static void ValidateNumericField(
+        DynamicFieldValueDto value,
+        TemplateFieldDefinitionDto definition,
+        string displayName,
+        string fieldKey,
+        List<ValidationError> errors)
     {
-        return Math.Max(60, 220 - age); // nunca menor a 60
+        if (value.NumericValue is null)
+        {
+            if (definition.IsRequired)
+            {
+                errors.Add(new ValidationError(fieldKey, $"El campo '{displayName}' es obligatorio."));
+            }
+
+            return;
+        }
+
+        if (definition.MinimumValue.HasValue)
+        {
+            var minValidation = Guard.Against(value.NumericValue.Value, fieldKey)
+                .GreaterThanOrEqualTo(definition.MinimumValue.Value,
+                    $"El campo '{displayName}' debe ser mayor o igual que {definition.MinimumValue.Value}.");
+            errors.AddRange(minValidation.Errors);
+        }
+
+        if (definition.MaximumValue.HasValue)
+        {
+            var maxValidation = Guard.Against(value.NumericValue.Value, fieldKey)
+                .LessThanOrEqualTo(definition.MaximumValue.Value,
+                    $"El campo '{displayName}' debe ser menor o igual que {definition.MaximumValue.Value}.");
+            errors.AddRange(maxValidation.Errors);
+        }
+    }
+
+    private static void ValidateDateField(
+        DynamicFieldValueDto value,
+        TemplateFieldDefinitionDto definition,
+        string displayName,
+        string fieldKey,
+        List<ValidationError> errors)
+    {
+        if (value.DateValue is null && definition.IsRequired)
+        {
+            errors.Add(new ValidationError(fieldKey, $"El campo '{displayName}' es obligatorio."));
+        }
+    }
+
+    private static void ValidateBooleanField(
+        DynamicFieldValueDto value,
+        TemplateFieldDefinitionDto definition,
+        string displayName,
+        string fieldKey,
+        List<ValidationError> errors)
+    {
+        if (definition.IsRequired && value.BooleanValue is null)
+        {
+            errors.Add(new ValidationError(fieldKey, $"El campo '{displayName}' es obligatorio."));
+        }
+    }
+
+    private static void ValidateTextField(
+        DynamicFieldValueDto value,
+        TemplateFieldDefinitionDto definition,
+        string displayName,
+        string fieldKey,
+        List<ValidationError> errors)
+    {
+        if (!definition.IsRequired)
+            return;
+
+        var textValidation = Guard.Against(value.FieldValue ?? string.Empty, fieldKey)
+            .NotNullOrEmpty($"El campo '{displayName}' es obligatorio.");
+        errors.AddRange(textValidation.Errors);
     }
 }

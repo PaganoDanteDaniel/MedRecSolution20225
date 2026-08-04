@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Components.Web;
 namespace MedRec.MedicalVisit.Views.Pages;
 public partial class UpdateMedicalVisitPage
 {
-    private UpdateMedicalVisitVMOrchestrator VM => Service;
+    private UpdateMedicalVisitVM VM => Service;
 
     [Parameter] public Guid? VisitId { get; set; }
     [Parameter] public Guid PatientId { get; set; }

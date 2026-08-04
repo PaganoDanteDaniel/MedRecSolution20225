@@ -1,17 +1,12 @@
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using MedRec.DynamicTemplates.BusinessObjects.DTOs;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Ports;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Repositories;
 using MedRec.DynamicTemplates.BusinessObjects.Validators;
 using MedRec.Entity.DTOs;
-using MedRec.Entity.POCOEntities;
-using MedRec.Validator.Interfaces;
 using MedRec.Entity.Enums;
 using MedRec.Entity.Interfaces;
+using MedRec.Entity.POCOEntities;
+using MedRec.Validator.Interfaces;
 
 namespace MedRec.DynamicTemplates.UseCases.Implementations;
 

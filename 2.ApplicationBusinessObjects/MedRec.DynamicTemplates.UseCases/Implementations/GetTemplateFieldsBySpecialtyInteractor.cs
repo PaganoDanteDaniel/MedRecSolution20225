@@ -1,4 +1,3 @@
-using MedRec.DynamicTemplates.BusinessObjects.DTOs;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Ports;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Repositories;
 using MedRec.Entity.DTOs;
@@ -36,25 +35,7 @@ internal class GetTemplateFieldsBySpecialtyInteractor : IGetTemplateFieldsBySpec
                 return;
             }
 
-            var dtos = fields.Select(f => new TemplateFieldDefinitionDto
-            {
-                Id = f.Id,
-                SpecialtyId = f.SpecialtyId,
-                FieldName = f.FieldName,
-                FieldLabel = f.FieldLabel,
-                FieldType = f.FieldType,
-                Category = f.Category,
-                IsRequired = f.IsRequired,
-                DisplayOrder = f.DisplayOrder,
-                SelectOptions = f.SelectOptions,
-                DefaultValue = f.DefaultValue,
-                Unit = f.Unit,
-                MinimumValue = f.MinimumValue,
-                MaximumValue = f.MaximumValue,
-                HelpText = f.HelpText
-            }).OrderBy(f => f.DisplayOrder).ToList();
-
-            await _outputPort.Handle(dtos);
+            await _outputPort.Handle(fields);
         }
         catch (OperationCanceledException)
         {
