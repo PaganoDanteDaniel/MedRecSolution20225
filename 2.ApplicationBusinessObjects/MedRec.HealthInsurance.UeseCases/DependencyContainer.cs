@@ -18,18 +18,5 @@ public static class DependencyContainer
             typeof(CreateHealthInsuranceInteractor).Assembly
             ], rethrow);
     }
-
-    // Registro directo (resérvalo para futura API)
-    public static IServiceCollection AddHealthInsuranceUseCasesServices(this IServiceCollection services)
-    {
-
-        services.AddScoped<ICreateHealthInsuranceInputPort, CreateHealthInsuranceInteractor>();
-        services.AddScoped<IHealthInsuranceCatalogInputPort, HealthInsuranceCatalogInteractor>();
-        services.AddScoped<IDeleteHealthInsuranceInputPort, DeleteHealthInsuranceInteractor>();
-        services.AddScoped<IUpdateHealthInsuranceInputPort, UpdateHealthInsuranceInteractor>();
-        services.AddScoped<IGetHealthInsuranceByIdInputPort, GetHealthInsuranceByIdInteractor>();
-
-        return services;
-    }
 }
 

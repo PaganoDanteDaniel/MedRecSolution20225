@@ -18,15 +18,5 @@ public static class DependencyContainer
             typeof(CreateMedicalAppointmentInteractor).Assembly
             ], rethrow);
     }
-    public static IServiceCollection AddMedicalAppointmentUseCasesServices(this IServiceCollection services)
-    {
-        services.AddScoped<ICreateMedicalAppointmentInputPort, CreateMedicalAppointmentInteractor>()
-                .AddScoped<IMoveMedicalAppointmentInputPort, MoveMedicalAppointmentInteractor>()
-                .AddScoped<IReassignMedicalAppointmentInputPort, ReassignMedicalAppointmentInteractor>()
-                .AddScoped<IDeleteMedicalAppointmentInputPort, DeleteMedicalAppointmentInteractor>()
-                .AddScoped<IGetMedicalAppointmentsInputPort, GetMedicalAppointmentsInteractor>();
-
-        return services;
-    }
 }
 

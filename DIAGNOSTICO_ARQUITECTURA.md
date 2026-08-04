@@ -80,7 +80,17 @@ funcional visible para el usuario final, en infraestructura compartida por toda 
 
 ## 3. [MEDIO] Dos implementaciones completas de la capa de datos, comprometidas en git pero fuera del `.sln`
 
-- [ ] Resuelto
+- [x] Resuelto (rama `CorreccionesDiagnosticoArquitectura`) — verificado antes de borrar: ninguno de los dos
+  proyectos está en el `.sln`; `MedRec.IoC.csproj` (composition root) solo referencia
+  `MedRec.HealthInsurance.DataContext.EF` (un tercer proyecto, activo y sin relación con este hallazgo, no
+  confundir por el nombre similar); `MedRec.Patients.DataContext.EF` solo se referencia a sí mismo y a
+  `MedRec.DataContext.EF` — un islote aislado del grafo de build real. El proyecto activo real
+  (`MedRec.Patients.DataContext.MySql`) ya tiene sus propios `PatientCommandDataContextMySql` /
+  `PatientQueriesDataContextMySql` equivalentes. Confirmado además que el huérfano usaba
+  `Microsoft.EntityFrameworkCore.SqlServer` (no MySQL), reforzando que era el fork previo al cambio de motor de
+  BD. Borradas ambas carpetas completas (26 archivos) y actualizada la mención en `CLAUDE.md` que las citaba como
+  si fueran parte activa del esquema de migraciones. `dotnet build` de la solución completa → 0 errores tras el
+  borrado.
 
 **Dónde:**
 - `4.Framework&Drivers\MedRec.DataContext.EF\` (DbContext, Configurations, Migrations propias)
@@ -124,7 +134,12 @@ el `using`.
 
 ## 5. [BAJO-MEDIO] Métodos de registro DI "sin proxy" muertos, guardados "por si acaso"
 
-- [ ] Resuelto
+- [x] Resuelto (rama `CorreccionesDiagnosticoArquitectura`) — verificado que ningún test ejercita el contenedor
+  de DI (`ServiceCollection`/`BuildServiceProvider`) y que ninguno de los 5 métodos se llamaba desde ningún otro
+  archivo del repo. Sin plan concreto de uso, se borraron los 5 (`AddPatientUseCasesServices`,
+  `AddMedicalVisitUseCasesServices`, `AddDynamicTemplatesUseCasesDirect`, `AddHealthInsuranceUseCasesServices`,
+  `AddMedicalAppointmentUseCasesServices`), dejando en cada `DependencyContainer.cs` solo el registro
+  `...WithProxy` que `MedRec.IoC` realmente usa. `dotnet build` de la solución completa → 0 errores.
 
 **Dónde:** `AddPatientUseCasesServices` (`MedRec.Patients.UseCases\DependencyContainer.cs`),
 `AddMedicalVisitUseCasesServices` (`MedRec.MedicalVisit.UseCases\DependencyContainer.cs`),
@@ -205,7 +220,7 @@ Ambos archivos, 8 tests en total, pasan tras el fix (`dotnet test` → `Correcta
 
 ## 8. [MEDIO, nuevo] `GetMedicalHistoryIdInteractor` ya no valida `patientId == Guid.Empty`
 
-- [ ] Resuelto
+- [x] Resuelto (rama `CorreccionesDiagnosticoArquitectura`)
 
 **Dónde:** `2.ApplicationBusinessObjects\MedRec.MedicalVisit.UseCases\Implementations\GetMedicalHistoryIdInteractor.cs`
 
@@ -224,6 +239,16 @@ dependiendo de qué devuelva `GetMedicalHistory` para ese caso, podría intentar
 si ya existe una guarda contra `patientId` vacío más arriba en el flujo (en cuyo caso la validación en el
 interactor era redundante y se puede omitir a propósito) o si de verdad quedó un hueco a tapar con un
 `Guard.For(patientId, ...).NotNullOrEmpty()` al inicio del `Handle`.
+
+**Resuelto:** se confirmó que no hay ninguna guarda en `GetMedicalHistoryAction`, `CreateMedicalVisitOrchestrator`
+ni `CreateMedicalVisitVM` — `patientId` viaja sin validar desde la UI hasta el interactor. Sin la validación, un
+`patientId` vacío no fallaba con un error claro: `GetMedicalHistory(Guid.Empty)` no encuentra historia, cae en la
+rama de "crear", e intenta `CreateMedicalHistory(Guid.Empty, ct)` — insertar una historia clínica con FK a un
+paciente inexistente (una excepción de FK confusa en el mejor caso, un registro huérfano en el peor). Se repuso
+la validación en el interactor con el `Guard` compartido (`Guard.Against(patientId, nameof(patientId)).NotNullOrEmpty()`),
+devolviendo `ValidationErrorsAsync` en vez de reconstruir un `ErrorInfo` a mano — mismo patrón que
+`CreateMedicalVisitInteractor`. Se restauró el test `Handle_ShouldReturnValidationError_WhenPatientIdIsEmpty` con
+la nueva expectativa. `dotnet test` → 9/9 pasan; `dotnet build` de la solución completa → 0 errores.
 
 ---
 
@@ -246,7 +271,9 @@ interactor era redundante y se puede omitir a propósito) o si de verdad quedó 
 2. ~~**Punto 1** — rompe clasificación de errores en la feature que se está tocando ahora mismo.~~ ✅ Resuelto.
 3. ~~**Puntos 4 y 6** — limpieza de riesgo cero.~~ ✅ Resueltos.
 4. ~~**Punto 7** — sin esto no había forma de verificar con tests los cambios de `CreateMedicalVisit`.~~ ✅ Resuelto.
-5. **Punto 8** (nuevo) — decidir si falta reponer la validación de `patientId` vacío o si es redundante por diseño.
-6. **Punto 5** — decisión de diseño (¿se necesita el registro sin proxy para algo? si no, borrar).
-7. **Punto 3** — requiere confirmar con el equipo que `MedRec.DataContext.EF` / `MedRec.Patients.DataContext.EF`
-   realmente no se usan en ningún flujo antes de borrarlos.
+5. ~~**Punto 8** — validación de `patientId` vacío repuesta.~~ ✅ Resuelto.
+6. ~~**Punto 5** — registros DI sin proxy.~~ ✅ Resuelto.
+7. ~~**Punto 3** — proyectos EF huérfanos.~~ ✅ Resuelto.
+
+Los 8 puntos del diagnóstico (incluidos los 2 hallazgos nuevos encontrados en el camino) quedaron resueltos en la
+rama `CorreccionesDiagnosticoArquitectura`.

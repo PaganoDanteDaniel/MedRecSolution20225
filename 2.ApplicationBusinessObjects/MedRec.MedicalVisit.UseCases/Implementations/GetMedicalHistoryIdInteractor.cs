@@ -1,6 +1,7 @@
 ﻿using MedRec.Entity.Interfaces;
 using MedRec.MedicalVisit.BusinessObjects.Interfaces.Ports;
 using MedRec.MedicalVisit.BusinessObjects.Interfaces.Repositories;
+using MedRec.Shared.Gruards;
 
 namespace MedRec.MedicalVisit.UseCases.Implementations;
 public class GetMedicalHistoryIdInteractor : IGetMedicalHistoryIdInputPort
@@ -24,6 +25,13 @@ public class GetMedicalHistoryIdInteractor : IGetMedicalHistoryIdInputPort
 
     public async Task Handle(Guid patientId, CancellationToken ct = default)
     {
+        var guard = Guard.Against(patientId, nameof(patientId)).NotNullOrEmpty();
+        if (!guard.IsValid)
+        {
+            await _outputPort.ValidationErrorsAsync(guard.Errors);
+            return;
+        }
+
         await _unitOfWork.ExecuteInTransactionWithRetry(async () =>
         {
             // 1. Intentar obtener historial existente

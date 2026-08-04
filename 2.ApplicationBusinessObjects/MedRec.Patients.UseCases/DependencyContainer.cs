@@ -19,18 +19,5 @@ public static class DependencyContainer
             typeof(CreatePatientInteractor).Assembly
             ], rethrow);
     }
-
-    // Registro directo (resérvalo para futura API)
-    public static IServiceCollection AddPatientUseCasesServices(this IServiceCollection services)
-    {
-        services.AddScoped<ICreatePatientInputPort, CreatePatientInteractor>()
-                .AddScoped<IUpdatePatientInputPort, UpdatePatientInteractor>()
-                .AddScoped<IPatientDetailsInputPort, PatientDetailsInteractor>()
-                .AddScoped<IDeletePatientInputPort, DeletePatientInteractor>()
-                .AddScoped<IPatientsListInputPort, PatientsListInteractor>()
-                .AddScoped<IPatientForMedicalVisitInputPort, PatientForMedicalVisitInteractor>();
-
-        return services;
-    }
 }
 
