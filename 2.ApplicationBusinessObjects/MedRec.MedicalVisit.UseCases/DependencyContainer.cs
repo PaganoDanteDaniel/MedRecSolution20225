@@ -18,16 +18,5 @@ public static class DependencyContainer
             typeof(CreateMedicalVisitInteractor).Assembly
             ], rethrow);
     }
-    public static IServiceCollection AddMedicalVisitUseCasesServices(this IServiceCollection services)
-    {
-        services.AddScoped<ICreateMedicalVisitInputPort, CreateMedicalVisitInteractor>()
-                .AddScoped<IMedicalVisitSummaryListInputPort, MedicalVisitSummaryListInteractor>()
-                .AddScoped<IGetMedicalHistoryIdInputPort, GetMedicalHistoryIdInteractor>()
-                .AddScoped<IGetMedicalVisitInputPort, GetMedicalVisitInteractor>()
-                .AddScoped<IUpdateMedicalVisitInputPort, UpdateMedicalVisitInteractor>();
-
-
-        return services;
-    }
 }
 

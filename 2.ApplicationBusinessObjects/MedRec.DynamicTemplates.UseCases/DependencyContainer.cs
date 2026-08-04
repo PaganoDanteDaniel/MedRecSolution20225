@@ -43,18 +43,4 @@ public static class DependencyContainer
         // Use the shared AddUseCaseExceptionDecorators extension to register proxies.
         return services.AddUseCaseExceptionDecorators(assemblies, rethrow);
     }
-
-    /// <summary>
-    /// Optional: direct registration without proxy (kept for compatibility/testing).
-    /// Use AddDynamicTemplatesUseCases() to register with proxy by default.
-    /// </summary>
-    public static IServiceCollection AddDynamicTemplatesUseCasesDirect(this IServiceCollection services)
-    {
-        services.AddScoped<IGetActiveSpecialtiesInputPort, GetActiveSpecialtiesInteractor>();
-        services.AddScoped<IGetTemplateFieldsBySpecialtyInputPort, GetTemplateFieldsBySpecialtyInteractor>();
-        services.AddScoped<ISaveDynamicFieldsInputPort, SaveDynamicFieldsInteractor>();
-        services.AddScoped<IGetDynamicFieldsByVisitInputPort, GetDynamicFieldsByVisitInteractor>();
-
-        return services;
-    }
 }

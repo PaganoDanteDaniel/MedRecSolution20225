@@ -134,7 +134,12 @@ el `using`.
 
 ## 5. [BAJO-MEDIO] Métodos de registro DI "sin proxy" muertos, guardados "por si acaso"
 
-- [ ] Resuelto
+- [x] Resuelto (rama `CorreccionesDiagnosticoArquitectura`) — verificado que ningún test ejercita el contenedor
+  de DI (`ServiceCollection`/`BuildServiceProvider`) y que ninguno de los 5 métodos se llamaba desde ningún otro
+  archivo del repo. Sin plan concreto de uso, se borraron los 5 (`AddPatientUseCasesServices`,
+  `AddMedicalVisitUseCasesServices`, `AddDynamicTemplatesUseCasesDirect`, `AddHealthInsuranceUseCasesServices`,
+  `AddMedicalAppointmentUseCasesServices`), dejando en cada `DependencyContainer.cs` solo el registro
+  `...WithProxy` que `MedRec.IoC` realmente usa. `dotnet build` de la solución completa → 0 errores.
 
 **Dónde:** `AddPatientUseCasesServices` (`MedRec.Patients.UseCases\DependencyContainer.cs`),
 `AddMedicalVisitUseCasesServices` (`MedRec.MedicalVisit.UseCases\DependencyContainer.cs`),
@@ -257,5 +262,5 @@ interactor era redundante y se puede omitir a propósito) o si de verdad quedó 
 3. ~~**Puntos 4 y 6** — limpieza de riesgo cero.~~ ✅ Resueltos.
 4. ~~**Punto 7** — sin esto no había forma de verificar con tests los cambios de `CreateMedicalVisit`.~~ ✅ Resuelto.
 5. **Punto 8** (nuevo) — decidir si falta reponer la validación de `patientId` vacío o si es redundante por diseño.
-6. **Punto 5** — decisión de diseño (¿se necesita el registro sin proxy para algo? si no, borrar).
+6. ~~**Punto 5** — registros DI sin proxy.~~ ✅ Resuelto.
 7. ~~**Punto 3** — proyectos EF huérfanos.~~ ✅ Resuelto.
