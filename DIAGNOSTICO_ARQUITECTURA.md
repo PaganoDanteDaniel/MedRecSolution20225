@@ -21,7 +21,7 @@ infraestructura compartida de validación.
 
 ## 1. [ALTO] Los 4 Interactores de DynamicTemplates reimplementan el manejo de errores a mano
 
-- [ ] Resuelto
+- [x] Resuelto (rama `CorreccionesDiagnosticoArquitectura`)
 
 **Dónde:**
 - `2.ApplicationBusinessObjects\MedRec.DynamicTemplates.UseCases\Implementations\SaveDynamicFieldsInteractor.cs`
@@ -52,12 +52,16 @@ textos se ven rotos en la UI.
 
 ## 2. [ALTO] Bug funcional confirmado en las Guard clauses compartidas
 
-- [ ] Resuelto
+- [x] Resuelto (rama `CorreccionesDiagnosticoArquitectura`)
 
-**Dónde:**
+**Dónde (alcance ampliado tras revisar el código, era más que los 3 archivos originales):**
 - `1.EnterpriseBusinessObjects\MedRec.Shared\Gruards\GuardBuilderInt.cs`
 - `1.EnterpriseBusinessObjects\MedRec.Shared\Gruards\GuardBuilderDateTime.cs`
 - `1.EnterpriseBusinessObjects\MedRec.Shared\Gruards\GuardBuilderEnum.cs`
+- `1.EnterpriseBusinessObjects\MedRec.Shared\Gruards\GuardBuilderString.cs` (mismo bug, no estaba en el diagnóstico original)
+- `1.EnterpriseBusinessObjects\MedRec.Shared\Gruards\GuardBuilderDecimal.cs` (mismo bug + mojibake en los mensajes, corregido también)
+
+`GuardBuilderGuid.cs` estaba limpio (no sombreaba `_paramName`, no lo necesitaba en sus mensajes).
 
 **Qué rompe:** cada uno redeclara un campo propio `private readonly string _paramName`, que **oculta** (shadow)
 el `_paramName` heredado de `GuardBuilderBase<T>` y nunca se asigna. Confirmado por warnings del compilador:
@@ -99,7 +103,7 @@ desconectada del build real.
 
 ## 4. [MEDIO] `OperationResult<T>` duplicado, viviendo en namespace global
 
-- [ ] Resuelto
+- [x] Resuelto (rama `CorreccionesDiagnosticoArquitectura`) — archivo borrado, confirmado que compila.
 
 **Dónde:** `3.InterfaceAdapters\MedRec.MedicalAppointments.ViewModels\Orchestration\OperationResult.cs`
 
@@ -142,14 +146,84 @@ DI), borrar esos métodos. Si hace falta para tests, dejar uno solo genérico co
 
 ## 6. [BAJO] Limpieza menor
 
-- [ ] `UpdatePatientInteractor.Handle` (`MedRec.Patients.UseCases\Implementations\UpdatePatientInteractor.cs`):
-  tiene un `try { ... } catch { throw; }` que no hace nada (relanza sin transformar nada). Borrar el bloque y
-  dejar el `await` directo dentro de `ExecuteInTransactionWithRetry`.
-- [ ] `MedRec.Common.Repositories` (`3.InterfaceAdapters\Repositories\MedRec.Common.Repositories\`): `.csproj`
-  vacío (sin una sola clase), comprometido en git, no referenciado en el `.sln`. Scaffold abandonado, borrar.
-- [ ] Carpetas `MedRec.InsuranceHealth.*` bajo `2.ApplicationBusinessObjects\`: solo tienen residuos de `obj/`
-  (no están en git), sobrantes de un rename `InsuranceHealth→HealthInsurance` sin limpiar localmente. Sin
-  impacto real — un `git clean -xdf` selectivo en esas carpetas evita confusión al navegar el disco.
+- [x] `UpdatePatientInteractor.Handle` (`MedRec.Patients.UseCases\Implementations\UpdatePatientInteractor.cs`):
+  borrado el `try { ... } catch { throw; }` que no hacía nada. Resuelto (rama `CorreccionesDiagnosticoArquitectura`).
+- [x] `MedRec.Common.Repositories` (`3.InterfaceAdapters\Repositories\MedRec.Common.Repositories\`): `.csproj`
+  vacío borrado de git y del disco. Resuelto.
+- [x] Carpetas `MedRec.InsuranceHealth.*` bajo `2.ApplicationBusinessObjects\`: residuos locales de `obj/`
+  eliminados (no estaban en git). Resuelto.
+
+---
+
+## 7. [ALTO] `MedRec.MedicalVisit.UseCases.Tests` no compila contra `master`
+
+- [x] Resuelto (rama `CorreccionesDiagnosticoArquitectura`)
+
+**Dónde:** `Test\MedRec.MedicalVisit.UseCases.Tests\CreateMedicalVisitInteractorUoWTests.cs`
+
+**Encontrado el:** 2026-08-04, al correr `dotnet test` tras resolver los puntos 1, 2, 4 y 6 en la rama
+`CorreccionesDiagnosticoArquitectura`. Verificado que **no es una regresión de esta rama**: reproducido el mismo
+error haciendo `git stash` y compilando el proyecto de test tal cual quedó en `master` tras el merge del PR #12.
+
+**Qué rompe:** el PR #12 (rama `ModificacionCreateMedicalVisit`) cambió la firma de
+`CreateMedicalVisitInteractor` — agregó el parámetro `dynamicFieldCommandRepository` al constructor y cambió la
+firma de `ICreateMedicalVisitOutputPort.Handle` (ahora requiere el parámetro `visit`) — pero el archivo de test
+no se actualizó. `dotnet build` de la solución compila bien (el proyecto de test no forma parte del `.sln` build
+por defecto en ese sentido, o el orden de build lo tolera), pero `dotnet test` falla con 8 errores `CS7036`
+("no se ha dado ningún argumento que corresponda al parámetro requerido").
+
+**Por qué importa:** es el único proyecto de test que existe en la solución (`CreateMedicalVisitInteractorUoWTests`
+sobre el interactor "ejemplo" que el propio `CLAUDE.md` señala como el caso limpio a imitar). Ahora mismo no hay
+manera de correr esa suite — cualquier regresión futura en `CreateMedicalVisitInteractor` pasaría desapercibida.
+
+**Qué cambiar:** actualizar los ~8 call-sites del test para pasar el nuevo `dynamicFieldCommandRepository` mock
+al constructor y el nuevo argumento `visit` a `outputPort.Handle(...)`. Requiere revisar qué contrato espera
+`dynamicFieldCommandRepository` (mock de `IMedicalVisitDynamicFieldCommandRepositoryUoW`) para no solo hacer
+compilar sino mantener la intención original de cada test.
+
+**Alcance real (mayor al descrito arriba, descubierto al ejecutar):** el problema no era solo de firma —
+`CreateMedicalVisitInteractorUoWTests.cs` mockeaba `BeginTransaction`/`CommitTransaction`/`RollbackTransaction`
+directamente sobre `IRepositoryUnitOfWork`, pero el interactor actual ya no llama a esos métodos: delega todo a
+`unitOfWork.ExecuteInTransactionWithRetry(...)`, que hay que mockear para que **invoque el delegate recibido**
+(si no, ninguna llamada interna del `Handle` ocurre y los asserts fallan en silencio con "0 invocations"). Dos
+tests (`DuplicateKeyException`/`ConcurrencyException`) asumían que el interactor todavía atrapaba esas excepciones
+y las traducía a `ErrorInfo` — comportamiento que ya no existe ahí (correctamente, según el punto 1: eso ahora es
+responsabilidad del `UseCaseExceptionProxy`). Se reescribieron para verificar que la excepción se **propaga sin
+ser tragada**, en vez de verificar un mapeo a `ErrorInfo` que ya no ocurre a ese nivel.
+
+Se encontró el mismo problema (mismo síntoma, mismo interactor no relacionado) en
+`GetMedicalHistoryIdInteractorUoWTests.cs` (4 tests, sobre `GetMedicalHistoryIdInteractor`): mismo fix de mockear
+`ExecuteInTransactionWithRetry`, mismo cambio de "atrapa DuplicateKeyException y reintenta lectura" a "propaga sin
+atrapar". Se eliminó `Handle_ShouldReturnValidationError_WhenPatientIdIsEmpty`: el interactor actual **no valida**
+`patientId == Guid.Empty` en absoluto (el archivo `...InteractorUoW.cs` original que sí lo hacía fue borrado y
+reemplazado). No se repuso esa validación porque cambiar comportamiento de producción está fuera del alcance de
+"arreglar tests" — queda anotado como posible hallazgo nuevo (punto 8) para decidir aparte.
+
+Ambos archivos, 8 tests en total, pasan tras el fix (`dotnet test` → `Correctas!`).
+
+---
+
+## 8. [MEDIO, nuevo] `GetMedicalHistoryIdInteractor` ya no valida `patientId == Guid.Empty`
+
+- [ ] Resuelto
+
+**Dónde:** `2.ApplicationBusinessObjects\MedRec.MedicalVisit.UseCases\Implementations\GetMedicalHistoryIdInteractor.cs`
+
+**Encontrado el:** 2026-08-04, al resolver el punto 7 — el test `Handle_ShouldReturnValidationError_WhenPatientIdIsEmpty`
+verificaba una validación (`ErrorCode.ValidationError`, HTTP 400 cuando `patientId == Guid.Empty`) que existía en
+el interactor viejo (`GetMedicalHistoryIdInteractorUoW.cs`, borrado en el PR #12) pero **no se migró** al
+interactor nuevo. Se eliminó el test en vez de inventar la validación, porque cambiar comportamiento de
+producción no es parte de "arreglar un test roto".
+
+**Qué rompe (potencial, no confirmado con un caso real en producción):** si algo aguas arriba (Orchestrator/Action)
+no garantiza que `patientId` nunca llegue vacío, el interactor haría una consulta con `Guid.Empty` y,
+dependiendo de qué devuelva `GetMedicalHistory` para ese caso, podría intentar crear un historial clínico
+"huérfano" en vez de fallar con un error claro.
+
+**Qué revisar antes de decidir el fix:** confirmar en `GetMedicalHistoryAction`/`CreateMedicalVisitOrchestrator`
+si ya existe una guarda contra `patientId` vacío más arriba en el flujo (en cuyo caso la validación en el
+interactor era redundante y se puede omitir a propósito) o si de verdad quedó un hueco a tapar con un
+`Guard.For(patientId, ...).NotNullOrEmpty()` al inicio del `Handle`.
 
 ---
 
@@ -168,10 +242,11 @@ DI), borrar esos métodos. Si hace falta para tests, dejar uno solo genérico co
 
 ## Orden sugerido de ataque
 
-1. **Punto 2** — bug de validación, afecta producción hoy, fix de minutos.
-2. **Punto 1** — rompe clasificación de errores en la feature que se está tocando ahora mismo (DynamicTemplates,
-   rama `ModificacionCreateMedicalVisit`).
-3. **Puntos 4 y 6** — limpieza de riesgo cero, se pueden hacer en cualquier momento libre.
-4. **Punto 5** — decisión de diseño (¿se necesita el registro sin proxy para algo? si no, borrar).
-5. **Punto 3** — requiere confirmar con el equipo que `MedRec.DataContext.EF` / `MedRec.Patients.DataContext.EF`
+1. ~~**Punto 2** — bug de validación, afecta producción hoy, fix de minutos.~~ ✅ Resuelto.
+2. ~~**Punto 1** — rompe clasificación de errores en la feature que se está tocando ahora mismo.~~ ✅ Resuelto.
+3. ~~**Puntos 4 y 6** — limpieza de riesgo cero.~~ ✅ Resueltos.
+4. ~~**Punto 7** — sin esto no había forma de verificar con tests los cambios de `CreateMedicalVisit`.~~ ✅ Resuelto.
+5. **Punto 8** (nuevo) — decidir si falta reponer la validación de `patientId` vacío o si es redundante por diseño.
+6. **Punto 5** — decisión de diseño (¿se necesita el registro sin proxy para algo? si no, borrar).
+7. **Punto 3** — requiere confirmar con el equipo que `MedRec.DataContext.EF` / `MedRec.Patients.DataContext.EF`
    realmente no se usan en ningún flujo antes de borrarlos.

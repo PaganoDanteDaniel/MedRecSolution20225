@@ -4,7 +4,6 @@ public class GuardBuilderEnum<TEnum>
         where TEnum : struct, Enum
 {
     private readonly object _value;
-    private readonly string _paramName;
 
     public GuardBuilderEnum(object value, string paramName) : base(paramName)
     {

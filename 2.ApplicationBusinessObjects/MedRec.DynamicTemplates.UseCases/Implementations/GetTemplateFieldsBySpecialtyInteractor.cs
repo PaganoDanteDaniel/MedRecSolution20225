@@ -1,7 +1,5 @@
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Ports;
 using MedRec.DynamicTemplates.BusinessObjects.Interfaces.Repositories;
-using MedRec.Entity.DTOs;
-using MedRec.Entity.Enums;
 
 namespace MedRec.DynamicTemplates.UseCases.Implementations;
 
@@ -23,35 +21,16 @@ internal class GetTemplateFieldsBySpecialtyInteractor : IGetTemplateFieldsBySpec
 
     public async Task Handle(Guid specialtyId, CancellationToken cts = default)
     {
-        try
-        {
-            cts.ThrowIfCancellationRequested();
+        cts.ThrowIfCancellationRequested();
 
-            var fields = await _queriesRepository.GetBySpecialtyId(specialtyId, cts);
+        var fields = await _queriesRepository.GetBySpecialtyId(specialtyId, cts);
 
-            if (!fields.Any())
-            {
-                await _outputPort.HandleNotFound();
-                return;
-            }
+        if (!fields.Any())
+        {
+            await _outputPort.HandleNotFound();
+            return;
+        }
 
-            await _outputPort.Handle(fields);
-        }
-        catch (OperationCanceledException)
-        {
-            await _outputPort.ErrorAsync(new ErrorInfo
-            {
-                Code = ErrorCode.Cancelled,
-                Message = "Operación cancelada por el usuario."
-            });
-        }
-        catch (Exception ex)
-        {
-            await _outputPort.ErrorAsync(new ErrorInfo
-            {
-                Code = ErrorCode.DatabaseError,
-                Message = $"Error al obtener los campos de plantilla: {ex.Message}"
-            });
-        }
+        await _outputPort.Handle(fields);
     }
 }
