@@ -31,7 +31,7 @@ Los tests usan **xUnit** + **Moq**. Actualmente solo existe `MedRec.MedicalVisit
 
 ### Migraciones de EF Core
 
-Las migraciones viven en `4.Framework&Drivers\MedRec.DataContext.MySql\Migrations` (esquema central/compartido) y en `4.Framework&Drivers\MedRec.DataContext.EF\Migrations`. `DesignTimeDbContextFactory` en `MedRec.DataContext.MySql\DataContext` provee una cadena de conexión local de desarrollo para el tooling de diseño de `dotnet ef` — al correr comandos `dotnet ef`, apuntar `--project` a `MedRec.DataContext.MySql` y `--startup-project` a `MedRec.WPF.UI`.
+Las migraciones viven en `4.Framework&Drivers\MedRec.DataContext.MySql\Migrations` (esquema central/compartido). `DesignTimeDbContextFactory` en `MedRec.DataContext.MySql\DataContext` provee una cadena de conexión local de desarrollo para el tooling de diseño de `dotnet ef` — al correr comandos `dotnet ef`, apuntar `--project` a `MedRec.DataContext.MySql` y `--startup-project` a `MedRec.WPF.UI`.
 
 ## Arquitectura: las cuatro capas
 
@@ -55,7 +55,7 @@ Los directorios están numerados para forzar la dirección de las dependencias �
    - Nota: algunas feature slices más nuevas (DynamicTemplates) agrupan estos elementos bajo carpetas padre compartidas `Presenters\`, `Repositories\`, `ViewModels\`, `Views\` en lugar de carpetas prefijadas por proyecto — revisar el `.sln` para conocer las rutas exactas de los `.csproj`, ya que los nombres de carpeta no siempre coinciden con los nombres de proyecto (ej. `MedRec.HealthInsurance.UeseCases` y `MrdRec.HealthInsurance.Repositories` contienen errores de tipeo preservados por historia).
 
 4. **`4.Framework&Drivers`** — Capa más externa: frameworks, base de datos y el composition root.
-   - **`MedRec.DataContext.MySql`** / **`MedRec.DataContext.EF`**: `DbContext` compartido (`MedRecContext`, `MedRecContextMySql`), `Configurations` de EF (configuración fluida de entidades por tabla), `UnitOfWork\DataContextUnitOfWork` (implementa `IRepositoryUnitOfWork`, incluyendo `ExecuteInTransactionWithRetry`), y clasificación de excepciones de MySQL.
+   - **`MedRec.DataContext.MySql`**: `DbContext` compartido (`MedRecContext`, `MedRecContextMySql`), `Configurations` de EF (configuración fluida de entidades por tabla), `UnitOfWork\DataContextUnitOfWork` (implementa `IRepositoryUnitOfWork`, incluyendo `ExecuteInTransactionWithRetry`), y clasificación de excepciones de MySQL.
    - **`MedRec.<Feature>.DataContext.MySql`**: implementaciones `IXxxDataContext` por feature (wrappers delgados de queries/comandos EF) usados por el proyecto Repositories de esa feature.
    - **`MedRec.IoC`**: `DependencyContainer.AddAppServices()` — el único composition root que conecta, por feature, DataContext → Repositories → UseCases (con el proxy de excepciones) → Presenters → ViewModels, en ese orden. Al agregar una nueva feature slice, registrarla acá siguiendo el patrón de bloque por feature ya existente.
    - **`MedRec.WPF.UI`**: el host WPF (`net9.0-windows7.0`) que aloja un `BlazorWebView`; `appsettings.json` contiene configuración encriptada (prefijo `ENC:` vía DPAPI, ver `MedRec.Shared\Security\EncryptionHelper`) para el JWT y las cadenas de conexión a BD — nunca escribir secretos en texto plano acá.

@@ -80,7 +80,17 @@ funcional visible para el usuario final, en infraestructura compartida por toda 
 
 ## 3. [MEDIO] Dos implementaciones completas de la capa de datos, comprometidas en git pero fuera del `.sln`
 
-- [ ] Resuelto
+- [x] Resuelto (rama `CorreccionesDiagnosticoArquitectura`) — verificado antes de borrar: ninguno de los dos
+  proyectos está en el `.sln`; `MedRec.IoC.csproj` (composition root) solo referencia
+  `MedRec.HealthInsurance.DataContext.EF` (un tercer proyecto, activo y sin relación con este hallazgo, no
+  confundir por el nombre similar); `MedRec.Patients.DataContext.EF` solo se referencia a sí mismo y a
+  `MedRec.DataContext.EF` — un islote aislado del grafo de build real. El proyecto activo real
+  (`MedRec.Patients.DataContext.MySql`) ya tiene sus propios `PatientCommandDataContextMySql` /
+  `PatientQueriesDataContextMySql` equivalentes. Confirmado además que el huérfano usaba
+  `Microsoft.EntityFrameworkCore.SqlServer` (no MySQL), reforzando que era el fork previo al cambio de motor de
+  BD. Borradas ambas carpetas completas (26 archivos) y actualizada la mención en `CLAUDE.md` que las citaba como
+  si fueran parte activa del esquema de migraciones. `dotnet build` de la solución completa → 0 errores tras el
+  borrado.
 
 **Dónde:**
 - `4.Framework&Drivers\MedRec.DataContext.EF\` (DbContext, Configurations, Migrations propias)
@@ -248,5 +258,4 @@ interactor era redundante y se puede omitir a propósito) o si de verdad quedó 
 4. ~~**Punto 7** — sin esto no había forma de verificar con tests los cambios de `CreateMedicalVisit`.~~ ✅ Resuelto.
 5. **Punto 8** (nuevo) — decidir si falta reponer la validación de `patientId` vacío o si es redundante por diseño.
 6. **Punto 5** — decisión de diseño (¿se necesita el registro sin proxy para algo? si no, borrar).
-7. **Punto 3** — requiere confirmar con el equipo que `MedRec.DataContext.EF` / `MedRec.Patients.DataContext.EF`
-   realmente no se usan en ningún flujo antes de borrarlos.
+7. ~~**Punto 3** — proyectos EF huérfanos.~~ ✅ Resuelto.
