@@ -54,13 +54,14 @@ Entidades POCO nuevas en `MedRec.Entity.POCOEntities` (mismo estilo plano que `P
 
 ```
 User
-  Id, Email, PasswordHash, FullName, IsActive, DoctorId (Guid?)
+  Id, Email, PasswordHash, FullName, IsActive, DoctorId (Guid?),
+  IsDeleted, RowVersion
 
 Role
-  Id, Name, Description
+  Id, Name, Description, IsDeleted, RowVersion
 
 Permission
-  Id, Code (string, ej "patients.view"), Description
+  Id, Code (string, ej "patients.view"), Description, IsDeleted, RowVersion
 
 UserRole (tabla puente)
   UserId, RoleId
@@ -68,6 +69,8 @@ UserRole (tabla puente)
 RolePermission (tabla puente)
   RoleId, PermissionId
 ```
+
+`IsDeleted` (baja administrativa/soft-delete) y `RowVersion` (concurrencia optimista vía `timestamp(6)` MySQL) se agregan por consistencia con las 16 tablas existentes, que ya siguen ese patrón. `IsActive` en `User` es un estado de negocio distinto (cuenta bloqueada/desactivada por un admin sin necesariamente estar dada de baja).
 
 `Permission` es un catálogo fijo, definido en código como constantes `SystemPermissions` (análogo al proyecto de referencia) y sembrado por migración — **no** es editable desde la UI. `Role` sí es administrable (crear/editar/borrar, asignar permisos). `User` es administrable (crear/editar/desactivar, asignar roles).
 
@@ -146,12 +149,21 @@ Aplicada a **todas** las entidades del sistema, existentes y nuevas, de forma ce
 
 ## Migraciones y seed
 
-Una única migración de EF Core (`AddIdentityAndAudit`) que:
-1. Crea las tablas `Users`, `Roles`, `Permissions`, `UserRoles`, `RolePermissions`.
-2. Siembra el catálogo de `Permissions` (constantes `SystemPermissions`).
-3. Siembra un rol `Administrador` con todos los permisos.
-4. Siembra un usuario admin por defecto (ej. `admin@medrec.local`, contraseña inicial conocida a cambiar en el primer ingreso — se documenta en el README de despliegue, no se fuerza un flujo de cambio obligatorio en este spec).
-5. Agrega columnas `CreatedBy`/`CreatedAt`/`UpdatedBy`/`UpdatedAt` a las 16 tablas existentes (backfill `NULL` para `CreatedBy`/`UpdatedBy`, y `CreatedAt` con la fecha de la migración como valor por defecto para filas preexistentes).
+### Limpieza previa: tablas huérfanas en `medrecdb`
+
+La base `medrecdb` (dump provisto por el cliente el 2026-08-05) ya contiene tablas `users`, `roles`, `permissions`, `userroles`, `rolepermissions` y `professionals`, en `snake_case` — restos de un intento previo de implementación (del otro proyecto de referencia, `D:\$Root\MedRecSolution\MedRec`) corrido contra la misma base. Ninguna es consumida por la app actual en producción, no tienen historial en `__efmigrationshistory` de este proyecto, y no contienen datos que deban preservarse. Su esquema además es incompatible con las decisiones de este spec (`professional_id` obligatorio 1 a 1 en vez de `DoctorId` opcional, hash+salt separados en vez de un solo `PasswordHash`, naming `snake_case` en vez de `PascalCase` como el resto de la base).
+
+La migración de Identity empieza entonces con un `DROP TABLE IF EXISTS` de esas 6 tablas (en orden que respete las FKs: `userroles`, `rolepermissions` primero, luego `users`, `roles`, `permissions`, `professionals`), antes de crear el esquema nuevo. No se usa `professionals` en ningún lado del diseño — el proyecto actual sigue usando `Doctor`/`doctors`.
+
+### Migración `AddIdentityAndAudit`
+
+Una única migración de EF Core que:
+1. Elimina las tablas huérfanas descriptas arriba.
+2. Crea las tablas `Users`, `Roles`, `Permissions`, `UserRoles`, `RolePermissions` (en `PascalCase`, consistente con el resto de `medrecdb`).
+3. Siembra el catálogo de `Permissions` (constantes `SystemPermissions`).
+4. Siembra un rol `Administrador` con todos los permisos.
+5. Siembra un usuario admin por defecto (ej. `admin@medrec.local`, contraseña inicial conocida a cambiar en el primer ingreso — se documenta en el README de despliegue, no se fuerza un flujo de cambio obligatorio en este spec).
+6. Agrega columnas `CreatedBy`/`CreatedAt`/`UpdatedBy`/`UpdatedAt` a las 16 tablas existentes (backfill `NULL` para `CreatedBy`/`UpdatedBy`, y `CreatedAt` con la fecha de la migración como valor por defecto para filas preexistentes).
 
 ## Testing
 
