@@ -1,16 +1,18 @@
-﻿namespace MedRec.Entity.POCOEntities;
+﻿using MedRec.Entity.Interfaces;
 
-public class TemplateFieldDefinition
+namespace MedRec.Entity.POCOEntities;
+
+public class TemplateFieldDefinition : IAuditableEntity
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     public Guid SpecialtyId { get; set; }
     public string FieldName { get; set; } = string.Empty;
     public string FieldLabel { get; set; } = string.Empty;
-    public string FieldType { get; set; } = string.Empty; // Text, Number, Date, etc.
+    public string FieldType { get; set; } = string.Empty;
     public string? Category { get; set; }
     public bool IsRequired { get; set; }
     public int DisplayOrder { get; set; }
-    public string? SelectOptions { get; set; } // JSON string
+    public string? SelectOptions { get; set; }
     public string? DefaultValue { get; set; }
     public string? Unit { get; set; }
     public decimal? MinimumValue { get; set; }
@@ -20,5 +22,7 @@ public class TemplateFieldDefinition
     public bool IsDeleted { get; set; } = true;
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
+    public Guid? CreatedBy { get; set; }
+    public Guid? UpdatedBy { get; set; }
     public byte[] RowVersion { get; set; }
 }

@@ -1,6 +1,8 @@
-﻿namespace MedRec.Entity.POCOEntities;
+﻿using MedRec.Entity.Interfaces;
 
-public class PatientMedicalVisit
+namespace MedRec.Entity.POCOEntities;
+
+public class PatientMedicalVisit : IAuditableEntity
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     public Guid MedicalHistoryId { get; set; }
@@ -16,5 +18,9 @@ public class PatientMedicalVisit
     public bool IsDeleted { get; set; } = false;
     public byte[] RowVersion { get; set; }
     public Guid? DoctorId { get; set; }
+    public Guid? CreatedBy { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public Guid? UpdatedBy { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }
 

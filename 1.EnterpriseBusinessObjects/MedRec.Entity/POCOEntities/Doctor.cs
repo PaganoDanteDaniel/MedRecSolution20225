@@ -1,18 +1,23 @@
-﻿namespace MedRec.Entity.POCOEntities;
+﻿using MedRec.Entity.Interfaces;
 
-public class Doctor
+namespace MedRec.Entity.POCOEntities;
+
+public class Doctor : IAuditableEntity
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public string LicenseNumber { get; set; } = string.Empty; // e.g., "MP 123456"
+    public string LicenseNumber { get; set; } = string.Empty;
     public Guid SpecialtyId { get; set; }
     public string Phone { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public DateTime HireDate { get; set; } = DateTime.Now;
     public bool IsDeleted { get; set; } = true;
     public byte[] RowVersion { get; set; }
+    public Guid? CreatedBy { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public Guid? UpdatedBy { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 
-    // Computed property for display purposes
     public string FullName => $"{LastName}, {FirstName}";
 }
