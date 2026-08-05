@@ -182,8 +182,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedRec.DynamicTemplates.Vie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedRec.DynamicTemplates.Views", "3.InterfaceAdapters\Views\MedRec.DynamicTemplates.Views\MedRec.DynamicTemplates.Views.csproj", "{E5C623E9-23B8-4298-8838-1F826352B7E4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.ApplicationBusinessObjects", "2.ApplicationBusinessObjects", "{EBB6792E-ACA1-9894-73FC-FEDB6DCF51B9}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedRec.Identity.BusinessObjects", "2.ApplicationBusinessObjects\MedRec.Identity.BusinessObjects\MedRec.Identity.BusinessObjects.csproj", "{26F4F8E0-4A32-46D9-9255-1351762B6CAC}"
 EndProject
 Global
@@ -1053,7 +1051,7 @@ Global
 		{072D63B5-4BD7-4A81-B71A-CB63C7EEB6F2} = {45230657-F857-4862-B249-E145B0810064}
 		{A01D1C7A-4042-4304-B459-47821A951F3D} = {072D63B5-4BD7-4A81-B71A-CB63C7EEB6F2}
 		{E5C623E9-23B8-4298-8838-1F826352B7E4} = {F667D523-744B-418A-AAEB-BD800F50097C}
-		{26F4F8E0-4A32-46D9-9255-1351762B6CAC} = {EBB6792E-ACA1-9894-73FC-FEDB6DCF51B9}
+		{26F4F8E0-4A32-46D9-9255-1351762B6CAC} = {2C13325C-BA95-4D21-84C8-1F299E994BA9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6700A9D3-DC96-480C-BBE0-4E04C5A4EA0A}
