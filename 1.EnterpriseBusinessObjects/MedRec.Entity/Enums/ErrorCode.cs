@@ -10,6 +10,7 @@ public enum ErrorCode
     UpdateError,
     NotFound,
     Conflict,
+    Forbidden,
     Unknown
 }
 
