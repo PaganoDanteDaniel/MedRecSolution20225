@@ -24,6 +24,7 @@ public abstract class BaseOutputPort<T> : IBaseOutputPort
             ErrorCode.ConcurrencyError => UserMessageAction.ShowConcurrencyMessage,
             ErrorCode.DatabaseError => UserMessageAction.ShowError,
             ErrorCode.NotFound => UserMessageAction.ShowError,
+            ErrorCode.Forbidden => UserMessageAction.ShowError,
             ErrorCode.Cancelled => UserMessageAction.ShowInfoMessage,
             _ => UserMessageAction.ShowError
         };
