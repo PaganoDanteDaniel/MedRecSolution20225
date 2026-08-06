@@ -560,8 +560,8 @@ namespace MedRec.DataContext.MySql.Migrations
                 unique: true);
 
             migrationBuilder.Sql(@"
-                INSERT INTO Permissions (Id, Code, Description, IsDeleted)
-                SELECT UUID(), t.Code, t.Description, 0 FROM (
+                INSERT INTO Permissions (Id, Code, Description, IsDeleted, CreatedAt)
+                SELECT UUID(), t.Code, t.Description, 0, UTC_TIMESTAMP(6) FROM (
                     SELECT 'patients.view' AS Code, 'Ver pacientes' AS Description
                     UNION ALL SELECT 'patients.create', 'Crear pacientes'
                     UNION ALL SELECT 'patients.edit', 'Editar pacientes'
@@ -592,14 +592,14 @@ namespace MedRec.DataContext.MySql.Migrations
                     UNION ALL SELECT 'roles.delete', 'Eliminar roles'
                 ) AS t;
 
-                INSERT INTO Roles (Id, Name, Description, IsDeleted)
-                VALUES (UUID(), 'Administrador', 'Rol con todos los permisos del sistema', 0);
+                INSERT INTO Roles (Id, Name, Description, IsDeleted, CreatedAt)
+                VALUES (UUID(), 'Administrador', 'Rol con todos los permisos del sistema', 0, UTC_TIMESTAMP(6));
 
                 INSERT INTO RolePermissions (RoleId, PermissionId)
                 SELECT r.Id, p.Id FROM Roles r CROSS JOIN Permissions p WHERE r.Name = 'Administrador';
 
-                INSERT INTO Users (Id, Email, PasswordHash, FullName, IsActive, DoctorId, IsDeleted)
-                VALUES (UUID(), 'admin@medrec.local', 'AQAAAAIAAYagAAAAEM4Lnw8E0rY7V0sfti6KzeoeErb1sMwxAqhif3qvjF+aFxkCE8vfMbBaAxqyFnhS8A==', 'Administrador del sistema', 1, NULL, 0);
+                INSERT INTO Users (Id, Email, PasswordHash, FullName, IsActive, DoctorId, IsDeleted, CreatedAt)
+                VALUES (UUID(), 'admin@medrec.local', 'AQAAAAIAAYagAAAAEM4Lnw8E0rY7V0sfti6KzeoeErb1sMwxAqhif3qvjF+aFxkCE8vfMbBaAxqyFnhS8A==', 'Administrador del sistema', 1, NULL, 0, UTC_TIMESTAMP(6));
 
                 INSERT INTO UserRoles (UserId, RoleId)
                 SELECT u.Id, r.Id FROM Users u CROSS JOIN Roles r
