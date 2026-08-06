@@ -151,6 +151,11 @@ public class MedRecContext : DbContext, IDisposable
             }
             else if (entry.State == EntityState.Modified)
             {
+                // Evita que EF incluya CreatedAt/CreatedBy en el UPDATE: la entidad en memoria
+                // (stub armado desde un DTO, o CurrentValues.SetValues) suele no traer estos
+                // valores reales, y sobrescribirlos destruiría la auditoría de creación original.
+                entry.Property(nameof(IAuditableEntity.CreatedAt)).IsModified = false;
+                entry.Property(nameof(IAuditableEntity.CreatedBy)).IsModified = false;
                 entry.Entity.UpdatedAt = now;
                 entry.Entity.UpdatedBy = userId;
             }
