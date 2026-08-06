@@ -190,6 +190,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedRec.Identity.UseCases", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedRec.Identity.Repositories", "3.InterfaceAdapters\Repositories\MedRec.Identity.Repositories\MedRec.Identity.Repositories.csproj", "{709CADAD-71AE-41D6-8844-2452BE00F845}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedRec.Identity.DataContext.MySql", "4.Framework&Drivers\MedRec.Identity.DataContext.MySql\MedRec.Identity.DataContext.MySql.csproj", "{B2085F37-DD8F-4E2A-B284-11AE1374DD1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1018,6 +1020,22 @@ Global
 		{709CADAD-71AE-41D6-8844-2452BE00F845}.Release|x64.Build.0 = Release|Any CPU
 		{709CADAD-71AE-41D6-8844-2452BE00F845}.Release|x86.ActiveCfg = Release|Any CPU
 		{709CADAD-71AE-41D6-8844-2452BE00F845}.Release|x86.Build.0 = Release|Any CPU
+		{B2085F37-DD8F-4E2A-B284-11AE1374DD1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2085F37-DD8F-4E2A-B284-11AE1374DD1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2085F37-DD8F-4E2A-B284-11AE1374DD1B}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{B2085F37-DD8F-4E2A-B284-11AE1374DD1B}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{B2085F37-DD8F-4E2A-B284-11AE1374DD1B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B2085F37-DD8F-4E2A-B284-11AE1374DD1B}.Debug|x64.Build.0 = Debug|Any CPU
+		{B2085F37-DD8F-4E2A-B284-11AE1374DD1B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B2085F37-DD8F-4E2A-B284-11AE1374DD1B}.Debug|x86.Build.0 = Debug|Any CPU
+		{B2085F37-DD8F-4E2A-B284-11AE1374DD1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2085F37-DD8F-4E2A-B284-11AE1374DD1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2085F37-DD8F-4E2A-B284-11AE1374DD1B}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{B2085F37-DD8F-4E2A-B284-11AE1374DD1B}.Release|ARM64.Build.0 = Release|Any CPU
+		{B2085F37-DD8F-4E2A-B284-11AE1374DD1B}.Release|x64.ActiveCfg = Release|Any CPU
+		{B2085F37-DD8F-4E2A-B284-11AE1374DD1B}.Release|x64.Build.0 = Release|Any CPU
+		{B2085F37-DD8F-4E2A-B284-11AE1374DD1B}.Release|x86.ActiveCfg = Release|Any CPU
+		{B2085F37-DD8F-4E2A-B284-11AE1374DD1B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1109,6 +1127,7 @@ Global
 		{1E7C2ABE-5733-44B0-A97B-FAC0B1089BED} = {D00DC458-21DA-428A-A011-D01F33071CB5}
 		{4FB0BCEF-B94A-4836-A6DA-54E601A783AD} = {2C13325C-BA95-4D21-84C8-1F299E994BA9}
 		{709CADAD-71AE-41D6-8844-2452BE00F845} = {E1291724-AAFE-4E77-94BF-A7A357BD6471}
+		{B2085F37-DD8F-4E2A-B284-11AE1374DD1B} = {106B3320-8D5C-4C4B-A7BA-A6311185D129}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6700A9D3-DC96-480C-BBE0-4E04C5A4EA0A}
