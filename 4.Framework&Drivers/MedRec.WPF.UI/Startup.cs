@@ -131,7 +131,19 @@ public static class Startup
                 File.WriteAllText(appSettingsPath,
                     Newtonsoft.Json.JsonConvert.SerializeObject(configFile, Newtonsoft.Json.Formatting.Indented));
             }
-            jwtKey.Key = EncryptionHelper.Decrypt(jwtKey.Key);
+            try
+            {
+                jwtKey.Key = EncryptionHelper.Decrypt(jwtKey.Key);
+            }
+            catch (System.Security.Cryptography.CryptographicException)
+            {
+                // La clave del appsettings.json versionado se encriptó con DPAPI en scope de máquina;
+                // solo se puede desencriptar en la máquina que la generó. En cualquier otra instalación
+                // esto falla: dejamos la clave vacía en vez de tirar abajo el arranque de la app, para
+                // que el error se manifieste recién al intentar loguear (guard clause en
+                // JwtAuthTokenGenerator), no como un crash silencioso al abrir la aplicación.
+                jwtKey.Key = string.Empty;
+            }
         }
 
         services.AddSingleton(Options.Create(dbOptionsMySql));
