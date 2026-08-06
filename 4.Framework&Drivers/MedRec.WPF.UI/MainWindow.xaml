@@ -18,7 +18,7 @@
             Services="{x:Static local:Startup.Services}">
             <b:BlazorWebView.RootComponents>
                 <b:RootComponent
-                    ComponentType="{x:Type local:Main}"
+                    ComponentType="{x:Type local:AppShell}"
                     Selector="#app"/>
             </b:BlazorWebView.RootComponents>
         </b:BlazorWebView>

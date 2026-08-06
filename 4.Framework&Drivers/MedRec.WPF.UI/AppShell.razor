@@ -1,0 +1,27 @@
+@using MedRec.Identity.BusinessObjects.Interfaces.Services
+@using MedRec.Identity.Views.Pages
+@implements IDisposable
+@inject ISessionService SessionService
+
+@if (SessionService.IsAuthenticated)
+{
+    <Main />
+}
+else
+{
+    <LoginPage />
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        SessionService.OnSessionChanged += HandleSessionChanged;
+    }
+
+    private void HandleSessionChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose()
+    {
+        SessionService.OnSessionChanged -= HandleSessionChanged;
+    }
+}

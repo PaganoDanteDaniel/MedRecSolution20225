@@ -1,12 +1,15 @@
-﻿<div class="sidebar @NavClass">
+﻿@using MedRec.Identity.BusinessObjects.Interfaces.Services
+@inject ISessionService SessionService
+
+<div class="sidebar @NavClass">
     <div class="nav-header">
         <button class="hamburger-btn" @onclick="ToggleNav">
             @if (_isCollapsed)
-            { 
+            {
                 <i class="bi bi-arrow-bar-right"></i>
             }
             else
-            {   
+            {
                 <i class="bi bi-arrow-bar-left"></i>
             }
         </button>
@@ -15,6 +18,19 @@
             <span class="app-name">MedRec App</span>
         }
     </div>
+
+    @if (SessionService.CurrentUser is not null)
+    {
+        <div class="nav-user">
+            @if (!_isCollapsed)
+            {
+                <span>@SessionService.CurrentUser.FullName</span>
+            }
+            <button class="logout-btn" @onclick="Logout" title="Cerrar sesión">
+                <i class="bi bi-box-arrow-right"></i>
+            </button>
+        </div>
+    }
 
     <ul class="nav-links">
         <li>
@@ -55,3 +71,10 @@
         </li>
     </ul>
 </div>
+
+@code {
+    private async Task Logout()
+    {
+        await SessionService.LogoutAsync();
+    }
+}
