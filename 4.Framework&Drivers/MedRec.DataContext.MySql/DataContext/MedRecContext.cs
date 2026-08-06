@@ -1,4 +1,5 @@
 ﻿using MedRec.DataContext.MySql.Options;
+using MedRec.Entity.Interfaces;
 using MedRec.Entity.POCOEntities;
 using MedRec.MedicalAppointments.BusinessObjects.EntityView;
 using Microsoft.EntityFrameworkCore;
@@ -10,28 +11,33 @@ namespace MedRec.DataContext.MySql.DataContext;
 public class MedRecContext : DbContext, IDisposable
 {
     private readonly IOptions<DBOptionsMySql>? _dbOptions;
+    private readonly ICurrentUserContext _currentUserContext;
     static int count = 0;
     private static readonly object _logLock = new();
     private static readonly string _logPath = Path.Combine(Path.GetTempPath(), "MedRec", "MedRecContext.log");
 
     // Constructor principal para producción (inyectado por DI)
-    public MedRecContext(IOptions<DBOptionsMySql> dbOptions)
+    public MedRecContext(IOptions<DBOptionsMySql> dbOptions, ICurrentUserContext currentUserContext)
         : base()
     {
         count += 1;
-        //LogCreation("IOptions<DBOptionsMySql>");
         _dbOptions = dbOptions ?? throw new ArgumentNullException(nameof(dbOptions));
+        _currentUserContext = currentUserContext ?? throw new ArgumentNullException(nameof(currentUserContext));
         if (string.IsNullOrEmpty(_dbOptions.Value.ConnectionString))
             throw new ArgumentException("Connection string is required.", nameof(dbOptions));
     }
 
     // Constructor para tiempo de diseño (EF Core tools)
     internal MedRecContext(DbContextOptions<MedRecContext> options)
+        : this(options, new NullCurrentUserContext())
+    {
+    }
+
+    internal MedRecContext(DbContextOptions<MedRecContext> options, ICurrentUserContext currentUserContext)
         : base(options)
     {
         count += 1;
-        //LogCreation("DbContextOptions<MedRecContext> (internal)");
-        // Este constructor NO usa _dbOptions; la configuración viene en `options`
+        _currentUserContext = currentUserContext;
     }
 
     private static void LogCreation(string ctorKind)
@@ -84,6 +90,12 @@ public class MedRecContext : DbContext, IDisposable
     public DbSet<TemplateFieldDefinition> TemplateFieldDefinitions { get; set; }
     public DbSet<MedicalVisitDynamicField> MedicalVisitDynamicFields { get; set; }
 
+    public DbSet<User> Users { get; set; }
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<Permission> Permissions { get; set; }
+    public DbSet<UserRole> UserRoles { get; set; }
+    public DbSet<RolePermission> RolePermissions { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         // Solo configura si EF no lo ha hecho ya (por ejemplo, desde la fábrica de diseño)
@@ -118,6 +130,32 @@ public class MedRecContext : DbContext, IDisposable
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         => modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        ApplyAuditInfo();
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    private void ApplyAuditInfo()
+    {
+        var userId = _currentUserContext.UserId;
+        var now = DateTime.UtcNow;
+
+        foreach (var entry in ChangeTracker.Entries<IAuditableEntity>())
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedAt = now;
+                entry.Entity.CreatedBy = userId;
+            }
+            else if (entry.State == EntityState.Modified)
+            {
+                entry.Entity.UpdatedAt = now;
+                entry.Entity.UpdatedBy = userId;
+            }
+        }
+    }
 
     public override void Dispose()
     {
