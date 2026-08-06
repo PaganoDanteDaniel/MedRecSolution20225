@@ -27,7 +27,7 @@ public static class Startup
         return appSettingsPath;
     }
 
-    // Devuelve true si tras el proceso existe cadena válida.
+    // Devuelve true si tras el proceso existe cadena vï¿½lida.
     public static bool EnsureConnectionSettings(string appSettingsPath)
     {
         bool TieneConexion(string path)
@@ -85,11 +85,11 @@ public static class Startup
         }
         catch (Exception ex)
         {
-            // Opcional: loguear el error (por si la conexión falla al inicio)
-            // Podés usar System.Diagnostics.Debug.WriteLine o un logger si lo tenés
+            // Opcional: loguear el error (por si la conexiï¿½n falla al inicio)
+            // Podï¿½s usar System.Diagnostics.Debug.WriteLine o un logger si lo tenï¿½s
             System.Diagnostics.Debug.WriteLine($"Error al precargar EF Core: {ex}");
-            // Nota: si la conexión no está lista aún (ej. usuario no ingresó credenciales),
-            // este paso fallará, pero no es crítico: la primera carga en UI será lenta, pero funcional.
+            // Nota: si la conexiï¿½n no estï¿½ lista aï¿½n (ej. usuario no ingresï¿½ credenciales),
+            // este paso fallarï¿½, pero no es crï¿½tico: la primera carga en UI serï¿½ lenta, pero funcional.
         }
 
         Services = host.Services;
@@ -118,20 +118,26 @@ public static class Startup
             dbOptionsMySql.ConnectionString = EncryptionHelper.Decrypt(dbOptionsMySql.ConnectionString);
         }
 
-        if (!string.IsNullOrEmpty(jwtKey.Key) && !EncryptionHelper.IsEncrypted(jwtKey.Key))
+        if (!string.IsNullOrEmpty(jwtKey.Key))
         {
-            jwtKey.Key = EncryptionHelper.Encrypt(jwtKey.Key);
-            var json = File.ReadAllText(appSettingsPath);
-            dynamic configFile = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-            if (configFile.Jwt == null)
-                configFile.Jwt = new Newtonsoft.Json.Linq.JObject();
-            configFile.Jwt.Key = jwtKey.Key;
-            File.WriteAllText(appSettingsPath,
-                Newtonsoft.Json.JsonConvert.SerializeObject(configFile, Newtonsoft.Json.Formatting.Indented));
+            if (!EncryptionHelper.IsEncrypted(jwtKey.Key))
+            {
+                jwtKey.Key = EncryptionHelper.Encrypt(jwtKey.Key);
+                var json = File.ReadAllText(appSettingsPath);
+                dynamic configFile = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+                if (configFile.Jwt == null)
+                    configFile.Jwt = new Newtonsoft.Json.Linq.JObject();
+                configFile.Jwt.Key = jwtKey.Key;
+                File.WriteAllText(appSettingsPath,
+                    Newtonsoft.Json.JsonConvert.SerializeObject(configFile, Newtonsoft.Json.Formatting.Indented));
+            }
+            jwtKey.Key = EncryptionHelper.Decrypt(jwtKey.Key);
         }
 
         services.AddSingleton(Options.Create(dbOptionsMySql));
         services.Configure<DBOptionsMySql>(configuration.GetSection(DBOptionsMySql.SectionKey));
+        services.AddSingleton(Options.Create(jwtKey));
+        services.Configure<Jwt>(configuration.GetSection(Jwt.SectionKey));
         services.AddWpfBlazorWebView();
         services.AddAppServices();
 #if DEBUG

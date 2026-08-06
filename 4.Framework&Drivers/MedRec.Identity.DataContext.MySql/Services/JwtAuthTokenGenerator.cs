@@ -13,6 +13,9 @@ internal class JwtAuthTokenGenerator(IOptions<Jwt> jwtOptions) : IAuthTokenGener
     public (string Token, DateTime ExpiresAtUtc) GenerateToken(
         Guid userId, string email, IReadOnlyList<string> roles, IReadOnlyList<string> permissions)
     {
+        if (string.IsNullOrEmpty(jwtOptions.Value.Key))
+            throw new InvalidOperationException("La clave JWT no está configurada.");
+
         var expiresAtUtc = DateTime.UtcNow.AddMinutes(jwtOptions.Value.ExpirationMinutes);
 
         var claims = new List<Claim>
