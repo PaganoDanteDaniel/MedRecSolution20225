@@ -4,6 +4,7 @@ using MedRec.DataContext.MySql.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MedRec.DataContext.MySql.Migrations
 {
     [DbContext(typeof(MedRecContext))]
-    partial class MedRecContextModelSnapshot : ModelSnapshot
+    [Migration("20260806154747_AddIdentityAndAudit")]
+    partial class AddIdentityAndAudit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

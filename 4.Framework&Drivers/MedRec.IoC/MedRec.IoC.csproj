@@ -30,6 +30,11 @@
     <ProjectReference Include="..\MedRec.MedicalAppointment.DataContext.MySql\MedRec.MedicalAppointments.DataContext.MySql.csproj" />
     <ProjectReference Include="..\MedRec.MedicalVisit.DataContext.MySql\MedRec.MedicalVisit.DataContext.MySql.csproj" />
     <ProjectReference Include="..\MedRec.Patients.DataContext.MySql\MedRec.Patients.DataContext.MySql.csproj" />
+    <ProjectReference Include="..\..\2.ApplicationBusinessObjects\MedRec.Identity.UseCases\MedRec.Identity.UseCases.csproj" />
+    <ProjectReference Include="..\..\3.InterfaceAdapters\Repositories\MedRec.Identity.Repositories\MedRec.Identity.Repositories.csproj" />
+    <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.Identity.Presenters\MedRec.Identity.Presenters.csproj" />
+    <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.Identity.ViewModels\MedRec.Identity.ViewModels.csproj" />
+    <ProjectReference Include="..\MedRec.Identity.DataContext.MySql\MedRec.Identity.DataContext.MySql.csproj" />
   </ItemGroup>
 
 </Project>

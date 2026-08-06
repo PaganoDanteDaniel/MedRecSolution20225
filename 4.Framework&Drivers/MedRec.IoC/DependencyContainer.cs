@@ -3,6 +3,7 @@ using MedRec.DynamicTemplates.Repositories;
 using MedRec.DynamicTemplates.ViewModels.Orchestration;
 using MedRec.DynamicTemplates.ViewModels.VM;
 using MedRec.HealthInsurance.ViewModels.VM;
+using MedRec.Identity.ViewModels.VM;
 using MedRec.MedicalVisit.ViewModels.VM;
 using MedRec.Patients.ViewModels.VM;
 
@@ -51,6 +52,13 @@ public static class DependencyContainer
                 .AddDynamicTemplatesUseCases()
                 .AddDynamicTemplatesVMServices();
 
+
+        services.AddIdentityDataContextMySqlServices()
+                .AddIdentityRepositoriesServices()
+                .AddIdentityUseCasesServicesWithProxy()
+                .AddIdentityPresentersServices();
+
+        services.AddTransient<LoginVM>();
 
         services.AddValidatorServices();
 
