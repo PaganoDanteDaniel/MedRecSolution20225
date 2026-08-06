@@ -11,6 +11,19 @@ namespace MedRec.DataContext.MySql.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // ADVERTENCIA: los 6 DROP TABLE siguientes se agregaron porque, en las bases de datos
+            // sobre las que esta migración fue efectivamente aplicada durante el desarrollo de esta
+            // feature, estas tablas eran remanentes huérfanos de un experimento previo no relacionado
+            // y nunca mergeado (ver docs/superpowers/specs/2026-08-05-identity-design.md). No tenían
+            // datos de valor y no forman parte de ninguna feature vigente.
+            //
+            // Si estás aplicando esta migración por primera vez contra una base NUEVA o DISTINTA,
+            // DEBÉS verificar antes (por ejemplo con `SHOW TABLES` y/o un backup) que estos nombres
+            // de tabla no estén en uso legítimo ahí. El DROP es incondicional (IF EXISTS evita el
+            // error si no existen, pero NO evita el borrado si sí existen), y MySQL no soporta DDL
+            // transaccional: si esta migración falla a mitad de camino, la base queda en un estado
+            // parcialmente migrado sin rollback automático (esto ya ocurrió una vez durante el
+            // desarrollo de esta feature).
             migrationBuilder.Sql("DROP TABLE IF EXISTS `userroles`;");
             migrationBuilder.Sql("DROP TABLE IF EXISTS `rolepermissions`;");
             migrationBuilder.Sql("DROP TABLE IF EXISTS `users`;");
