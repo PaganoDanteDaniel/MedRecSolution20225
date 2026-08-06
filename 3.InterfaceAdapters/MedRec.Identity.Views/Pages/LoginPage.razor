@@ -1,0 +1,38 @@
+@page "/login"
+@inject LoginVM VM
+
+<div class="login-container">
+    <EditForm Model="VM.Model" OnValidSubmit="HandleLogin" autocomplete="off">
+        <h2>MedRec — Iniciar sesión</h2>
+
+        <div class="login-row">
+            <label for="email">Email</label>
+            <InputText id="email" @bind-Value="VM.Model.Email" autocomplete="username" />
+        </div>
+
+        <div class="login-row">
+            <label for="password">Contraseña</label>
+            <InputText id="password" type="password" @bind-Value="VM.Model.Password" autocomplete="current-password" />
+        </div>
+
+        @if (!string.IsNullOrEmpty(VM.InformationMessage))
+        {
+            <p class="login-error">@VM.InformationMessage</p>
+        }
+
+        <button type="submit" disabled="@VM.IsProcessing">
+            @(VM.IsProcessing ? "Ingresando..." : "Ingresar")
+        </button>
+    </EditForm>
+</div>
+
+@code {
+    private async Task HandleLogin()
+    {
+        await VM.LoginAsync();
+        if (VM.InformationMessage == string.Empty)
+        {
+            StateHasChanged();
+        }
+    }
+}
