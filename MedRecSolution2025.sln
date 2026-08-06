@@ -188,6 +188,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedRec.Identity.UseCases.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedRec.Identity.UseCases", "2.ApplicationBusinessObjects\MedRec.Identity.UseCases\MedRec.Identity.UseCases.csproj", "{4FB0BCEF-B94A-4836-A6DA-54E601A783AD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedRec.Identity.Repositories", "3.InterfaceAdapters\Repositories\MedRec.Identity.Repositories\MedRec.Identity.Repositories.csproj", "{709CADAD-71AE-41D6-8844-2452BE00F845}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1000,6 +1002,22 @@ Global
 		{4FB0BCEF-B94A-4836-A6DA-54E601A783AD}.Release|x64.Build.0 = Release|Any CPU
 		{4FB0BCEF-B94A-4836-A6DA-54E601A783AD}.Release|x86.ActiveCfg = Release|Any CPU
 		{4FB0BCEF-B94A-4836-A6DA-54E601A783AD}.Release|x86.Build.0 = Release|Any CPU
+		{709CADAD-71AE-41D6-8844-2452BE00F845}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{709CADAD-71AE-41D6-8844-2452BE00F845}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{709CADAD-71AE-41D6-8844-2452BE00F845}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{709CADAD-71AE-41D6-8844-2452BE00F845}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{709CADAD-71AE-41D6-8844-2452BE00F845}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{709CADAD-71AE-41D6-8844-2452BE00F845}.Debug|x64.Build.0 = Debug|Any CPU
+		{709CADAD-71AE-41D6-8844-2452BE00F845}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{709CADAD-71AE-41D6-8844-2452BE00F845}.Debug|x86.Build.0 = Debug|Any CPU
+		{709CADAD-71AE-41D6-8844-2452BE00F845}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{709CADAD-71AE-41D6-8844-2452BE00F845}.Release|Any CPU.Build.0 = Release|Any CPU
+		{709CADAD-71AE-41D6-8844-2452BE00F845}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{709CADAD-71AE-41D6-8844-2452BE00F845}.Release|ARM64.Build.0 = Release|Any CPU
+		{709CADAD-71AE-41D6-8844-2452BE00F845}.Release|x64.ActiveCfg = Release|Any CPU
+		{709CADAD-71AE-41D6-8844-2452BE00F845}.Release|x64.Build.0 = Release|Any CPU
+		{709CADAD-71AE-41D6-8844-2452BE00F845}.Release|x86.ActiveCfg = Release|Any CPU
+		{709CADAD-71AE-41D6-8844-2452BE00F845}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1090,6 +1108,7 @@ Global
 		{26F4F8E0-4A32-46D9-9255-1351762B6CAC} = {2C13325C-BA95-4D21-84C8-1F299E994BA9}
 		{1E7C2ABE-5733-44B0-A97B-FAC0B1089BED} = {D00DC458-21DA-428A-A011-D01F33071CB5}
 		{4FB0BCEF-B94A-4836-A6DA-54E601A783AD} = {2C13325C-BA95-4D21-84C8-1F299E994BA9}
+		{709CADAD-71AE-41D6-8844-2452BE00F845} = {E1291724-AAFE-4E77-94BF-A7A357BD6471}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6700A9D3-DC96-480C-BBE0-4E04C5A4EA0A}
