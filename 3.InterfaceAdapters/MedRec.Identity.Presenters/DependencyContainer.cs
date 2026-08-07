@@ -7,6 +7,7 @@ public static class DependencyContainer
     public static IServiceCollection AddIdentityPresentersServices(this IServiceCollection services)
     {
         services.AddScoped<IAuthenticateUserOutputPort, AuthenticateUserPresenter>();
+        services.AddScoped<ICreateUserOutputPort, CreateUserPresenter>();
         return services;
     }
 }
