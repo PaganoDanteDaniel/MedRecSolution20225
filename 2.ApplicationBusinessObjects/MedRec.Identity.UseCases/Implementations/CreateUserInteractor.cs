@@ -20,6 +20,7 @@ public class CreateUserInteractor(
     IEmailNotificationService emailNotificationService,
     IAuthorizationService authorizationService,
     ICurrentUserContext currentUserContext,
+    IRepositoryUnitOfWork unitOfWork,
     IModelValidatorHub<CreateUserDto> validatorHub) : ICreateUserInputPort
 {
     public async Task HandleAsync(CreateUserDto dto, CancellationToken ct = default)
@@ -50,7 +51,12 @@ public class CreateUserInteractor(
             DoctorId = dto.DoctorId
         };
 
-        await userCommandsRepository.CreateAsync(user, dto.RoleIds, ct);
+        await unitOfWork.ExecuteInTransactionWithRetry(async () =>
+        {
+            await userCommandsRepository.CreateAsync(user, dto.RoleIds, ct);
+            await unitOfWork.SaveChanges(ct);
+        }, ct);
+
         await emailNotificationService.SendTemporaryPasswordAsync(dto.Email, dto.FullName, dto.TemporaryPassword, ct);
 
         await presenter.Handle(ct);
