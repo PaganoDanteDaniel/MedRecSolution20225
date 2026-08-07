@@ -110,7 +110,7 @@ public class AuthenticateUserInteractorTests
         var (presenter, userRepo, hasher, tokenGenerator, validator) = CreateMocks();
         SetUpValidatorToPass(validator);
 
-        var user = new User { Id = Guid.NewGuid(), Email = dto.Email, PasswordHash = "hash", FullName = "Admin", IsActive = true, DoctorId = null };
+        var user = new User { Id = Guid.NewGuid(), Email = dto.Email, PasswordHash = "hash", FullName = "Admin", IsActive = true, DoctorId = null, MustChangePassword = true };
         userRepo.Setup(r => r.GetByEmailAsync(dto.Email, It.IsAny<CancellationToken>())).ReturnsAsync(user);
         hasher.Setup(h => h.Verify(dto.Password, user.PasswordHash)).Returns(true);
         userRepo.Setup(r => r.GetRoleNamesAsync(user.Id, It.IsAny<CancellationToken>())).ReturnsAsync(new List<string> { "Administrador" });
@@ -123,7 +123,7 @@ public class AuthenticateUserInteractorTests
         await interactor.HandleAsync(dto, CancellationToken.None);
 
         presenter.Verify(p => p.Handle(
-            It.Is<AuthResultDto>(r => r.UserId == user.Id && r.Token == "token123" && r.Roles.Contains("Administrador")),
+            It.Is<AuthResultDto>(r => r.UserId == user.Id && r.Token == "token123" && r.Roles.Contains("Administrador") && r.MustChangePassword == true),
             It.IsAny<CancellationToken>()), Times.Once);
         presenter.Verify(p => p.InvalidCredentials(), Times.Never);
     }

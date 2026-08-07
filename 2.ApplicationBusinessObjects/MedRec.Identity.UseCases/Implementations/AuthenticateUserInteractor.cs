@@ -35,7 +35,7 @@ public class AuthenticateUserInteractor(
         var (token, expiresAtUtc) = tokenGenerator.GenerateToken(user.Id, user.Email, roles, permissions);
 
         await presenter.Handle(
-            new AuthResultDto(user.Id, user.Email, user.FullName, user.DoctorId, roles, permissions, token, expiresAtUtc),
+            new AuthResultDto(user.Id, user.Email, user.FullName, user.DoctorId, roles, permissions, token, expiresAtUtc, user.MustChangePassword),
             ct);
     }
 }

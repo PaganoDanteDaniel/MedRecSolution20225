@@ -9,7 +9,8 @@ public class AuthResultDto
         IReadOnlyList<string> roles,
         IReadOnlyList<string> permissions,
         string token,
-        DateTime expiresAtUtc)
+        DateTime expiresAtUtc,
+        bool mustChangePassword)
     {
         UserId = userId;
         Email = email;
@@ -19,6 +20,7 @@ public class AuthResultDto
         Permissions = permissions;
         Token = token;
         ExpiresAtUtc = expiresAtUtc;
+        MustChangePassword = mustChangePassword;
     }
 
     public Guid UserId { get; }
@@ -29,4 +31,5 @@ public class AuthResultDto
     public IReadOnlyList<string> Permissions { get; }
     public string Token { get; }
     public DateTime ExpiresAtUtc { get; }
+    public bool MustChangePassword { get; }
 }
