@@ -1146,6 +1146,7 @@ public static class UpdateUserValidator
 `Test\MedRec.Identity.UseCases.Tests\UpdateUserInteractorTests.cs`:
 ```csharp
 using MedRec.Entity.DTOs;
+using MedRec.Entity.Interfaces;
 using MedRec.Entity.POCOEntities;
 using MedRec.Identity.BusinessObjects.DTOs;
 using MedRec.Identity.BusinessObjects.Interfaces.Ports;
@@ -1166,6 +1167,7 @@ public class UpdateUserInteractorTests
         Mock<IUserQueriesRepository> queriesRepo,
         Mock<IAuthorizationService> authorization,
         Mock<ICurrentUserContext> currentUser,
+        Mock<IRepositoryUnitOfWork> unitOfWork,
         Mock<IModelValidatorHub<UpdateUserDto>> validator) CreateMocks()
     {
         return (
@@ -1174,6 +1176,7 @@ public class UpdateUserInteractorTests
             new Mock<IUserQueriesRepository>(),
             new Mock<IAuthorizationService>(),
             new Mock<ICurrentUserContext>(),
+            new Mock<IRepositoryUnitOfWork>(),
             new Mock<IModelValidatorHub<UpdateUserDto>>());
     }
 
@@ -1182,17 +1185,25 @@ public class UpdateUserInteractorTests
             .Setup(v => v.Validate(It.IsAny<UpdateUserDto>(), It.IsAny<Func<UpdateUserDto, IReadOnlyList<ValidationError>>>()))
             .ReturnsAsync(true);
 
+    /// <summary>
+    /// ExecuteInTransactionWithRetry es responsabilidad del UnitOfWork real (retry, begin/commit/rollback);
+    /// para testear el interactor basta con que el mock invoque el delegate recibido.
+    /// </summary>
+    private static void SetUpTransactionToRunWork(Mock<IRepositoryUnitOfWork> uowMock) =>
+        uowMock.Setup(u => u.ExecuteInTransactionWithRetry(It.IsAny<Func<Task>>(), It.IsAny<CancellationToken>()))
+            .Returns((Func<Task> work, CancellationToken _) => work());
+
     [Fact]
     public async Task HandleAsync_ShouldReturnValidationErrors_WhenDtoIsInvalid()
     {
         var dto = new UpdateUserDto(Guid.NewGuid(), "", Array.Empty<Guid>(), null);
-        var (presenter, commandsRepo, queriesRepo, authorization, currentUser, validator) = CreateMocks();
+        var (presenter, commandsRepo, queriesRepo, authorization, currentUser, unitOfWork, validator) = CreateMocks();
 
         validator.Setup(v => v.Validate(dto, It.IsAny<Func<UpdateUserDto, IReadOnlyList<ValidationError>>>()))
             .ReturnsAsync(false);
         validator.SetupGet(v => v.Errors).Returns(new[] { new ValidationError("FullName", "El nombre completo es obligatorio.") });
 
-        var interactor = new UpdateUserInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, authorization.Object, currentUser.Object, validator.Object);
+        var interactor = new UpdateUserInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, authorization.Object, currentUser.Object, unitOfWork.Object, validator.Object);
 
         await interactor.HandleAsync(dto, CancellationToken.None);
 
@@ -1204,12 +1215,12 @@ public class UpdateUserInteractorTests
     public async Task HandleAsync_ShouldReturnError_WhenUserNotFound()
     {
         var dto = new UpdateUserDto(Guid.NewGuid(), "Nombre", new[] { Guid.NewGuid() }, null);
-        var (presenter, commandsRepo, queriesRepo, authorization, currentUser, validator) = CreateMocks();
+        var (presenter, commandsRepo, queriesRepo, authorization, currentUser, unitOfWork, validator) = CreateMocks();
         SetUpValidatorToPass(validator);
 
         queriesRepo.Setup(r => r.GetByIdAsync(dto.UserId, It.IsAny<CancellationToken>())).ReturnsAsync((User?)null);
 
-        var interactor = new UpdateUserInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, authorization.Object, currentUser.Object, validator.Object);
+        var interactor = new UpdateUserInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, authorization.Object, currentUser.Object, unitOfWork.Object, validator.Object);
 
         await interactor.HandleAsync(dto, CancellationToken.None);
 
@@ -1223,13 +1234,14 @@ public class UpdateUserInteractorTests
         var roleId = Guid.NewGuid();
         var doctorId = Guid.NewGuid();
         var dto = new UpdateUserDto(Guid.NewGuid(), "Nombre Nuevo", new[] { roleId }, doctorId);
-        var (presenter, commandsRepo, queriesRepo, authorization, currentUser, validator) = CreateMocks();
+        var (presenter, commandsRepo, queriesRepo, authorization, currentUser, unitOfWork, validator) = CreateMocks();
         SetUpValidatorToPass(validator);
+        SetUpTransactionToRunWork(unitOfWork);
 
         var existingUser = new User { Id = dto.UserId, Email = "user@medrec.local", FullName = "Nombre Viejo" };
         queriesRepo.Setup(r => r.GetByIdAsync(dto.UserId, It.IsAny<CancellationToken>())).ReturnsAsync(existingUser);
 
-        var interactor = new UpdateUserInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, authorization.Object, currentUser.Object, validator.Object);
+        var interactor = new UpdateUserInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, authorization.Object, currentUser.Object, unitOfWork.Object, validator.Object);
 
         await interactor.HandleAsync(dto, CancellationToken.None);
 
@@ -1237,6 +1249,7 @@ public class UpdateUserInteractorTests
             It.Is<User>(u => u.Id == dto.UserId && u.FullName == "Nombre Nuevo" && u.DoctorId == doctorId),
             It.Is<IReadOnlyList<Guid>>(ids => ids.Contains(roleId)),
             It.IsAny<CancellationToken>()), Times.Once);
+        unitOfWork.Verify(u => u.SaveChanges(It.IsAny<CancellationToken>()), Times.Once);
         presenter.Verify(p => p.Handle(It.IsAny<CancellationToken>()), Times.Once);
     }
 }
@@ -1269,6 +1282,7 @@ public class UpdateUserInteractor(
     IUserQueriesRepository userQueriesRepository,
     IAuthorizationService authorizationService,
     ICurrentUserContext currentUserContext,
+    IRepositoryUnitOfWork unitOfWork,
     IModelValidatorHub<UpdateUserDto> validatorHub) : IUpdateUserInputPort
 {
     public async Task HandleAsync(UpdateUserDto dto, CancellationToken ct = default)
@@ -1292,11 +1306,18 @@ public class UpdateUserInteractor(
         user.FullName = dto.FullName;
         user.DoctorId = dto.DoctorId;
 
-        await userCommandsRepository.UpdateAsync(user, dto.RoleIds, ct);
+        await unitOfWork.ExecuteInTransactionWithRetry(async () =>
+        {
+            await userCommandsRepository.UpdateAsync(user, dto.RoleIds, ct);
+            await unitOfWork.SaveChanges(ct);
+        }, ct);
+
         await presenter.Handle(ct);
     }
 }
 ```
+
+**Nota crítica (agregada tras revisión de la Task 4):** el `IUserCommandsRepository.CreateAsync`/`UpdateAsync`/`SetActiveAsync`/`SetPasswordAsync` (Task 3) solo hacen `AddAsync`/mutan el `DbContext` — nunca llaman `SaveChanges`. Todo interactor de escritura DEBE inyectar `IRepositoryUnitOfWork` (ya registrado globalmente en `MedRec.IoC`, no requiere DI nueva) y envolver la llamada al repositorio + `unitOfWork.SaveChanges(ct)` dentro de `unitOfWork.ExecuteInTransactionWithRetry(...)`, exactamente como `CreatePatientInteractor` — de lo contrario el cambio nunca se persiste en la base. Esto aplica a esta Task y a las Tasks 6, 7 y 8 (Task 9 es de solo lectura, no aplica).
 
 - [ ] **Step 7: Correr y verificar GREEN**
 
@@ -1352,7 +1373,7 @@ git commit -m "feat(identity): implementar UpdateUserInteractor (TDD)"
 - Test: `Test\MedRec.Identity.UseCases.Tests\ToggleUserActiveInteractorTests.cs`
 
 **Interfaces:**
-- Consumes: `IUserCommandsRepository`, `IUserQueriesRepository`, `IAuthorizationService`, `ICurrentUserContext`.
+- Consumes: `IUserCommandsRepository`, `IUserQueriesRepository`, `IAuthorizationService`, `ICurrentUserContext`, `IRepositoryUnitOfWork` (capa1, ya registrado globalmente en `MedRec.IoC` — sin él la escritura no se persiste, ver nota crítica en Task 5).
 - Produces: `ToggleUserActiveInteractor : IToggleUserActiveInputPort` — auto-descubierto.
 
 - [ ] **Step 1: DTO**
@@ -1405,6 +1426,7 @@ public interface IToggleUserActiveOutputPort : IBaseOutputPort
 `Test\MedRec.Identity.UseCases.Tests\ToggleUserActiveInteractorTests.cs`:
 ```csharp
 using MedRec.Entity.DTOs;
+using MedRec.Entity.Interfaces;
 using MedRec.Entity.POCOEntities;
 using MedRec.Identity.BusinessObjects.DTOs;
 using MedRec.Identity.BusinessObjects.Interfaces.Ports;
@@ -1422,25 +1444,35 @@ public class ToggleUserActiveInteractorTests
         Mock<IUserCommandsRepository> commandsRepo,
         Mock<IUserQueriesRepository> queriesRepo,
         Mock<IAuthorizationService> authorization,
-        Mock<ICurrentUserContext> currentUser) CreateMocks()
+        Mock<ICurrentUserContext> currentUser,
+        Mock<IRepositoryUnitOfWork> unitOfWork) CreateMocks()
     {
         return (
             new Mock<IToggleUserActiveOutputPort>(),
             new Mock<IUserCommandsRepository>(),
             new Mock<IUserQueriesRepository>(),
             new Mock<IAuthorizationService>(),
-            new Mock<ICurrentUserContext>());
+            new Mock<ICurrentUserContext>(),
+            new Mock<IRepositoryUnitOfWork>());
     }
+
+    /// <summary>
+    /// ExecuteInTransactionWithRetry es responsabilidad del UnitOfWork real (retry, begin/commit/rollback);
+    /// para testear el interactor basta con que el mock invoque el delegate recibido.
+    /// </summary>
+    private static void SetUpTransactionToRunWork(Mock<IRepositoryUnitOfWork> uowMock) =>
+        uowMock.Setup(u => u.ExecuteInTransactionWithRetry(It.IsAny<Func<Task>>(), It.IsAny<CancellationToken>()))
+            .Returns((Func<Task> work, CancellationToken _) => work());
 
     [Fact]
     public async Task HandleAsync_ShouldReturnError_WhenUserNotFound()
     {
         var dto = new ToggleUserActiveDto(Guid.NewGuid(), false);
-        var (presenter, commandsRepo, queriesRepo, authorization, currentUser) = CreateMocks();
+        var (presenter, commandsRepo, queriesRepo, authorization, currentUser, unitOfWork) = CreateMocks();
 
         queriesRepo.Setup(r => r.GetByIdAsync(dto.UserId, It.IsAny<CancellationToken>())).ReturnsAsync((User?)null);
 
-        var interactor = new ToggleUserActiveInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, authorization.Object, currentUser.Object);
+        var interactor = new ToggleUserActiveInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, authorization.Object, currentUser.Object, unitOfWork.Object);
 
         await interactor.HandleAsync(dto, CancellationToken.None);
 
@@ -1452,16 +1484,18 @@ public class ToggleUserActiveInteractorTests
     public async Task HandleAsync_ShouldToggleActive_WhenUserExists()
     {
         var dto = new ToggleUserActiveDto(Guid.NewGuid(), false);
-        var (presenter, commandsRepo, queriesRepo, authorization, currentUser) = CreateMocks();
+        var (presenter, commandsRepo, queriesRepo, authorization, currentUser, unitOfWork) = CreateMocks();
+        SetUpTransactionToRunWork(unitOfWork);
 
         queriesRepo.Setup(r => r.GetByIdAsync(dto.UserId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new User { Id = dto.UserId, IsActive = true });
 
-        var interactor = new ToggleUserActiveInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, authorization.Object, currentUser.Object);
+        var interactor = new ToggleUserActiveInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, authorization.Object, currentUser.Object, unitOfWork.Object);
 
         await interactor.HandleAsync(dto, CancellationToken.None);
 
         commandsRepo.Verify(r => r.SetActiveAsync(dto.UserId, false, It.IsAny<CancellationToken>()), Times.Once);
+        unitOfWork.Verify(u => u.SaveChanges(It.IsAny<CancellationToken>()), Times.Once);
         presenter.Verify(p => p.Handle(It.IsAny<CancellationToken>()), Times.Once);
     }
 }
@@ -1491,7 +1525,8 @@ public class ToggleUserActiveInteractor(
     IUserCommandsRepository userCommandsRepository,
     IUserQueriesRepository userQueriesRepository,
     IAuthorizationService authorizationService,
-    ICurrentUserContext currentUserContext) : IToggleUserActiveInputPort
+    ICurrentUserContext currentUserContext,
+    IRepositoryUnitOfWork unitOfWork) : IToggleUserActiveInputPort
 {
     public async Task HandleAsync(ToggleUserActiveDto dto, CancellationToken ct = default)
     {
@@ -1504,7 +1539,12 @@ public class ToggleUserActiveInteractor(
             return;
         }
 
-        await userCommandsRepository.SetActiveAsync(dto.UserId, dto.IsActive, ct);
+        await unitOfWork.ExecuteInTransactionWithRetry(async () =>
+        {
+            await userCommandsRepository.SetActiveAsync(dto.UserId, dto.IsActive, ct);
+            await unitOfWork.SaveChanges(ct);
+        }, ct);
+
         await presenter.Handle(ct);
     }
 }
@@ -1565,7 +1605,7 @@ git commit -m "feat(identity): implementar ToggleUserActiveInteractor (TDD)"
 - Test: `Test\MedRec.Identity.UseCases.Tests\ResetUserPasswordInteractorTests.cs`
 
 **Interfaces:**
-- Consumes: `IUserCommandsRepository`, `IUserQueriesRepository`, `IPasswordHasher`, `IEmailNotificationService`, `IAuthorizationService`, `ICurrentUserContext`.
+- Consumes: `IUserCommandsRepository`, `IUserQueriesRepository`, `IPasswordHasher`, `IEmailNotificationService`, `IAuthorizationService`, `ICurrentUserContext`, `IRepositoryUnitOfWork` (ver nota crítica en Task 5).
 - Produces: `ResetUserPasswordInteractor : IResetUserPasswordInputPort` — auto-descubierto.
 
 - [ ] **Step 1: DTO**
@@ -1642,6 +1682,7 @@ public static class ResetUserPasswordValidator
 `Test\MedRec.Identity.UseCases.Tests\ResetUserPasswordInteractorTests.cs`:
 ```csharp
 using MedRec.Entity.DTOs;
+using MedRec.Entity.Interfaces;
 using MedRec.Entity.POCOEntities;
 using MedRec.Identity.BusinessObjects.DTOs;
 using MedRec.Identity.BusinessObjects.Interfaces.Ports;
@@ -1664,6 +1705,7 @@ public class ResetUserPasswordInteractorTests
         Mock<IEmailNotificationService> email,
         Mock<IAuthorizationService> authorization,
         Mock<ICurrentUserContext> currentUser,
+        Mock<IRepositoryUnitOfWork> unitOfWork,
         Mock<IModelValidatorHub<ResetUserPasswordDto>> validator) CreateMocks()
     {
         return (
@@ -1674,6 +1716,7 @@ public class ResetUserPasswordInteractorTests
             new Mock<IEmailNotificationService>(),
             new Mock<IAuthorizationService>(),
             new Mock<ICurrentUserContext>(),
+            new Mock<IRepositoryUnitOfWork>(),
             new Mock<IModelValidatorHub<ResetUserPasswordDto>>());
     }
 
@@ -1682,16 +1725,24 @@ public class ResetUserPasswordInteractorTests
             .Setup(v => v.Validate(It.IsAny<ResetUserPasswordDto>(), It.IsAny<Func<ResetUserPasswordDto, IReadOnlyList<ValidationError>>>()))
             .ReturnsAsync(true);
 
+    /// <summary>
+    /// ExecuteInTransactionWithRetry es responsabilidad del UnitOfWork real (retry, begin/commit/rollback);
+    /// para testear el interactor basta con que el mock invoque el delegate recibido.
+    /// </summary>
+    private static void SetUpTransactionToRunWork(Mock<IRepositoryUnitOfWork> uowMock) =>
+        uowMock.Setup(u => u.ExecuteInTransactionWithRetry(It.IsAny<Func<Task>>(), It.IsAny<CancellationToken>()))
+            .Returns((Func<Task> work, CancellationToken _) => work());
+
     [Fact]
     public async Task HandleAsync_ShouldReturnError_WhenUserNotFound()
     {
         var dto = new ResetUserPasswordDto(Guid.NewGuid(), "NuevaTemp123!");
-        var (presenter, commandsRepo, queriesRepo, hasher, email, authorization, currentUser, validator) = CreateMocks();
+        var (presenter, commandsRepo, queriesRepo, hasher, email, authorization, currentUser, unitOfWork, validator) = CreateMocks();
         SetUpValidatorToPass(validator);
 
         queriesRepo.Setup(r => r.GetByIdAsync(dto.UserId, It.IsAny<CancellationToken>())).ReturnsAsync((User?)null);
 
-        var interactor = new ResetUserPasswordInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, hasher.Object, email.Object, authorization.Object, currentUser.Object, validator.Object);
+        var interactor = new ResetUserPasswordInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, hasher.Object, email.Object, authorization.Object, currentUser.Object, unitOfWork.Object, validator.Object);
 
         await interactor.HandleAsync(dto, CancellationToken.None);
 
@@ -1703,18 +1754,20 @@ public class ResetUserPasswordInteractorTests
     public async Task HandleAsync_ShouldSetTemporaryPasswordAndSendEmail_WhenUserExists()
     {
         var dto = new ResetUserPasswordDto(Guid.NewGuid(), "NuevaTemp123!");
-        var (presenter, commandsRepo, queriesRepo, hasher, email, authorization, currentUser, validator) = CreateMocks();
+        var (presenter, commandsRepo, queriesRepo, hasher, email, authorization, currentUser, unitOfWork, validator) = CreateMocks();
         SetUpValidatorToPass(validator);
+        SetUpTransactionToRunWork(unitOfWork);
 
         var user = new User { Id = dto.UserId, Email = "user@medrec.local", FullName = "Usuario Existente" };
         queriesRepo.Setup(r => r.GetByIdAsync(dto.UserId, It.IsAny<CancellationToken>())).ReturnsAsync(user);
         hasher.Setup(h => h.Hash(dto.TemporaryPassword)).Returns("hashed-nuevo");
 
-        var interactor = new ResetUserPasswordInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, hasher.Object, email.Object, authorization.Object, currentUser.Object, validator.Object);
+        var interactor = new ResetUserPasswordInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, hasher.Object, email.Object, authorization.Object, currentUser.Object, unitOfWork.Object, validator.Object);
 
         await interactor.HandleAsync(dto, CancellationToken.None);
 
         commandsRepo.Verify(r => r.SetPasswordAsync(dto.UserId, "hashed-nuevo", true, It.IsAny<CancellationToken>()), Times.Once);
+        unitOfWork.Verify(u => u.SaveChanges(It.IsAny<CancellationToken>()), Times.Once);
         email.Verify(e => e.SendTemporaryPasswordAsync(user.Email, user.FullName, dto.TemporaryPassword, It.IsAny<CancellationToken>()), Times.Once);
         presenter.Verify(p => p.Handle(It.IsAny<CancellationToken>()), Times.Once);
     }
@@ -1750,6 +1803,7 @@ public class ResetUserPasswordInteractor(
     IEmailNotificationService emailNotificationService,
     IAuthorizationService authorizationService,
     ICurrentUserContext currentUserContext,
+    IRepositoryUnitOfWork unitOfWork,
     IModelValidatorHub<ResetUserPasswordDto> validatorHub) : IResetUserPasswordInputPort
 {
     public async Task HandleAsync(ResetUserPasswordDto dto, CancellationToken ct = default)
@@ -1771,7 +1825,13 @@ public class ResetUserPasswordInteractor(
         }
 
         var hash = passwordHasher.Hash(dto.TemporaryPassword);
-        await userCommandsRepository.SetPasswordAsync(dto.UserId, hash, true, ct);
+
+        await unitOfWork.ExecuteInTransactionWithRetry(async () =>
+        {
+            await userCommandsRepository.SetPasswordAsync(dto.UserId, hash, true, ct);
+            await unitOfWork.SaveChanges(ct);
+        }, ct);
+
         await emailNotificationService.SendTemporaryPasswordAsync(user.Email, user.FullName, dto.TemporaryPassword, ct);
 
         await presenter.Handle(ct);
@@ -1834,7 +1894,7 @@ git commit -m "feat(identity): implementar ResetUserPasswordInteractor (TDD)"
 - Test: `Test\MedRec.Identity.UseCases.Tests\ChangePasswordInteractorTests.cs`
 
 **Interfaces:**
-- Consumes: `IUserCommandsRepository`, `IUserQueriesRepository`, `IPasswordHasher`, `ICurrentUserContext` (NO `IAuthorizationService` — es autoservicio, solo requiere estar autenticado, sin permiso especial).
+- Consumes: `IUserCommandsRepository`, `IUserQueriesRepository`, `IPasswordHasher`, `ICurrentUserContext`, `IRepositoryUnitOfWork` (ver nota crítica en Task 5) (NO `IAuthorizationService` — es autoservicio, solo requiere estar autenticado, sin permiso especial).
 - Produces: `ChangePasswordInteractor : IChangePasswordInputPort` — auto-descubierto. Usado por `ChangePasswordPage` (Task 11).
 
 - [ ] **Step 1: DTO**
@@ -1915,6 +1975,7 @@ public static class ChangePasswordValidator
 
 `Test\MedRec.Identity.UseCases.Tests\ChangePasswordInteractorTests.cs`:
 ```csharp
+using MedRec.Entity.Interfaces;
 using MedRec.Entity.POCOEntities;
 using MedRec.Identity.BusinessObjects.DTOs;
 using MedRec.Identity.BusinessObjects.Interfaces.Ports;
@@ -1935,6 +1996,7 @@ public class ChangePasswordInteractorTests
         Mock<IUserQueriesRepository> queriesRepo,
         Mock<IPasswordHasher> hasher,
         Mock<ICurrentUserContext> currentUser,
+        Mock<IRepositoryUnitOfWork> unitOfWork,
         Mock<IModelValidatorHub<ChangePasswordDto>> validator) CreateMocks()
     {
         return (
@@ -1943,6 +2005,7 @@ public class ChangePasswordInteractorTests
             new Mock<IUserQueriesRepository>(),
             new Mock<IPasswordHasher>(),
             new Mock<ICurrentUserContext>(),
+            new Mock<IRepositoryUnitOfWork>(),
             new Mock<IModelValidatorHub<ChangePasswordDto>>());
     }
 
@@ -1951,12 +2014,20 @@ public class ChangePasswordInteractorTests
             .Setup(v => v.Validate(It.IsAny<ChangePasswordDto>(), It.IsAny<Func<ChangePasswordDto, IReadOnlyList<ValidationError>>>()))
             .ReturnsAsync(true);
 
+    /// <summary>
+    /// ExecuteInTransactionWithRetry es responsabilidad del UnitOfWork real (retry, begin/commit/rollback);
+    /// para testear el interactor basta con que el mock invoque el delegate recibido.
+    /// </summary>
+    private static void SetUpTransactionToRunWork(Mock<IRepositoryUnitOfWork> uowMock) =>
+        uowMock.Setup(u => u.ExecuteInTransactionWithRetry(It.IsAny<Func<Task>>(), It.IsAny<CancellationToken>()))
+            .Returns((Func<Task> work, CancellationToken _) => work());
+
     [Fact]
     public async Task HandleAsync_ShouldReturnInvalidCurrentPassword_WhenCurrentPasswordDoesNotMatch()
     {
         var userId = Guid.NewGuid();
         var dto = new ChangePasswordDto("ClaveVieja", "ClaveNueva123!");
-        var (presenter, commandsRepo, queriesRepo, hasher, currentUser, validator) = CreateMocks();
+        var (presenter, commandsRepo, queriesRepo, hasher, currentUser, unitOfWork, validator) = CreateMocks();
         SetUpValidatorToPass(validator);
 
         currentUser.SetupGet(c => c.UserId).Returns(userId);
@@ -1964,7 +2035,7 @@ public class ChangePasswordInteractorTests
         queriesRepo.Setup(r => r.GetByIdAsync(userId, It.IsAny<CancellationToken>())).ReturnsAsync(user);
         hasher.Setup(h => h.Verify(dto.CurrentPassword, user.PasswordHash)).Returns(false);
 
-        var interactor = new ChangePasswordInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, hasher.Object, currentUser.Object, validator.Object);
+        var interactor = new ChangePasswordInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, hasher.Object, currentUser.Object, unitOfWork.Object, validator.Object);
 
         await interactor.HandleAsync(dto, CancellationToken.None);
 
@@ -1977,8 +2048,9 @@ public class ChangePasswordInteractorTests
     {
         var userId = Guid.NewGuid();
         var dto = new ChangePasswordDto("ClaveVieja", "ClaveNueva123!");
-        var (presenter, commandsRepo, queriesRepo, hasher, currentUser, validator) = CreateMocks();
+        var (presenter, commandsRepo, queriesRepo, hasher, currentUser, unitOfWork, validator) = CreateMocks();
         SetUpValidatorToPass(validator);
+        SetUpTransactionToRunWork(unitOfWork);
 
         currentUser.SetupGet(c => c.UserId).Returns(userId);
         var user = new User { Id = userId, PasswordHash = "hash-actual" };
@@ -1986,11 +2058,12 @@ public class ChangePasswordInteractorTests
         hasher.Setup(h => h.Verify(dto.CurrentPassword, user.PasswordHash)).Returns(true);
         hasher.Setup(h => h.Hash(dto.NewPassword)).Returns("hash-nuevo");
 
-        var interactor = new ChangePasswordInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, hasher.Object, currentUser.Object, validator.Object);
+        var interactor = new ChangePasswordInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, hasher.Object, currentUser.Object, unitOfWork.Object, validator.Object);
 
         await interactor.HandleAsync(dto, CancellationToken.None);
 
         commandsRepo.Verify(r => r.SetPasswordAsync(userId, "hash-nuevo", false, It.IsAny<CancellationToken>()), Times.Once);
+        unitOfWork.Verify(u => u.SaveChanges(It.IsAny<CancellationToken>()), Times.Once);
         presenter.Verify(p => p.Handle(It.IsAny<CancellationToken>()), Times.Once);
         presenter.Verify(p => p.InvalidCurrentPassword(), Times.Never);
     }
@@ -2021,6 +2094,7 @@ public class ChangePasswordInteractor(
     IUserQueriesRepository userQueriesRepository,
     IPasswordHasher passwordHasher,
     ICurrentUserContext currentUserContext,
+    IRepositoryUnitOfWork unitOfWork,
     IModelValidatorHub<ChangePasswordDto> validatorHub) : IChangePasswordInputPort
 {
     public async Task HandleAsync(ChangePasswordDto dto, CancellationToken ct = default)
@@ -2041,7 +2115,12 @@ public class ChangePasswordInteractor(
         }
 
         var newHash = passwordHasher.Hash(dto.NewPassword);
-        await userCommandsRepository.SetPasswordAsync(userId, newHash, false, ct);
+
+        await unitOfWork.ExecuteInTransactionWithRetry(async () =>
+        {
+            await userCommandsRepository.SetPasswordAsync(userId, newHash, false, ct);
+            await unitOfWork.SaveChanges(ct);
+        }, ct);
 
         await presenter.Handle(ct);
     }
