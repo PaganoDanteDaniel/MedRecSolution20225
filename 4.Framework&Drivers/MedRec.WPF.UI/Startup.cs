@@ -99,8 +99,10 @@ public static class Startup
     {
         var dbOptionsMySql = new DBOptionsMySql();
         var jwtKey = new Jwt();
+        var emailSettings = new EmailSettings();
         configuration.GetSection(DBOptionsMySql.SectionKey).Bind(dbOptionsMySql);
         configuration.GetSection(Jwt.SectionKey).Bind(jwtKey);
+        configuration.GetSection(EmailSettings.SectionKey).Bind(emailSettings);
 
         if (!string.IsNullOrEmpty(dbOptionsMySql.ConnectionString))
         {
@@ -146,10 +148,35 @@ public static class Startup
             }
         }
 
+        if (!string.IsNullOrEmpty(emailSettings.SenderPassword))
+        {
+            if (!EncryptionHelper.IsEncrypted(emailSettings.SenderPassword))
+            {
+                emailSettings.SenderPassword = EncryptionHelper.Encrypt(emailSettings.SenderPassword);
+                var json = File.ReadAllText(appSettingsPath);
+                dynamic configFile = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+                if (configFile.EmailSettings == null)
+                    configFile.EmailSettings = new Newtonsoft.Json.Linq.JObject();
+                configFile.EmailSettings.SenderPassword = emailSettings.SenderPassword;
+                File.WriteAllText(appSettingsPath,
+                    Newtonsoft.Json.JsonConvert.SerializeObject(configFile, Newtonsoft.Json.Formatting.Indented));
+            }
+            try
+            {
+                emailSettings.SenderPassword = EncryptionHelper.Decrypt(emailSettings.SenderPassword);
+            }
+            catch (System.Security.Cryptography.CryptographicException)
+            {
+                emailSettings.SenderPassword = string.Empty;
+            }
+        }
+
         services.AddSingleton(Options.Create(dbOptionsMySql));
         services.Configure<DBOptionsMySql>(configuration.GetSection(DBOptionsMySql.SectionKey));
         services.AddSingleton(Options.Create(jwtKey));
         services.Configure<Jwt>(configuration.GetSection(Jwt.SectionKey));
+        services.AddSingleton(Options.Create(emailSettings));
+        services.Configure<EmailSettings>(configuration.GetSection(EmailSettings.SectionKey));
         services.AddWpfBlazorWebView();
         services.AddAppServices();
 #if DEBUG

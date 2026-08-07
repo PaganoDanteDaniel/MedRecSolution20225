@@ -14,6 +14,7 @@ public static class DependencyContainer
         services.AddSingleton<IAuthTokenGenerator, JwtAuthTokenGenerator>();
         services.AddSingleton<ISessionService, SessionService>();
         services.AddSingleton<ICurrentUserContext, CurrentUserContext>();
+        services.AddSingleton<IEmailNotificationService, SmtpEmailNotificationService>();
 
         return services;
     }
