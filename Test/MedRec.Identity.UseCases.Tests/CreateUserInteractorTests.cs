@@ -1,4 +1,5 @@
 using MedRec.Entity.DTOs;
+using MedRec.Entity.Interfaces;
 using MedRec.Entity.POCOEntities;
 using MedRec.Identity.BusinessObjects.DTOs;
 using MedRec.Identity.BusinessObjects.Interfaces.Ports;
