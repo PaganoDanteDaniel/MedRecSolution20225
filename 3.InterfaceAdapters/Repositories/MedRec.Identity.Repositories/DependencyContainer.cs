@@ -7,6 +7,8 @@ public static class DependencyContainer
     public static IServiceCollection AddIdentityRepositoriesServices(this IServiceCollection services)
     {
         services.AddScoped<IUserQueriesRepository, UserQueriesRepository>();
+        services.AddScoped<IUserCommandsRepository, UserCommandsRepository>();
+        services.AddScoped<IDoctorLookupRepository, DoctorLookupRepository>();
         return services;
     }
 }

@@ -10,6 +10,8 @@ public static class DependencyContainer
     public static IServiceCollection AddIdentityDataContextMySqlServices(this IServiceCollection services)
     {
         services.AddScoped<IUserQueriesDataContext, UserQueriesDataContextMySql>();
+        services.AddScoped<IUserCommandsDataContext, UserCommandsDataContextMySql>();
+        services.AddScoped<IDoctorLookupDataContext, DoctorLookupDataContextMySql>();
         services.AddSingleton<IPasswordHasher, PasswordHasherService>();
         services.AddSingleton<IAuthTokenGenerator, JwtAuthTokenGenerator>();
         services.AddSingleton<ISessionService, SessionService>();
