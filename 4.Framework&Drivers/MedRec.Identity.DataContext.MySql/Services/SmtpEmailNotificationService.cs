@@ -32,7 +32,7 @@ internal class SmtpEmailNotificationService(IOptions<EmailSettings> emailOptions
             await client.SendMailAsync(message, ct);
             return true;
         }
-        catch (SmtpException)
+        catch (Exception)
         {
             return false;
         }
