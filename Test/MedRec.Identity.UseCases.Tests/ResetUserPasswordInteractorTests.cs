@@ -1,11 +1,13 @@
 using MedRec.Entity.DTOs;
 using MedRec.Entity.Interfaces;
 using MedRec.Entity.POCOEntities;
+using MedRec.Identity.BusinessObjects.Constants;
 using MedRec.Identity.BusinessObjects.DTOs;
 using MedRec.Identity.BusinessObjects.Interfaces.Ports;
 using MedRec.Identity.BusinessObjects.Interfaces.Repositories;
 using MedRec.Identity.BusinessObjects.Interfaces.Services;
 using MedRec.Identity.UseCases.Implementations;
+using MedRec.Shared.Exceptions;
 using MedRec.Validator.Interfaces;
 using MedRec.Validator.ValueObjects;
 using Moq;
@@ -49,6 +51,40 @@ public class ResetUserPasswordInteractorTests
     private static void SetUpTransactionToRunWork(Mock<IRepositoryUnitOfWork> uowMock) =>
         uowMock.Setup(u => u.ExecuteInTransactionWithRetry(It.IsAny<Func<Task>>(), It.IsAny<CancellationToken>()))
             .Returns((Func<Task> work, CancellationToken _) => work());
+
+    [Fact]
+    public async Task HandleAsync_ShouldThrow_WhenCallerLacksPermission()
+    {
+        var dto = new ResetUserPasswordDto(Guid.NewGuid(), "NuevaTemp123!");
+        var (presenter, commandsRepo, queriesRepo, hasher, email, authorization, currentUser, unitOfWork, validator) = CreateMocks();
+
+        authorization.Setup(a => a.EnsurePermissionAsync(It.IsAny<Guid?>(), SystemPermissions.Users_Edit, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new BusinessException(new ErrorInfo("No tiene permiso.", MedRec.Entity.Enums.ErrorCode.Forbidden)));
+
+        var interactor = new ResetUserPasswordInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, hasher.Object, email.Object, authorization.Object, currentUser.Object, unitOfWork.Object, validator.Object);
+
+        await Assert.ThrowsAsync<BusinessException>(() => interactor.HandleAsync(dto, CancellationToken.None));
+
+        commandsRepo.Verify(r => r.SetPasswordAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task HandleAsync_ShouldReturnValidationErrors_WhenDtoIsInvalid()
+    {
+        var dto = new ResetUserPasswordDto(Guid.NewGuid(), "");
+        var (presenter, commandsRepo, queriesRepo, hasher, email, authorization, currentUser, unitOfWork, validator) = CreateMocks();
+
+        validator.Setup(v => v.Validate(dto, It.IsAny<Func<ResetUserPasswordDto, IReadOnlyList<ValidationError>>>()))
+            .ReturnsAsync(false);
+        validator.SetupGet(v => v.Errors).Returns(new[] { new ValidationError("TemporaryPassword", "La contraseña temporal es obligatoria.") });
+
+        var interactor = new ResetUserPasswordInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, hasher.Object, email.Object, authorization.Object, currentUser.Object, unitOfWork.Object, validator.Object);
+
+        await interactor.HandleAsync(dto, CancellationToken.None);
+
+        presenter.Verify(p => p.ValidationErrorsAsync(It.IsAny<IEnumerable<ValidationError>>()), Times.Once);
+        commandsRepo.Verify(r => r.SetPasswordAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
 
     [Fact]
     public async Task HandleAsync_ShouldReturnError_WhenUserNotFound()

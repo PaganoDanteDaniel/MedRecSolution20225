@@ -56,6 +56,7 @@
         {
             VM.Model.UserId = user.Id;
             VM.Model.FullName = user.FullName;
+            VM.Model.RowVersion = user.RowVersion;
             _doctorIdText = user.DoctorId?.ToString() ?? string.Empty;
             var roleIds = await UserQueries.GetRoleIdsAsync(user.Id);
             _roleIdsText = string.Join(", ", roleIds);
@@ -64,10 +65,19 @@
 
     private async Task HandleUpdate()
     {
-        VM.Model.RoleIds = _roleIdsText
-            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Select(Guid.Parse)
-            .ToList();
+        var roleIdTokens = _roleIdsText.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var parsedRoleIds = new List<Guid>();
+        foreach (var token in roleIdTokens)
+        {
+            if (!Guid.TryParse(token, out var roleId))
+            {
+                VM.InformationMessage = "Alguno de los IDs de rol no es un GUID válido.";
+                StateHasChanged();
+                return;
+            }
+            parsedRoleIds.Add(roleId);
+        }
+        VM.Model.RoleIds = parsedRoleIds;
         VM.Model.DoctorId = string.IsNullOrWhiteSpace(_doctorIdText) ? null : Guid.Parse(_doctorIdText);
 
         await VM.UpdateAsync();

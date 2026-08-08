@@ -33,14 +33,14 @@ internal class UserCommandsDataContextMySql(MedRecContext context) : IUserComman
 
     public async Task SetActiveAsync(Guid userId, bool isActive, CancellationToken ct = default)
     {
-        var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId, ct);
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId && !u.IsDeleted, ct);
         if (user is null) return;
         user.IsActive = isActive;
     }
 
     public async Task SetPasswordAsync(Guid userId, string passwordHash, bool mustChangePassword, CancellationToken ct = default)
     {
-        var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId, ct);
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId && !u.IsDeleted, ct);
         if (user is null) return;
         user.PasswordHash = passwordHash;
         user.MustChangePassword = mustChangePassword;

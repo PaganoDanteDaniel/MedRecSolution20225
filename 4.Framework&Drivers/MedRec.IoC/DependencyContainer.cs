@@ -59,6 +59,10 @@ public static class DependencyContainer
                 .AddIdentityPresentersServices();
 
         services.AddTransient<LoginVM>();
+        services.AddTransient<UsersListVM>();
+        services.AddTransient<CreateUserVM>();
+        services.AddTransient<UpdateUserVM>();
+        services.AddTransient<ChangePasswordVM>();
 
         services.AddValidatorServices();
 

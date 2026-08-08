@@ -1,11 +1,13 @@
 using MedRec.Entity.DTOs;
 using MedRec.Entity.Interfaces;
 using MedRec.Entity.POCOEntities;
+using MedRec.Identity.BusinessObjects.Constants;
 using MedRec.Identity.BusinessObjects.DTOs;
 using MedRec.Identity.BusinessObjects.Interfaces.Ports;
 using MedRec.Identity.BusinessObjects.Interfaces.Repositories;
 using MedRec.Identity.BusinessObjects.Interfaces.Services;
 using MedRec.Identity.UseCases.Implementations;
+using MedRec.Shared.Exceptions;
 using MedRec.Validator.Interfaces;
 using MedRec.Validator.ValueObjects;
 using Moq;
@@ -47,9 +49,25 @@ public class UpdateUserInteractorTests
             .Returns((Func<Task> work, CancellationToken _) => work());
 
     [Fact]
+    public async Task HandleAsync_ShouldThrow_WhenCallerLacksPermission()
+    {
+        var dto = new UpdateUserDto(Guid.NewGuid(), "Nombre", new[] { Guid.NewGuid() }, null, new byte[] { 1, 2, 3, 4 });
+        var (presenter, commandsRepo, queriesRepo, authorization, currentUser, unitOfWork, validator) = CreateMocks();
+
+        authorization.Setup(a => a.EnsurePermissionAsync(It.IsAny<Guid?>(), SystemPermissions.Users_Edit, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new BusinessException(new ErrorInfo("No tiene permiso.", MedRec.Entity.Enums.ErrorCode.Forbidden)));
+
+        var interactor = new UpdateUserInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, authorization.Object, currentUser.Object, unitOfWork.Object, validator.Object);
+
+        await Assert.ThrowsAsync<BusinessException>(() => interactor.HandleAsync(dto, CancellationToken.None));
+
+        commandsRepo.Verify(r => r.UpdateAsync(It.IsAny<User>(), It.IsAny<IReadOnlyList<Guid>>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
     public async Task HandleAsync_ShouldReturnValidationErrors_WhenDtoIsInvalid()
     {
-        var dto = new UpdateUserDto(Guid.NewGuid(), "", Array.Empty<Guid>(), null);
+        var dto = new UpdateUserDto(Guid.NewGuid(), "", Array.Empty<Guid>(), null, new byte[] { 1, 2, 3, 4 });
         var (presenter, commandsRepo, queriesRepo, authorization, currentUser, unitOfWork, validator) = CreateMocks();
 
         validator.Setup(v => v.Validate(dto, It.IsAny<Func<UpdateUserDto, IReadOnlyList<ValidationError>>>()))
@@ -67,7 +85,7 @@ public class UpdateUserInteractorTests
     [Fact]
     public async Task HandleAsync_ShouldReturnError_WhenUserNotFound()
     {
-        var dto = new UpdateUserDto(Guid.NewGuid(), "Nombre", new[] { Guid.NewGuid() }, null);
+        var dto = new UpdateUserDto(Guid.NewGuid(), "Nombre", new[] { Guid.NewGuid() }, null, new byte[] { 1, 2, 3, 4 });
         var (presenter, commandsRepo, queriesRepo, authorization, currentUser, unitOfWork, validator) = CreateMocks();
         SetUpValidatorToPass(validator);
 
@@ -86,12 +104,19 @@ public class UpdateUserInteractorTests
     {
         var roleId = Guid.NewGuid();
         var doctorId = Guid.NewGuid();
-        var dto = new UpdateUserDto(Guid.NewGuid(), "Nombre Nuevo", new[] { roleId }, doctorId);
+        var dtoRowVersion = new byte[] { 9, 9, 9, 9 };
+        var dto = new UpdateUserDto(Guid.NewGuid(), "Nombre Nuevo", new[] { roleId }, doctorId, dtoRowVersion);
         var (presenter, commandsRepo, queriesRepo, authorization, currentUser, unitOfWork, validator) = CreateMocks();
         SetUpValidatorToPass(validator);
         SetUpTransactionToRunWork(unitOfWork);
 
-        var existingUser = new User { Id = dto.UserId, Email = "user@medrec.local", FullName = "Nombre Viejo" };
+        var existingUser = new User
+        {
+            Id = dto.UserId,
+            Email = "user@medrec.local",
+            FullName = "Nombre Viejo",
+            RowVersion = new byte[] { 1, 1, 1, 1 }
+        };
         queriesRepo.Setup(r => r.GetByIdAsync(dto.UserId, It.IsAny<CancellationToken>())).ReturnsAsync(existingUser);
 
         var interactor = new UpdateUserInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, authorization.Object, currentUser.Object, unitOfWork.Object, validator.Object);
@@ -99,7 +124,7 @@ public class UpdateUserInteractorTests
         await interactor.HandleAsync(dto, CancellationToken.None);
 
         commandsRepo.Verify(r => r.UpdateAsync(
-            It.Is<User>(u => u.Id == dto.UserId && u.FullName == "Nombre Nuevo" && u.DoctorId == doctorId),
+            It.Is<User>(u => u.Id == dto.UserId && u.FullName == "Nombre Nuevo" && u.DoctorId == doctorId && u.RowVersion.SequenceEqual(dtoRowVersion)),
             It.Is<IReadOnlyList<Guid>>(ids => ids.Contains(roleId)),
             It.IsAny<CancellationToken>()), Times.Once);
         unitOfWork.Verify(u => u.SaveChanges(It.IsAny<CancellationToken>()), Times.Once);

@@ -1,11 +1,13 @@
 using MedRec.Entity.DTOs;
 using MedRec.Entity.Interfaces;
 using MedRec.Entity.POCOEntities;
+using MedRec.Identity.BusinessObjects.Constants;
 using MedRec.Identity.BusinessObjects.DTOs;
 using MedRec.Identity.BusinessObjects.Interfaces.Ports;
 using MedRec.Identity.BusinessObjects.Interfaces.Repositories;
 using MedRec.Identity.BusinessObjects.Interfaces.Services;
 using MedRec.Identity.UseCases.Implementations;
+using MedRec.Shared.Exceptions;
 using Moq;
 
 namespace MedRec.Identity.UseCases.Tests;
@@ -36,6 +38,22 @@ public class ToggleUserActiveInteractorTests
     private static void SetUpTransactionToRunWork(Mock<IRepositoryUnitOfWork> uowMock) =>
         uowMock.Setup(u => u.ExecuteInTransactionWithRetry(It.IsAny<Func<Task>>(), It.IsAny<CancellationToken>()))
             .Returns((Func<Task> work, CancellationToken _) => work());
+
+    [Fact]
+    public async Task HandleAsync_ShouldThrow_WhenCallerLacksPermission()
+    {
+        var dto = new ToggleUserActiveDto(Guid.NewGuid(), false);
+        var (presenter, commandsRepo, queriesRepo, authorization, currentUser, unitOfWork) = CreateMocks();
+
+        authorization.Setup(a => a.EnsurePermissionAsync(It.IsAny<Guid?>(), SystemPermissions.Users_Edit, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new BusinessException(new ErrorInfo("No tiene permiso.", MedRec.Entity.Enums.ErrorCode.Forbidden)));
+
+        var interactor = new ToggleUserActiveInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, authorization.Object, currentUser.Object, unitOfWork.Object);
+
+        await Assert.ThrowsAsync<BusinessException>(() => interactor.HandleAsync(dto, CancellationToken.None));
+
+        commandsRepo.Verify(r => r.SetActiveAsync(It.IsAny<Guid>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
 
     [Fact]
     public async Task HandleAsync_ShouldReturnError_WhenUserNotFound()

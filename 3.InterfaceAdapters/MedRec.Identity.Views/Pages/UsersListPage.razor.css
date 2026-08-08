@@ -112,3 +112,28 @@ tbody td button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
+
+tbody td input.reset-password-input {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-label);
+    padding: var(--space-xs) var(--space-sm-fluid);
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    background: var(--input-background);
+    color: var(--input-text);
+    box-sizing: border-box;
+    margin-right: var(--space-sm);
+    transition: border-color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+}
+
+tbody td input.reset-password-input:focus {
+    outline: none;
+    background: var(--input-focus-background);
+    border-color: var(--input-focus-border);
+    color: var(--input-focus-text);
+}
+
+tbody td input.reset-password-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

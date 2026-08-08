@@ -33,6 +33,10 @@
                         <button @onclick="() => ToggleActive(user.Id, !user.IsActive)" disabled="@VM.IsProcessing">
                             @(user.IsActive ? "Desactivar" : "Activar")
                         </button>
+                        <input type="text" class="reset-password-input" placeholder="Nueva contraseña temporal" @bind="_resetPasswordDraft" @bind:event="oninput" disabled="@VM.IsProcessing" />
+                        <button @onclick="() => ResetPassword(user.Id)" disabled="@VM.IsProcessing">
+                            Resetear contraseña
+                        </button>
                     </td>
                 </tr>
             }
@@ -41,6 +45,8 @@
 </div>
 
 @code {
+    private string _resetPasswordDraft = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
         await VM.LoadAsync();
@@ -49,6 +55,13 @@
     private async Task ToggleActive(Guid userId, bool isActive)
     {
         await VM.ToggleActiveAsync(userId, isActive);
+        StateHasChanged();
+    }
+
+    private async Task ResetPassword(Guid userId)
+    {
+        await VM.ResetPasswordAsync(userId, _resetPasswordDraft);
+        _resetPasswordDraft = string.Empty;
         StateHasChanged();
     }
 }

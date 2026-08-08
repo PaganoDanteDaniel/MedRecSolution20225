@@ -40,6 +40,7 @@ public class ChangePasswordVM(
             else
             {
                 Success = true;
+                InformationMessage = "Contraseña actualizada correctamente.";
             }
         }
         finally
