@@ -50,7 +50,11 @@
     protected override async Task OnInitializedAsync()
     {
         _doctors = await DoctorLookup.ListActiveAsync();
+        await LoadUserAsync();
+    }
 
+    private async Task LoadUserAsync()
+    {
         var user = await UserQueries.GetByIdAsync(UserId);
         if (user is not null)
         {
@@ -81,6 +85,14 @@
         VM.Model.DoctorId = string.IsNullOrWhiteSpace(_doctorIdText) ? null : Guid.Parse(_doctorIdText);
 
         await VM.UpdateAsync();
+
+        if (VM.Success)
+        {
+            // Recargar el usuario (incluyendo RowVersion) para que un segundo guardado
+            // consecutivo del mismo admin no dispare un falso conflicto de concurrencia.
+            await LoadUserAsync();
+        }
+
         StateHasChanged();
     }
 }
