@@ -10,6 +10,7 @@ public static class DependencyContainer
         services.AddScoped<ICreateUserOutputPort, CreateUserPresenter>();
         services.AddScoped<IUpdateUserOutputPort, UpdateUserPresenter>();
         services.AddScoped<IToggleUserActiveOutputPort, ToggleUserActivePresenter>();
+        services.AddScoped<IResetUserPasswordOutputPort, ResetUserPasswordPresenter>();
         return services;
     }
 }
