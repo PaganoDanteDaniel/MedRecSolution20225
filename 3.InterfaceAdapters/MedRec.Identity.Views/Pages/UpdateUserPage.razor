@@ -1,0 +1,76 @@
+@page "/users/{UserId:guid}/edit"
+@inject UpdateUserVM VM
+@inject MedRec.Identity.BusinessObjects.Interfaces.Repositories.IDoctorLookupRepository DoctorLookup
+@inject MedRec.Identity.BusinessObjects.Interfaces.Repositories.IUserQueriesRepository UserQueries
+@using Microsoft.AspNetCore.Components.Forms
+
+<div class="page-container">
+    <h2>Editar usuario</h2>
+
+    <EditForm Model="VM.Model" OnValidSubmit="HandleUpdate" autocomplete="off">
+        <div class="form-row">
+            <label for="fullName">Nombre completo</label>
+            <InputText id="fullName" @bind-Value="VM.Model.FullName" />
+        </div>
+
+        <div class="form-row">
+            <label for="roleIds">Roles (IDs separados por coma)</label>
+            <InputText id="roleIds" @bind-Value="_roleIdsText" />
+        </div>
+
+        <div class="form-row">
+            <label for="doctorId">Doctor vinculado (opcional)</label>
+            <select id="doctorId" @bind="_doctorIdText">
+                <option value="">-- Ninguno --</option>
+                @foreach (var doctor in _doctors)
+                {
+                    <option value="@doctor.Id">@doctor.FullName</option>
+                }
+            </select>
+        </div>
+
+        @if (!string.IsNullOrEmpty(VM.InformationMessage))
+        {
+            <p class="info-message">@VM.InformationMessage</p>
+        }
+
+        <button type="submit" disabled="@VM.IsProcessing">
+            @(VM.IsProcessing ? "Guardando..." : "Guardar cambios")
+        </button>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter] public Guid UserId { get; set; }
+
+    private IReadOnlyList<MedRec.Identity.BusinessObjects.DTOs.DoctorSummaryDto> _doctors = Array.Empty<MedRec.Identity.BusinessObjects.DTOs.DoctorSummaryDto>();
+    private string _roleIdsText = string.Empty;
+    private string _doctorIdText = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _doctors = await DoctorLookup.ListActiveAsync();
+
+        var user = await UserQueries.GetByIdAsync(UserId);
+        if (user is not null)
+        {
+            VM.Model.UserId = user.Id;
+            VM.Model.FullName = user.FullName;
+            _doctorIdText = user.DoctorId?.ToString() ?? string.Empty;
+            var roleIds = await UserQueries.GetRoleIdsAsync(user.Id);
+            _roleIdsText = string.Join(", ", roleIds);
+        }
+    }
+
+    private async Task HandleUpdate()
+    {
+        VM.Model.RoleIds = _roleIdsText
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(Guid.Parse)
+            .ToList();
+        VM.Model.DoctorId = string.IsNullOrWhiteSpace(_doctorIdText) ? null : Guid.Parse(_doctorIdText);
+
+        await VM.UpdateAsync();
+        StateHasChanged();
+    }
+}

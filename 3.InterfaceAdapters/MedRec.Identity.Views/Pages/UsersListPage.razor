@@ -1,0 +1,54 @@
+@page "/users"
+@inject UsersListVM VM
+
+<div class="page-container">
+    <h2>Usuarios</h2>
+    <a href="/users/create">+ Nuevo usuario</a>
+
+    @if (!string.IsNullOrEmpty(VM.InformationMessage))
+    {
+        <p class="info-message">@VM.InformationMessage</p>
+    }
+
+    <table>
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Nombre</th>
+                <th>Roles</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in VM.Users)
+            {
+                <tr>
+                    <td>@user.Email</td>
+                    <td>@user.FullName</td>
+                    <td>@string.Join(", ", user.RoleNames)</td>
+                    <td>@(user.IsActive ? "Activo" : "Inactivo")</td>
+                    <td>
+                        <a href="@($"/users/{user.Id}/edit")">Editar</a>
+                        <button @onclick="() => ToggleActive(user.Id, !user.IsActive)" disabled="@VM.IsProcessing">
+                            @(user.IsActive ? "Desactivar" : "Activar")
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await VM.LoadAsync();
+    }
+
+    private async Task ToggleActive(Guid userId, bool isActive)
+    {
+        await VM.ToggleActiveAsync(userId, isActive);
+        StateHasChanged();
+    }
+}
