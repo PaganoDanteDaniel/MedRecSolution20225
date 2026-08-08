@@ -1,5 +1,6 @@
 @page "/login"
 @inject LoginVM VM
+@inject NavigationManager NavigationManager
 
 <div class="login-container">
     <div class="login-card">
@@ -35,6 +36,10 @@
         await VM.LoginAsync();
         if (VM.InformationMessage == string.Empty)
         {
+            // Un login exitoso siempre debe arrancar en la pantalla de inicio, sin importar
+            // qué URL haya quedado cargada en el NavigationManager de una sesión anterior
+            // (por ejemplo, un admin que cerró sesión estando en "/users/create").
+            NavigationManager.NavigateTo("/");
             StateHasChanged();
         }
     }
