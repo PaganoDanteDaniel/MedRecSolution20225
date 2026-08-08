@@ -89,4 +89,22 @@ public class ToggleUserActiveInteractorTests
         unitOfWork.Verify(u => u.SaveChanges(It.IsAny<CancellationToken>()), Times.Once);
         presenter.Verify(p => p.Handle(It.IsAny<CancellationToken>()), Times.Once);
     }
+
+    [Fact]
+    public async Task HandleAsync_ShouldReturnError_WhenUserTriesToDeactivateThemselves()
+    {
+        var currentUserId = Guid.NewGuid();
+        var dto = new ToggleUserActiveDto(currentUserId, false);
+        var (presenter, commandsRepo, queriesRepo, authorization, currentUser, unitOfWork) = CreateMocks();
+
+        currentUser.SetupGet(c => c.UserId).Returns(currentUserId);
+
+        var interactor = new ToggleUserActiveInteractor(presenter.Object, commandsRepo.Object, queriesRepo.Object, authorization.Object, currentUser.Object, unitOfWork.Object);
+
+        await interactor.HandleAsync(dto, CancellationToken.None);
+
+        presenter.Verify(p => p.ErrorAsync(It.IsAny<ErrorInfo>()), Times.Once);
+        commandsRepo.Verify(r => r.SetActiveAsync(It.IsAny<Guid>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()), Times.Never);
+        queriesRepo.Verify(r => r.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
 }

@@ -1,5 +1,8 @@
 @page "/users"
+@using MedRec.Identity.BusinessObjects.DTOs
+@using MedRec.Identity.BusinessObjects.Interfaces.Services
 @inject UsersListVM VM
+@inject ISessionService SessionService
 
 <div class="page-container">
     <h2>Usuarios</h2>
@@ -30,7 +33,7 @@
                     <td>@(user.IsActive ? "Activo" : "Inactivo")</td>
                     <td>
                         <a href="@($"/users/{user.Id}/edit")">Editar</a>
-                        <button @onclick="() => ToggleActive(user.Id, !user.IsActive)" disabled="@VM.IsProcessing">
+                        <button @onclick="() => ToggleActive(user.Id, !user.IsActive)" disabled="@(VM.IsProcessing || IsOwnDeactivation(user))" title="@(IsOwnDeactivation(user) ? "No puede desactivar su propia cuenta." : null)">
                             @(user.IsActive ? "Desactivar" : "Activar")
                         </button>
                         <input type="text" class="reset-password-input" placeholder="Nueva contraseña temporal" @bind="_resetPasswordDraft" @bind:event="oninput" disabled="@VM.IsProcessing" />
@@ -64,4 +67,7 @@
         _resetPasswordDraft = string.Empty;
         StateHasChanged();
     }
+
+    private bool IsOwnDeactivation(UserSummaryDto user) =>
+        user.IsActive && user.Id == SessionService.CurrentUser?.UserId;
 }

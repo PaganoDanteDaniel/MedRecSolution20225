@@ -21,6 +21,12 @@ public class ToggleUserActiveInteractor(
     {
         await authorizationService.EnsurePermissionAsync(currentUserContext.UserId, SystemPermissions.Users_Edit, ct);
 
+        if (!dto.IsActive && dto.UserId == currentUserContext.UserId)
+        {
+            await presenter.ErrorAsync(new ErrorInfo("No puede desactivar su propia cuenta.", ErrorCode.Conflict, null, 409));
+            return;
+        }
+
         var user = await userQueriesRepository.GetByIdAsync(dto.UserId, ct);
         if (user is null)
         {
