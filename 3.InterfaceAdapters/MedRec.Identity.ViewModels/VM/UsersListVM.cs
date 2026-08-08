@@ -1,5 +1,6 @@
 using MedRec.Identity.BusinessObjects.DTOs;
 using MedRec.Identity.BusinessObjects.Interfaces.Ports;
+using System.Linq;
 
 namespace MedRec.Identity.ViewModels.VM;
 public class UsersListVM(
@@ -56,9 +57,11 @@ public class UsersListVM(
         {
             await resetPasswordInteractor.HandleAsync(new ResetUserPasswordDto(userId, temporaryPassword), ct);
             var result = resetPasswordPresenter.Result;
-            InformationMessage = result.Success
-                ? "Contraseña temporal enviada."
-                : (result.Error?.Message ?? "No se pudo resetear la contraseña.");
+            InformationMessage = result.HasValidationErrors
+                ? string.Join(" ", result.ValidationErrors.Select(e => e.ErrorMessage))
+                : result.Success
+                    ? "Contraseña temporal enviada."
+                    : (result.Error?.Message ?? "No se pudo resetear la contraseña.");
         }
         finally
         {
