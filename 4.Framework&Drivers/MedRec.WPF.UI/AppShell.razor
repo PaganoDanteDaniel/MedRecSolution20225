@@ -3,13 +3,17 @@
 @implements IDisposable
 @inject ISessionService SessionService
 
-@if (SessionService.IsAuthenticated)
+@if (!SessionService.IsAuthenticated)
 {
-    <Main />
+    <LoginPage />
+}
+else if (SessionService.CurrentUser!.MustChangePassword)
+{
+    <ChangePasswordPage OnPasswordChanged="HandlePasswordChanged" />
 }
 else
 {
-    <LoginPage />
+    <Main />
 }
 
 @code {
@@ -19,6 +23,8 @@ else
     }
 
     private void HandleSessionChanged() => InvokeAsync(StateHasChanged);
+
+    private void HandlePasswordChanged() => SessionService.ClearMustChangePassword();
 
     public void Dispose()
     {

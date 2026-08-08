@@ -22,4 +22,14 @@ internal class SessionService : ISessionService
         OnSessionChanged?.Invoke();
         return Task.CompletedTask;
     }
+
+    public void ClearMustChangePassword()
+    {
+        if (CurrentUser is null) return;
+        CurrentUser = new AuthResultDto(
+            CurrentUser.UserId, CurrentUser.Email, CurrentUser.FullName, CurrentUser.DoctorId,
+            CurrentUser.Roles, CurrentUser.Permissions, CurrentUser.Token, CurrentUser.ExpiresAtUtc,
+            mustChangePassword: false);
+        OnSessionChanged?.Invoke();
+    }
 }

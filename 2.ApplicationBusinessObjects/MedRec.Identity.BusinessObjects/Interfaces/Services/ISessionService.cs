@@ -8,4 +8,5 @@ public interface ISessionService
     event Action? OnSessionChanged;
     Task LoginAsync(AuthResultDto result, CancellationToken ct = default);
     Task LogoutAsync(CancellationToken ct = default);
+    void ClearMustChangePassword();
 }
