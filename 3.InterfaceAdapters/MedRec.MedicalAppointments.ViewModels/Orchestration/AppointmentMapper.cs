@@ -10,7 +10,7 @@ internal static class AppointmentMapper
         Id = dto.Id,
         DateTime = dto.DateTime,
         PatientId = dto.PatientId,
-        DoctorId = dto.DoctorId,
+        ProfessionalId = dto.ProfessionalId,
         Reason = (dto.Reason ?? string.Empty).ToUpperInvariant(),
         RowVersion = dto.RowVersion,
         IsDeleted = dto.IsDeleted,
@@ -20,7 +20,7 @@ internal static class AppointmentMapper
     };
 
     public static CreateMedicalAppointmentDto ToCreateDto(Appointment model) =>
-        new(model.DateTime, model.PatientId, model.DoctorId, (model.Reason ?? string.Empty).ToUpperInvariant());
+        new(model.DateTime, model.PatientId, model.ProfessionalId, (model.Reason ?? string.Empty).ToUpperInvariant());
 
     public static MoveMedicalAppointmentDto ToMoveDto(Appointment model) =>
         new(model.Id, model.DateTime, model.RowVersion ?? Array.Empty<byte>());
@@ -29,7 +29,7 @@ internal static class AppointmentMapper
         new(model.Id,
             model.DateTime,
             model.PatientId,
-            model.DoctorId,
+            model.ProfessionalId,
             (model.Reason ?? string.Empty).ToUpperInvariant(),
             model.RowVersion ?? Array.Empty<byte>(),
             model.IsDeleted);

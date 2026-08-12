@@ -110,7 +110,7 @@ public class AuthenticateUserInteractorTests
         var (presenter, userRepo, hasher, tokenGenerator, validator) = CreateMocks();
         SetUpValidatorToPass(validator);
 
-        var user = new User { Id = Guid.NewGuid(), Email = dto.Email, PasswordHash = "hash", FullName = "Admin", IsActive = true, DoctorId = null, MustChangePassword = true };
+        var user = new User { Id = Guid.NewGuid(), Email = dto.Email, PasswordHash = "hash", FullName = "Admin", IsActive = true, ProfessionalId = null, MustChangePassword = true };
         userRepo.Setup(r => r.GetByEmailAsync(dto.Email, It.IsAny<CancellationToken>())).ReturnsAsync(user);
         hasher.Setup(h => h.Verify(dto.Password, user.PasswordHash)).Returns(true);
         userRepo.Setup(r => r.GetRoleNamesAsync(user.Id, It.IsAny<CancellationToken>())).ReturnsAsync(new List<string> { "Administrador" });

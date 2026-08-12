@@ -15,7 +15,7 @@ internal class ReassignMedicalAppointmentPresenter : BaseOutputPort<MedicalAppoi
             appointment.Id,
             appointment.AppointmentDateTime,
             appointment.PatientId,
-            appointment.DoctorId,
+            appointment.ProfessionalId,
             appointment.Reason ?? string.Empty,
             appointment.RowVersion ?? Array.Empty<byte>(),
             appointment.IsDeleted,

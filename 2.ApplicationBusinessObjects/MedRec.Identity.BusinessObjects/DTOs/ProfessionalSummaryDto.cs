@@ -1,7 +1,7 @@
 namespace MedRec.Identity.BusinessObjects.DTOs;
-public class DoctorSummaryDto
+public class ProfessionalSummaryDto
 {
-    public DoctorSummaryDto(Guid id, string fullName)
+    public ProfessionalSummaryDto(Guid id, string fullName)
     {
         Id = id;
         FullName = fullName;

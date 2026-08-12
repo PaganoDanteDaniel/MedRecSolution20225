@@ -6,12 +6,12 @@ public class CreateMedicalAppointmentDto
     {
         DateTime = dateTime;
         PatientId = patientId;
-        DoctorId = doctorId;
+        ProfessionalId = doctorId;
         Reason = reason;
     }
 
     public DateTime DateTime { get; init; }
     public Guid PatientId { get; init; }
-    public Guid DoctorId { get; init; }
+    public Guid ProfessionalId { get; init; }
     public string Reason { get; init; }
 }

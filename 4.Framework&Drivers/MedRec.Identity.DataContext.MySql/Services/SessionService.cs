@@ -27,7 +27,7 @@ internal class SessionService : ISessionService
     {
         if (CurrentUser is null) return;
         CurrentUser = new AuthResultDto(
-            CurrentUser.UserId, CurrentUser.Email, CurrentUser.FullName, CurrentUser.DoctorId,
+            CurrentUser.UserId, CurrentUser.Email, CurrentUser.FullName, CurrentUser.ProfessionalId,
             CurrentUser.Roles, CurrentUser.Permissions, CurrentUser.Token, CurrentUser.ExpiresAtUtc,
             mustChangePassword: false);
         OnSessionChanged?.Invoke();

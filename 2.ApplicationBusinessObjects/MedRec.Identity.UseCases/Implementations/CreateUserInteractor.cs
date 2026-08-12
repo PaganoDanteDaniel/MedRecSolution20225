@@ -48,7 +48,7 @@ public class CreateUserInteractor(
             PasswordHash = passwordHasher.Hash(dto.TemporaryPassword),
             IsActive = true,
             MustChangePassword = true,
-            DoctorId = dto.DoctorId
+            ProfessionalId = dto.ProfessionalId
         };
 
         await unitOfWork.ExecuteInTransactionWithRetry(async () =>

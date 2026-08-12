@@ -17,7 +17,7 @@ internal class GetMedicalAppointmentsPresenter : BaseOutputPort<IEnumerable<Medi
                         a.Id,
                         a.AppointmentDateTime,
                         a.PatientId,
-                        a.DoctorId,
+                        a.ProfessionalId,
                         a.Reason ?? string.Empty,
                         a.RowVersion ?? Array.Empty<byte>(),
                         a.IsDeleted,

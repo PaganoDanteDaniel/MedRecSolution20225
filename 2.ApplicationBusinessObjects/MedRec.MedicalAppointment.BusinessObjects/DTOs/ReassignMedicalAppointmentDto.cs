@@ -9,7 +9,7 @@ public class ReassignMedicalAppointmentDto
         Id = id;
         DateTime = dateTime;
         PatientId = patientId;
-        DoctorId = doctorId;
+        ProfessionalId = doctorId;
         Reason = reason;
         RowVersion = rowVersion;
     }
@@ -17,7 +17,7 @@ public class ReassignMedicalAppointmentDto
     public Guid Id { get; init; }
     public DateTime DateTime { get; init; }
     public Guid PatientId { get; init; }
-    public Guid DoctorId { get; init; }
+    public Guid ProfessionalId { get; init; }
     public string Reason { get; init; }
     public byte[] RowVersion { get; init; }
 }

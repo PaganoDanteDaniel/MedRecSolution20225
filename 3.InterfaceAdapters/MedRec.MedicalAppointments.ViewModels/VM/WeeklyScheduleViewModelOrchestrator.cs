@@ -249,7 +249,7 @@ public class WeeklyScheduleViewModelOrchestrator(IAppointmentOrchestrator orches
         appointment.DateTime = appointmenDB.DateTime;
         appointment.RowVersion = appointmenDB.RowVersion;
         appointment.PatientId = appointmenDB.PatientId;
-        appointment.DoctorId = appointmenDB.DoctorId;
+        appointment.ProfessionalId = appointmenDB.ProfessionalId;
         appointment.Reason = (appointmenDB.Reason ?? string.Empty).ToUpperInvariant();
         appointment.IsDeleted = appointmenDB.IsDeleted;
         appointment.PatientFirstName = appointmenDB.PatientFirstName;
@@ -263,7 +263,7 @@ public class WeeklyScheduleViewModelOrchestrator(IAppointmentOrchestrator orches
             var target = _appointments[idx];
             target.DateTime = appointment.DateTime;
             target.PatientId = appointment.PatientId;
-            target.DoctorId = appointment.DoctorId;
+            target.ProfessionalId = appointment.ProfessionalId;
             target.Reason = (appointment.Reason ?? string.Empty).ToUpperInvariant();
             target.RowVersion = appointment.RowVersion;
             target.IsDeleted = appointment.IsDeleted;

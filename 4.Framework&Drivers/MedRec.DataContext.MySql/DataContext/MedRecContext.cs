@@ -82,7 +82,7 @@ public class MedRecContext : DbContext, IDisposable
     public DbSet<HealthInsuranceCompany> HealthInsuranceCompanies { get; set; }
     public DbSet<LaboratoryResultType> LaboratoryResultTypes { get; set; }
     public DbSet<PatientLaboratoryResult> PatientLaboratoryResults { get; set; }
-    public DbSet<Doctor> Doctors { get; set; }
+    public DbSet<Professional> Professionals { get; set; }
     public DbSet<MedicalAppointment> MedicalAppointments { get; set; }
 
     public DbSet<MedicalAppointmentView> MedicalAppointmentsView => Set<MedicalAppointmentView>();

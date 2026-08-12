@@ -278,7 +278,7 @@ public partial class WeeklyScheduleComonet
         {
             //Id = Guid.NewGuid(),
             DateTime = celdaSeleccionada.DateTime,
-            DoctorId = Guid.Parse("C771A686-20DB-4DE3-A547-60B368B1FA98"),
+            ProfessionalId = Guid.Parse("C771A686-20DB-4DE3-A547-60B368B1FA98"),
             IsDeleted = true
         };
 

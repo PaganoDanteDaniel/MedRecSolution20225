@@ -17,7 +17,7 @@ public class MedicalAppointmentConfiguration : IEntityTypeConfiguration<MedicalA
 
         builder.Property(ma => ma.DateTime).IsRequired();
         builder.Property(ma => ma.PatientId).IsRequired();
-        builder.Property(ma => ma.DoctorId).IsRequired();
+        builder.Property(ma => ma.ProfessionalId).IsRequired();
         builder.Property(ma => ma.Reason).HasMaxLength(50).IsRequired(false);
 
         builder.Property(ma => ma.IsDeleted).HasDefaultValue(false);
@@ -25,9 +25,9 @@ public class MedicalAppointmentConfiguration : IEntityTypeConfiguration<MedicalA
         builder.Property(ma => ma.RowVersion).IsConcurrencyToken().ValueGeneratedOnAddOrUpdate();
 
         builder.HasIndex(ma => ma.PatientId);
-        builder.HasIndex(ma => ma.DoctorId);
+        builder.HasIndex(ma => ma.ProfessionalId);
 
         builder.HasOne<Patient>().WithMany().HasForeignKey(ma => ma.PatientId);
-        builder.HasOne<Doctor>().WithMany().HasForeignKey(ma => ma.DoctorId);
+        builder.HasOne<Professional>().WithMany().HasForeignKey(ma => ma.ProfessionalId);
     }
 }

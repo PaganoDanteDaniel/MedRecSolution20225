@@ -301,7 +301,7 @@ public partial class AppointmentScheduleComponent
         {
             //Id = Guid.NewGuid(),
             DateTime = selectedCell.DateTime,
-            DoctorId = Guid.Parse("C771A686-20DB-4DE3-A547-60B368B1FA98"),
+            ProfessionalId = Guid.Parse("C771A686-20DB-4DE3-A547-60B368B1FA98"),
             IsDeleted = false
         };
 
@@ -312,7 +312,7 @@ public partial class AppointmentScheduleComponent
                 Id = appt.Id,
                 DateTime = appt.DateTime,
                 PatientId = appt.PatientId,
-                DoctorId = appt.DoctorId,
+                ProfessionalId = appt.ProfessionalId,
                 PatientLastName = appt.PatientLastName,
                 PatientFirstName = appt.PatientFirstName,
                 PatientName = appt.PatientName,
@@ -338,7 +338,7 @@ public partial class AppointmentScheduleComponent
                 appt.Id = originalAppt.Id;
                 appt.DateTime = originalAppt.DateTime;
                 appt.PatientId = originalAppt.PatientId;
-                appt.DoctorId = originalAppt.DoctorId;
+                appt.ProfessionalId = originalAppt.ProfessionalId;
                 appt.PatientLastName = originalAppt.PatientLastName;
                 appt.PatientFirstName = originalAppt.PatientFirstName;
                 appt.PatientName = originalAppt.PatientName;

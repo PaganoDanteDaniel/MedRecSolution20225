@@ -1,6 +1,6 @@
 @page "/users/create"
 @inject CreateUserVM VM
-@inject MedRec.Identity.BusinessObjects.Interfaces.Repositories.IDoctorLookupRepository DoctorLookup
+@inject MedRec.Identity.BusinessObjects.Interfaces.Repositories.IProfessionalLookupRepository DoctorLookup
 @inject MedRec.Identity.BusinessObjects.Interfaces.Repositories.IRoleLookupRepository RoleLookup
 @inject MedRec.Identity.BusinessObjects.Interfaces.Services.ISessionService SessionService
 @using MedRec.Identity.BusinessObjects.Constants
@@ -59,7 +59,7 @@
 </div>
 
 @code {
-    private IReadOnlyList<MedRec.Identity.BusinessObjects.DTOs.DoctorSummaryDto> _doctors = Array.Empty<MedRec.Identity.BusinessObjects.DTOs.DoctorSummaryDto>();
+    private IReadOnlyList<MedRec.Identity.BusinessObjects.DTOs.ProfessionalSummaryDto> _doctors = Array.Empty<MedRec.Identity.BusinessObjects.DTOs.ProfessionalSummaryDto>();
     private IReadOnlyList<MedRec.Identity.BusinessObjects.DTOs.RoleSummaryDto> _roles = Array.Empty<MedRec.Identity.BusinessObjects.DTOs.RoleSummaryDto>();
     private string _doctorIdText = string.Empty;
 
@@ -71,7 +71,7 @@
 
     private async Task HandleCreate()
     {
-        VM.Model.DoctorId = string.IsNullOrWhiteSpace(_doctorIdText) ? null : Guid.Parse(_doctorIdText);
+        VM.Model.ProfessionalId = string.IsNullOrWhiteSpace(_doctorIdText) ? null : Guid.Parse(_doctorIdText);
 
         await VM.CreateAsync();
         if (VM.Success)

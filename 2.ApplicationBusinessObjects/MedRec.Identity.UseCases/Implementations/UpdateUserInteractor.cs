@@ -39,7 +39,7 @@ public class UpdateUserInteractor(
         }
 
         user.FullName = dto.FullName;
-        user.DoctorId = dto.DoctorId;
+        user.ProfessionalId = dto.ProfessionalId;
         user.RowVersion = dto.RowVersion;
 
         await unitOfWork.ExecuteInTransactionWithRetry(async () =>

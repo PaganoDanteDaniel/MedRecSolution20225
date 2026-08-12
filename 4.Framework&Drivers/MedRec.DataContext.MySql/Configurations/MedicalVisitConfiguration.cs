@@ -35,14 +35,14 @@ public class MedicalVisitConfiguration : IEntityTypeConfiguration<PatientMedical
         builder.HasIndex(e => e.MedicalHistoryId);
 
 
-        builder.Property(e => e.DoctorId).IsRequired(false);
+        builder.Property(e => e.ProfessionalId).IsRequired(false);
 
-        builder.HasOne<Doctor>()
+        builder.HasOne<Professional>()
             .WithMany()
-            .HasForeignKey(e => e.DoctorId)
+            .HasForeignKey(e => e.ProfessionalId)
             .OnDelete(DeleteBehavior.SetNull);
 
-        builder.HasIndex(e => e.DoctorId)
-            .HasDatabaseName("idx_visit_doctor");
+        builder.HasIndex(e => e.ProfessionalId)
+            .HasDatabaseName("idx_visit_professional");
     }
 }

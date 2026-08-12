@@ -15,7 +15,7 @@ public class AuthResultDto
         UserId = userId;
         Email = email;
         FullName = fullName;
-        DoctorId = doctorId;
+        ProfessionalId = doctorId;
         Roles = roles;
         Permissions = permissions;
         Token = token;
@@ -26,7 +26,7 @@ public class AuthResultDto
     public Guid UserId { get; }
     public string Email { get; }
     public string FullName { get; }
-    public Guid? DoctorId { get; }
+    public Guid? ProfessionalId { get; }
     public IReadOnlyList<string> Roles { get; }
     public IReadOnlyList<string> Permissions { get; }
     public string Token { get; }

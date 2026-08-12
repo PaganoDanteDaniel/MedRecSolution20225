@@ -6,13 +6,13 @@ public class UpdateUserDto
         UserId = userId;
         FullName = fullName;
         RoleIds = roleIds;
-        DoctorId = doctorId;
+        ProfessionalId = doctorId;
         RowVersion = rowVersion;
     }
 
     public Guid UserId { get; }
     public string FullName { get; }
     public IReadOnlyList<Guid> RoleIds { get; }
-    public Guid? DoctorId { get; }
+    public Guid? ProfessionalId { get; }
     public byte[] RowVersion { get; }
 }

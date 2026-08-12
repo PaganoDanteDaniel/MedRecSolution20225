@@ -7,12 +7,12 @@ public class CreateUserDto
         FullName = fullName;
         TemporaryPassword = temporaryPassword;
         RoleIds = roleIds;
-        DoctorId = doctorId;
+        ProfessionalId = doctorId;
     }
 
     public string Email { get; }
     public string FullName { get; }
     public string TemporaryPassword { get; }
     public IReadOnlyList<Guid> RoleIds { get; }
-    public Guid? DoctorId { get; }
+    public Guid? ProfessionalId { get; }
 }

@@ -12,7 +12,7 @@ public class CreateMedicalVisitDto
     public string Diagnosis { get; init; }
     public string Treatment { get; init; }
     public string Notes { get; init; }
-    public Guid DoctorId { get; init; }
+    public Guid ProfessionalId { get; init; }
     public IEnumerable<DynamicFieldValueDto> DynamicFields { get; init; } = Enumerable.Empty<DynamicFieldValueDto>();
     public byte[] RowVersion { get; init; }
 

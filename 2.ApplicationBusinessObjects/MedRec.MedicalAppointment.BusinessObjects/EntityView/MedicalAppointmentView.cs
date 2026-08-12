@@ -16,5 +16,5 @@ public class MedicalAppointmentView
     public byte[] RowVersion { get; set; }
     public bool IsDeleted { get; set; }
     public Guid PatientId { get; set; }
-    public Guid DoctorId { get; set; }
+    public Guid ProfessionalId { get; set; }
 }

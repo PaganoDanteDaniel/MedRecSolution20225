@@ -50,7 +50,7 @@ internal class CreateMedicalAppointmentInteractor
         {
             DateTime = dto.DateTime,
             PatientId = dto.PatientId,
-            DoctorId = dto.DoctorId,
+            ProfessionalId = dto.ProfessionalId,
             Reason = dto.Reason
         };
 }

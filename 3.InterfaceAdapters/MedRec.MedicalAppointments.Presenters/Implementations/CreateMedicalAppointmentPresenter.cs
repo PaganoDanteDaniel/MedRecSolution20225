@@ -17,7 +17,7 @@ internal class CreateMedicalAppointmentPresenter : BaseOutputPort<MedicalAppoint
             appointment.Id,
             appointment.AppointmentDateTime,
             appointment.PatientId,
-            appointment.DoctorId,
+            appointment.ProfessionalId,
             appointment.Reason ?? string.Empty,
             appointment.RowVersion ?? Array.Empty<byte>(),
             appointment.IsDeleted,

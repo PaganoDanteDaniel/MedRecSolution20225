@@ -17,7 +17,7 @@ public class PatientMedicalVisit : IAuditableEntity
     public string Notes { get; set; }
     public bool IsDeleted { get; set; } = false;
     public byte[] RowVersion { get; set; }
-    public Guid? DoctorId { get; set; }
+    public Guid? ProfessionalId { get; set; }
     public Guid? CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid? UpdatedBy { get; set; }

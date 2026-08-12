@@ -9,7 +9,7 @@ public class User : IAuditableEntity
     public string FullName { get; set; }
     public bool IsActive { get; set; } = true;
     public bool MustChangePassword { get; set; } = true;
-    public Guid? DoctorId { get; set; }
+    public Guid? ProfessionalId { get; set; }
     public bool IsDeleted { get; set; } = false;
     public byte[] RowVersion { get; set; }
     public Guid? CreatedBy { get; set; }

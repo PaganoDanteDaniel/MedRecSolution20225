@@ -22,7 +22,7 @@ internal sealed class ReassignAppointmentAction(
 
             var model = AppointmentMapper.ToModel(result.Value);
 
-            appointment.DoctorId = model.DoctorId;
+            appointment.ProfessionalId = model.ProfessionalId;
             appointment.RowVersion = model.RowVersion;
             appointment.Reason = model.Reason;
             appointment.IsDeleted = model.IsDeleted;

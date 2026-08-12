@@ -124,7 +124,7 @@ public class UpdateUserInteractorTests
         await interactor.HandleAsync(dto, CancellationToken.None);
 
         commandsRepo.Verify(r => r.UpdateAsync(
-            It.Is<User>(u => u.Id == dto.UserId && u.FullName == "Nombre Nuevo" && u.DoctorId == doctorId && u.RowVersion.SequenceEqual(dtoRowVersion)),
+            It.Is<User>(u => u.Id == dto.UserId && u.FullName == "Nombre Nuevo" && u.ProfessionalId == doctorId && u.RowVersion.SequenceEqual(dtoRowVersion)),
             It.Is<IReadOnlyList<Guid>>(ids => ids.Contains(roleId)),
             It.IsAny<CancellationToken>()), Times.Once);
         unitOfWork.Verify(u => u.SaveChanges(It.IsAny<CancellationToken>()), Times.Once);
