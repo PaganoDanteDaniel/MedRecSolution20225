@@ -1,4 +1,5 @@
 @page "/users"
+@using MedRec.Identity.BusinessObjects.Constants
 @using MedRec.Identity.BusinessObjects.DTOs
 @using MedRec.Identity.BusinessObjects.Interfaces.Services
 @inject UsersListVM VM
@@ -6,7 +7,10 @@
 
 <div class="page-container">
     <h2>Usuarios</h2>
-    <a href="/users/create">+ Nuevo usuario</a>
+    @if (SessionService.CurrentUser?.Permissions.Contains(SystemPermissions.Users_Create) == true)
+    {
+        <a href="/users/create">+ Nuevo usuario</a>
+    }
 
     @if (!string.IsNullOrEmpty(VM.InformationMessage))
     {
@@ -32,7 +36,10 @@
                     <td>@string.Join(", ", user.RoleNames)</td>
                     <td>@(user.IsActive ? "Activo" : "Inactivo")</td>
                     <td>
-                        <a href="@($"/users/{user.Id}/edit")">Editar</a>
+                        @if (SessionService.CurrentUser?.Permissions.Contains(SystemPermissions.Users_Edit) == true)
+                        {
+                            <a href="@($"/users/{user.Id}/edit")">Editar</a>
+                        }
                         <button @onclick="() => ToggleActive(user.Id, !user.IsActive)" disabled="@(VM.IsProcessing || IsOwnDeactivation(user))" title="@(IsOwnDeactivation(user) ? "No puede desactivar su propia cuenta." : null)">
                             @(user.IsActive ? "Desactivar" : "Activar")
                         </button>

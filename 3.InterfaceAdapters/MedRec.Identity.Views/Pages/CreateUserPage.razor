@@ -2,10 +2,18 @@
 @inject CreateUserVM VM
 @inject MedRec.Identity.BusinessObjects.Interfaces.Repositories.IDoctorLookupRepository DoctorLookup
 @inject MedRec.Identity.BusinessObjects.Interfaces.Repositories.IRoleLookupRepository RoleLookup
+@inject MedRec.Identity.BusinessObjects.Interfaces.Services.ISessionService SessionService
+@using MedRec.Identity.BusinessObjects.Constants
 @using Microsoft.AspNetCore.Components.Forms
 
 <div class="page-container">
     <h2>Nuevo usuario</h2>
+
+    @if (SessionService.CurrentUser?.Permissions.Contains(SystemPermissions.Users_Create) != true)
+    {
+        <p class="info-message">No tiene permiso para crear usuarios.</p>
+        return;
+    }
 
     <EditForm Model="VM.Model" OnValidSubmit="HandleCreate" autocomplete="off">
         <div class="form-row">

@@ -1,4 +1,5 @@
-﻿@using MedRec.Identity.BusinessObjects.Interfaces.Services
+﻿@using MedRec.Identity.BusinessObjects.Constants
+@using MedRec.Identity.BusinessObjects.Interfaces.Services
 @inject ISessionService SessionService
 
 <div class="sidebar @NavClass">
@@ -60,15 +61,18 @@
                 }
             </a>
         </li>
-        <li>
-            <a href="/users">
-                <i class="bi bi-people"></i>
-                @if (!_isCollapsed)
-                {
-                    <span>Usuarios</span>
-                }
-            </a>
-        </li>
+        @if (SessionService.CurrentUser?.Permissions.Contains(SystemPermissions.Users_View) == true)
+        {
+            <li>
+                <a href="/users">
+                    <i class="bi bi-people"></i>
+                    @if (!_isCollapsed)
+                    {
+                        <span>Usuarios</span>
+                    }
+                </a>
+            </li>
+        }
         <li>
             <a href="/contact">
                 <i class="bi bi-envelope"></i>
