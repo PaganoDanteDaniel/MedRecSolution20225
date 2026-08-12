@@ -37,6 +37,11 @@ public static class SystemPermissions
     public const string Roles_Edit = "roles.edit";
     public const string Roles_Delete = "roles.delete";
 
+    public const string Professionals_View = "professionals.view";
+    public const string Professionals_Create = "professionals.create";
+    public const string Professionals_Edit = "professionals.edit";
+    public const string Professionals_Delete = "professionals.delete";
+
     public static readonly IReadOnlyList<(string Code, string Description)> All = new[]
     {
         (Patients_View, "Ver pacientes"),
@@ -67,5 +72,9 @@ public static class SystemPermissions
         (Roles_Create, "Crear roles"),
         (Roles_Edit, "Editar roles"),
         (Roles_Delete, "Eliminar roles"),
+        (Professionals_View, "Ver profesionales"),
+        (Professionals_Create, "Crear profesionales"),
+        (Professionals_Edit, "Editar profesionales"),
+        (Professionals_Delete, "Eliminar profesionales"),
     };
 }
