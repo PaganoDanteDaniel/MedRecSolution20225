@@ -12,6 +12,7 @@ public static class DependencyContainer
         services.AddScoped<IUserQueriesDataContext, UserQueriesDataContextMySql>();
         services.AddScoped<IUserCommandsDataContext, UserCommandsDataContextMySql>();
         services.AddScoped<IDoctorLookupDataContext, DoctorLookupDataContextMySql>();
+        services.AddScoped<IRoleLookupDataContext, RoleLookupDataContextMySql>();
         services.AddSingleton<IPasswordHasher, PasswordHasherService>();
         services.AddSingleton<IAuthTokenGenerator, JwtAuthTokenGenerator>();
         services.AddSingleton<ISessionService, SessionService>();

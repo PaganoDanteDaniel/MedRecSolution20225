@@ -1,6 +1,7 @@
 @page "/users/{UserId:guid}/edit"
 @inject UpdateUserVM VM
 @inject MedRec.Identity.BusinessObjects.Interfaces.Repositories.IDoctorLookupRepository DoctorLookup
+@inject MedRec.Identity.BusinessObjects.Interfaces.Repositories.IRoleLookupRepository RoleLookup
 @inject MedRec.Identity.BusinessObjects.Interfaces.Repositories.IUserQueriesRepository UserQueries
 @using Microsoft.AspNetCore.Components.Forms
 
@@ -14,8 +15,8 @@
         </div>
 
         <div class="form-row">
-            <label for="roleIds">Roles (IDs separados por coma)</label>
-            <InputText id="roleIds" @bind-Value="_roleIdsText" />
+            <label>Roles</label>
+            <RoleCheckboxList AvailableRoles="_roles" @bind-SelectedRoleIds="VM.Model.RoleIds" />
         </div>
 
         <div class="form-row">
@@ -44,12 +45,13 @@
     [Parameter] public Guid UserId { get; set; }
 
     private IReadOnlyList<MedRec.Identity.BusinessObjects.DTOs.DoctorSummaryDto> _doctors = Array.Empty<MedRec.Identity.BusinessObjects.DTOs.DoctorSummaryDto>();
-    private string _roleIdsText = string.Empty;
+    private IReadOnlyList<MedRec.Identity.BusinessObjects.DTOs.RoleSummaryDto> _roles = Array.Empty<MedRec.Identity.BusinessObjects.DTOs.RoleSummaryDto>();
     private string _doctorIdText = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         _doctors = await DoctorLookup.ListActiveAsync();
+        _roles = await RoleLookup.ListActiveAsync();
         await LoadUserAsync();
     }
 
@@ -62,26 +64,12 @@
             VM.Model.FullName = user.FullName;
             VM.Model.RowVersion = user.RowVersion;
             _doctorIdText = user.DoctorId?.ToString() ?? string.Empty;
-            var roleIds = await UserQueries.GetRoleIdsAsync(user.Id);
-            _roleIdsText = string.Join(", ", roleIds);
+            VM.Model.RoleIds = (await UserQueries.GetRoleIdsAsync(user.Id)).ToList();
         }
     }
 
     private async Task HandleUpdate()
     {
-        var roleIdTokens = _roleIdsText.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        var parsedRoleIds = new List<Guid>();
-        foreach (var token in roleIdTokens)
-        {
-            if (!Guid.TryParse(token, out var roleId))
-            {
-                VM.InformationMessage = "Alguno de los IDs de rol no es un GUID válido.";
-                StateHasChanged();
-                return;
-            }
-            parsedRoleIds.Add(roleId);
-        }
-        VM.Model.RoleIds = parsedRoleIds;
         VM.Model.DoctorId = string.IsNullOrWhiteSpace(_doctorIdText) ? null : Guid.Parse(_doctorIdText);
 
         await VM.UpdateAsync();

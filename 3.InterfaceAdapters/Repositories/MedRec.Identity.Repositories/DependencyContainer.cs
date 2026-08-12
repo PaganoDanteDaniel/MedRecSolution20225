@@ -9,6 +9,7 @@ public static class DependencyContainer
         services.AddScoped<IUserQueriesRepository, UserQueriesRepository>();
         services.AddScoped<IUserCommandsRepository, UserCommandsRepository>();
         services.AddScoped<IDoctorLookupRepository, DoctorLookupRepository>();
+        services.AddScoped<IRoleLookupRepository, RoleLookupRepository>();
         return services;
     }
 }

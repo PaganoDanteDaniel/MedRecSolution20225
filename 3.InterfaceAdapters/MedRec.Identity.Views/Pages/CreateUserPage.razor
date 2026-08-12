@@ -1,6 +1,7 @@
 @page "/users/create"
 @inject CreateUserVM VM
 @inject MedRec.Identity.BusinessObjects.Interfaces.Repositories.IDoctorLookupRepository DoctorLookup
+@inject MedRec.Identity.BusinessObjects.Interfaces.Repositories.IRoleLookupRepository RoleLookup
 @using Microsoft.AspNetCore.Components.Forms
 
 <div class="page-container">
@@ -23,8 +24,8 @@
         </div>
 
         <div class="form-row">
-            <label for="roleIds">Roles (IDs separados por coma)</label>
-            <InputText id="roleIds" @bind-Value="_roleIdsText" />
+            <label>Roles</label>
+            <RoleCheckboxList AvailableRoles="_roles" @bind-SelectedRoleIds="VM.Model.RoleIds" />
         </div>
 
         <div class="form-row">
@@ -51,35 +52,23 @@
 
 @code {
     private IReadOnlyList<MedRec.Identity.BusinessObjects.DTOs.DoctorSummaryDto> _doctors = Array.Empty<MedRec.Identity.BusinessObjects.DTOs.DoctorSummaryDto>();
-    private string _roleIdsText = string.Empty;
+    private IReadOnlyList<MedRec.Identity.BusinessObjects.DTOs.RoleSummaryDto> _roles = Array.Empty<MedRec.Identity.BusinessObjects.DTOs.RoleSummaryDto>();
     private string _doctorIdText = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         _doctors = await DoctorLookup.ListActiveAsync();
+        _roles = await RoleLookup.ListActiveAsync();
     }
 
     private async Task HandleCreate()
     {
-        var roleIdTokens = _roleIdsText.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        var parsedRoleIds = new List<Guid>();
-        foreach (var token in roleIdTokens)
-        {
-            if (!Guid.TryParse(token, out var roleId))
-            {
-                VM.InformationMessage = "Alguno de los IDs de rol no es un GUID válido.";
-                StateHasChanged();
-                return;
-            }
-            parsedRoleIds.Add(roleId);
-        }
-        VM.Model.RoleIds = parsedRoleIds;
         VM.Model.DoctorId = string.IsNullOrWhiteSpace(_doctorIdText) ? null : Guid.Parse(_doctorIdText);
 
         await VM.CreateAsync();
         if (VM.Success)
         {
-            _roleIdsText = string.Empty;
+            VM.Model.RoleIds = new();
             _doctorIdText = string.Empty;
         }
         StateHasChanged();

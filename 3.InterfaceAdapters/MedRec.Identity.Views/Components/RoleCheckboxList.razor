@@ -1,0 +1,32 @@
+@using MedRec.Identity.BusinessObjects.DTOs
+
+<div class="role-checkbox-list">
+    @foreach (var role in AvailableRoles)
+    {
+        <div class="form-check">
+            <input type="checkbox" id="role-@role.Id" checked="@SelectedRoleIds.Contains(role.Id)" @onchange="@(e => ToggleRole(role.Id, (bool)e.Value!))" />
+            <label for="role-@role.Id">@role.Name</label>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public IReadOnlyList<RoleSummaryDto> AvailableRoles { get; set; } = Array.Empty<RoleSummaryDto>();
+    [Parameter] public List<Guid> SelectedRoleIds { get; set; } = new();
+    [Parameter] public EventCallback<List<Guid>> SelectedRoleIdsChanged { get; set; }
+
+    private async Task ToggleRole(Guid roleId, bool isChecked)
+    {
+        if (isChecked)
+        {
+            if (!SelectedRoleIds.Contains(roleId))
+                SelectedRoleIds.Add(roleId);
+        }
+        else
+        {
+            SelectedRoleIds.Remove(roleId);
+        }
+
+        await SelectedRoleIdsChanged.InvokeAsync(SelectedRoleIds);
+    }
+}
