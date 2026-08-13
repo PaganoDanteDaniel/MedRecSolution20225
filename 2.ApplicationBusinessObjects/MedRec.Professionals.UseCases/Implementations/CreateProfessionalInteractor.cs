@@ -46,8 +46,8 @@ public class CreateProfessionalInteractor(
             Phone = dto.Phone ?? string.Empty,
             HireDate = dto.HireDate,
             Type = dto.Type,
-            LicenseNumber = dto.LicenseNumber,
-            SpecialtyId = dto.SpecialtyId,
+            LicenseNumber = dto.Type is ProfessionalType.Doctor or ProfessionalType.Nurse ? dto.LicenseNumber : null,
+            SpecialtyId = dto.Type == ProfessionalType.Doctor ? dto.SpecialtyId : null,
             IsDeleted = false
         };
 

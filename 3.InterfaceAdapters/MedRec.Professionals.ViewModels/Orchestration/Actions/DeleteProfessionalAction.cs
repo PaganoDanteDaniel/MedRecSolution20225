@@ -11,10 +11,15 @@ public class DeleteProfessionalAction(
 {
     public async Task<OperationResult<bool>> ExecuteAsync(Guid professionalId, CancellationToken ct = default)
     {
+        ct.ThrowIfCancellationRequested();
         try
         {
             await inPort.HandleAsync(professionalId, ct);
             return outPort.Result;
+        }
+        catch (OperationCanceledException)
+        {
+            return OperationResult.Cancelled<bool>();
         }
         catch (Exception ex)
         {

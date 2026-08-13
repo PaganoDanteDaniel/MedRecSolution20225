@@ -47,12 +47,15 @@
                                  @bind-SpecialtyId="VM.Model.SpecialtyId"
                                  AvailableSpecialties="_specialties" />
 
-        <div class="form-row">
-            <label>
-                <input type="checkbox" @bind="_createUser" />
-                Crear también un usuario para este profesional
-            </label>
-        </div>
+        @if (SessionService.CurrentUser?.Permissions.Contains(SystemPermissions.Users_Create) == true)
+        {
+            <div class="form-row">
+                <label>
+                    <input type="checkbox" @bind="_createUser" />
+                    Crear también un usuario para este profesional
+                </label>
+            </div>
+        }
 
         @if (_createUser)
         {

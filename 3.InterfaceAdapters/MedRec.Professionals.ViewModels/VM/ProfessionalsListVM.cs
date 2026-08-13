@@ -17,6 +17,7 @@ public class ProfessionalsListVM(
     public async Task LoadAsync(ProfessionalType? typeFilter = null, CancellationToken ct = default)
     {
         IsProcessing = true;
+        InformationMessage = string.Empty;
         try
         {
             await listInteractor.HandleAsync(typeFilter, ct);

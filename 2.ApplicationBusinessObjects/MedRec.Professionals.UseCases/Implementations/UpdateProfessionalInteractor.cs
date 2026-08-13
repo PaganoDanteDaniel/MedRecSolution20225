@@ -41,8 +41,8 @@ public class UpdateProfessionalInteractor(
         professional.LastName = dto.LastName;
         professional.Phone = dto.Phone;
         professional.Type = dto.Type;
-        professional.LicenseNumber = dto.LicenseNumber;
-        professional.SpecialtyId = dto.SpecialtyId;
+        professional.LicenseNumber = dto.Type is ProfessionalType.Doctor or ProfessionalType.Nurse ? dto.LicenseNumber : null;
+        professional.SpecialtyId = dto.Type == ProfessionalType.Doctor ? dto.SpecialtyId : null;
         professional.RowVersion = dto.RowVersion;
 
         await unitOfWork.ExecuteInTransactionWithRetry(async () =>

@@ -68,7 +68,8 @@ public static class DependencyContainer
         services.AddProfessionalsDataContextMySqlServices()
                 .AddProfessionalsRepositoriesServices()
                 .AddProfessionalsUseCasesServicesWithProxy()
-                .AddProfessionalsPresentersServices();
+                .AddProfessionalsPresentersServices()
+                .AddProfessionalsVMServices();
 
         services.AddTransient<CreateProfessionalVM>();
         services.AddTransient<ProfessionalsListVM>();

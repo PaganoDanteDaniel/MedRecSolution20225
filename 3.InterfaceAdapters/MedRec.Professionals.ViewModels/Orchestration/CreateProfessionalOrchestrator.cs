@@ -33,10 +33,19 @@ public class CreateProfessionalOrchestrator(
         // Compensación best-effort: si el borrado también falla (p.ej. el usuario actual
         // tiene Professionals_Create pero no Professionals_Delete), igual se propaga el
         // error real de la creación del usuario en vez de uno de permisos que lo taparía.
-        await deleteProfessional.ExecuteAsync(professionalResult.Value, ct);
+        var compensationResult = await deleteProfessional.ExecuteAsync(professionalResult.Value, ct);
+
+        var baseError = userResult.Error ?? new MedRec.Entity.DTOs.ErrorInfo("No se pudo crear el usuario del profesional.");
+        var finalError = compensationResult.Success
+            ? baseError
+            : new MedRec.Entity.DTOs.ErrorInfo(
+                baseError.Message + " El profesional quedó creado sin usuario asociado; revisá el listado.",
+                baseError.Code,
+                baseError.Details,
+                baseError.HttpStatusCode);
 
         return OperationResult.Fail<Guid>(
-            userResult.Error ?? new MedRec.Entity.DTOs.ErrorInfo("No se pudo crear el usuario del profesional."),
+            finalError,
             userResult.MessageAction,
             userResult.ValidationErrors);
     }
