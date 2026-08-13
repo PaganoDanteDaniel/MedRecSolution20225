@@ -73,6 +73,18 @@
                 </a>
             </li>
         }
+        @if (SessionService.CurrentUser?.Permissions.Contains(SystemPermissions.Professionals_View) == true)
+        {
+            <li>
+                <a href="/professionals">
+                    <i class="bi bi-person-badge"></i>
+                    @if (!_isCollapsed)
+                    {
+                        <span>Profesionales</span>
+                    }
+                </a>
+            </li>
+        }
         <li>
             <a href="/contact">
                 <i class="bi bi-envelope"></i>

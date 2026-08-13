@@ -6,6 +6,7 @@ using MedRec.HealthInsurance.ViewModels.VM;
 using MedRec.Identity.ViewModels.VM;
 using MedRec.MedicalVisit.ViewModels.VM;
 using MedRec.Patients.ViewModels.VM;
+using MedRec.Professionals.ViewModels.VM;
 
 namespace Microsoft.Extensions.DependencyInjection;
 public static class DependencyContainer
@@ -63,6 +64,15 @@ public static class DependencyContainer
         services.AddTransient<CreateUserVM>();
         services.AddTransient<UpdateUserVM>();
         services.AddTransient<ChangePasswordVM>();
+
+        services.AddProfessionalsDataContextMySqlServices()
+                .AddProfessionalsRepositoriesServices()
+                .AddProfessionalsUseCasesServicesWithProxy()
+                .AddProfessionalsPresentersServices();
+
+        services.AddTransient<CreateProfessionalVM>();
+        services.AddTransient<ProfessionalsListVM>();
+        services.AddTransient<UpdateProfessionalVM>();
 
         services.AddValidatorServices();
 

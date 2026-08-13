@@ -54,6 +54,8 @@
     <ProjectReference Include="..\MedRec.IoC\MedRec.IoC.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.Identity.ViewModels\MedRec.Identity.ViewModels.csproj" />
     <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.Identity.Views\MedRec.Identity.Views.csproj" />
+    <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.Professionals.ViewModels\MedRec.Professionals.ViewModels.csproj" />
+    <ProjectReference Include="..\..\3.InterfaceAdapters\MedRec.Professionals.Views\MedRec.Professionals.Views.csproj" />
   </ItemGroup>
 
 </Project>
