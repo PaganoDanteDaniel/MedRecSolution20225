@@ -11,6 +11,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MedRec.Professionals.BusinessObjects\MedRec.Professionals.BusinessObjects.csproj" />
+    <ProjectReference Include="..\MedRec.BusinessObjects\MedRec.BusinessObjects.csproj" />
+    <ProjectReference Include="..\MedRec.Identity.BusinessObjects\MedRec.Identity.BusinessObjects.csproj" />
   </ItemGroup>
 
 </Project>
