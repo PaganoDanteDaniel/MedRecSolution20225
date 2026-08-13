@@ -4,8 +4,9 @@ namespace MedRec.Identity.UseCases.Tests;
 
 /// <summary>
 /// Guarda de sincronización entre <see cref="SystemPermissions"/> (código) y el seed SQL de la
-/// migración <c>20260806154747_AddIdentityAndAudit.cs</c> (INSERT INTO Permissions ...), que
-/// hardcodean independientemente el mismo catálogo de 28 permisos. Si alguno de los dos se edita
+/// migración <c>20260806154747_AddIdentityAndAudit.cs</c> más el seed incremental de
+/// <c>20260813113621_AddProfessionalsPermissions.cs</c> (INSERT INTO Permissions ...), que
+/// hardcodean independientemente el mismo catálogo de 32 permisos. Si alguno de los dos se edita
 /// sin actualizar el otro, un permiso puede faltar en la base y una verificación contra
 /// <c>IAuthorizationService.EnsurePermissionAsync</c> se convierte en un deny-by-default silencioso
 /// y difícil de diagnosticar en producción.
@@ -50,12 +51,16 @@ public class SystemPermissionsCatalogTests
         "roles.create",
         "roles.edit",
         "roles.delete",
+        "professionals.view",
+        "professionals.create",
+        "professionals.edit",
+        "professionals.delete",
     };
 
     [Fact]
-    public void All_ShouldHaveExactly28Permissions()
+    public void All_ShouldHaveExactly32Permissions()
     {
-        Assert.Equal(28, SystemPermissions.All.Count);
+        Assert.Equal(32, SystemPermissions.All.Count);
     }
 
     [Fact]
