@@ -74,13 +74,30 @@ namespace MedRec.DataContext.MySql.Migrations
                 oldUnicode: false,
                 oldMaxLength: 50);
 
+            // El DropForeignKey de SpecialtyId debe ejecutarse ANTES del AlterColumn que la vuelve
+            // nullable: MySQL rechaza un ALTER de nulabilidad sobre una columna todavía referenciada
+            // por un FK ("Referencing column ... incompatible"). Se descubrió al aplicar la
+            // migración contra una base real (ningún test unitario ejecuta SQL real).
+            migrationBuilder.DropForeignKey(
+                name: "FK_Doctors_MedicalSpecialties_SpecialtyId",
+                table: "Professionals");
+
             migrationBuilder.AlterColumn<Guid>(
                 name: "SpecialtyId",
                 table: "Professionals",
                 type: "char(36)",
                 nullable: true,
+                collation: "ascii_general_ci",
                 oldClrType: typeof(Guid),
                 oldType: "char(36)");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Professionals_MedicalSpecialties_SpecialtyId",
+                table: "Professionals",
+                column: "SpecialtyId",
+                principalTable: "MedicalSpecialties",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.DropForeignKey(
                 name: "FK_MedicalAppointments_Doctors_DoctorId",
@@ -103,33 +120,11 @@ namespace MedRec.DataContext.MySql.Migrations
                 principalTable: "Professionals",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.SetNull);
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Doctors_MedicalSpecialties_SpecialtyId",
-                table: "Professionals");
-            migrationBuilder.AddForeignKey(
-                name: "FK_Professionals_MedicalSpecialties_SpecialtyId",
-                table: "Professionals",
-                column: "SpecialtyId",
-                principalTable: "MedicalSpecialties",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Professionals_MedicalSpecialties_SpecialtyId",
-                table: "Professionals");
-            migrationBuilder.AddForeignKey(
-                name: "FK_Doctors_MedicalSpecialties_SpecialtyId",
-                table: "Professionals",
-                column: "SpecialtyId",
-                principalTable: "MedicalSpecialties",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
             migrationBuilder.DropForeignKey(
                 name: "FK_PatientMedicalVisits_Professionals_ProfessionalId",
                 table: "PatientMedicalVisits");
@@ -156,15 +151,30 @@ namespace MedRec.DataContext.MySql.Migrations
                 name: "Type",
                 table: "Professionals");
 
+            // Mismo motivo que en Up(): el FK debe estar ausente mientras se revierte la
+            // nulabilidad de la columna que referencia.
+            migrationBuilder.DropForeignKey(
+                name: "FK_Professionals_MedicalSpecialties_SpecialtyId",
+                table: "Professionals");
+
             migrationBuilder.AlterColumn<Guid>(
                 name: "SpecialtyId",
                 table: "Professionals",
                 type: "char(36)",
                 nullable: false,
                 defaultValue: Guid.Empty,
+                collation: "ascii_general_ci",
                 oldClrType: typeof(Guid),
                 oldType: "char(36)",
                 oldNullable: true);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Doctors_MedicalSpecialties_SpecialtyId",
+                table: "Professionals",
+                column: "SpecialtyId",
+                principalTable: "MedicalSpecialties",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AlterColumn<string>(
                 name: "LicenseNumber",
