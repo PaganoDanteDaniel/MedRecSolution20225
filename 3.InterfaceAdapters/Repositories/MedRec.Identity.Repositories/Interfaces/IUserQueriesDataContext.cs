@@ -10,4 +10,5 @@ public interface IUserQueriesDataContext
     Task<IReadOnlyList<Guid>> GetRoleIdsAsync(Guid userId, CancellationToken ct = default);
     Task<IReadOnlyList<string>> GetPermissionCodesAsync(Guid userId, CancellationToken ct = default);
     Task<IReadOnlyList<UserSummaryDto>> ListWithRolesAsync(CancellationToken ct = default);
+    Task<Guid?> GetUserIdByProfessionalIdAsync(Guid professionalId, CancellationToken ct = default);
 }

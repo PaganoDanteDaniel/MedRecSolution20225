@@ -5,5 +5,5 @@ namespace MedRec.Identity.BusinessObjects.Interfaces.Ports;
 public interface ICreateUserOutputPort : IBaseOutputPort
 {
     OperationResult<bool> Result { get; }
-    Task Handle(CancellationToken ct = default);
+    Task Handle(bool emailSent, CancellationToken ct = default);
 }

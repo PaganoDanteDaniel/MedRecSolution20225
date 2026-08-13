@@ -28,7 +28,7 @@ public class CreateProfessionalVM(ICreateProfessionalOrchestrator orchestrator)
             }
             else
             {
-                InformationMessage = "Profesional creado correctamente.";
+                InformationMessage = result.Warning ?? "Profesional creado correctamente.";
                 Success = true;
                 Model = new CreateProfessionalModel();
             }

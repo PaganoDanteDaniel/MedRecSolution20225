@@ -125,6 +125,6 @@ public class CreateUserInteractorTests
             It.IsAny<CancellationToken>()), Times.Once);
         unitOfWork.Verify(u => u.SaveChanges(It.IsAny<CancellationToken>()), Times.Once);
         email.Verify(e => e.SendTemporaryPasswordAsync(dto.Email, dto.FullName, dto.TemporaryPassword, It.IsAny<CancellationToken>()), Times.Once);
-        presenter.Verify(p => p.Handle(It.IsAny<CancellationToken>()), Times.Once);
+        presenter.Verify(p => p.Handle(It.IsAny<bool>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }

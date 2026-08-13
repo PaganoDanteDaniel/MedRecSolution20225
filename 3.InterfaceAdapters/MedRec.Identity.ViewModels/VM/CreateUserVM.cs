@@ -32,7 +32,7 @@ public class CreateUserVM(
             }
             else
             {
-                InformationMessage = "Usuario creado correctamente.";
+                InformationMessage = result.Warning ?? "Usuario creado correctamente.";
                 Success = true;
                 Model = new CreateUserModel();
             }

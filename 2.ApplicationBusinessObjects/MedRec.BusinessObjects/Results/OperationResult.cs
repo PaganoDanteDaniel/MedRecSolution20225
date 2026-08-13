@@ -12,15 +12,20 @@ public sealed class OperationResult<T>
     public IReadOnlyList<ValidationError> ValidationErrors { get; init; } = Array.Empty<ValidationError>();
     public UserMessageAction MessageAction { get; init; } = UserMessageAction.None;
 
+    // Aclaración no bloqueante sobre un resultado exitoso (ej. "se guardó, pero no se pudo
+    // enviar el email"). A diferencia de Error, no cambia Success ni dispara flujos de fallo.
+    public string? Warning { get; init; }
+
     public bool HasError => Error is not null;
     public bool HasValidationErrors => ValidationErrors.Count > 0;
 
     private OperationResult() { }
 
-    public static OperationResult<T> Ok(T? value) => new()
+    public static OperationResult<T> Ok(T? value, string? warning = null) => new()
     {
         Success = true,
-        Value = value
+        Value = value,
+        Warning = warning
     };
 
     public static OperationResult<T> Fail(
@@ -57,7 +62,7 @@ public sealed class OperationResult<T>
 
 public static class OperationResult
 {
-    public static OperationResult<T> Ok<T>(T? value) => OperationResult<T>.Ok(value);
+    public static OperationResult<T> Ok<T>(T? value, string? warning = null) => OperationResult<T>.Ok(value, warning);
     public static OperationResult<T> Fail<T>(
     ErrorInfo error,
     UserMessageAction messageAction = UserMessageAction.ShowError,

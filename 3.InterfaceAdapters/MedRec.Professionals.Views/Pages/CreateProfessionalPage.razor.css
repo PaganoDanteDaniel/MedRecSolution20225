@@ -1,0 +1,84 @@
+.page-container {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: var(--space-lg-fluid) var(--space-md-fluid);
+    box-sizing: border-box;
+    font-family: var(--font-family-base);
+}
+
+.page-container h2 {
+    margin: 0 0 var(--space-md) 0;
+    color: var(--menu-text);
+    font-size: var(--font-size-title);
+    font-weight: 700;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md-fluid);
+}
+
+.form-row label {
+    font-size: var(--font-size-label);
+    color: var(--form-text);
+    font-weight: 600;
+}
+
+.form-row input,
+.form-row select {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    padding: var(--space-sm-fluid) var(--space-md-fluid);
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    background: var(--input-background);
+    color: var(--input-text);
+    box-sizing: border-box;
+    transition: border-color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+}
+
+.form-row input:focus,
+.form-row select:focus {
+    outline: none;
+    background: var(--input-focus-background);
+    border-color: var(--input-focus-border);
+    color: var(--input-focus-text);
+}
+
+.info-message {
+    margin: 0 0 var(--space-md) 0;
+    padding: var(--space-sm-fluid) var(--space-md-fluid);
+    background: var(--modal-info-background);
+    border: 1px solid var(--modal-info-border);
+    color: var(--modal-info-text);
+    border-radius: 8px;
+    font-size: var(--font-size-label);
+}
+
+button[type="submit"] {
+    width: 100%;
+    margin-top: var(--space-sm);
+    padding: var(--space-sm-fluid) var(--space-md-fluid);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--button-active-text);
+    background: var(--menu-text);
+    border: 1px solid var(--button-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+}
+
+button[type="submit"]:hover:not(:disabled) {
+    background: var(--link-hover-text);
+}
+
+button[type="submit"]:disabled {
+    background: var(--button-background);
+    color: var(--button-text);
+    cursor: not-allowed;
+}

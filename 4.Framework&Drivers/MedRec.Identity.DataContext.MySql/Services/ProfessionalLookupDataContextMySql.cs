@@ -1,5 +1,4 @@
 using MedRec.DataContext.MySql.DataContext;
-using MedRec.Entity.Enums;
 using MedRec.Identity.BusinessObjects.DTOs;
 using MedRec.Identity.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +10,7 @@ internal class ProfessionalLookupDataContextMySql(MedRecContext context) : IProf
     public async Task<IReadOnlyList<ProfessionalSummaryDto>> ListActiveAsync(CancellationToken ct = default)
     {
         return await context.Professionals
-            .Where(p => !p.IsDeleted && p.Type == ProfessionalType.Doctor)
+            .Where(p => !p.IsDeleted)
             .Select(p => new ProfessionalSummaryDto(p.Id, p.LastName + ", " + p.FirstName))
             .ToListAsync(ct);
     }

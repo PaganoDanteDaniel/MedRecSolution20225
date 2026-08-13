@@ -28,7 +28,9 @@ public class CreateProfessionalOrchestrator(
             ct);
 
         if (userResult.Success)
-            return professionalResult;
+            return userResult.Warning is null
+                ? professionalResult
+                : OperationResult.Ok(professionalResult.Value, userResult.Warning);
 
         // Compensación best-effort: si el borrado también falla (p.ej. el usuario actual
         // tiene Professionals_Create pero no Professionals_Delete), igual se propaga el

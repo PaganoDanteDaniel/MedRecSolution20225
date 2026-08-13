@@ -23,4 +23,7 @@ internal class UserQueriesRepository(IUserQueriesDataContext dataContext) : IUse
 
     public Task<IReadOnlyList<UserSummaryDto>> ListWithRolesAsync(CancellationToken ct = default) =>
         dataContext.ListWithRolesAsync(ct);
+
+    public Task<Guid?> GetUserIdByProfessionalIdAsync(Guid professionalId, CancellationToken ct = default) =>
+        dataContext.GetUserIdByProfessionalIdAsync(professionalId, ct);
 }

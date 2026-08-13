@@ -54,4 +54,10 @@ internal class UserQueriesDataContextMySql(MedRecContext context) : IUserQueries
         }
         return result;
     }
+
+    public async Task<Guid?> GetUserIdByProfessionalIdAsync(Guid professionalId, CancellationToken ct = default)
+    {
+        var user = await context.Users.FirstOrDefaultAsync(u => u.ProfessionalId == professionalId && !u.IsDeleted, ct);
+        return user?.Id;
+    }
 }

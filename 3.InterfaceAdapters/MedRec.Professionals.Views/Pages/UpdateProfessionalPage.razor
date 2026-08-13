@@ -1,7 +1,9 @@
 @page "/professionals/{ProfessionalId:guid}/edit"
 @inject UpdateProfessionalVM VM
 @inject MedRec.Professionals.BusinessObjects.Interfaces.Repositories.ISpecialtyLookupRepository SpecialtyLookup
+@inject MedRec.Identity.BusinessObjects.Interfaces.Repositories.IRoleLookupRepository RoleLookup
 @inject MedRec.Identity.BusinessObjects.Interfaces.Services.ISessionService SessionService
+@using MedRec.Entity.Enums
 @using MedRec.Identity.BusinessObjects.Constants
 @using MedRec.Professionals.Views.Components
 
@@ -31,29 +33,87 @@
         </div>
 
         <ProfessionalTypeFields @bind-Type="VM.Model.Type"
+                                 @bind-Type:after="OnTypeOrCreateUserChanged"
                                  @bind-LicenseNumber="VM.Model.LicenseNumber"
                                  @bind-SpecialtyId="VM.Model.SpecialtyId"
                                  AvailableSpecialties="_specialties" />
-
-        @if (!string.IsNullOrEmpty(VM.InformationMessage))
-        {
-            <p class="info-message">@VM.InformationMessage</p>
-        }
 
         <button type="submit" disabled="@VM.IsProcessing">
             @(VM.IsProcessing ? "Guardando..." : "Guardar cambios")
         </button>
     </EditForm>
+
+    <hr />
+
+    <div class="account-section">
+        <h3>Cuenta de usuario</h3>
+
+        @if (VM.HasUserAccount)
+        {
+            <p class="info-message">Este profesional ya tiene una cuenta de usuario asociada.</p>
+        }
+        else if (SessionService.CurrentUser?.Permissions.Contains(SystemPermissions.Users_Create) == true)
+        {
+            <p class="info-message">Este profesional todavía no tiene una cuenta de usuario.</p>
+
+            <div class="form-row">
+                <label>
+                    <input type="checkbox" @bind="_createUser" @bind:after="OnTypeOrCreateUserChanged" />
+                    Crear una cuenta de usuario para este profesional
+                </label>
+            </div>
+
+            @if (_createUser)
+            {
+                <div class="form-row">
+                    <label>Email del usuario</label>
+                    <input type="text" value="@VM.ProfessionalEmail" disabled />
+                </div>
+
+                <div class="form-row">
+                    <label for="newUserPassword">Contraseña temporal</label>
+                    <input id="newUserPassword" type="text" @bind="_temporaryPassword" />
+                </div>
+
+                <div class="form-row">
+                    <label>Roles</label>
+                    <RoleCheckboxList AvailableRoles="_roles" @bind-SelectedRoleIds="_selectedRoleIds" />
+                </div>
+
+                <button type="button" @onclick="HandleCreateUser" disabled="@VM.IsCreatingUser">
+                    @(VM.IsCreatingUser ? "Creando..." : "Crear cuenta")
+                </button>
+            }
+        }
+    </div>
+
+    @if (!string.IsNullOrEmpty(VM.InformationMessage))
+    {
+        <p class="info-message">@VM.InformationMessage</p>
+    }
 </div>
 
 @code {
     [Parameter] public Guid ProfessionalId { get; set; }
 
+    private static readonly Dictionary<ProfessionalType, string> RoleNameByType = new()
+    {
+        [ProfessionalType.Doctor] = "Médico",
+        [ProfessionalType.Nurse] = "Enfermero",
+        [ProfessionalType.Receptionist] = "Recepcionista",
+        [ProfessionalType.Administrator] = "Administrador"
+    };
+
     private IReadOnlyList<MedRec.Professionals.BusinessObjects.DTOs.SpecialtySummaryDto> _specialties = Array.Empty<MedRec.Professionals.BusinessObjects.DTOs.SpecialtySummaryDto>();
+    private IReadOnlyList<MedRec.Identity.BusinessObjects.DTOs.RoleSummaryDto> _roles = Array.Empty<MedRec.Identity.BusinessObjects.DTOs.RoleSummaryDto>();
+    private bool _createUser;
+    private string _temporaryPassword = string.Empty;
+    private List<Guid> _selectedRoleIds = new();
 
     protected override async Task OnInitializedAsync()
     {
         _specialties = await SpecialtyLookup.ListActiveAsync();
+        _roles = await RoleLookup.ListActiveAsync();
         await VM.LoadAsync(ProfessionalId);
     }
 
@@ -69,5 +129,29 @@
         }
 
         StateHasChanged();
+    }
+
+    private async Task HandleCreateUser()
+    {
+        await VM.CreateUserAsync(_temporaryPassword, _selectedRoleIds);
+
+        if (VM.UserCreated)
+        {
+            _createUser = false;
+            _temporaryPassword = string.Empty;
+            _selectedRoleIds = new();
+        }
+
+        StateHasChanged();
+    }
+
+    private void OnTypeOrCreateUserChanged()
+    {
+        if (!_createUser) return;
+        if (!RoleNameByType.TryGetValue(VM.Model.Type, out var roleName)) return;
+
+        var match = _roles.FirstOrDefault(r => string.Equals(r.Name, roleName, StringComparison.OrdinalIgnoreCase));
+        if (match is not null && !_selectedRoleIds.Contains(match.Id))
+            _selectedRoleIds.Add(match.Id);
     }
 }

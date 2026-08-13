@@ -57,8 +57,8 @@ public class CreateUserInteractor(
             await unitOfWork.SaveChanges(ct);
         }, ct);
 
-        await emailNotificationService.SendTemporaryPasswordAsync(dto.Email, dto.FullName, dto.TemporaryPassword, ct);
+        var emailSent = await emailNotificationService.SendTemporaryPasswordAsync(dto.Email, dto.FullName, dto.TemporaryPassword, ct);
 
-        await presenter.Handle(ct);
+        await presenter.Handle(emailSent, ct);
     }
 }

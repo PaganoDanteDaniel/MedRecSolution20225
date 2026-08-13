@@ -3,6 +3,7 @@
 @inject MedRec.Professionals.BusinessObjects.Interfaces.Repositories.ISpecialtyLookupRepository SpecialtyLookup
 @inject MedRec.Identity.BusinessObjects.Interfaces.Repositories.IRoleLookupRepository RoleLookup
 @inject MedRec.Identity.BusinessObjects.Interfaces.Services.ISessionService SessionService
+@using MedRec.Entity.Enums
 @using MedRec.Identity.BusinessObjects.Constants
 @using MedRec.Professionals.ViewModels.Models
 @using MedRec.Professionals.Views.Components
@@ -43,6 +44,7 @@
         </div>
 
         <ProfessionalTypeFields @bind-Type="VM.Model.Type"
+                                 @bind-Type:after="OnTypeOrCreateUserChanged"
                                  @bind-LicenseNumber="VM.Model.LicenseNumber"
                                  @bind-SpecialtyId="VM.Model.SpecialtyId"
                                  AvailableSpecialties="_specialties" />
@@ -51,7 +53,7 @@
         {
             <div class="form-row">
                 <label>
-                    <input type="checkbox" @bind="_createUser" />
+                    <input type="checkbox" @bind="_createUser" @bind:after="OnTypeOrCreateUserChanged" />
                     Crear también un usuario para este profesional
                 </label>
             </div>
@@ -92,6 +94,14 @@
 </div>
 
 @code {
+    private static readonly Dictionary<ProfessionalType, string> RoleNameByType = new()
+    {
+        [ProfessionalType.Doctor] = "Médico",
+        [ProfessionalType.Nurse] = "Enfermero",
+        [ProfessionalType.Receptionist] = "Recepcionista",
+        [ProfessionalType.Administrator] = "Administrador"
+    };
+
     private IReadOnlyList<MedRec.Professionals.BusinessObjects.DTOs.SpecialtySummaryDto> _specialties = Array.Empty<MedRec.Professionals.BusinessObjects.DTOs.SpecialtySummaryDto>();
     private IReadOnlyList<MedRec.Identity.BusinessObjects.DTOs.RoleSummaryDto> _roles = Array.Empty<MedRec.Identity.BusinessObjects.DTOs.RoleSummaryDto>();
     private bool _createUser;
@@ -120,5 +130,15 @@
         }
 
         StateHasChanged();
+    }
+
+    private void OnTypeOrCreateUserChanged()
+    {
+        if (!_createUser) return;
+        if (!RoleNameByType.TryGetValue(VM.Model.Type, out var roleName)) return;
+
+        var match = _roles.FirstOrDefault(r => string.Equals(r.Name, roleName, StringComparison.OrdinalIgnoreCase));
+        if (match is not null && !_selectedRoleIds.Contains(match.Id))
+            _selectedRoleIds.Add(match.Id);
     }
 }
