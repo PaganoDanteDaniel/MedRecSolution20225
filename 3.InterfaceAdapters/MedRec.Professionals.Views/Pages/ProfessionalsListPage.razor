@@ -1,0 +1,63 @@
+@page "/professionals"
+@using MedRec.Identity.BusinessObjects.Constants
+@inject ProfessionalsListVM VM
+@inject MedRec.Identity.BusinessObjects.Interfaces.Services.ISessionService SessionService
+
+<div class="page-container">
+    <h2>Profesionales</h2>
+    @if (SessionService.CurrentUser?.Permissions.Contains(SystemPermissions.Professionals_Create) == true)
+    {
+        <a href="/professionals/create">+ Nuevo profesional</a>
+    }
+
+    @if (!string.IsNullOrEmpty(VM.InformationMessage))
+    {
+        <p class="info-message">@VM.InformationMessage</p>
+    }
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var professional in VM.Professionals)
+            {
+                <tr>
+                    <td>@professional.FullName</td>
+                    <td>@professional.Type</td>
+                    <td>@professional.Email</td>
+                    <td>@professional.Phone</td>
+                    <td>
+                        @if (SessionService.CurrentUser?.Permissions.Contains(SystemPermissions.Professionals_Edit) == true)
+                        {
+                            <a href="@($"/professionals/{professional.Id}/edit")">Editar</a>
+                        }
+                        @if (SessionService.CurrentUser?.Permissions.Contains(SystemPermissions.Professionals_Delete) == true)
+                        {
+                            <button @onclick="() => DeleteAsync(professional.Id)" disabled="@VM.IsProcessing">Eliminar</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await VM.LoadAsync();
+    }
+
+    private async Task DeleteAsync(Guid id)
+    {
+        await VM.DeleteAsync(id);
+        StateHasChanged();
+    }
+}

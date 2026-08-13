@@ -1,0 +1,61 @@
+@using MedRec.Entity.Enums
+@using MedRec.Professionals.BusinessObjects.DTOs
+
+<div class="form-row">
+    <label for="type">Tipo de profesional</label>
+    <select id="type" value="@Type" @onchange="OnTypeChanged">
+        <option value="@ProfessionalType.Doctor">Médico</option>
+        <option value="@ProfessionalType.Nurse">Enfermero</option>
+        <option value="@ProfessionalType.Receptionist">Recepcionista</option>
+        <option value="@ProfessionalType.Administrator">Administrador</option>
+    </select>
+</div>
+
+@if (Type == ProfessionalType.Doctor || Type == ProfessionalType.Nurse)
+{
+    <div class="form-row">
+        <label for="licenseNumber">Matrícula</label>
+        <input id="licenseNumber" type="text" value="@LicenseNumber" @oninput="OnLicenseNumberChanged" />
+    </div>
+}
+
+@if (Type == ProfessionalType.Doctor)
+{
+    <div class="form-row">
+        <label for="specialtyId">Especialidad</label>
+        <select id="specialtyId" value="@SpecialtyId" @onchange="OnSpecialtyChanged">
+            <option value="">-- Seleccionar --</option>
+            @foreach (var specialty in AvailableSpecialties)
+            {
+                <option value="@specialty.Id">@specialty.Name</option>
+            }
+        </select>
+    </div>
+}
+
+@code {
+    [Parameter] public ProfessionalType Type { get; set; }
+    [Parameter] public EventCallback<ProfessionalType> TypeChanged { get; set; }
+    [Parameter] public string? LicenseNumber { get; set; }
+    [Parameter] public EventCallback<string?> LicenseNumberChanged { get; set; }
+    [Parameter] public Guid? SpecialtyId { get; set; }
+    [Parameter] public EventCallback<Guid?> SpecialtyIdChanged { get; set; }
+    [Parameter] public IReadOnlyList<SpecialtySummaryDto> AvailableSpecialties { get; set; } = Array.Empty<SpecialtySummaryDto>();
+
+    private async Task OnTypeChanged(ChangeEventArgs e)
+    {
+        var type = Enum.Parse<ProfessionalType>(e.Value!.ToString()!);
+        await TypeChanged.InvokeAsync(type);
+    }
+
+    private async Task OnLicenseNumberChanged(ChangeEventArgs e)
+    {
+        await LicenseNumberChanged.InvokeAsync(e.Value?.ToString());
+    }
+
+    private async Task OnSpecialtyChanged(ChangeEventArgs e)
+    {
+        var text = e.Value?.ToString();
+        await SpecialtyIdChanged.InvokeAsync(string.IsNullOrWhiteSpace(text) ? null : Guid.Parse(text));
+    }
+}

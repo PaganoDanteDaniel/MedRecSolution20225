@@ -1,0 +1,73 @@
+@page "/professionals/{ProfessionalId:guid}/edit"
+@inject UpdateProfessionalVM VM
+@inject MedRec.Professionals.BusinessObjects.Interfaces.Repositories.ISpecialtyLookupRepository SpecialtyLookup
+@inject MedRec.Identity.BusinessObjects.Interfaces.Services.ISessionService SessionService
+@using MedRec.Identity.BusinessObjects.Constants
+@using MedRec.Professionals.Views.Components
+
+<div class="page-container">
+    <h2>Editar profesional</h2>
+
+    @if (SessionService.CurrentUser?.Permissions.Contains(SystemPermissions.Professionals_Edit) != true)
+    {
+        <p class="info-message">No tiene permiso para editar profesionales.</p>
+        return;
+    }
+
+    <EditForm Model="VM.Model" OnValidSubmit="HandleUpdate" autocomplete="off">
+        <div class="form-row">
+            <label for="firstName">Nombre</label>
+            <InputText id="firstName" @bind-Value="VM.Model.FirstName" />
+        </div>
+
+        <div class="form-row">
+            <label for="lastName">Apellido</label>
+            <InputText id="lastName" @bind-Value="VM.Model.LastName" />
+        </div>
+
+        <div class="form-row">
+            <label for="phone">Teléfono</label>
+            <InputText id="phone" @bind-Value="VM.Model.Phone" />
+        </div>
+
+        <ProfessionalTypeFields @bind-Type="VM.Model.Type"
+                                 @bind-LicenseNumber="VM.Model.LicenseNumber"
+                                 @bind-SpecialtyId="VM.Model.SpecialtyId"
+                                 AvailableSpecialties="_specialties" />
+
+        @if (!string.IsNullOrEmpty(VM.InformationMessage))
+        {
+            <p class="info-message">@VM.InformationMessage</p>
+        }
+
+        <button type="submit" disabled="@VM.IsProcessing">
+            @(VM.IsProcessing ? "Guardando..." : "Guardar cambios")
+        </button>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter] public Guid ProfessionalId { get; set; }
+
+    private IReadOnlyList<MedRec.Professionals.BusinessObjects.DTOs.SpecialtySummaryDto> _specialties = Array.Empty<MedRec.Professionals.BusinessObjects.DTOs.SpecialtySummaryDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _specialties = await SpecialtyLookup.ListActiveAsync();
+        await VM.LoadAsync(ProfessionalId);
+    }
+
+    private async Task HandleUpdate()
+    {
+        await VM.UpdateAsync();
+
+        if (VM.Success)
+        {
+            // Recargar (incluyendo RowVersion) para que un segundo guardado consecutivo
+            // no dispare un falso conflicto de concurrencia — mismo criterio que UpdateUserPage.
+            await VM.LoadAsync(ProfessionalId);
+        }
+
+        StateHasChanged();
+    }
+}
